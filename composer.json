@@ -1,0 +1,6 @@
+{
+    "require": {
+        "gerencianet/gerencianet-sdk-php": "^3.0",
+        "phpmailer/phpmailer": "^6.6"
+    }
+}
