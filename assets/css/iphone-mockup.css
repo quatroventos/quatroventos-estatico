@@ -5,12 +5,15 @@
 .iphone-14-pro-codepen {
     position: relative;
     margin: 20px;
-    width: 180px;
-    height: 360px;
+    /* width: 180px;
+    height: 360px; */
+    max-width: 150px !important;
+    width: 150px !important;
+    height: 300px !important;
     background: #142304;
     border-radius: 20px;
     /*box-shadow: 0 0 0 0px #f7f7f7, 10px 10px 1px rgba(0, 0, 0, 0.1);*/
-    padding: 7px;
+    padding: 5px !important;
     box-sizing: border-box;
 }
 
@@ -32,11 +35,11 @@
 
 .iphone-14-pro-codepen .camera {
     position: absolute;
-    top: 24px;
+    top: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 40px;
-    height: 10px;
+    width: 32px;
+    height: 8px;
     background: #000;
     border-radius: 12px;
     z-index: 999; /* Garante que a "Dynamic Island" fique sobre a tela */
@@ -60,7 +63,7 @@
     right: -2px;
     top: 120px;
     width: 2px;
-    height: 70px;
+    height: 40px;
     background: #4d4d4d;
     border-radius: 0 2px 2px 0;
 }
