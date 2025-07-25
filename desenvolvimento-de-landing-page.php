@@ -20,16 +20,17 @@
 
 <head>
 
-    <title>Desenvolvimento de Landing Pages de alta conversao - Quatro Ventos</title>
-    <meta name="title" content="Desenvolvimento de Landing Pages de alta conversão  - Quatro Ventos">
-    <meta name="description" content="Conheça nosso serviço para Desenvolvimento de Landing Pages de alta conversão, estamos prontos para executar seu projeto.">
+    <title>Desenvolvimento de Landing Pages de Alta Conversão | Quatro Ventos - R$ 1.200</title>
+    <meta name="title" content="Desenvolvimento de Landing Pages de Alta Conversão | Quatro Ventos - R$ 1.200">
+    <meta name="description" content="Desenvolvimento profissional de landing pages a partir de R$ 1.200. Design responsivo, SEO otimizado e hospedagem inclusa. Contrate nosso serviço agora!">
 
     <meta charset="utf-8"/>
 
-    <meta property="og:title" content="Desenvolvimento de Landing Pages de alta conversão  - Quatro Ventos">
-    <meta property="og:site_name" content="Desenvolvimento de Landing Pages de alta conversão  - Quatro Ventos">
-    <meta property="og:url" content="https://www.quatroventos.com.br/criar-landing-pages">
-    <meta property="og:description" content="Contrate nossos serviços de Desenvolvimento de Landing Pages, estamos prontos para executar seu projeto.">
+    <meta property="og:title" content="Desenvolvimento de Landing Pages de Alta Conversão - R$ 1.200 | Quatro Ventos">
+    <meta property="og:site_name" content="Desenvolvimento de Landing Pages de Alta Conversão | Quatro Ventos - R$ 1.200">
+    <meta property="og:url" content="https://www.quatroventos.com.br/desenvolvimento-de-landing-page">
+    <link rel="canonical" href="https://www.quatroventos.com.br/desenvolvimento-de-landing-page" />
+    <meta property="og:description" content="Serviço profissional de desenvolvimento de landing pages com design responsivo, SEO otimizado e hospedagem inclusa. Entregamos em 7 dias. +50 projetos desenvolvidos.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://www.quatroventos.com.br/assets/img/desenv-landing-pages-hero.svg">
 
@@ -41,6 +42,11 @@
     <link rel="icon" type="image/png" href="./assets/img/favicon.png">
     <link rel="stylesheet" href="assets/css/iphone-mockup.css">
 
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Desenvolvimento de Landing Pages de Alta Conversão - R$ 1.200" />
+    <meta name="twitter:description" content="Serviço profissional: Design responsivo + SEO + hospedagem inclusa. Entregamos em 7 dias." />
+    <meta name="twitter:image" content="https://www.quatroventos.com.br/assets/img/desenv-landing-pages-hero.svg" />
+
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
 
@@ -51,12 +57,14 @@
           rel="stylesheet"> -->
 
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"> -->
+    <link rel="stylesheet" href="./assets/css/devicon.min.css">
 
     <!-- Boostrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
     <!-- CSS Files -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <!-- <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"> -->
+    <link href="./assets/css/aos.css" rel="stylesheet">
     <link href="./assets/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="./assets/css/now-ui-kit.css?v=1.3.1" rel="stylesheet"/>
 
@@ -78,7 +86,7 @@
           integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA=="
           crossorigin="anonymous"/> -->
     <!-- Font Awesome v5 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"     />
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"     /> -->
 
     <!-- FONTES -->
     <link rel="stylesheet" href="./assets/css/fonts.css">
@@ -112,12 +120,12 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7 ml-auto mr-auto text-left" data-aos="fade-right" data-aos-duration="600">
-                    <h1 class="main-title" style="font-size:45px; line-height: 55px; font-weight: 400; margin-top:0; margin-bottom: 46px" <strong>Desenvolvimento de Landing Pages</strong> otimizadas para conversões!</h1>
+                    <h1 class="main-title" style="font-size:45px; line-height: 55px; font-weight: 400; margin-top:0; margin-bottom: 46px"> <strong>Desenvolvimento de Landing Pages</strong> otimizadas para conversões!</h1>
                     <h5 style="font-size:30px; line-height: 37px; font-weight: 400;margin-bottom: 46px">A partir de R$ 1.200,00 entregamos sua <strong>landing page</strong> em poucos dias.</h5>
                     <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato agora mesmo!</a>
                 </div>
                 <div class="col-md-5 text-right" data-aos="fade-left" data-aos-duration="600" style="margin-top:100px;">
-                    <img src="assets/img/desenv-landing-pages-hero.svg" alt="desenvolvimento de landing pages" class="img-hero">
+                    <img src="assets/img/desenv-landing-pages-hero.svg" alt="desenvolvimento de landing pages" class="img-hero" loading="lazy">
                 </div>
             </div>
         </div>
@@ -127,7 +135,7 @@
         <br><br><br>
         <div class="manutencao">
             <div class="col-md-8 mr-auto ml-auto text-center">
-                <h2 class="title">Por que contratar o desenvolvimento de Landing Pages conosco?</h2>
+                <h2 class="title">Por que contratar nosso desenvolvimento de Landing Pages?</h2>
                 <h4 class="description">Cada projeto é único, mas todos têm algumas características em comum.</h4>
             </div>
             <br>
@@ -167,7 +175,7 @@
 
                     <div class="col-md-4" data-aos="fade-up" data-aos-delay="300" style="margin-top:150px;">
                         <div class="phone-container">
-                            <img src="assets/img/desenv-fullstack-hero.png" class="lazy" alt="desenvolvimento de landing page">
+                            <img src="assets/img/desenv-fullstack-hero.png" alt="desenvolvimento de landing page" loading="lazy">
                         </div>
                     </div>
 
@@ -347,7 +355,7 @@
     <!-- footer -->
     <?php include('footer.php'); ?>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script> -->
 
     <!--font awesome-->
     <!-- <script src="https://kit.fontawesome.com/47bce3a536.js" crossorigin="anonymous"></script> -->
@@ -370,20 +378,60 @@
     <!-- Owl Carousel -->
     <script  src="./assets/js/owl.carousel.min.js" type="text/javascript"></script>
     <!-- AOS Animate on Scroll -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script> -->
+    <script src="./assets/js/aos.js"></script>
     <script> AOS.init(); </script>
     <!-- Full page scroll -->
     <script  src="./assets/js/easings.min.js" type="text/javascript"></script>
     <script  src="./assets/js/scrolloverflow.min.js" type="text/javascript"></script>
     <script  src="./assets/js/fullpage.extensions.min.js" type="text/javascript"></script>
     <script  src="./assets/js/fullpage.min.js" type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/lazyload@2.0.0-rc.2/lazyload.js"></script> -->
 
     <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
     <script src="./assets/js/now-ui-kit.js" type="text/javascript"></script>
 
-    <script type="text/javascript">
+    <!-- <script type="text/javascript">
         $(".lazy").lazyload();
+    </script> -->
+
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Quatro Ventos",
+        "description": "Desenvolvimento de Landing Pages de alta conversão",
+        "url": "https://quatroventos.com.br",
+        "telephone": "+55-41-3039-9593",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Rua Itajubá, 480 - cj. 303",
+            "addressLocality": "Curitiba",
+            "addressRegion": "PR",
+            "postalCode": "81070-190",
+            "addressCountry": "BR"
+        },
+        "priceRange": "R$ 1200-5000",
+        "serviceType": "Desenvolvimento de Landing Pages"
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Desenvolvimento de Landing Pages",
+        "description": "Serviço profissional de desenvolvimento de landing pages com design responsivo, SEO otimizado e hospedagem inclusa",
+        "provider": {
+            "@type": "Organization",
+            "name": "Quatro Ventos"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "1200",
+            "priceCurrency": "BRL",
+            "description": "Desenvolvimento completo a partir de R$ 1.200 com hospedagem e Elementor inclusos"
+        }
+        }
     </script>
 
 </body>

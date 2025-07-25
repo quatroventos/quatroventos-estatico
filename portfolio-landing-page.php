@@ -55,7 +55,7 @@
                                 <div class="mb-screen-position">
                                     <div class="mb-screen">
 
-                                        <img src="<?php echo htmlspecialchars($desktopImage) ?>" alt="Imagem desktop <?= htmlspecialchars($basename) ?>" />
+                                        <img src="<?php echo htmlspecialchars($desktopImage) ?>" alt="Desenvolvimento de Landing Page: <?= htmlspecialchars($title) ?>" title="Desenvolvimento de Landing Page: <?= htmlspecialchars($title) ?>"  loading="lazy"/>
 
                                         <!-- Image (aspect 16:10 recommended, but not required). You might also want to change or remove the background color, in case the picture is not big enough, or rendering is off  -->
                                         <!-- <img src="https://unsplash.imgix.net/photo-1418479631014-8cbf89db3431?fit=crop&fm=jpg&h=500&q=75&w=800" alt="example image" /> -->
@@ -87,7 +87,7 @@
                     echo '<div class="circle"></div>';
                     echo '<div class="circle"></div>';
                     echo '</div>';
-                    echo '        <img src="' . htmlspecialchars($mobileImage) . '" alt="Desenvolvimento de Landing Page: ' . htmlspecialchars($basename) . '">';
+                    echo '        <img src="' . htmlspecialchars($mobileImage) . '" alt="Desenvolvimento de Landing Page: ' . htmlspecialchars($title) . '"  title="Desenvolvimento de Landing Page: ' . htmlspecialchars($title) . '" loading="lazy">';
                     echo '    </div>';
                     echo '</div>';
                     echo '</div>';
