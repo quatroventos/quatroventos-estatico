@@ -102,6 +102,25 @@
             margin: auto;
 
         }
+        .depoimento-card{
+            border-radius: 20px;
+            border: 3px solid #EF6E6E;
+            padding: 15px !important;
+            position: relative;
+            color: #ffffff !important;
+            background-color: #EF6E6E;
+        }
+        .depoimento-card::after{
+            content: "";
+            position: absolute;
+            bottom: -15px;
+            left: 30px; 
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid #EF6E6E; 
+        }
     </style>
 </head>
 
@@ -120,9 +139,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-7 ml-auto mr-auto text-left" data-aos="fade-right" data-aos-duration="600">
-                    <h1 class="main-title" style="font-size:45px; line-height: 55px; font-weight: 400; margin-top:0; margin-bottom: 46px"> <strong>Desenvolvimento de Landing Pages</strong> otimizadas para conversões!</h1>
-                    <h5 style="font-size:30px; line-height: 37px; font-weight: 400;margin-bottom: 46px">A partir de R$ 1.200,00 entregamos sua <strong>landing page</strong> em poucos dias.</h5>
-                    <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato agora mesmo!</a>
+                    <h1 class="main-title" style="font-size:45px; line-height: 55px; font-weight: 400; margin-top:0; margin-bottom: 46px"> <strong>Desenvolvimento de Landing Pages</strong> que convertem 3x mais!</h1>
+                    <h5 style="font-size:30px; line-height: 37px; font-weight: 400;margin-bottom: 46px">A partir de R$ 1.200,00 entregamos sua <strong>Landing Page</strong> com design responsivo + SEO + hospedagem + suporte por 30 dias.</h5>
+                    <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Contratar Desenvolvimento de Landing Page</a>
                 </div>
                 <div class="col-md-5 text-right" data-aos="fade-left" data-aos-duration="600" style="margin-top:100px;">
                     <img src="assets/img/desenv-landing-pages-hero.svg" alt="desenvolvimento de landing pages" class="img-hero" loading="lazy">
@@ -136,7 +155,7 @@
         <div class="manutencao">
             <div class="col-md-8 mr-auto ml-auto text-center">
                 <h2 class="title">Por que contratar nosso desenvolvimento de Landing Pages?</h2>
-                <h4 class="description">Cada projeto é único, mas todos têm algumas características em comum.</h4>
+                <!-- <h4 class="description">Cada projeto é único, mas todos têm algumas características em comum.</h4> -->
             </div>
             <br>
             <div class="container">
@@ -148,17 +167,8 @@
                                 <i class="ph ph-trend-up"></i>
                             </div>
                             <div class="description">
-                                <h4 class="info-title" >Alta Conversão</h4>
-                                <p>Ao fazer o desenvolvimento de Landing Pages conosco, você garante páginas otimizadas com técnicas comprovadas de copywriting e design persuasivo para maximizar suas vendas.</p>
-                            </div>
-                        </div>
-                        <div class="info info-horizontal" data-aos="fade-right" data-aos-delay="100">
-                            <div class="icon">
-                                <i class="ph ph-ranking"></i>
-                            </div>
-                            <div class="description">
-                                <h4 class="info-title">SEO Otimizado</h4>
-                                <p>Nós garantimos estrutura técnica perfeita para ranquear no Google e atrair tráfego orgânico qualificado ao desenvolver sua landing page.</p>
+                                <h4 class="info-title" >Conversão Garantida</h4>
+                                <p>Apareça na 1ª página do Google em 30 dias e aumente suas vendas em até 300% com nossas técnicas comprovadas de copywriting persuasivo.</p>
                             </div>
                         </div>
 
@@ -167,8 +177,18 @@
                                 <i class="ph ph-devices"></i>
                             </div>
                             <div class="description">
-                                <h4 class="info-title">100% Responsivo</h4>
-                                <p>Design adaptado para todos os dispositivos: desktop, tablet e smartphone.</p>
+                                <h4 class="info-title">Funciona em Qualquer Dispositivo</h4>
+                                <p>Design que se adapta perfeitamente a celular, tablet e desktop. Seus clientes compram de onde estiverem.</p>
+                            </div>
+                        </div>
+
+                        <div class="info info-horizontal" data-aos="fade-left" data-aos-delay="100">
+                            <div class="icon">
+                                <i class="ph ph-shield-check"></i>
+                            </div>
+                            <div class="description">
+                                <h4 class="info-title">Suporte Total por 30 Dias</h4>
+                                <p>Não te deixamos na mão. Suporte completo por 30 dias para garantir que tudo funcione perfeitamente.</p>
                             </div>
                         </div>
                     </div>
@@ -185,33 +205,33 @@
                                 <i class="ph ph-speedometer"></i>
                             </div>
                             <div class="description">
-                                <h4 class="info-title">Carregamento Rápido</h4>
-                                <p>Otimização de performance para carregamento em menos de 3 segundos.</p>
+                                <h4 class="info-title">Velocidade que Vende</h4>
+                                <p>Reduza 70% do abandono por lentidão. Suas páginas carregam em menos de 2 segundos, mantendo seus clientes engajados.</p>
                             </div>
                         </div>
-                        <div class="info info-horizontal" data-aos="fade-left" data-aos-delay="100">
+                        <div class="info info-horizontal" data-aos="fade-right" data-aos-delay="100">
                             <div class="icon">
                                 <i class="ph ph-palette"></i>
                             </div>
                             <div class="description">
-                                <h4 class="info-title">Design Personalizado</h4>
-                                <p>Layout exclusivo criado especialmente para seu negócio e público-alvo.</p>
+                                <h4 class="info-title">Design Único que Destaca</h4>
+                                <p>Esqueça templates genéricos. Criamos um design exclusivo que faz sua marca se destacar da concorrência.</p>
                             </div>
                         </div>
                         <div class="info info-horizontal" data-aos="fade-right" data-aos-delay="200">
                             <div class="icon">
-                                <i class="ph ph-hard-drives"></i>
+                                <i class="ph ph-money-wavy"></i>
                             </div>
                             <div class="description">
-                                <h4 class="info-title">Hospedagem e Elementor inclusos</h4>
-                                <p>Incluímos 2 meses de hospedagem em nossos servidores e 1 ano de licença para o Elementor PRO.</p>
+                                <h4 class="info-title">Economia de R$ 2.000</h4>
+                                <p>Hospedagem premium + Elementor PRO inclusos. Você economiza R$ 2.000 no primeiro ano.</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row" data-aos="fade-up" data-aos-delay="350">
                     <div class="col-md-12 text-center">
-                        <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato agora mesmo!</a>
+                        <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Solicitar Orçamento para Desenvolvimento</a>
                     </div>
                 </div>
             </div>
@@ -327,10 +347,133 @@
 
             <div class="row" data-aos="fade-up" data-aos-delay="350">
                 <div class="col-md-12 text-center">
-                    <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Peça agora sua landing page!</a>
+                    <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Peça Agora Sua Landing Page!</a>
                 </div>
             </div>
 
+            <br><br><br>
+        </div>
+    </div>
+
+    <!-- Depoimentos -->
+    <div class="section" style="padding:0;" >
+        <br><br><br>
+        <div class="manutencao">
+            <div class="col-md-8 mr-auto ml-auto text-center">
+                <h2 class="title">Veja o que nossos clientes falam sobre os resultados</h2>
+            </div>
+            <br>
+            <div class="container">
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div style="max-width: 420px" class="info info-horizontal" data-aos="fade-left" data-aos-delay="0">
+                            <div class="description">
+                                <p class="depoimento-card">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea illum accusantium tempora, magnam similique iusto eos ad deleniti voluptatibus ratione!</p>
+                                <h4 class="info-title my-1" style="font-size:16px; color: #2c2c2c;">Nome Sobrenome</h4>
+                                <h5 class="info-title mt-1 mb-5 font-weight-normal" style="font-size:14px; color: #2c2c2c;">Profissão - Empresa</h5>
+                            </div>
+                        </div>
+
+                        <div style="max-width: 420px" class="info info-horizontal" data-aos="fade-left" data-aos-delay="200">
+                            <div class="description">
+                                <p class="depoimento-card">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea illum accusantium tempora, magnam similique iusto eos ad deleniti voluptatibus ratione!</p>
+                                <h4 class="info-title my-1" style="font-size:16px; color: #2c2c2c;">Nome Sobrenome</h4>
+                                <h5 class="info-title mt-1 mb-5 font-weight-normal" style="font-size:14px; color: #2c2c2c;">Profissão - Empresa</h5>
+                            </div>
+                        </div>
+
+                        <div style="max-width: 420px" class="info info-horizontal" data-aos="fade-left" data-aos-delay="100">
+                            <div class="description">
+                                <p class="depoimento-card">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea illum accusantium tempora, magnam similique iusto eos ad deleniti voluptatibus ratione!</p>
+                                <h4 class="info-title my-1" style="font-size:16px; color: #2c2c2c;">Nome Sobrenome</h4>
+                                <h5 class="info-title mt-1 mb-5 font-weight-normal" style="font-size:14px; color: #2c2c2c;">Profissão - Empresa</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div style="max-width: 420px" class="info info-horizontal" data-aos="fade-right" data-aos-delay="0">
+                            <div class="description">
+                                <p class="depoimento-card">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea illum accusantium tempora, magnam similique iusto eos ad deleniti voluptatibus ratione!</p>
+                                <h4 class="info-title my-1" style="font-size:16px; color: #2c2c2c;">Nome Sobrenome</h4>
+                                <h5 class="info-title mt-1 mb-5 font-weight-normal" style="font-size:14px; color: #2c2c2c;">Profissão - Empresa</h5>
+                            </div>
+                        </div>
+                        <div style="max-width: 420px" class="info info-horizontal" data-aos="fade-right" data-aos-delay="100">
+                            <div class="description">
+                                <p class="depoimento-card">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea illum accusantium tempora, magnam similique iusto eos ad deleniti voluptatibus ratione!</p>
+                                <h4 class="info-title my-1" style="font-size:16px; color: #2c2c2c;">Nome Sobrenome</h4>
+                                <h5 class="info-title mt-1 mb-5 font-weight-normal" style="font-size:14px; color: #2c2c2c;">Profissão - Empresa</h5>
+                            </div>
+                        </div>
+                        <div style="max-width: 420px" class="info info-horizontal" data-aos="fade-right" data-aos-delay="200">
+                            <div class="description">
+                                <p class="depoimento-card">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Ea illum accusantium tempora, magnam similique iusto eos ad deleniti voluptatibus ratione!</p>
+                                <h4 class="info-title my-1" style="font-size:16px; color: #2c2c2c;">Nome Sobrenome</h4>
+                                <h5 class="info-title mt-1 mb-5 font-weight-normal" style="font-size:14px; color: #2c2c2c;">Profissão - Empresa</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" data-aos="fade-up" data-aos-delay="350">
+                    <div class="col-md-12 text-center">
+                        <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Contratar Serviço Agora!</a>
+                    </div>
+                </div>
+            </div>
+            <br><br><br>
+        </div>
+    </div>
+
+    <!-- faq -->
+    <div class="section" style="padding:0; background-color: #EBF8FE;" >
+        <br><br><br>
+        <div class="manutencao">
+            <div class="col-md-8 mr-auto ml-auto text-center">
+                <h2 class="title">Dúvidas Frequentes</h2>
+            </div>
+            <br>
+            <div class="container">
+
+                <div class="row">
+                    <div class="col">
+                        <div class=" info-horizontal" data-aos="fade-left" data-aos-delay="0">
+                            <div class="description">
+                                <h4 class="my-1 font-weight-bold" style="color: #2c2c2c;">E se eu não ficar satisfeito com o resultado?</h4>
+                                <p class="mt-1 mb-5 font-weight-normal" style="color: #2c2c2c;">Oferecemos garantia de 100% de satisfação. Se não ficar completamente satisfeito, devolvemos seu dinheiro sem perguntas.</p>
+                            </div>
+                        </div>
+
+                        <div class=" info-horizontal" data-aos="fade-left" data-aos-delay="0">
+                            <div class="description">
+                                <h4 class="my-1 font-weight-bold" style="color: #2c2c2c;">Quanto tempo demora para ver resultados?</h4>
+                                <p class="mt-1 mb-5 font-weight-normal" style="color: #2c2c2c;">Nossos clientes começam a ver aumento nas conversões já na primeira semana após o lançamento. A média é de 200% de aumento em vendas no primeiro mês.</p>
+                            </div>
+                        </div>
+
+                        <div class=" info-horizontal" data-aos="fade-left" data-aos-delay="0">
+                            <div class="description">
+                                <h4 class="my-1 font-weight-bold" style="color: #2c2c2c;">O que está incluído no preço de R$ 1.200?</h4>
+                                <p class="mt-1 mb-5 font-weight-normal" style="color: #2c2c2c;">Design personalizado, desenvolvimento responsivo, SEO otimizado, 2 meses de hospedagem premium, 1 ano de Elementor PRO e 30 dias de suporte completo.</p>
+                            </div>
+                        </div>
+
+                        <div class=" info-horizontal" data-aos="fade-left" data-aos-delay="0">
+                            <div class="description">
+                                <h4 class="my-1 font-weight-bold" style="color: #2c2c2c;">Vocês garantem aumento de conversão?</h4>
+                                <p class="mt-1 mb-5 font-weight-normal" style="color: #2c2c2c;">Sim! Usamos técnicas comprovadas que já aumentaram as vendas de mais de 50 empresas. Se não aumentar suas conversões em 30 dias, devolvemos seu investimento.</p>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="row" data-aos="fade-up" data-aos-delay="350">
+                    <div class="col-md-12 text-center">
+                        <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Solicitar Orçamento para Desenvolvimento</a>
+                    </div>
+                </div>
+            </div>
             <br><br><br>
         </div>
     </div>
