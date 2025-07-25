@@ -113,7 +113,7 @@
             <div class="row">
                 <div class="col-md-7 ml-auto mr-auto text-left" data-aos="fade-right" data-aos-duration="600">
                     <h1 class="main-title" style="font-size:45px; line-height: 55px; font-weight: 400; margin-top:0; margin-bottom: 46px" <strong>Desenvolvimento de Landing Pages</strong> otimizadas para conversões!</h1>
-                    <h5 style="font-size:30px; line-height: 37px; font-weight: 400;margin-bottom: 46px">A partir de R$ 999,00 entregamos sua <strong>landing page</strong> em poucos dias.</h5>
+                    <h5 style="font-size:30px; line-height: 37px; font-weight: 400;margin-bottom: 46px">A partir de R$ 1.200,00 entregamos sua <strong>landing page</strong> em poucos dias.</h5>
                     <a href="https://wa.me/554130399593?text=Gostaria de criar minha landing page." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato agora mesmo!</a>
                 </div>
                 <div class="col-md-5 text-right" data-aos="fade-left" data-aos-duration="600" style="margin-top:100px;">

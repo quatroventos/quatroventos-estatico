@@ -38,14 +38,16 @@
                     //mockup macbook
 
                     ?>
-                <div style="position: relative; width: 100%;" class="row ">
+                <div style="position: relative; width: 100%;" class="row mt-5" data-aos="fade-up" data-aos-duration="300">
                     <!-- Add or remove "with-glare" class. Removing the glare makes the screen interactive -->
                     <div class="col-12 col-lg-3 pt-5">
                         <h3 class="fs-4 fw-bold mb-2"><?= htmlspecialchars($title) ?></h3>
-                        <p class="fs-6"><?= htmlspecialchars($description) ?></p>
+                        <p class="fs-6"><?php echo htmlspecialchars($description) ?></p>
                         <p class="d-flex fs-6 justify-content-center justify-content-lg-start">
-                            <a href=<?= htmlspecialchars($link) ?> class="btn btn-primary rounded-pill">Acesse aqui</a>
+                            <a href=<?php echo htmlspecialchars($link) ?> class="btn btn-sm btn-secondary rounded-pill" target="_blank">Ver ao vivo</a>&nbsp;<a href=<?php echo htmlspecialchars($link) ?> class="btn btn-sm btn-primary rounded-pill" target="_blank">Entre em contato</a>
                         </p>
+
+
                     </div>
                     <div class="col-12 col-lg-6 align-self-end css-mb with-glare mx-0">
                         <div class="mb-display-position">
@@ -53,7 +55,7 @@
                                 <div class="mb-screen-position">
                                     <div class="mb-screen">
 
-                                        <img src="<?= htmlspecialchars($desktopImage) ?>" alt="Imagem desktop <?= htmlspecialchars($basename) ?>" />
+                                        <img src="<?php echo htmlspecialchars($desktopImage) ?>" alt="Imagem desktop <?= htmlspecialchars($basename) ?>" />
 
                                         <!-- Image (aspect 16:10 recommended, but not required). You might also want to change or remove the background color, in case the picture is not big enough, or rendering is off  -->
                                         <!-- <img src="https://unsplash.imgix.net/photo-1418479631014-8cbf89db3431?fit=crop&fm=jpg&h=500&q=75&w=800" alt="example image" /> -->
