@@ -1,0 +1,97 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: rba
+      MYSQL_USER: rba
+      MYSQL_PASSWORD: rba
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-urba", "-prba"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      RUN_MIGRATIONS: "true"
+      RUN_SEED: "false"
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_DATABASE: rba
+      DB_USERNAME: rba
+      DB_PASSWORD: rba
+      REDIS_HOST: redis
+      CACHE_STORE: redis
+      MAIL_MAILER: smtp
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env
+    environment:
+      RUN_MIGRATIONS: "false"
+      RUN_SEED: "false"
+      DB_HOST: mysql
+      REDIS_HOST: redis
+      MAIL_HOST: mailpit
+    entrypoint: ["/bin/sh", "-c", "php artisan queue:work --sleep=1 --tries=3"]
+    depends_on:
+      - app
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    env_file:
+      - .env
+    environment:
+      RUN_MIGRATIONS: "false"
+      RUN_SEED: "false"
+      DB_HOST: mysql
+      REDIS_HOST: redis
+    entrypoint: ["/bin/sh", "-c", "php artisan schedule:work"]
+    depends_on:
+      - app
+
+volumes:
+  mysql_data:

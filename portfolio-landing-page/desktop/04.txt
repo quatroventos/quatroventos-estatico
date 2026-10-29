@@ -1,3 +1,0 @@
-Prêmio Danúbio
-Landing page para divulgar concurso literário, com integração para inscrições online e design temático alinhado ao evento.
-https://premiodanubio.com.br/

@@ -1,3 +1,0 @@
-Ninna Nana
-E-commerce desenvolvido para loja infantil em WordPress + WooCommerce. O sistema conta com checkout integrado, meios de pagamento via PagBank e logística automatizada com Correios e Jadlog. Uma solução completa para gestão e vendas online.
-https://ninnanana.quatroventos.com.br

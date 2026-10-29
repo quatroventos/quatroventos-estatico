@@ -1,0 +1,2535 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Estrutura | Ramos Benedetti Advogados</title>
+    <meta
+      name="description"
+      content="Sede, instalações, núcleos de especialização, tecnologia, segurança da informação e cultura operacional do Ramos Benedetti Advogados."
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://ramosbenedetti.adv.br/estrutura.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Ramos Benedetti Advogados" />
+    <meta property="og:title" content="Estrutura | Ramos Benedetti Advogados" />
+    <meta property="og:description" content="Sede, instalações, tecnologia, segurança da informação e cultura operacional." />
+    <meta property="og:url" content="https://ramosbenedetti.adv.br/estrutura.html" />
+    <meta property="og:image" content="https://ramosbenedetti.adv.br/assets/d9013fb8351f3dff6050982cd30fed455f085da0.png" />
+    <meta property="og:image:alt" content="Fachada da sede do Ramos Benedetti Advogados" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <style>
+      :root {
+        --desktop-artboard: 1440px;
+        --container-max: 1280px;
+        --container: min(calc(100% - 32px), var(--container-max));
+        --content-max: 1280px;
+        --color-bg: #f5f5f5;
+        --color-surface: #ffffff;
+        --color-surface-alt: #ededed;
+        --color-text: #111111;
+        --color-text-soft: #5f5f5f;
+        --color-black: #050505;
+        --color-border: #d9d9d9;
+        --color-accent: #f45a20;
+        --color-accent-strong: #ff5a1f;
+        --font-primary: Montserrat, Arial, Helvetica, sans-serif;
+        --fs-10: 10px;
+        --fs-12: 12px;
+        --fs-14: 14px;
+        --fs-16: 16px;
+        --fs-18: 18px;
+        --fs-24: 24px;
+        --fs-30: 30px;
+        --fs-40: 40px;
+        --lh-body: 1.5;
+        --lh-title: 1.1;
+        --content-title-size: 26px;
+        --content-subtitle-size: 18px;
+        --content-body-size: 15px;
+        --content-small-size: 14px;
+        --content-title-line: 1.12;
+        --content-subtitle-line: 1.18;
+        --content-body-line: 1.6;
+        --heading-copy-gap: 12px;
+        --heading-content-gap: 42px;
+        --radius-sm: 12px;
+        --radius-md: 16px;
+        --section-padding: 64px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-padding-top: var(--site-header-height, 89px);
+      }
+
+      body {
+        margin: 0;
+        padding-top: var(--site-header-height, 89px);
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-primary);
+        font-size: var(--fs-16);
+        line-height: var(--lh-body);
+        overflow-x: clip;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      p,
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      p + p {
+        margin-top: 16px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      p,
+      li {
+        letter-spacing: 0;
+        text-wrap: pretty;
+      }
+
+      strong,
+      b {
+        font-weight: 600;
+      }
+
+      .container {
+        width: var(--container);
+        max-width: var(--container-max);
+        margin-inline: auto;
+      }
+
+      .section-inner {
+        max-width: var(--content-max);
+        margin-inline: auto;
+      }
+
+      .office-locations__inner,
+      .office-locations__panel,
+      .branch-panel {
+        min-width: 0;
+      }
+
+      @keyframes branchPanelFade {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .site-header {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 100;
+        width: 100%;
+        background: var(--color-surface);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      }
+
+      .site-header__inner {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto 42px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 88px;
+        padding-block: 20px;
+      }
+
+      .site-header__brand {
+        width: 132px;
+      }
+
+      .site-header__brand img {
+        width: 100%;
+        height: auto;
+      }
+
+      .site-menu-toggle {
+        position: fixed;
+        top: 23px;
+        right: 16px;
+        display: inline-flex;
+        grid-column: 2;
+        justify-self: end;
+        z-index: 110;
+        width: 42px;
+        height: 42px;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 6px;
+        border: 1px solid rgba(0, 0, 0, 0.18);
+        border-radius: 8px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        cursor: pointer;
+      }
+
+      .site-menu-toggle span {
+        display: block;
+        width: 20px;
+        height: 2px;
+        border-radius: 999px;
+        background: currentColor;
+      }
+
+      .site-header.is-nav-open .site-menu-toggle span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+      }
+
+      .site-header.is-nav-open .site-menu-toggle span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .site-header.is-nav-open .site-menu-toggle span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+
+      .site-nav {
+        display: none;
+        grid-column: 1 / -1;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        width: 100%;
+        min-width: 0;
+        align-self: stretch;
+        padding-top: 12px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        color: var(--color-text);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .site-header.is-nav-open .site-nav {
+        display: flex;
+      }
+
+      .site-nav a {
+        width: 100%;
+        padding-block: 11px;
+        text-align: center;
+        opacity: 0.86;
+        transition:
+          color 180ms ease,
+          opacity 180ms ease,
+          font-weight 180ms ease,
+          transform 180ms ease;
+      }
+
+      .site-nav a:hover {
+        color: var(--color-accent);
+        opacity: 1;
+        transform: translateY(-1px);
+      }
+
+      .site-nav a:focus,
+      .site-nav a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: 600;
+        opacity: 1;
+      }
+
+      .eyebrow-bars {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin-bottom: 22px;
+      }
+
+      .eyebrow-bars span {
+        display: block;
+        width: 8px;
+        height: 8px;
+        background: var(--color-accent);
+      }
+
+      .section-heading {
+        max-width: 920px;
+        margin-inline: auto;
+        text-align: center;
+      }
+
+      .section-heading h1,
+      .section-heading h2 {
+        font-size: var(--content-title-size);
+        font-weight: 600;
+        line-height: var(--content-title-line);
+      }
+
+      .section-heading p {
+        margin-top: var(--heading-copy-gap);
+        color: var(--color-text);
+        font-size: var(--content-body-size);
+        line-height: var(--content-body-line);
+      }
+
+      .text-keep-together {
+        white-space: nowrap;
+      }
+
+      .structure-hero {
+        position: relative;
+        overflow: hidden;
+        background: var(--color-black);
+        color: var(--color-surface);
+        isolation: isolate;
+      }
+
+      .structure-hero h1 {
+        color: var(--color-surface);
+        font-size: var(--content-title-size);
+        line-height: var(--content-title-line);
+      }
+
+      .structure-hero__media {
+        position: absolute;
+        inset: 0;
+        z-index: -2;
+        overflow: hidden;
+      }
+
+      .structure-hero__media img {
+        width: 100%;
+        height: 100%;
+        max-width: none;
+        object-fit: cover;
+        object-position: center;
+        filter: grayscale(1);
+      }
+
+      .structure-hero::before {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background:
+          linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.72) 0%,
+            rgba(0, 0, 0, 0.48) 50%,
+            rgba(0, 0, 0, 0.76) 100%
+          ),
+          linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.38));
+        content: "";
+      }
+
+      .structure-hero__copy {
+        max-width: 640px;
+        color: rgba(255, 255, 255, 0.92);
+        font-size: var(--content-body-size);
+        line-height: var(--content-body-line);
+      }
+
+      .structure-hero__grid {
+        display: grid;
+        align-items: center;
+        gap: 38px;
+        min-height: clamp(390px, 38vw, 510px);
+        padding-block: 76px;
+      }
+
+      .structure-hero__title {
+        max-width: 480px;
+      }
+
+      .structure-highlights {
+        background: var(--color-surface);
+        padding-block: 44px 54px;
+      }
+
+      .feature-list {
+        display: grid;
+        gap: 18px;
+        max-width: 1040px;
+        margin-inline: auto;
+      }
+
+      .feature-item {
+        display: grid;
+        grid-template-columns: 42px minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+      }
+
+      .feature-icon,
+      .card-icon {
+        display: inline-flex;
+        width: 36px;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #fff3ee;
+        color: var(--color-accent);
+      }
+
+      .feature-icon svg,
+      .card-icon svg {
+        width: 22px;
+        height: 22px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .feature-item h3,
+      .specialty-card h3,
+      .tech-card h3,
+      .security-list h3,
+      .culture-list h3 {
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.18;
+      }
+
+      .feature-item p,
+      .specialty-card p,
+      .tech-card p,
+      .security-list p,
+      .culture-list p {
+        margin-top: 7px;
+        font-size: var(--content-small-size);
+        line-height: 1.48;
+      }
+
+      .specialties {
+        background: var(--color-surface-alt);
+        padding-block: var(--section-padding);
+      }
+
+      .specialties__grid {
+        display: grid;
+        gap: 18px;
+        max-width: 1040px;
+        margin: var(--heading-content-gap) auto 0;
+      }
+
+      .specialty-card {
+        min-height: 150px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: var(--color-surface);
+        padding: 24px 22px;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .specialty-card:hover {
+        border-color: rgba(244, 90, 32, 0.24);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+      }
+
+      .specialty-card .card-icon {
+        margin-bottom: 18px;
+      }
+
+      .specialties__note {
+        max-width: 1040px;
+        margin: 34px auto 0;
+        border-radius: 6px;
+        background: var(--color-black);
+        color: var(--color-surface);
+        padding: 14px 24px;
+        text-align: center;
+        font-size: var(--content-small-size);
+        line-height: 1.3;
+      }
+
+      .specialties__note-text {
+        display: block;
+        max-width: 720px;
+        margin-inline: auto;
+      }
+
+      .office-locations {
+        background: var(--color-surface);
+        padding-block: 70px;
+      }
+
+      .office-locations__inner {
+        max-width: 1040px;
+      }
+
+      .office-locations .section-heading {
+        max-width: 920px;
+        margin-inline: auto;
+        text-align: center;
+      }
+
+      .office-locations .section-heading h2 {
+        font-size: 26px;
+        line-height: 1.12;
+      }
+
+      .office-locations__dropdown {
+        display: grid;
+        gap: 22px;
+        max-width: 760px;
+        margin: var(--heading-content-gap) auto 0;
+        padding: 24px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-sm);
+        background: #f0f0f0;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .office-locations__dropdown:hover {
+        border-color: rgba(244, 90, 32, 0.24);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+      }
+
+      .office-locations__select-field {
+        display: grid;
+        gap: 8px;
+        width: min(100%, 420px);
+        margin-inline: auto;
+      }
+
+      .office-locations__select-field label {
+        color: var(--color-accent);
+        font-size: var(--content-small-size);
+        font-weight: 600;
+        line-height: 1.1;
+      }
+
+      .office-locations__select {
+        width: 100%;
+        min-height: 52px;
+        padding: 0 16px;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        background: var(--color-surface);
+        color: var(--color-text);
+        font: inherit;
+        font-size: var(--content-small-size);
+        font-weight: 600;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .office-locations__select:hover,
+      .office-locations__select:focus {
+        border-color: var(--color-accent);
+        background: #fff8f5;
+        color: var(--color-accent);
+        outline: none;
+      }
+
+      .office-locations__select:focus {
+        box-shadow: 0 0 0 3px rgba(244, 90, 32, 0.12);
+      }
+
+      .office-locations__panel {
+        display: grid;
+        align-items: center;
+        min-height: auto;
+        padding: 0;
+      }
+
+      .branch-panel {
+        display: none;
+      }
+
+      .branch-panel.is-active {
+        display: block;
+        width: 100%;
+      }
+
+      .office-locations__desktop {
+        display: none;
+      }
+
+      .office-locations__mobile {
+        display: none;
+      }
+
+      .office-location {
+        overflow: hidden;
+        border-radius: var(--radius-sm);
+        background: #f0f0f0;
+      }
+
+      .office-location summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 58px;
+        padding: 18px 20px;
+        color: var(--color-text);
+        font-size: var(--content-subtitle-size);
+        font-weight: 600;
+        line-height: 1.15;
+        cursor: pointer;
+      }
+
+      .office-location summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .office-location summary::after {
+        content: "+";
+        flex: 0 0 auto;
+        color: var(--color-accent);
+        font-size: 22px;
+        line-height: 1;
+      }
+
+      .office-location[open] summary::after {
+        content: "-";
+      }
+
+      .office-location__body {
+        padding: 0 20px 22px;
+      }
+
+      .office-location__eyebrow,
+      .branch-panel__eyebrow {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--color-accent);
+        font-size: var(--content-small-size);
+        font-weight: 600;
+        line-height: 1.1;
+      }
+
+      .office-location h3,
+      .branch-panel h3 {
+        margin-bottom: 10px;
+        font-size: var(--content-body-size);
+        font-weight: 600;
+        line-height: var(--content-body-line);
+      }
+
+      .office-location address,
+      .branch-panel address {
+        color: var(--color-text-soft);
+        font-size: var(--content-body-size);
+        font-style: normal;
+        line-height: var(--content-body-line);
+      }
+
+      .office-location__meta,
+      .branch-panel__meta {
+        display: grid;
+        gap: 4px;
+        min-width: 0;
+        max-width: 100%;
+        margin-top: 12px;
+        color: var(--color-text-soft);
+        font-size: var(--content-body-size);
+        line-height: var(--content-body-line);
+      }
+
+      .office-location__meta span,
+      .branch-panel__meta span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .office-location__link,
+      .branch-panel__link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        max-width: 100%;
+        min-height: 34px;
+        margin-top: 16px;
+        padding: 9px 14px;
+        border: 1px solid rgba(244, 90, 32, 0.42);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--color-accent);
+        font-size: var(--content-small-size);
+        font-weight: 600;
+        line-height: 1;
+        transition:
+          border-color 180ms ease,
+          background-color 180ms ease,
+          color 180ms ease;
+      }
+
+      .office-location__link {
+        justify-self: start;
+      }
+
+      .office-location__link:hover,
+      .branch-panel__link:hover {
+        border-color: var(--color-accent);
+        background: #fff8f5;
+        color: var(--color-accent-strong);
+      }
+
+      .technology {
+        background: var(--color-surface-alt);
+        padding-block: var(--section-padding);
+      }
+
+      .technology__layout {
+        display: grid;
+        gap: 18px;
+        max-width: 1040px;
+        margin: var(--heading-content-gap) auto 0;
+      }
+
+      .technology__mini-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .tech-card {
+        min-height: 126px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        background: var(--color-surface);
+        padding: 20px;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .tech-card:hover {
+        border-color: rgba(244, 90, 32, 0.24);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.06);
+        transform: translateY(-2px);
+      }
+
+      .tech-card .card-icon {
+        width: 32px;
+        height: 32px;
+        margin-bottom: 14px;
+        background: transparent;
+        color: var(--color-black);
+      }
+
+      .technology__image {
+        overflow: hidden;
+        min-height: 260px;
+        border-radius: 8px;
+      }
+
+      .technology__image img {
+        width: 100%;
+        height: 100%;
+        min-height: 260px;
+        object-fit: cover;
+        filter: grayscale(1);
+        transition: transform 900ms ease;
+      }
+
+      .technology__image:hover img {
+        transform: scale(1.025);
+      }
+
+      .technology__wide-grid {
+        display: grid;
+        gap: 18px;
+        max-width: 1040px;
+        margin: 24px auto 0;
+      }
+
+      .tech-card--wide {
+        min-height: 150px;
+        color: var(--color-surface);
+      }
+
+      .tech-card--dark {
+        background: #4a4a4a;
+      }
+
+      .tech-card--accent {
+        background: var(--color-accent);
+      }
+
+      .tech-card--wide .card-icon {
+        color: currentColor;
+      }
+
+      .security {
+        background: var(--color-surface);
+        padding-block: var(--section-padding);
+      }
+
+      .security__grid {
+        display: grid;
+        gap: 34px;
+        max-width: 1040px;
+        margin: var(--heading-content-gap) auto 0;
+        align-items: start;
+      }
+
+      .security__statement {
+        overflow: hidden;
+        position: relative;
+        max-width: 470px;
+        padding: 22px 24px;
+        border: 2px solid rgba(244, 90, 32, 0.72);
+        border-radius: var(--radius-sm);
+        background:
+          linear-gradient(135deg, rgba(244, 90, 32, 0.07), transparent 44%),
+          var(--color-surface);
+        box-shadow: inset 0 0 0 6px rgba(244, 90, 32, 0.04);
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.28;
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .security__statement:hover {
+        border-color: var(--color-accent);
+        box-shadow:
+          inset 0 0 0 6px rgba(244, 90, 32, 0.06),
+          0 12px 26px rgba(0, 0, 0, 0.05);
+        transform: translateY(-2px);
+      }
+
+      .security-list,
+      .culture-list {
+        display: grid;
+        gap: 20px;
+      }
+
+      .accent-bullet {
+        display: grid;
+        grid-template-columns: 10px minmax(0, 1fr);
+        gap: 9px;
+      }
+
+      .accent-bullet::before {
+        content: "";
+        width: 6px;
+        height: 6px;
+        margin-top: 6px;
+        background: var(--color-accent);
+      }
+
+      .culture {
+        background: var(--color-surface-alt);
+        padding-block: var(--section-padding);
+      }
+
+      .culture .section-heading {
+        max-width: 1040px;
+      }
+
+      .culture .section-heading p {
+        letter-spacing: -0.01em;
+      }
+
+      .culture__body {
+        display: grid;
+        gap: 28px;
+        max-width: 1040px;
+        margin: var(--heading-content-gap) auto 0;
+        align-items: center;
+      }
+
+      .culture__image {
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .culture__image img {
+        width: 100%;
+        aspect-ratio: 1.6 / 1;
+        object-fit: cover;
+        transition: transform 900ms ease;
+      }
+
+      .culture__image:hover img {
+        transform: scale(1.025);
+      }
+
+      .site-footer {
+        background: var(--color-surface);
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
+      }
+
+      .site-footer__inner {
+        display: grid;
+        gap: 34px;
+        max-width: var(--container-max);
+        margin-inline: auto;
+        padding-block: 44px;
+      }
+
+      .site-footer__brand img {
+        width: 142px;
+      }
+
+      .site-footer__brand p {
+        margin-top: 12px;
+        color: var(--color-text-soft);
+        font-size: var(--content-small-size);
+        line-height: 1.35;
+      }
+
+      .site-footer__social {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-top: 24px;
+        padding-left: 0;
+      }
+
+      .site-footer__social a {
+        display: inline-flex;
+        width: 22px;
+        height: 22px;
+        color: #8a8a8a;
+        transition:
+          color 180ms ease,
+          transform 180ms ease;
+      }
+
+      .site-footer__social a:hover {
+        color: var(--color-accent);
+        transform: translateY(-1px);
+      }
+
+      .site-footer__social svg {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .site-footer__social path {
+        fill: currentColor;
+        stroke: none;
+      }
+
+      .site-footer__nav {
+        display: grid;
+        grid-template-columns: repeat(2, max-content);
+        column-gap: 42px;
+        row-gap: 0;
+        width: auto;
+        align-items: start;
+        color: #777777;
+        font-size: var(--content-small-size);
+        line-height: 1.35;
+      }
+
+      .site-footer__nav-group {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+        grid-auto-rows: max-content;
+      }
+
+      .site-footer__nav a {
+        display: block;
+        margin: 0;
+        padding: 0;
+        line-height: 1.35;
+        transition: color 180ms ease;
+      }
+
+      .site-footer__nav a:hover {
+        color: var(--color-accent);
+      }
+
+
+      .site-footer__certifications {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 12px;
+        justify-self: start;
+      }
+
+      .site-footer__badge,
+      .site-footer__certification-space {
+        display: inline-flex;
+        width: 92px;
+        height: 92px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .site-footer__badge {
+        opacity: 0.78;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .site-footer__badge:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
+      .site-footer__badge img {
+        width: 100%;
+        height: auto;
+      }
+
+      .site-footer__certification-space {
+        padding: 12px 8px;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        color: var(--color-text-soft);
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+      }
+
+      @media (max-width: 759px) {
+        :root {
+          --content-title-size: 26px;
+          --content-subtitle-size: 18px;
+          --content-body-size: 15px;
+          --content-small-size: 14px;
+          --content-title-line: 1.12;
+          --content-subtitle-line: 1.18;
+          --content-body-line: 1.6;
+          --heading-content-gap: 34px;
+        }
+
+        .container {
+          width: calc(100% - 32px);
+          max-width: calc(100% - 32px);
+        }
+
+        .specialties__grid,
+        .office-locations__dropdown,
+        .technology__grid,
+        .technology__wide-grid,
+        .security__grid,
+        .culture__body {
+          width: 100%;
+          max-width: 100%;
+          min-width: 0;
+        }
+
+        .structure-hero__media img {
+          width: 150%;
+          transform: translateX(-13%);
+          object-position: center;
+        }
+
+        .structure-hero::before {
+          background:
+            linear-gradient(
+              180deg,
+              rgba(0, 0, 0, 0.58) 0%,
+              rgba(0, 0, 0, 0.82) 100%
+            ),
+            rgba(0, 0, 0, 0.2);
+        }
+
+        .structure-hero__grid {
+          width: calc(100% - 40px);
+          max-width: calc(100% - 40px);
+          margin-inline: auto;
+          min-height: 0;
+          padding-block: 72px 80px;
+          gap: 24px;
+          align-content: center;
+        }
+
+        .structure-hero__title,
+        .structure-hero__copy {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        .structure-hero__grid > *,
+        .feature-list,
+        .feature-item,
+        .specialties__grid > *,
+        .office-locations__dropdown > *,
+        .technology__grid > *,
+        .technology__wide-grid > *,
+        .security__grid > *,
+        .culture__body > * {
+          max-width: 100%;
+          min-width: 0;
+        }
+
+        h1,
+        h2,
+        h3,
+        p,
+        li {
+          overflow-wrap: break-word;
+          text-wrap: initial;
+          white-space: normal;
+        }
+
+        .eyebrow-bars {
+          justify-content: flex-start;
+        }
+
+        .section-heading,
+        .office-locations .section-heading {
+          width: 100%;
+          max-width: none;
+          margin-inline: 0;
+          text-align: left;
+        }
+
+        .section-heading p,
+        .office-locations .section-heading p {
+          width: 100%;
+          margin-inline: 0;
+          text-align: left;
+        }
+
+        .section-heading h1,
+        .section-heading h2,
+        .section-heading p {
+          max-width: 100%;
+          overflow-wrap: anywhere;
+          text-wrap: initial;
+          white-space: normal;
+        }
+
+        .section-heading h1,
+        .section-heading h2 {
+          font-size: var(--content-title-size);
+          letter-spacing: -0.01em;
+          line-height: var(--content-title-line);
+        }
+
+        .structure-hero h1 {
+          font-size: var(--content-title-size);
+          line-height: var(--content-title-line);
+        }
+
+        .section-heading p {
+          max-width: 38rem;
+          letter-spacing: -0.005em;
+          line-height: var(--content-body-line);
+        }
+
+        .security .section-heading h2 {
+          max-width: 100%;
+          font-size: var(--content-title-size);
+          letter-spacing: -0.01em;
+          line-height: var(--content-title-line);
+        }
+
+        .security-title-break {
+          display: block;
+        }
+
+        .feature-item {
+          grid-template-columns: 34px minmax(0, 1fr);
+          gap: 10px;
+        }
+
+        .feature-icon,
+        .card-icon {
+          width: 32px;
+          height: 32px;
+        }
+
+        .feature-icon svg,
+        .card-icon svg {
+          width: 19px;
+          height: 19px;
+        }
+
+        .feature-item h3,
+        .specialty-card h3,
+        .tech-card h3,
+        .security-list h3,
+        .culture-list h3 {
+          font-size: 15px;
+          letter-spacing: -0.005em;
+          line-height: 1.22;
+        }
+
+        .feature-item p,
+        .specialty-card p,
+        .tech-card p,
+        .security-list p,
+        .culture-list p {
+          letter-spacing: -0.005em;
+          line-height: 1.5;
+        }
+
+        .specialty-card,
+        .tech-card {
+          min-height: auto;
+          padding: 20px 18px;
+        }
+
+        .specialty-card .card-icon,
+        .tech-card .card-icon {
+          margin-bottom: 14px;
+        }
+
+        .office-locations__dropdown {
+          gap: 18px;
+          padding: 20px 18px;
+        }
+
+        .branch-panel__grid > div {
+          width: 100%;
+          min-width: 0;
+        }
+
+        .office-location h3,
+        .branch-panel h3,
+        .office-location address,
+        .branch-panel address {
+          letter-spacing: -0.005em;
+          overflow-wrap: anywhere;
+        }
+
+        .specialties__note {
+          padding: 14px 18px;
+          letter-spacing: -0.01em;
+        }
+
+        .specialties__note-text {
+          max-width: 100%;
+        }
+
+        .security__statement {
+          max-width: 100%;
+          padding: 20px 18px;
+          font-size: var(--content-subtitle-size);
+          letter-spacing: -0.01em;
+          line-height: 1.35;
+        }
+
+        .security-list,
+        .culture-list {
+          gap: 18px;
+        }
+
+        .accent-bullet {
+          grid-template-columns: 8px minmax(0, 1fr);
+          gap: 8px;
+        }
+
+        .accent-bullet::before {
+          width: 5px;
+          height: 5px;
+          margin-top: 7px;
+        }
+      }
+
+      @media (min-width: 760px) {
+        :root {
+          --container: min(calc(100% - 64px), var(--container-max));
+          --content-body-size: 16px;
+          --content-small-size: 15px;
+          --heading-content-gap: 46px;
+        }
+
+        .site-header__inner {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .site-menu-toggle {
+          position: static;
+          transform: none;
+          display: none;
+        }
+
+        .site-nav {
+          display: flex;
+          flex-basis: auto;
+          flex-direction: row;
+          width: auto;
+          align-self: auto;
+          justify-content: flex-end;
+          gap: 12px 18px;
+          padding-top: 0;
+          border-top: 0;
+        }
+
+        .site-nav a {
+          width: auto;
+          padding-block: 0;
+          text-align: inherit;
+        }
+
+        .structure-hero h1 {
+          font-size: 34px;
+          line-height: var(--content-title-line);
+        }
+
+        .section-heading h2 {
+          font-size: 30px;
+        }
+
+        .office-locations .section-heading h2 {
+          font-size: 30px;
+        }
+
+        .office-locations__dropdown {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 34px;
+          align-items: center;
+          max-width: 1040px;
+          padding: 34px;
+        }
+
+        .office-locations__select-field {
+          width: 100%;
+          margin-inline: 0;
+        }
+
+        .office-locations__panel {
+          min-height: auto;
+        }
+
+        .structure-hero__grid {
+          grid-template-columns: minmax(280px, 0.95fr) minmax(360px, 1fr);
+        }
+
+        .feature-list {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 28px;
+        }
+
+        .specialties__grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 24px;
+        }
+
+        .office-locations__panel {
+          min-height: auto;
+          padding: 0;
+        }
+
+        .branch-panel.is-active {
+          width: 100%;
+          margin-inline: 0;
+          animation: branchPanelFade 240ms ease both;
+        }
+
+        .branch-panel__grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) auto;
+          gap: 18px;
+          align-items: center;
+        }
+
+        .branch-panel__link {
+          justify-self: end;
+          margin-top: 0;
+        }
+
+        .technology__layout {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+        }
+
+        .technology__mini-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .technology__wide-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .security__grid {
+          grid-template-columns: 0.9fr 1.08fr;
+          gap: 82px;
+          align-items: center;
+        }
+
+        .security__statement {
+          font-size: 24px;
+          line-height: 1.3;
+          align-self: center;
+        }
+
+        .culture__body {
+          grid-template-columns: 0.9fr 1.08fr;
+          gap: 70px;
+        }
+
+        .culture__image {
+          order: 2;
+        }
+
+        .culture-list {
+          order: 1;
+        }
+
+        .site-footer__inner {
+          grid-template-columns: minmax(240px, 1fr) max-content;
+          justify-content: space-between;
+          align-items: start;
+          column-gap: 48px;
+          row-gap: 0;
+          padding-block: 48px;
+        }
+
+        .site-footer__nav {
+          width: auto;
+          column-gap: 42px;
+          row-gap: 0;
+        }
+        .site-footer__certifications {
+          grid-column: 1 / -1;
+          justify-self: center;
+          align-self: start;
+          margin-top: 24px;
+        }
+      }
+
+      @media (min-width: 1120px) {
+        :root {
+          --container: min(calc(100% - 128px), var(--container-max));
+          --heading-content-gap: 48px;
+        }
+
+        .site-header__brand {
+          width: 142px;
+        }
+
+        .site-nav {
+          gap: 26px;
+          font-size: 14px;
+        }
+
+        .structure-hero__grid {
+          min-height: 460px;
+          padding-block: 92px;
+        }
+
+        .structure-hero__title {
+          padding-left: 128px;
+        }
+
+        .specialties,
+        .office-locations,
+        .technology,
+        .security,
+        .culture {
+          padding-block: 76px;
+        }
+
+        .office-locations {
+          padding-block: 86px;
+        }
+
+        .office-locations .section-heading p {
+          white-space: nowrap;
+        }
+
+        .site-footer__inner {
+          padding-block: 52px;
+          grid-template-columns: minmax(260px, 330px) max-content minmax(300px, auto);
+          justify-content: space-between;
+          column-gap: 64px;
+        }
+
+        .site-footer__brand img {
+          width: 170px;
+        }
+
+        .site-footer__nav {
+          width: auto;
+          column-gap: 48px;
+          justify-self: center;
+        }
+        .site-footer__certifications {
+          grid-column: 3;
+          justify-self: end;
+          align-self: start;
+          margin-top: 0;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="assets/footer-compliance.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a
+          class="site-header__brand"
+          href="index.html"
+          aria-label="Ramos Benedetti Advogados"
+        >
+          <img
+            src="assets/9709068974938b6b09487e27a1b27e381a79a512.png"
+            alt="Ramos Benedetti Advogados"
+          />
+        </a>
+
+        <button
+          class="site-menu-toggle"
+          type="button"
+          aria-controls="site-nav"
+          aria-expanded="false"
+          aria-label="Abrir menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="site-nav" id="site-nav" aria-label="Menu principal">
+          <a href="index.html">Home</a>
+          <a href="quem-somos.html">Quem somos</a>
+          <a href="expertise.html">Expertise</a>
+          <a href="estrutura.html" aria-current="page">Estrutura</a>
+          <a href="ia.html">Inovação</a>
+          <a href="esg.html">ESG</a>
+          <a href="carreiras.html">Trabalhe Conosco</a>
+          <a href="contato.html">Contato</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="structure-hero" aria-labelledby="estrutura-title">
+        <div class="structure-hero__media" aria-hidden="true">
+          <img
+            src="assets/d9013fb8351f3dff6050982cd30fed455f085da0.png"
+            alt=""
+          />
+        </div>
+
+        <div class="container structure-hero__grid">
+          <div class="structure-hero__title reveal reveal--left">
+            <div class="eyebrow-bars" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <h1 id="estrutura-title">Sede e Instalações</h1>
+          </div>
+
+          <p class="structure-hero__copy reveal reveal--right">
+            Nossa estrutura conta com posições de atendimento, salas de reunião
+            e treinamento, áreas técnicas, espaços de convivência e refeitório,
+            em instalações modernas, desenhadas para apoiar equipes jurídicas e
+            operacionais de alta performance.
+          </p>
+        </div>
+      </section>
+
+      <section class="structure-highlights" aria-label="Características da estrutura">
+        <div class="container feature-list">
+          <article class="feature-item">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M8 12h8"></path>
+                <path d="M12 8v8"></path>
+                <path
+                  d="M7 4h10l3 4v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V8z"
+                ></path>
+              </svg>
+            </span>
+            <div>
+              <h3>Posições de Atendimento</h3>
+              <p>
+                Estrutura moderna e operacional, com posições para áreas
+                técnicas e equipes de cobrança e negociação.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature-item">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d="M4 20h16"></path>
+                <path d="M7 20V8h10v12"></path>
+                <path d="M9 11h2"></path>
+                <path d="M13 11h2"></path>
+                <path d="M9 15h2"></path>
+                <path d="M13 15h2"></path>
+              </svg>
+            </span>
+            <div>
+              <h3>Equipes Especializadas</h3>
+              <p>
+                Infraestrutura desenhada para apoiar equipes jurídicas e
+                operacionais de alta performance com excelência técnica.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature-item">
+            <span class="feature-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12 21s7-5.2 7-11a7 7 0 0 0-14 0c0 5.8 7 11 7 11z"
+                ></path>
+                <circle cx="12" cy="10" r="2.5"></circle>
+              </svg>
+            </span>
+            <div>
+              <h3>Localização Estratégica</h3>
+              <p>
+                Situada em Ribeirão Preto, região estratégica para atendimento
+                próximo em rotas logísticas de acesso e relacionamento.
+              </p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="specialties" aria-labelledby="especializacao-title">
+        <div class="container section-inner">
+          <div class="section-heading">
+            <h2 id="especializacao-title">Núcleos de Especialização</h2>
+            <p>
+              A operação é estruturada em núcleos especializados e integrados,
+              promovendo sinergia entre as áreas
+              <span class="text-keep-together">jurídica e operacional.</span>
+            </p>
+          </div>
+
+          <div class="specialties__grid">
+            <article class="specialty-card">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M8 7h8"></path>
+                  <path d="M8 11h8"></path>
+                  <path d="M8 15h5"></path>
+                  <path d="M6 3h9l3 3v15H6z"></path>
+                </svg>
+              </span>
+              <h3>Jurídico Massificado e Estratégico</h3>
+              <p>Gestão de grandes volumes com estratégias personalizadas</p>
+            </article>
+
+            <article class="specialty-card">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M7 4h10v16H7z"></path>
+                  <path d="M10 8h4"></path>
+                  <path d="M10 12h4"></path>
+                  <path d="M10 16h2"></path>
+                </svg>
+              </span>
+              <h3>Jurídico Especializado</h3>
+              <p>Atuações em áreas complexas com expertise técnica</p>
+            </article>
+
+            <article class="specialty-card">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 20h16"></path>
+                  <path d="M6 20V9l6-4 6 4v11"></path>
+                  <path d="M10 20v-6h4v6"></path>
+                </svg>
+              </span>
+              <h3>Negociação Imobiliária</h3>
+              <p>Soluções especializadas para o mercado imobiliário</p>
+            </article>
+
+            <article class="specialty-card">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 3 4 7v6c0 5 3.5 7.5 8 8 4.5-.5 8-3 8-8V7z"
+                  ></path>
+                  <path d="m9 12 2 2 4-4"></path>
+                </svg>
+              </span>
+              <h3>Compliance e Planejamento</h3>
+              <p>Governança e conformidade regulatória integrada</p>
+            </article>
+
+            <article class="specialty-card">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 19V5"></path>
+                  <path d="M4 19h16"></path>
+                  <path d="m7 15 4-4 3 3 5-7"></path>
+                </svg>
+              </span>
+              <h3>Inteligência e Análise de Dados</h3>
+              <p>Decisões baseadas em dados e indicadores de performance</p>
+            </article>
+
+            <article class="specialty-card">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M4 7h16v10H4z"></path>
+                  <path d="M8 21h8"></path>
+                  <path d="M12 17v4"></path>
+                </svg>
+              </span>
+              <h3>Backoffice e Suporte</h3>
+              <p>Estrutura administrativa robusta e integrada</p>
+            </article>
+          </div>
+
+          <p class="specialties__note">
+            <span class="specialties__note-text">
+              Todos os fluxos seguem padrões rigorosos de execução, com
+              rastreabilidade integral, monitoramento por indicadores e
+              governança orientada por dados.
+            </span>
+          </p>
+        </div>
+      </section>
+
+      <section class="office-locations" id="filiais">
+        <div class="container office-locations__inner">
+          <div class="section-heading">
+            <h2>Nossas unidades</h2>
+            <p>
+              Atendimento próximo, com integração nacional e estrutura para
+              apoiar operações em diferentes regiões.
+            </p>
+          </div>
+
+          <div
+            class="office-locations__dropdown"
+            data-branches
+            aria-label="Endereços das unidades"
+          >
+            <div class="office-locations__select-field">
+              <label for="branch-selector">Selecione a unidade</label>
+              <select
+                class="office-locations__select"
+                id="branch-selector"
+                data-branch-select
+              >
+                <option value="branch-ribeirao-preto">
+                  Ribeirão Preto - SP - Sede
+                </option>
+                <option value="branch-belo-horizonte">
+                  Belo Horizonte - MG
+                </option>
+                <option value="branch-aracaju">Aracaju - SE</option>
+                <option value="branch-maceio">Maceió - AL</option>
+                <option value="branch-joao-pessoa">João Pessoa - PB</option>
+                <option value="branch-sao-paulo">São Paulo - SP</option>
+                <option value="branch-florianopolis">Florianópolis - SC</option>
+                <option value="branch-curitiba">Curitiba - PR</option>
+                <option value="branch-porto-alegre">Porto Alegre - RS</option>
+                <option value="branch-campo-grande">Campo Grande - MS</option>
+                <option value="branch-recife">Recife - PE</option>
+              </select>
+            </div>
+
+            <div class="office-locations__panel">
+              <article
+                class="branch-panel is-active"
+                id="branch-ribeirao-preto"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+              >
+                <span class="branch-panel__eyebrow">Endereço - Sede</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Ribeirão Preto - SP</h3>
+                    <address>
+                      R. Paschoal Bardaro, 1235 - Jardim São Luiz,<br />
+                      Ribeirão Preto - SP, 14021-655
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-belo-horizonte"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Belo Horizonte - MG</h3>
+                    <address>
+                      R. Rio Grande do Norte, 1435 - Sala 708 - Savassi,<br />
+                      Belo Horizonte - MG, 30130-131
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-aracaju"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Aracaju - SE</h3>
+                    <address>
+                      R. Riachuelo, 1200 - São José,<br />
+                      Aracaju - SE, 49015-160
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-maceio"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Maceió - AL</h3>
+                    <address>
+                      Av Fernandes Lima, nº 8, Andar 1, Sala 102,<br />
+                      Farol, Maceió (AL) - 57055-000
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-joao-pessoa"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>João Pessoa - PB</h3>
+                    <address>
+                      Avenida Dom Pedro I, nº 719, sala 104, Tambiá,<br />
+                      João Pessoa, Paraíba (PB) - 58020-514
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-sao-paulo"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>São Paulo - SP</h3>
+                    <address>
+                      Av. Paulista, 1636 - Cerqueira César,<br />
+                      São Paulo - SP, 01310-200
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-florianopolis"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Florianópolis - SC</h3>
+                    <address>
+                      Esquina com Av Rio Branco, Av. Pref. Osmar Cunha,<br />
+                      416 - Centro, Florianópolis - SC, 88015-200
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-curitiba"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Curitiba - PR</h3>
+                    <address>
+                      R. Bom Jesus, 212 - Juvevê,<br />
+                      Curitiba - PR, 80035-010
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-porto-alegre"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Porto Alegre - RS</h3>
+                    <address>
+                      Av. Carlos Gomes, 700 Edifício Platinum Tower,<br />
+                      Sala 606 - Boa Vista, Porto Alegre - RS, 90480-000
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-campo-grande"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Campo Grande - MS</h3>
+                    <address>
+                      Av. Afonso Pena, 4785 - sala 701 - Santa Fe,<br />
+                      Campo Grande - MS, 79031-01
+                    </address>
+                  </div>
+                </div>
+              </article>
+
+              <article
+                class="branch-panel"
+                id="branch-recife"
+                role="tabpanel"
+                aria-labelledby="branch-selector"
+                hidden
+              >
+                <span class="branch-panel__eyebrow">Endereço</span>
+                <div class="branch-panel__grid">
+                  <div>
+                    <h3>Recife - PE</h3>
+                    <address>
+                      Av. República do Líbano, nº 251, sala 2205 - Torre A -<br />
+                      Empresarial RioMar Trade Center, Pina, Recife-PE.<br />
+                      CEP: 51110-160
+                    </address>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div
+            class="office-locations__mobile"
+            aria-label="Endereços das unidades"
+          >
+            <details class="office-location" open>
+              <summary>Ribeirão Preto - SP - Sede</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço - Sede</span>
+                <h3>Ribeirão Preto - SP</h3>
+                <address>
+                  R. Paschoal Bardaro, 1235 - Jardim São Luiz,<br />
+                  Ribeirão Preto - SP, 14021-655
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Belo Horizonte - MG</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Belo Horizonte - MG</h3>
+                <address>
+                  R. Rio Grande do Norte, 1435 - Sala 708 - Savassi,<br />
+                  Belo Horizonte - MG, 30130-131
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Aracaju - SE</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Aracaju - SE</h3>
+                <address>
+                  R. Riachuelo, 1200 - São José,<br />
+                  Aracaju - SE, 49015-160
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Maceió - AL</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Maceió - AL</h3>
+                <address>
+                  Av Fernandes Lima, nº 8, Andar 1, Sala 102,<br />
+                  Farol, Maceió (AL) - 57055-000
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>João Pessoa - PB</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>João Pessoa - PB</h3>
+                <address>
+                  Avenida Dom Pedro I, nº 719, sala 104, Tambiá,<br />
+                  João Pessoa, Paraíba (PB) - 58020-514
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>São Paulo - SP</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>São Paulo - SP</h3>
+                <address>
+                  Av. Paulista, 1636 - Cerqueira César,<br />
+                  São Paulo - SP, 01310-200
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Florianópolis - SC</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Florianópolis - SC</h3>
+                <address>
+                  Esquina com Av Rio Branco, Av. Pref. Osmar Cunha,<br />
+                  416 - Centro, Florianópolis - SC, 88015-200
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Curitiba - PR</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Curitiba - PR</h3>
+                <address>
+                  R. Bom Jesus, 212 - Juvevê,<br />
+                  Curitiba - PR, 80035-010
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Porto Alegre - RS</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Porto Alegre - RS</h3>
+                <address>
+                  Av. Carlos Gomes, 700 Edifício Platinum Tower,<br />
+                  Sala 606 - Boa Vista, Porto Alegre - RS, 90480-000
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Campo Grande - MS</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Campo Grande - MS</h3>
+                <address>
+                  Av. Afonso Pena, 4785 - sala 701 - Santa Fe,<br />
+                  Campo Grande - MS, 79031-01
+                </address>
+              </div>
+            </details>
+
+            <details class="office-location">
+              <summary>Recife - PE</summary>
+              <div class="office-location__body">
+                <span class="office-location__eyebrow">Endereço</span>
+                <h3>Recife - PE</h3>
+                <address>
+                  Av. República do Líbano, nº 251, sala 2205 - Torre A -<br />
+                  Empresarial RioMar Trade Center, Pina, Recife-PE.<br />
+                  CEP: 51110-160
+                </address>
+              </div>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section class="technology" aria-labelledby="technology-title">
+        <div class="container section-inner">
+          <div class="section-heading">
+            <h2 id="technology-title">Tecnologia e Automação</h2>
+            <p>
+              A gestão das carteiras é respaldada por um robusto ecossistema de
+              tecnologia e dados, concebido com foco em rastreabilidade,
+              performance e escalabilidade. Entre os principais recursos,
+              destacam-se:
+            </p>
+          </div>
+
+          <div class="technology__layout">
+            <div class="technology__mini-grid">
+              <article class="tech-card">
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 19V5"></path>
+                    <path d="M4 19h16"></path>
+                    <path d="M8 15v-4"></path>
+                    <path d="M12 15V8"></path>
+                    <path d="M16 15v-6"></path>
+                  </svg>
+                </span>
+                <h3>Dashboards Power BI</h3>
+                <p>Gestão de grandes volumes com estratégias personalizadas</p>
+              </article>
+
+              <article class="tech-card">
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M12 3v18"></path>
+                    <path d="M4 12h16"></path>
+                    <path d="M6 6l12 12"></path>
+                    <path d="M18 6 6 18"></path>
+                  </svg>
+                </span>
+                <h3>Inteligência Artificial</h3>
+                <p>
+                  Ativos de cobrança e fluxos complexos com expertise técnica
+                </p>
+              </article>
+
+              <article class="tech-card">
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M5 7h14"></path>
+                    <path d="M5 12h14"></path>
+                    <path d="M5 17h14"></path>
+                    <path d="M8 5v14"></path>
+                    <path d="M16 5v14"></path>
+                  </svg>
+                </span>
+                <h3>APIs e Robôs de Dados</h3>
+                <p>Governança e conformidade regulatória integrada</p>
+              </article>
+
+              <article class="tech-card">
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 5h16v11H4z"></path>
+                    <path d="M8 20h8"></path>
+                    <path d="M12 16v4"></path>
+                  </svg>
+                </span>
+                <h3>Plataforma RBAJur</h3>
+                <p>Decisões baseadas em dados e indicadores de performance</p>
+              </article>
+            </div>
+
+            <div class="technology__image">
+              <img
+                src="assets/e55e69549f528314efc8074f5707fe71669bcc2e.png"
+                alt="Profissional utilizando notebook em ambiente corporativo"
+              />
+            </div>
+          </div>
+
+          <div class="technology__wide-grid">
+            <article class="tech-card tech-card--wide tech-card--dark">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path d="M8 2v4"></path>
+                  <path d="M16 2v4"></path>
+                  <path d="M8 18v4"></path>
+                  <path d="M16 18v4"></path>
+                  <path d="M2 8h4"></path>
+                  <path d="M18 8h4"></path>
+                  <path d="M2 16h4"></path>
+                  <path d="M18 16h4"></path>
+                  <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+                </svg>
+              </span>
+              <h3>Multicanalidade Avançada</h3>
+              <p>
+                Chatbots inteligentes, disparadores automáticos e análise da
+                fala (speech analytics) para comunicação eficiente e
+                personalizada com clientes.
+              </p>
+            </article>
+
+            <article class="tech-card tech-card--wide tech-card--accent">
+              <span class="card-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 3 5 6v6c0 4.5 3 7.5 7 9 4-1.5 7-4.5 7-9V6z"
+                  ></path>
+                  <path d="M12 8v5"></path>
+                  <path d="M12 16h.01"></path>
+                </svg>
+              </span>
+              <h3>Rastreabilidade Total</h3>
+              <p>
+                Monitoramento integral de todas as operações com indicadores de
+                performance e governança orientada por dados em tempo real.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="security" aria-labelledby="security-title">
+        <div class="container section-inner">
+          <div class="section-heading">
+            <h2 id="security-title">
+              Segurança da Informação
+              <span class="security-title-break">e Compliance</span>
+            </h2>
+            <p>
+              Mantemos investimentos contínuos no aprimoramento dos nossos
+              sistemas de segurança da informação, com apoio de consultorias
+              especializadas, políticas internas robustas e treinamentos
+              recorrentes.
+            </p>
+          </div>
+
+          <div class="security__grid">
+            <p class="security__statement">
+              Todos os dados são tratados com confidencialidade e em
+              conformidade com a Lei Geral de Proteção de Dados (LGPD), por meio
+              de controle rigoroso de acessos, ambientes monitorados e
+              compliance regulatório integrado à operação.
+            </p>
+
+            <div class="security-list">
+              <article class="accent-bullet">
+                <div>
+                  <h3>Conformidade com LGPD</h3>
+                  <p>
+                    Todos os dados são tratados com confidencialidade e em
+                    conformidade com a Lei Geral de Proteção de Dados,
+                    garantindo máxima segurança.
+                  </p>
+                </div>
+              </article>
+
+              <article class="accent-bullet">
+                <div>
+                  <h3>Controle de Acesso</h3>
+                  <p>
+                    Controle rigoroso de acessos com ambientes monitorados e
+                    políticas de segurança continuamente atualizadas.
+                  </p>
+                </div>
+              </article>
+
+              <article class="accent-bullet">
+                <div>
+                  <h3>Compliance Regulatório</h3>
+                  <p>
+                    Compliance regulatório integrado à operação com auditoria
+                    contínua e governança robusta.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="culture" aria-labelledby="culture-title">
+        <div class="container section-inner">
+          <div class="section-heading">
+            <h2 id="culture-title">Cultura Operacional</h2>
+            <p>
+              A consistência dos nossos resultados é reflexo de uma cultura
+              organizacional orientada à alta performance, colaboração e forte
+              engajamento interno — valores que se traduzem em elevados índices
+              de satisfação, como o NPS.
+            </p>
+            <p>
+              Nossa governança combina excelência técnica, inovação tecnológica
+              e uma equipe comprometida em entregar soluções jurídicas e
+              operacionais customizadas e eficazes.
+            </p>
+          </div>
+
+          <div class="culture__body">
+            <div class="culture__image">
+              <img
+                src="assets/b0b29c224cb5cb80b4a7bd714c03fe12927ae3a9.jpg"
+                alt="Equipe colaborando em mesa com peças de quebra-cabeça"
+              />
+            </div>
+
+            <div class="culture-list">
+              <article class="accent-bullet">
+                <div>
+                  <h3>Alta Performance</h3>
+                  <p>
+                    Valores que se traduzem em elevados índices de satisfação,
+                    como o NPS, refletindo nosso compromisso com a excelência.
+                  </p>
+                </div>
+              </article>
+
+              <article class="accent-bullet">
+                <div>
+                  <h3>Colaboração</h3>
+                  <p>
+                    Forte engajamento interno e trabalho colaborativo entre
+                    todas as áreas para maximizar resultados.
+                  </p>
+                </div>
+              </article>
+
+              <article class="accent-bullet">
+                <div>
+                  <h3>Inovação Contínua</h3>
+                  <p>
+                    Investimento constante em tecnologia e metodologias para
+                    aprimorar os nossos serviços.
+                  </p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <a
+      class="whatsapp-float"
+      href="https://web.whatsapp.com/send?phone=16994295204&amp;text="
+      target="_blank"
+      rel="noopener"
+      aria-label="Falar com o Ramos Benedetti pelo WhatsApp"
+      title="Fale conosco pelo WhatsApp"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.148-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.29.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.9 6.99c-.002 5.45-4.436 9.889-9.892 9.889m8.413-18.297A11.815 11.815 0 0 0 12.055 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.304-1.654a11.882 11.882 0 0 0 5.69 1.448h.005c6.558 0 11.894-5.336 11.897-11.893a11.821 11.821 0 0 0-3.489-8.413" />
+      </svg>
+    </a>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <div class="site-footer__brand">
+          <img
+            src="assets/9709068974938b6b09487e27a1b27e381a79a512.png"
+            alt="Ramos Benedetti Advogados"
+          />
+          <div class="site-footer__social" aria-label="Redes sociais">
+            <a href="#" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+                <circle cx="12" cy="12" r="4"></circle>
+                <circle cx="17" cy="7" r="1"></circle>
+              </svg>
+            </a>
+            <a href="#" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 9h4v11H5z"></path>
+                <path d="M5 4h4v3H5z"></path>
+                <path
+                  d="M11 9h4v2c.7-1.3 1.9-2.2 3.8-2.2 2.7 0 4.2 1.8 4.2 5V20h-4v-5.6c0-1.3-.5-2.2-1.8-2.2-1.4 0-2.2 1-2.2 2.5V20h-4z"
+                ></path>
+              </svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M13.5 21v-8h2.7l.4-3h-3.1V8.2c0-.9.3-1.5 1.6-1.5h1.7V4.1C16.5 4.1 15.4 4 14.3 4 11.8 4 10 5.5 10 8v2H7.5v3H10v8z"
+                ></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+
+        <div class="site-footer__compliance" aria-label="Documentos institucionais">
+          <a href="esg.html#politicas-institucionais">Políticas institucionais</a>
+          <a href="esg.html#codigo-etica">Código de Ética e Conduta</a>
+          <a href="esg.html#canal-denuncias">Canal de Denúncias</a>
+          <a href="esg.html#politica-privacidade">Política de Privacidade</a>
+        </div>
+
+        <nav class="site-footer__nav" aria-label="Menu do rodapé">
+          <div class="site-footer__nav-group">
+            <a href="index.html">Home</a>
+            <a href="quem-somos.html">Quem somos</a>
+            <a href="expertise.html">Expertise</a>
+            <a href="estrutura.html">Estrutura</a>
+          </div>
+          <div class="site-footer__nav-group">
+            <a href="ia.html">Inovação</a>
+            <a href="esg.html">ESG</a>
+            <a href="carreiras.html">Trabalhe Conosco</a>
+            <a href="contato.html">Contato</a>
+          </div>
+        </nav>
+
+        <div class="site-footer__certifications" aria-label="Certificações">
+          <div class="site-footer__badge" aria-label="Selo Bronze Compliance">
+            <img
+              src="assets/selo-bronze-compliance.png"
+              alt="Selo Bronze Compliance"
+            />
+          </div>
+          <!-- Inserir os selos ISO 9001 e ISO 37001 aqui quando forem disponibilizados. -->
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (() => {
+        const header = document.querySelector(".site-header");
+        const toggle = document.querySelector(".site-menu-toggle");
+        const nav = document.querySelector("#site-nav");
+
+        if (!header || !toggle || !nav) {
+          return;
+        }
+
+        const desktopQuery = window.matchMedia("(min-width: 760px)");
+
+        const syncHeaderOffset = () => {
+          document.documentElement.style.setProperty(
+            "--site-header-height",
+            `${header.offsetHeight}px`,
+          );
+        };
+
+        syncHeaderOffset();
+
+        const setMenuState = (isOpen) => {
+          header.classList.toggle("is-nav-open", isOpen);
+          toggle.setAttribute("aria-expanded", String(isOpen));
+          toggle.setAttribute(
+            "aria-label",
+            isOpen ? "Fechar menu" : "Abrir menu",
+          );
+          requestAnimationFrame(syncHeaderOffset);
+        };
+
+        toggle.addEventListener("click", () => {
+          setMenuState(toggle.getAttribute("aria-expanded") !== "true");
+        });
+
+        nav.addEventListener("click", (event) => {
+          if (event.target.closest("a")) {
+            setMenuState(false);
+          }
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            setMenuState(false);
+          }
+        });
+
+        window.addEventListener("resize", () => {
+          syncHeaderOffset();
+          if (desktopQuery.matches) {
+            setMenuState(false);
+          }
+        });
+
+        window.addEventListener("load", syncHeaderOffset);
+      })();
+
+      (() => {
+        const branchBlocks = document.querySelectorAll("[data-branches]");
+
+        branchBlocks.forEach((block) => {
+          const select = block.querySelector("[data-branch-select]");
+          const panels = Array.from(block.querySelectorAll(".branch-panel"));
+
+          const activateBranch = (targetId) => {
+            panels.forEach((panel) => {
+              const isActive = panel.id === targetId;
+              panel.classList.toggle("is-active", isActive);
+              panel.hidden = !isActive;
+            });
+          };
+
+          if (!select) {
+            return;
+          }
+
+          select.addEventListener("change", () => {
+            activateBranch(select.value);
+          });
+
+          activateBranch(select.value);
+        });
+      })();
+    </script>
+  </body>
+</html>
+
+
+
+
+

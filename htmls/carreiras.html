@@ -1,0 +1,1267 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trabalhe Conosco | Ramos Benedetti Advogados</title>
+    <meta name="description" content="Conheça oportunidades de carreira e faça parte da equipe do Ramos Benedetti Advogados." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://ramosbenedetti.adv.br/carreiras.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="Ramos Benedetti Advogados" />
+    <meta property="og:title" content="Trabalhe Conosco | Ramos Benedetti Advogados" />
+    <meta property="og:description" content="Conheça oportunidades de carreira e faça parte da equipe do Ramos Benedetti Advogados." />
+    <meta property="og:url" content="https://ramosbenedetti.adv.br/carreiras.html" />
+    <meta property="og:image" content="https://ramosbenedetti.adv.br/assets/carreiras-hero-equipe.png" />
+    <meta property="og:image:alt" content="Equipe colaborando em um ambiente profissional" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --desktop-artboard: 1440px;
+        --container-max: 1280px;
+        --container: min(calc(100% - 32px), var(--container-max));
+        --content-max: 1280px;
+        --color-bg: #f5f5f5;
+        --color-surface: #ffffff;
+        --color-surface-alt: #ededed;
+        --color-text: #111111;
+        --color-text-soft: #5f5f5f;
+        --color-black: #050505;
+        --color-border: #d9d9d9;
+        --color-accent: #f45a20;
+        --color-accent-strong: #ff5a1f;
+        --font-primary: Montserrat, Arial, Helvetica, sans-serif;
+        --fs-10: 10px;
+        --fs-12: 12px;
+        --fs-14: 14px;
+        --fs-16: 16px;
+        --fs-18: 18px;
+        --fs-24: 24px;
+        --fs-30: 30px;
+        --fs-40: 40px;
+        --lh-body: 1.5;
+        --lh-title: 1.1;
+        --content-title-size: 26px;
+        --content-subtitle-size: 18px;
+        --content-body-size: 15px;
+        --content-small-size: 14px;
+        --content-title-line: 1.12;
+        --content-subtitle-line: 1.18;
+        --content-body-line: 1.6;
+        --heading-copy-gap: 12px;
+        --heading-content-gap: 42px;
+        --radius-sm: 12px;
+        --radius-md: 16px;
+        --section-padding: 64px;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-padding-top: var(--site-header-height, 89px);
+      }
+
+      body {
+        margin: 0;
+        padding-top: var(--site-header-height, 89px);
+        background: var(--color-bg);
+        color: var(--color-text);
+        font-family: var(--font-primary);
+        font-size: var(--fs-16);
+        line-height: var(--lh-body);
+        overflow-x: clip;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      p,
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+      }
+
+      p + p {
+        margin-top: 16px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        letter-spacing: 0;
+        text-wrap: balance;
+      }
+
+      p,
+      li {
+        letter-spacing: 0;
+        text-wrap: pretty;
+      }
+
+      strong,
+      b {
+        font-weight: 600;
+      }
+
+      .container {
+        width: var(--container);
+        max-width: var(--container-max);
+        margin-inline: auto;
+      }
+
+      .section-inner {
+        max-width: var(--content-max);
+        margin-inline: auto;
+      }
+
+      .career-hero__grid > *,
+      .career-form-grid > *,
+      .career-form-card > * {
+        min-width: 0;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        .reveal {
+          opacity: 0;
+          transform: translateY(18px);
+          transition:
+            opacity 560ms ease,
+            transform 560ms ease;
+        }
+
+        .reveal--left {
+          transform: translateX(-22px);
+        }
+
+        .reveal--right {
+          transform: translateX(22px);
+        }
+
+        .reveal.is-visible {
+          opacity: 1;
+          transform: translate(0, 0);
+        }
+      }
+
+      .site-header {
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 0;
+        z-index: 100;
+        width: 100%;
+        background: var(--color-surface);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      }
+
+      .site-header__inner {
+        position: relative;
+        display: grid;
+        grid-template-columns: auto 42px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        min-height: 88px;
+        padding-block: 20px;
+      }
+
+      .site-header__brand {
+        width: 132px;
+      }
+
+      .site-header__brand img {
+        width: 100%;
+        height: auto;
+      }
+
+      .site-menu-toggle {
+        position: fixed;
+        top: 23px;
+        right: 16px;
+        z-index: 120;
+        display: inline-flex;
+        width: 42px;
+        height: 42px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .site-menu-toggle span {
+        position: absolute;
+        width: 22px;
+        height: 2px;
+        background: var(--color-text);
+        transition:
+          transform 180ms ease,
+          opacity 180ms ease;
+      }
+
+      .site-menu-toggle span:nth-child(1) {
+        transform: translateY(-8px);
+      }
+
+      .site-menu-toggle span:nth-child(3) {
+        transform: translateY(8px);
+      }
+
+      .site-header.is-nav-open .site-menu-toggle span:nth-child(1) {
+        transform: translateY(0) rotate(45deg);
+      }
+
+      .site-header.is-nav-open .site-menu-toggle span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .site-header.is-nav-open .site-menu-toggle span:nth-child(3) {
+        transform: translateY(0) rotate(-45deg);
+      }
+
+      .site-nav {
+        display: none;
+        grid-column: 1 / -1;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        width: 100%;
+        min-width: 0;
+        align-self: stretch;
+        padding-top: 12px;
+        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        color: var(--color-text);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .site-header.is-nav-open .site-nav {
+        display: flex;
+      }
+
+      .site-nav a {
+        width: 100%;
+        padding-block: 11px;
+        text-align: center;
+        opacity: 0.86;
+        transition:
+          color 180ms ease,
+          opacity 180ms ease,
+          font-weight 180ms ease,
+          transform 180ms ease;
+      }
+
+      .site-nav a:hover {
+        color: var(--color-accent);
+        opacity: 1;
+        transform: translateY(-1px);
+      }
+
+      .site-nav a:focus,
+      .site-nav a[aria-current="page"] {
+        color: var(--color-accent);
+        font-weight: 600;
+        opacity: 1;
+      }
+
+      .eyebrow-bars {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+        margin-bottom: 18px;
+        color: var(--color-accent);
+      }
+
+      .eyebrow-bars span {
+        width: 7px;
+        height: 7px;
+        background: currentColor;
+      }
+
+      .section-heading {
+        max-width: 920px;
+        margin-inline: auto;
+        text-align: center;
+      }
+
+      .section-heading h1,
+      .section-heading h2 {
+        font-size: var(--content-title-size);
+        font-weight: 600;
+        line-height: var(--content-title-line);
+      }
+
+      .section-heading p {
+        margin-top: var(--heading-copy-gap);
+        color: var(--color-text);
+        font-size: var(--content-body-size);
+        line-height: var(--content-body-line);
+      }
+
+      .career-hero {
+        position: relative;
+        min-height: clamp(290px, 52vw, 430px);
+        overflow: hidden;
+        background: var(--color-black);
+      }
+
+      .career-hero img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        filter: grayscale(1) contrast(1.02);
+      }
+
+      .career-hero::after {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(180deg, rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.26)),
+          linear-gradient(90deg, rgba(244, 90, 32, 0.08), transparent 34%);
+        content: "";
+      }
+
+      .career-form-section {
+        background: var(--color-surface-alt);
+        padding: 0 0 var(--section-padding);
+      }
+
+      .career-opportunity-layout {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        max-width: 1080px;
+        margin-inline: auto;
+        margin-top: -42px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.11);
+      }
+
+      .career-opportunity-layout > * {
+        min-width: 0;
+      }
+
+      .career-opportunity-layout__intro {
+        padding: 34px 24px;
+        background: var(--color-black);
+        color: var(--color-surface);
+      }
+
+      .career-opportunity-layout__intro h1 {
+        font-size: var(--content-title-size);
+        font-weight: 600;
+        line-height: var(--content-title-line);
+      }
+
+      .career-opportunity-layout__lead {
+        margin-top: 18px;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: var(--content-subtitle-size);
+        font-weight: 600;
+        line-height: 1.35;
+      }
+
+      .career-opportunity-layout__details {
+        padding: 34px 24px;
+        background: var(--color-surface);
+      }
+
+      .career-opportunity-layout__details p {
+        color: var(--color-text-soft);
+        font-size: var(--content-body-size);
+        line-height: var(--content-body-line);
+      }
+
+      .career-opportunity-layout__details p + p {
+        margin-top: 16px;
+      }
+
+      .career-opportunity-layout__details .button {
+        margin-top: 30px;
+      }
+
+      .career-form-grid {
+        display: grid;
+        gap: 26px;
+        align-items: start;
+      }
+
+      .career-aside {
+        display: grid;
+        gap: 18px;
+      }
+
+      .career-aside__item {
+        padding: 24px 22px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        background: var(--color-surface);
+        transition:
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .career-aside__item:hover {
+        border-color: rgba(244, 90, 32, 0.34);
+        box-shadow: 0 14px 32px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+      }
+
+      .career-aside__marker {
+        display: block;
+        width: 18px;
+        height: 18px;
+        margin-bottom: 16px;
+        background: var(--color-accent);
+      }
+
+      .career-aside__item h2 {
+        font-size: var(--content-subtitle-size);
+        font-weight: 600;
+        line-height: var(--content-subtitle-line);
+      }
+
+      .career-aside__item p {
+        margin-top: 10px;
+        color: var(--color-text-soft);
+        font-size: var(--content-small-size);
+        line-height: 1.5;
+      }
+
+      .career-form-card {
+        padding: 24px 22px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        background: var(--color-surface);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
+      }
+
+      .career-form-card h2 {
+        font-size: var(--content-title-size);
+        font-weight: 600;
+        line-height: var(--content-title-line);
+      }
+
+      .career-form-card p {
+        margin-top: 10px;
+        color: var(--color-text-soft);
+        font-size: var(--content-body-size);
+        line-height: var(--content-body-line);
+      }
+
+      .application-form {
+        display: grid;
+        gap: 22px;
+        margin-top: 28px;
+      }
+
+      .form-section {
+        display: grid;
+        gap: 18px;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        margin: 0;
+      }
+
+      .form-section--personal {
+        gap: 18px;
+      }
+
+      .form-section--personal legend {
+        margin-bottom: 18px;
+      }
+
+      .form-section + .form-section {
+        padding-top: 24px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .form-section legend {
+        padding: 0;
+        font-size: var(--content-subtitle-size);
+        font-weight: 600;
+        line-height: var(--content-subtitle-line);
+      }
+
+      .form-row {
+        display: grid;
+        gap: 18px;
+      }
+
+      .form-field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .form-field label,
+      .checkbox-field span {
+        font-size: var(--content-small-size);
+        font-weight: 600;
+        line-height: 1.35;
+      }
+
+      .form-field input,
+      .form-field select,
+      .form-field textarea {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        background: #fbfbfb;
+        color: var(--color-text);
+        font: inherit;
+        font-size: var(--content-small-size);
+        line-height: 1.4;
+        outline: 0;
+        padding: 12px 14px;
+        transition:
+          background-color 180ms ease,
+          border-color 180ms ease,
+          box-shadow 180ms ease;
+      }
+
+      .form-field textarea {
+        min-height: 132px;
+        resize: vertical;
+      }
+
+      .form-field input:focus,
+      .form-field select:focus,
+      .form-field textarea:focus {
+        border-color: var(--color-accent);
+        background: var(--color-surface);
+        box-shadow: 0 0 0 3px rgba(244, 90, 32, 0.14);
+      }
+
+      .form-field input[type="file"] {
+        min-height: auto;
+        padding: 11px;
+      }
+
+      .form-field small {
+        color: var(--color-text-soft);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .checkbox-field {
+        display: grid;
+        grid-template-columns: 18px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+      }
+
+      .checkbox-field input {
+        width: 18px;
+        height: 18px;
+        margin: 1px 0 0;
+        accent-color: var(--color-accent);
+      }
+
+      .checkbox-field span {
+        font-weight: 500;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 40px;
+        align-items: center;
+        justify-content: center;
+        justify-self: start;
+        padding: 10px 24px;
+        border: 1px solid var(--color-accent);
+        border-radius: 6px;
+        background: var(--color-accent);
+        color: var(--color-surface);
+        font: inherit;
+        font-size: var(--content-small-size);
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          background-color 180ms ease,
+          border-color 180ms ease,
+          box-shadow 180ms ease,
+          transform 180ms ease;
+      }
+
+      .button:hover,
+      .button:focus-visible {
+        background: var(--color-accent-strong);
+        border-color: var(--color-accent-strong);
+        box-shadow: 0 10px 24px rgba(244, 90, 32, 0.28);
+        transform: translateY(-1px);
+      }
+
+      .site-footer {
+        background: var(--color-surface);
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
+      }
+
+      .site-footer__inner {
+        display: grid;
+        gap: 34px;
+        max-width: var(--container-max);
+        margin-inline: auto;
+        padding-block: 44px;
+      }
+
+      .site-footer__brand img {
+        width: 142px;
+      }
+
+      .site-footer__brand p {
+        margin-top: 12px;
+        color: var(--color-text-soft);
+        font-size: var(--content-small-size);
+        line-height: 1.35;
+      }
+
+      .site-footer__social {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-top: 24px;
+        padding-left: 0;
+      }
+
+      .site-footer__social a {
+        display: inline-flex;
+        width: 22px;
+        height: 22px;
+        color: #8a8a8a;
+        transition:
+          color 180ms ease,
+          transform 180ms ease;
+      }
+
+      .site-footer__social a:hover {
+        color: var(--color-accent);
+        transform: translateY(-1px);
+      }
+
+      .site-footer__social svg {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .site-footer__social path {
+        fill: currentColor;
+        stroke: none;
+      }
+
+      .site-footer__nav {
+        display: grid;
+        grid-template-columns: repeat(2, max-content);
+        column-gap: 42px;
+        row-gap: 0;
+        width: auto;
+        align-items: start;
+        color: #777777;
+        font-size: var(--content-small-size);
+        line-height: 1.35;
+      }
+
+      .site-footer__nav-group {
+        display: grid;
+        gap: 12px;
+        align-content: start;
+        grid-auto-rows: max-content;
+      }
+
+      .site-footer__nav a {
+        display: block;
+        margin: 0;
+        padding: 0;
+        line-height: 1.35;
+        transition: color 180ms ease;
+      }
+
+      .site-footer__nav a:hover,
+      .site-footer__nav a[aria-current="page"] {
+        color: var(--color-accent);
+      }
+
+
+      .site-footer__certifications {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 12px;
+        justify-self: start;
+      }
+
+      .site-footer__badge,
+      .site-footer__certification-space {
+        display: inline-flex;
+        width: 92px;
+        height: 92px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .site-footer__badge {
+        opacity: 0.78;
+        transition:
+          opacity 180ms ease,
+          transform 180ms ease;
+      }
+
+      .site-footer__badge:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
+      .site-footer__badge img {
+        width: 100%;
+        height: auto;
+      }
+
+      .site-footer__certification-space {
+        padding: 12px 8px;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        color: var(--color-text-soft);
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1.25;
+        text-align: center;
+      }
+
+      @media (max-width: 759px) {
+        :root {
+          --content-title-size: 26px;
+          --content-subtitle-size: 18px;
+          --content-body-size: 15px;
+          --content-small-size: 14px;
+          --content-title-line: 1.12;
+          --content-subtitle-line: 1.18;
+          --content-body-line: 1.6;
+          --heading-content-gap: 34px;
+        }
+
+        .container {
+          width: calc(100% - 32px);
+          max-width: calc(100% - 32px);
+        }
+
+        .section-heading {
+          width: 100%;
+          max-width: none;
+          margin-inline: 0;
+          text-align: left;
+        }
+
+        .section-heading h1,
+        .section-heading h2,
+        .section-heading p {
+          max-width: 100%;
+          overflow-wrap: break-word;
+          text-wrap: initial;
+          white-space: normal;
+        }
+
+        .section-heading h1,
+        .section-heading h2 {
+          letter-spacing: -0.01em;
+        }
+
+        .section-heading p {
+          max-width: 38rem;
+          letter-spacing: -0.005em;
+        }
+
+        .career-form-grid,
+        .form-row {
+          width: 100%;
+          max-width: 100%;
+        }
+
+        .career-form-card {
+          padding: 20px 18px;
+        }
+
+      }
+
+      @media (min-width: 760px) {
+        :root {
+          --container: min(calc(100% - 64px), var(--container-max));
+          --content-title-size: 30px;
+          --content-subtitle-size: 18px;
+          --content-body-size: 16px;
+          --content-small-size: 15px;
+          --heading-content-gap: 46px;
+        }
+
+        .site-header__inner {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .site-menu-toggle {
+          position: static;
+          display: none;
+        }
+
+        .site-nav {
+          display: flex;
+          flex-basis: auto;
+          flex-direction: row;
+          width: auto;
+          align-self: auto;
+          justify-content: flex-end;
+          gap: 12px 18px;
+          padding-top: 0;
+          border-top: 0;
+        }
+
+        .site-nav a {
+          width: auto;
+          padding-block: 0;
+          text-align: inherit;
+        }
+
+        .career-hero {
+          min-height: 440px;
+        }
+
+        .career-opportunity-layout {
+          grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+          margin-top: -72px;
+        }
+
+        .career-form-grid {
+          grid-template-columns: minmax(240px, 0.42fr) minmax(0, 1fr);
+          gap: 34px;
+        }
+
+        .career-form-card {
+          padding: 34px;
+        }
+
+        .career-opportunity-layout__intro,
+        .career-opportunity-layout__details {
+          padding: 48px 44px;
+        }
+
+        .form-row {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .site-footer__inner {
+          grid-template-columns: minmax(240px, 1fr) max-content;
+          justify-content: space-between;
+          align-items: start;
+          column-gap: 48px;
+          row-gap: 0;
+          padding-block: 48px;
+        }
+
+        .site-footer__nav {
+          width: auto;
+          column-gap: 42px;
+          row-gap: 0;
+        }
+        .site-footer__certifications {
+          grid-column: 1 / -1;
+          justify-self: center;
+          align-self: start;
+          margin-top: 24px;
+        }
+      }
+
+      @media (min-width: 1120px) {
+        :root {
+          --container: min(calc(100% - 128px), var(--container-max));
+          --heading-content-gap: 48px;
+        }
+
+        .site-header__brand {
+          width: 142px;
+        }
+
+        .site-nav {
+          gap: 26px;
+          font-size: 14px;
+        }
+
+        .career-hero {
+          min-height: 500px;
+        }
+
+        .career-form-section {
+          padding: 0 0 86px;
+        }
+
+        .career-opportunity-layout {
+          grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+          margin-top: -88px;
+        }
+
+        .career-opportunity-layout__intro,
+        .career-opportunity-layout__details {
+          padding: 58px 54px;
+        }
+
+        .career-form-grid {
+          grid-template-columns: 330px minmax(0, 1fr);
+          gap: 44px;
+        }
+
+        .site-footer__inner {
+          padding-block: 52px;
+          grid-template-columns: minmax(260px, 330px) max-content minmax(300px, auto);
+          justify-content: space-between;
+          column-gap: 64px;
+        }
+
+        .site-footer__brand img {
+          width: 170px;
+        }
+
+        .site-footer__nav {
+          width: auto;
+          column-gap: 48px;
+          justify-self: center;
+        }
+        .site-footer__certifications {
+          grid-column: 3;
+          justify-self: end;
+          align-self: start;
+          margin-top: 0;
+        }
+      }
+    </style>
+    <link rel="stylesheet" href="assets/footer-compliance.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a
+          class="site-header__brand"
+          href="index.html"
+          aria-label="Ramos Benedetti Advogados"
+        >
+          <img
+            src="assets/9709068974938b6b09487e27a1b27e381a79a512.png"
+            alt="Ramos Benedetti Advogados"
+          />
+        </a>
+
+        <button
+          class="site-menu-toggle"
+          type="button"
+          aria-controls="site-nav"
+          aria-expanded="false"
+          aria-label="Abrir menu"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
+        <nav class="site-nav" id="site-nav" aria-label="Menu principal">
+          <a href="index.html">Home</a>
+          <a href="quem-somos.html">Quem somos</a>
+          <a href="expertise.html">Expertise</a>
+          <a href="estrutura.html">Estrutura</a>
+          <a href="ia.html">Inovação</a>
+          <a href="esg.html">ESG</a>
+          <a href="carreiras.html" aria-current="page">Trabalhe Conosco</a>
+          <a href="contato.html">Contato</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="career-hero" aria-label="Trabalhe Conosco">
+        <img
+          src="assets/carreiras-hero-equipe.png"
+          alt="Equipe colaborando em um ambiente profissional"
+        />
+      </section>
+
+      <section class="career-form-section" aria-labelledby="application-title">
+        <div class="container section-inner">
+          <div class="career-opportunity-layout">
+            <div class="career-opportunity-layout__intro">
+              <div class="eyebrow-bars" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+
+              <h1 id="application-title">
+                Encontre a oportunidade que combina com o seu momento de carreira.
+              </h1>
+              <p class="career-opportunity-layout__lead">
+                Acesse nossa Página de Carreiras e acompanhe nossas oportunidades
+              </p>
+            </div>
+
+            <div class="career-opportunity-layout__details">
+              <p>
+                Na nossa Página de Carreiras, você pode conhecer as oportunidades
+                disponíveis e identificar aquela mais alinhada ao seu perfil,
+                experiência e objetivos profissionais.
+              </p>
+              <p>
+                Caso não encontre uma posição adequada neste momento, você
+                também pode acompanhar a página para participar de futuras
+                oportunidades.
+              </p>
+
+              <a
+                class="button"
+                href="https://ramosbenedettiadvogados.gupy.io/"
+                target="_blank"
+                rel="noopener"
+              >
+                Acessar Página de Carreiras
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <a
+      class="whatsapp-float"
+      href="https://web.whatsapp.com/send?phone=16994295204&amp;text="
+      target="_blank"
+      rel="noopener"
+      aria-label="Falar com o Ramos Benedetti pelo WhatsApp"
+      title="Fale conosco pelo WhatsApp"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.372-.025-.521-.075-.148-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.875 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.29.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.981.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.9 6.99c-.002 5.45-4.436 9.889-9.892 9.889m8.413-18.297A11.815 11.815 0 0 0 12.055 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.304-1.654a11.882 11.882 0 0 0 5.69 1.448h.005c6.558 0 11.894-5.336 11.897-11.893a11.821 11.821 0 0 0-3.489-8.413" />
+      </svg>
+    </a>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <div class="site-footer__brand">
+          <img
+            src="assets/9709068974938b6b09487e27a1b27e381a79a512.png"
+            alt="Ramos Benedetti Advogados"
+          />
+          <div class="site-footer__social" aria-label="Redes sociais">
+            <a href="#" aria-label="Instagram">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="4" width="16" height="16" rx="4"></rect>
+                <circle cx="12" cy="12" r="4"></circle>
+                <circle cx="17" cy="7" r="1"></circle>
+              </svg>
+            </a>
+            <a href="#" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 9h4v11H5z"></path>
+                <path d="M5 4h4v3H5z"></path>
+                <path
+                  d="M11 9h4v2c.7-1.3 1.9-2.2 3.8-2.2 2.7 0 4.2 1.8 4.2 5V20h-4v-5.6c0-1.3-.5-2.2-1.8-2.2-1.4 0-2.2 1-2.2 2.5V20h-4z"
+                ></path>
+              </svg>
+            </a>
+            <a href="#" aria-label="Facebook">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M13.5 21v-8h2.7l.4-3h-3.1V8.2c0-.9.3-1.5 1.6-1.5h1.7V4.1C16.5 4.1 15.4 4 14.3 4 11.8 4 10 5.5 10 8v2H7.5v3H10v8z"
+                ></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+
+        <div class="site-footer__compliance" aria-label="Documentos institucionais">
+          <a href="esg.html#politicas-institucionais">Políticas institucionais</a>
+          <a href="esg.html#codigo-etica">Código de Ética e Conduta</a>
+          <a href="esg.html#canal-denuncias">Canal de Denúncias</a>
+          <a href="esg.html#politica-privacidade">Política de Privacidade</a>
+        </div>
+
+        <nav class="site-footer__nav" aria-label="Menu do rodapé">
+          <div class="site-footer__nav-group">
+            <a href="index.html">Home</a>
+            <a href="quem-somos.html">Quem somos</a>
+            <a href="expertise.html">Expertise</a>
+            <a href="estrutura.html">Estrutura</a>
+          </div>
+          <div class="site-footer__nav-group">
+            <a href="ia.html">Inovação</a>
+            <a href="esg.html">ESG</a>
+            <a href="carreiras.html" aria-current="page">Trabalhe Conosco</a>
+            <a href="contato.html">Contato</a>
+          </div>
+        </nav>
+
+        <div class="site-footer__certifications" aria-label="Certificações">
+          <div class="site-footer__badge" aria-label="Selo Bronze Compliance">
+            <img
+              src="assets/selo-bronze-compliance.png"
+              alt="Selo Bronze Compliance"
+            />
+          </div>
+          <!-- Inserir os selos ISO 9001 e ISO 37001 aqui quando forem disponibilizados. -->
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      (() => {
+        const header = document.querySelector(".site-header");
+        const toggle = document.querySelector(".site-menu-toggle");
+        const nav = document.querySelector("#site-nav");
+
+        if (!header || !toggle || !nav) {
+          return;
+        }
+
+        const desktopQuery = window.matchMedia("(min-width: 760px)");
+
+        const syncHeaderOffset = () => {
+          document.documentElement.style.setProperty(
+            "--site-header-height",
+            `${header.offsetHeight}px`,
+          );
+        };
+
+        syncHeaderOffset();
+
+        const setMenuState = (isOpen) => {
+          header.classList.toggle("is-nav-open", isOpen);
+          toggle.setAttribute("aria-expanded", String(isOpen));
+          toggle.setAttribute(
+            "aria-label",
+            isOpen ? "Fechar menu" : "Abrir menu",
+          );
+          requestAnimationFrame(syncHeaderOffset);
+        };
+
+        toggle.addEventListener("click", () => {
+          setMenuState(toggle.getAttribute("aria-expanded") !== "true");
+        });
+
+        nav.addEventListener("click", (event) => {
+          if (event.target.closest("a")) {
+            setMenuState(false);
+          }
+        });
+
+        window.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            setMenuState(false);
+          }
+        });
+
+        window.addEventListener("resize", () => {
+          syncHeaderOffset();
+          if (desktopQuery.matches) {
+            setMenuState(false);
+          }
+        });
+      })();
+
+      (() => {
+        const shouldReduceMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)",
+        ).matches;
+
+        const revealItems = [
+          [".career-opportunity-layout", "up", 0],
+          [".site-footer__brand", "left", 0],
+          [".site-footer__nav", "right", 100],
+        ];
+
+        const revealClassByType = {
+          left: "reveal--left",
+          right: "reveal--right",
+          up: "",
+        };
+
+        const elements = [];
+
+        revealItems.forEach(([selector, type, delay]) => {
+          document.querySelectorAll(selector).forEach((element, index) => {
+            element.classList.add("reveal");
+            const revealClass = revealClassByType[type];
+            if (revealClass) {
+              element.classList.add(revealClass);
+            }
+            element.style.transitionDelay = `${delay + index * 70}ms`;
+            elements.push(element);
+          });
+        });
+
+        if (shouldReduceMotion || !("IntersectionObserver" in window)) {
+          elements.forEach((element) => element.classList.add("is-visible"));
+          return;
+        }
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.16 },
+        );
+
+        elements.forEach((element) => observer.observe(element));
+      })();
+    </script>
+  </body>
+</html>
+
+
+
+
+

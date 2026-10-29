@@ -1,0 +1,13 @@
+export type AdminBranding = {
+  name: string;
+  logo: string | null;
+};
+
+export function branding(): AdminBranding {
+  const data = window.__ADMIN__?.branding;
+
+  return {
+    name: data?.name?.trim() || 'RBA',
+    logo: data?.logo?.trim() || null,
+  };
+}

@@ -1,3 +1,0 @@
-DAAX
-Website desenvolvido para gestão e divulgação de empreendimentos da holding.O projeto incluiu SEO otimizado, sistema de gestão de conteúdo simplificado em WordPress + Elementor e plugins personalizados para facilitar a administração dos empreendimentos.Resultado: mais autonomia e presença digital estratégica.
-https://daax.com.br/

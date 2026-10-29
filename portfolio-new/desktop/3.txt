@@ -1,3 +1,0 @@
-Tripfy
-Plataforma de passeios e viagens desenvolvida sob medida para conectar viajantes a experiências únicas.O sistema conta com gestão completa de conteúdo, vendas e finanças, além de ferramentas avançadas de checkout, cupons, afiliados, filtros inteligentes e agendamento de passeios.Uma aplicação robusta e otimizada que une praticidade para o gestor e experiências inesquecíveis para o usuário final.
-https://tripfy.com.br/

@@ -1,0 +1,60 @@
+<?php
+
+namespace Tests\Feature;
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
+
+class CmsAuthTest extends TestCase
+{
+    use RefreshDatabase;
+
+    public function test_login_authenticates(): void
+    {
+        $this->makeAdmin([
+            'email' => 'admin@example.com',
+            'password' => 'password',
+        ]);
+
+        $response = $this->postJson('/gestao/api/login', [
+            'email' => 'admin@example.com',
+            'password' => 'password',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('status', 'authenticated')
+            ->assertJsonPath('user.role', 'root');
+
+        $this->assertAuthenticated();
+        $this->getJson('/gestao/api/me')->assertOk()->assertJsonPath('user.email', 'admin@example.com');
+    }
+
+    public function test_invalid_login_is_rejected(): void
+    {
+        $this->makeAdmin();
+
+        $this->postJson('/gestao/api/login', [
+            'email' => 'nobody@example.com',
+            'password' => 'wrong',
+        ])->assertStatus(422);
+
+        $this->assertGuest();
+    }
+
+    public function test_login_is_throttled(): void
+    {
+        $this->makeAdmin();
+
+        for ($i = 0; $i < 8; $i++) {
+            $this->postJson('/gestao/api/login', [
+                'email' => 'nobody@example.com',
+                'password' => 'wrong',
+            ]);
+        }
+
+        $this->postJson('/gestao/api/login', [
+            'email' => 'nobody@example.com',
+            'password' => 'wrong',
+        ])->assertStatus(429);
+    }
+}
