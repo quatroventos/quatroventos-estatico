@@ -411,6 +411,10 @@ Lista numerada em três colunas sobre escuro, cada etapa aberta por uma linha fi
 ### Timeline de método (`.steps.is-timeline.is-scrub`)
 Seis etapas em uma linha sobre escuro, presas a uma régua de 1px. Cada etapa tem um ponto limão de 11px sobre a régua, número mono (28px acima de 1100px), título de 19 a 22px peso 600 e texto de 15.5px até 24ch. O cabeçalho da seção vira coluna única (`.is-timeline-head`), com H2 sem limite de largura e intro até 62ch.
 - **Scrub:** com `animation-timeline` disponível e acima de 1100px, a régua se preenche em limão da esquerda para a direita conforme a rolagem (20% a 55% da passagem), e cada etapa sai de desfoque 6px e opacidade 0.12 para nítida, com o ponto pulsando (escala 0 a 1.7 a 1) e o número passando de cinza para limão, em sequência pelo índice `--i`. Abaixo de 1100px cada etapa só ganha foco ao entrar na tela.
+
+### Loop de método (`.loop`)
+Variante da timeline para quando o método é um ciclo (usado em `/sobre`: Desenhar, Codar, Testar, Evoluir). Anel de 1px no centro (até 360px) com setas no sentido horário entre as etapas e o lema no meio em 19 a 22px peso 600. As quatro etapas ficam nas diagonais do anel, com o texto nos cantos da grade e o mesmo vocabulário de `.steps`: régua de 1px, traço branco de 56px (do lado de fora nos cantos esquerdos), número mono, título de 19 a 22px peso 600 e texto de 15.5px. Os nós são pontos limão de 11px, como os da timeline.
+- **Movimento:** ao entrar na tela, o anel se desenha a partir da etapa 01; um ponto branco percorre o anel em 12s, o nó alcançado pulsa (escala 1 a 1.7 a 1) e a etapa correspondente fica nítida enquanto as demais caem para opacidade 0.35 com blur de 1px. Abaixo de 900px o anel vai para o topo e as etapas viram lista. Em movimento reduzido, tudo estático e nítido.
 - **Responsivo:** três colunas abaixo de 1100px, cada uma com linha própria; uma coluna abaixo de 640px.
 - **Uso:** só para processo sequencial real (método, onboarding, etapas de entrega). Seis etapas é o desenho; com outra contagem, usar Etapas comuns.
 
