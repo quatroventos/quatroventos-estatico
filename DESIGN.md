@@ -178,6 +178,37 @@ components:
     textColor: "{colors.ink}"
     rounded: "{rounded.card}"
     padding: "clamp(32px, 5vw, 72px)"
+  card-feature-lead:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.card}"
+    padding: "clamp(28px, 3vw, 44px)"
+  card-feature-hover:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.lime}"
+  quote-card:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.card}"
+    padding: "40px 32px 28px"
+  case-cover:
+    backgroundColor: "{colors.ink}"
+    rounded: "{rounded.field}"
+  case-go:
+    backgroundColor: "transparent"
+    textColor: "{colors.white}"
+    rounded: "{rounded.pill}"
+    padding: "0 16px 0 18px"
+    height: "40px"
+  case-go-hover:
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.ink}"
+  logo-cell:
+    backgroundColor: "{colors.paper}"
+    rounded: "{rounded.card}"
+    padding: "clamp(16px, 2vw, 28px)"
+  logo-cell-hover:
+    backgroundColor: "{colors.ink}"
 ---
 
 # Design System: Quatro Ventos
@@ -198,7 +229,7 @@ Todas as páginas são montadas por seções do CMS, e cada tipo de seção carr
 - Limão restrito a três lugares e única cor da marca; ação e interação em branco e tinta.
 - Martian Mono apenas para números, o log de agente e nomes de tecnologia.
 - Pílulas para ações e etiquetas; cards brancos com raio de 22px; linhas de 1px para estruturar listas.
-- Um único momento de movimento: linha rotativa, deriva do log e hover. Tudo desligado em movimento reduzido.
+- Movimento ligado à leitura: linha rotativa e deriva do log no hero, efeitos guiados pela rolagem nas seções (marca-texto, timeline, entrada de cards) e resposta ao ponteiro (lente, tilt, preenchimento circular). Tudo desligado em movimento reduzido.
 
 ## Colors
 
@@ -264,7 +295,20 @@ Coluna única centralizada com largura máxima de 1440px e respiro lateral fluid
 
 Cabeçalhos de seção usam grade assimétrica de 1.15fr por 1fr: título à esquerda, intro alinhada à base à direita; sem intro, o título ocupa a linha sozinho. Blocos de texto repetem a mesma grade (título à esquerda, corpo à direita). Quando dois blocos de texto vêm seguidos, o segundo usa a variante empilhada: título em escala de chamada ocupando a largura e o corpo alinhado à direita com até 640px. FAQ e contato usam 0.8fr por 1.2fr, com o título do FAQ fixo durante a rolagem. A chamada usa 1.3fr por 1fr alinhada à base.
 
-**Colapso de tom:** quando uma seção tem o mesmo tom da anterior (exceto hero), o padding superior é zerado, para que duas seções de papel seguidas leiam como uma só superfície.
+**Colapso de tom:** quando uma seção tem o mesmo tom da anterior (exceto hero), o padding superior é zerado (`.is-flush`), para que duas seções de papel seguidas leiam como uma só superfície.
+
+**Receita de página (padrão da home):** a home é a referência de ritmo para as demais páginas. A sequência alterna escuro, claro e branco, e cada bloco tem um papel fixo:
+
+1. **Hero escuro** (`.hero`): H1 com destaque, lead e duas ações (WhatsApp em limão e secundária em linha). Na home, altura de tela cheia (`.is-home`) e lente (`.is-lens`).
+2. **Oferta em papel** (`.section.on-light`): cabeçalho de seção com destaque desenhado e grade de cards em destaque (`.cards.is-feature`), ou cards numerados comuns quando os itens não são quatro.
+3. **Afirmação em papel colapsado** (`.section.on-light.is-flush`): painel de destaque claro (`.prose-panel.is-light.is-reveal`) com um parágrafo e um CTA.
+4. **Método escuro** (`.section.on-dark.is-timeline-head`): timeline horizontal de seis etapas com scrub (`.steps.is-timeline.is-scrub`).
+5. **Prova em branco** (`.section.on-white`): depoimentos em grade igual (`.quotes.is-even`) com cabeçalho solo.
+6. **Trabalho escuro** (`.section.on-dark`): grade aberta de cases com tilt (`.cases-grid.is-3.is-open` e `.case-card.is-tilt`).
+7. **Clientes em branco** (`.section.on-white`): cabeçalho à esquerda e logos mono à direita (`.clients` e `.logos.is-mono`).
+8. **Chamada final em branco colapsado** (`.section.on-white.is-flush`): painel de destaque escuro (`.prose-panel.is-reveal`).
+
+Páginas internas seguem a mesma lógica com menos blocos: hero, oferta ou conteúdo em papel, uma afirmação, método ou etapas quando houver processo, prova (depoimentos, cases ou logos) e chamada final. Toda seção clara cujo título tenha destaque recebe `.is-mark-draw`.
 
 **Listas em quatro formas, decididas pelo conteúdo:**
 1. Todos os itens com texto e link: cards de navegação numerados em grade (quatro colunas quando são exatamente quatro itens).
@@ -276,15 +320,16 @@ Cabeçalhos de seção usam grade assimétrica de 1.15fr por 1fr: título à esq
 
 ## Elevation & Depth
 
-O sistema é plano. A profundidade vem do contraste entre seções escuras e claras, de cards brancos sobre papel e de contornos internos de 1 a 2px. Sombras projetadas existem só em elementos que flutuam acima da página: o dropdown do menu e o botão flutuante de WhatsApp. No hero, a profundidade é atmosférica: o log desfocado e girado 4 graus fica atrás de uma vinheta radial escura que limpa a área do título.
+O sistema é plano. A profundidade vem do contraste entre seções escuras e claras, de cards brancos sobre papel e de contornos internos de 1 a 2px. Sombras projetadas existem só em elementos que flutuam acima da página: o dropdown do menu, o botão flutuante de WhatsApp e o card de case inclinado pelo ponteiro. No hero, a profundidade é atmosférica: o log desfocado e girado 4 graus fica atrás de uma vinheta radial escura que limpa a área do título.
 
 ### Shadow Vocabulary
 - **Dropdown** (`box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12), 0 24px 48px rgb(0 0 0 / 0.45)`): painel do submenu no header.
 - **Flutuante** (`box-shadow: 0 10px 30px rgb(0 0 0 / 0.35)`): botão de WhatsApp fixo no canto.
 - **Header sólido** (`box-shadow: 0 1px 0 rgb(255 255 255 / 0.12)`): linha inferior do header depois da rolagem, com blur de 14px.
+- **Tilt** (`box-shadow: 0 24px 48px -24px rgb(0 0 0 / 0.35)`): card de case em hover com tilt, fora da grade aberta. Na grade aberta (`.is-open`) não há sombra.
 
 ### Named Rules
-**The Flat Page Rule.** Cards, planos, depoimentos e formulários não têm sombra. Sombra só para o que flutua sobre o conteúdo.
+**The Flat Page Rule.** Cards, planos, depoimentos e formulários não têm sombra. Sombra só para o que flutua sobre o conteúdo ou está sendo inclinado pelo ponteiro.
 
 ## Shapes
 
@@ -313,27 +358,78 @@ Duas famílias de forma: pílula total (999px) para tudo que é ação ou etique
 
 ### Inputs / Fields
 - **Style:** fundo papel, borda de 1px na linha clara, raio 14px, altura mínima 52px (textarea 140px), rótulo acima em 14.5px peso 500.
-- **Focus:** borda roxa e fundo branco, sem anel adicional.
+- **Focus:** borda tinta e fundo branco, sem anel adicional.
 - **Error / Disabled:** mensagem em vermelho de erro a 13.5px abaixo do campo; status de erro em caixa com véu vermelho a 8%; status de sucesso em papel com contorno fino.
 
 ### Navigation
 - **Header:** marca "quatro**ventos**" em 27px (peso 300 com "ventos" em 700), links em pílula de 44px com texto suave que clareia e ganha véu branco a 7% no hover, na página atual e com submenu aberto. Itens com filhos têm caret que gira 180 graus. O dropdown abre com fade e 6px de deslocamento, com o hub em destaque no topo separado por linha.
-- **Mobile:** botão circular de três traços que vira X; painel em tela cheia sobre noite, itens de 26px peso 600 separados por linhas, submenu por botão circular, pílula roxa de largura total no fim. Fecha com Escape e trava a rolagem do corpo.
+- **Mobile:** botão circular de três traços que vira X; painel em tela cheia sobre noite, itens de 26px peso 600 separados por linhas, submenu por botão circular, CTA em pílula de largura total no fim (o tom segue o componente de CTA). Fecha com Escape e trava a rolagem do corpo.
 - **Rodapé:** marca grande (até 64px), contatos, colunas auto-ajustáveis a partir de 160px com título de 15px e links mudos; faixa inferior com copyright, lema e redes.
 
 ### Linha rotativa (signature)
 A segunda linha do H1 da home é uma pilha de termos em limão sobre o mesmo grid; a cada 2.8s o termo ativo sai para cima e o próximo entra de baixo em 0.9s com curva cubic-bezier(0.75, 0, 0.2, 1). Leitores de tela recebem o título com o primeiro termo; a pilha visual fica oculta para eles. Com movimento reduzido, o primeiro termo fica fixo.
 
 ### Log de agente (signature)
-Fundo de todos os heros, incluindo a página 404: linhas de log mono em 15 a 22px, cinza-azulado com realces em azul, oliva e violeta, borradas a 2.4px, opacidade 0.5, giradas -4 graus, derivando para cima em 60s em loop. Marcado no canto inferior direito como "fluxo ilustrativo de um agente" em mono 11px. Decorativo, oculto para leitores de tela.
+Fundo de todos os heros, incluindo a página 404: linhas de log mono em 15 a 22px, cinza-azulado com realces em azul, oliva e violeta, borradas a 2.4px, opacidade 0.5, giradas -4 graus, derivando para cima em 60s em loop. Sem legenda. Decorativo, oculto para leitores de tela.
+
+### Lente do hero (`.hero.is-lens` + `trackLens`)
+Variante da home. O log perde o desfoque (opacidade 0.6) e a vinheta ganha `backdrop-filter: blur(3px)` com máscara radial de 200px que segue o ponteiro (`--lens-x`, `--lens-y`, registradas com `@property` e transição de 0.5s). Onde a lente passa, o log fica nítido; o resto fica desfocado. Posição inicial em 72% por 38%. Em telas sem hover a máscara é removida e o hero fica todo desfocado. Usar só no hero da home; heros internos mantêm o log desfocado estático.
+
+### Fluxo de agente no hero (`.hero.has-flow` + `FlowCanvas`)
+Fundo alternativo ao log para páginas de agentes e automação. Grade de pontos brancos a 11% em passo de 28px, revelada da esquerda para a direita, e um fluxo em SVG à direita (até 800px) sendo montado nó a nó em ciclo de 12s: gatilho, agente, ferramentas, ação e o desvio de confiança para um humano. Nós são retângulos de raio 14px em `#0e0f15` com contorno branco a 16%, um quadrado de 10px colorido pelo tipo (azul-acinzentado gatilho, violeta agente, oliva ferramenta, branco ação e humano, mudo condição), rótulo em mono 10.5px e nome em 15px peso 600. Os fios se desenham antes de cada nó entrar e um cursor percorre a montagem. O véu do hero vira degradê horizontal (97% à esquerda, 12% à direita) para manter o texto limpo. Opacidade 0.8; 0.24 abaixo de 900px. Rótulos traduzidos pelo dicionário `flow.*`. Com movimento reduzido, o fluxo aparece montado e sem cursor. Um hero por página usa ou o log ou o fluxo, nunca os dois.
+
+### Card de lead no hero (`LeadForm` + `.hero-split`)
+Captação padrão do hero de todas as páginas, no modelo click-to-WhatsApp: o visitante sinaliza interesse e a equipe chama no WhatsApp. Hero em duas colunas (1.1fr e 0.9fr, centradas): título até 80px e 14ch com lead à esquerda, card de até 460px à direita (embaixo, abaixo de 1100px). O card segue o vocabulário escuro do hero: painel translúcido (#121217 a 58%) com `backdrop-filter: blur(18px) saturate(140%)` sobre o fundo animado, raio 22px, contorno interno de 1px na linha escura, sem sombra. Campos com fundo branco a 4%, borda na linha escura, raio 14px e 48px de altura; no foco a borda vai a branco 60% e o fundo a 7%; erro em salmão claro (#f2998d) para manter contraste no escuro. Rótulos em texto suave. A frente tem título branco em 20 a 23px peso 650 ("Receba nosso contato"), mini copy em texto suave de 14.5px ("Deixe seus dados que entramos em contato."), nome e WhatsApp em largura cheia (o WhatsApp é um campo composto `PhoneInput`: seletor de país com bandeira e DDI à esquerda, separado por fio, e número com máscara do país; envio validado pelo tamanho completo) e uma única pílula sólida branca em largura cheia, "Tenho interesse". Sem e-mail: o retorno é sempre pelo WhatsApp. Ao enviar (`/api/contato/lead`), o card gira 180 graus no eixo Y em 0.9s (cada face gira com a própria perspectiva, sem `preserve-3d` no pai, para o blur acompanhar) com `cubic-bezier(0.16, 1, 0.3, 1)`; o verso mostra um círculo branco com check tinta que se desenha, "Obrigado, {nome}.", a confirmação de que a equipe vai chamar no número informado e a pílula de WhatsApp (tinta com limão) com mensagem pronta. O foco vai para o título do verso e a face oculta fica `inert`. Com movimento reduzido, troca de face sem giro.
 
 ### Etapas
 Lista numerada em três colunas sobre escuro, cada etapa aberta por uma linha fina com um traço branco de 56px por cima, número mono, título e texto até 34ch.
 
-### Depoimentos e logos
-Depoimento único vira bloco grande com aspas de até 180px à esquerda; vários viram colunas em cascata de cards. Logos de clientes ficam numa grade de células com linhas finas, em escala de cinza, multiply e opacidade 0.72, ganhando cor no hover.
+### Timeline de método (`.steps.is-timeline.is-scrub`)
+Seis etapas em uma linha sobre escuro, presas a uma régua de 1px. Cada etapa tem um ponto limão de 11px sobre a régua, número mono (28px acima de 1100px), título de 19 a 22px peso 600 e texto de 15.5px até 24ch. O cabeçalho da seção vira coluna única (`.is-timeline-head`), com H2 sem limite de largura e intro até 62ch.
+- **Scrub:** com `animation-timeline` disponível e acima de 1100px, a régua se preenche em limão da esquerda para a direita conforme a rolagem (20% a 55% da passagem), e cada etapa sai de desfoque 6px e opacidade 0.12 para nítida, com o ponto pulsando (escala 0 a 1.7 a 1) e o número passando de cinza para limão, em sequência pelo índice `--i`. Abaixo de 1100px cada etapa só ganha foco ao entrar na tela.
+- **Responsivo:** três colunas abaixo de 1100px, cada uma com linha própria; uma coluna abaixo de 640px.
+- **Uso:** só para processo sequencial real (método, onboarding, etapas de entrega). Seis etapas é o desenho; com outra contagem, usar Etapas comuns.
 
-**Proveniência de raster:** o build não contém raster gerado. Os únicos rasters do sistema são os logos reais de clientes do site anterior, copiados de `assets/img/clientes/*.png` para `site rba/public/assets/clientes/` (aliancafrancesa, cycloar, ddm, digio, fernandasaad, garimpo, giselesiqueira, hemera, inoveit, liv, rodolfofontana, santaplural). Capas e prints de cases vêm do CMS como material real dos projetos.
+### Cards em destaque (`.cards.is-feature`)
+Grade bento de quatro colunas para a oferta principal com quatro itens. O primeiro card ocupa 2 por 2, em tinta, com número limão, seta em círculo limão de 56px, título de até 64px (12ch) e texto até 36ch; o último ocupa duas colunas; os do meio, uma. Altura mínima de linha 220px.
+- **Hover/foco:** um círculo tinta cresce a partir da seta (canto superior direito, `clip-path` de 0 a 150% em 0.6s, `cubic-bezier(0.16, 1, 0.3, 1)`); o título vira limão, o texto clareia e a seta gira 45 graus sobre círculo limão. O card não sobe. No card líder o círculo é painel e a seta vira branca. Foco com contorno limão de 2px.
+- **Responsivo:** duas colunas abaixo de 1100px (primeiro e último em largura cheia); uma abaixo de 640px.
+- **Uso:** uma vez por página, para o índice de serviços ou subserviços. Com quantidade diferente de quatro, usar cards numerados comuns.
+
+### Faixa de usos (`.uses-band`)
+Lista curta de usos ou aplicações não clicáveis, sem número, num único painel tinta de raio 22px abaixo do `sec-head` padrão. Quatro colunas separadas por fio `--line-dark`; cada coluna tem H3 branco no topo e texto `--on-dark-soft` de 16px na base, com 56px de respiro entre eles. Sem limão dentro da faixa.
+- **Entrada (scroll):** o painel assenta de `scale(0.9)` e raio 56px para tamanho e raio finais entre a entrada e 35% da passagem; os títulos entram da esquerda com opacidade até 47%; acima de 1100px os fios verticais se desenham de cima para baixo (`scaleY`) até 50%. Tudo na mesma `view-timeline` (`--uses-band`), protegido por `@supports (animation-timeline: view())` e `prefers-reduced-motion: no-preference`; sem suporte, a faixa aparece estática.
+- **Responsivo:** 2 por 2 abaixo de 1100px; uma coluna abaixo de 640px, com fio horizontal entre itens.
+- **Uso:** quando os itens são equivalentes e informativos (onde algo se aplica). Para índice de serviços com link, usar `.cards.is-feature`.
+
+### Checklist de entregas (`.checklist`)
+Lista de itens só com título que representam o que é entregue. Duas colunas com leitura de cima para baixo (`grid-auto-flow: column`, 4 linhas; ajustar `grid-template-rows` para outra quantidade), fio `--line-light` entre linhas, texto de 19px e marcador em círculo tinta de 26px com check branco de 14px. Uma coluna abaixo de 900px. Substitui os bullets quando a lista é de entregas.
+
+### Grade de exemplos (`.ex-grid`)
+Lista longa (oito ou mais) de itens com título e texto, sem link, em seção de papel. Três colunas de cards brancos sem borda, raio 22px, padding 28px, intervalo de 16px e linhas de mesma altura (`grid-auto-rows: 1fr`). Título H3 reduzido (20 a 24px) e texto de 15.5px em `--on-light-soft`. O último item pode ser um quadro de fechamento (`li.is-more`), também branco, com link sublinhado e seta para `#contato` alinhado à base (sublinhado vira oliva no hover).
+- **Holofote (só `hover: hover`):** ao passar o mouse num card, os demais caem para opacidade 0.35 com blur de 1.5px, e um círculo tinta cresce do canto do título (`clip-path` de 0 a 150% em 0.6s, `cubic-bezier(0.16, 1, 0.3, 1)`); título vira limão e texto `--on-dark-soft`. O quadro de fechamento não recebe o círculo.
+- **Responsivo:** duas colunas abaixo de 1100px; uma abaixo de 640px, com altura livre.
+- **Uso:** para listas curtas com texto, usar as linhas título-texto (`.def-rows`).
+
+### Marca-texto desenhado (`.is-mark-draw`)
+Modificador de seção clara. O destaque limão do H2 (`.mark`) começa com largura 0 e se desenha até 100% conforme o título atravessa a tela (`view-timeline`, faixa de 80% da entrada até 50% da passagem). Em seções escuras o destaque é texto limão e não desenha. Aplicar em toda seção clara cujo título tenha destaque.
+
+### Depoimentos
+Depoimento único vira bloco grande com aspas de até 180px à esquerda; vários sem modificador viram colunas em cascata de cards.
+- **Grade igual (`.quotes.is-even`):** três cards de mesma altura em seção branca, fundo papel, raio 22px, padding 40px 32px 28px. Texto de 18.5px peso 450 em tinta; aspas gigantes (200px) em tinta a 6% no canto superior direito como marca d'água; autor no pé, separado por linha fina, nome em 600 e empresa em mudo. Uma coluna abaixo de 900px. Preferir esta forma quando houver exatamente três depoimentos.
+
+### Grade de cases (`.cases-grid.is-3.is-open` + `.case-card.is-tilt`)
+Três colunas sem card de fundo: capa 4 por 3 com raio 14px, e abaixo o nome (20 a 24px), metadados em pílulas com contorno fino e texto mono de 12px, e o botão "Ver case" (`.case-go`) alinhado à direita. A capa é um link sem foco (`tabIndex -1`, `aria-hidden`); o acesso por teclado é o `.case-go`, com `aria-label` nomeando o case. Espaço entre linhas de 48px.
+- **Tilt:** com mouse, o card inclina até 9 graus em X e 11 em Y seguindo o ponteiro (`--tilt-x`, `--tilt-y` via `trackTilt`/`resetTilt`), a imagem se desloca até 16px em sentido contrário com escala 1.1 e um brilho radial branco a 22% acompanha o ponteiro. Em fundo escuro o nome vira limão no hover. Só com hover real e sem movimento reduzido.
+- **Ver case:** pílula de 40px com contorno fino e seta de 14px; no hover preenche (branco em escuro, tinta em claro) e a seta avança 2px na diagonal.
+- **Entrada:** cards sobem 48px e aparecem conforme a rolagem, escalonados por coluna (`--c`).
+- **Responsivo:** duas colunas abaixo de 1100px e uma abaixo de 640px.
+
+### Clientes (`.clients` + `.logos.is-mono`)
+Grade de 1fr por 1.35fr: cabeçalho à esquerda (H2 com destaque e intro de 19px até 44ch) e logos à direita em três colunas (duas abaixo de 640px; cabeçalho em cima abaixo de 900px). Cada célula é um retângulo 16 por 10, fundo papel, raio 22px, com o logo em silhueta tinta (`brightness(0)`, 32px de altura, até 78% de largura, opacidade 0.6). No hover, um círculo tinta cresce a partir do canto superior direito e o logo volta à cor original (os arquivos são brancos sobre transparente). As células entram com a mesma subida escalonada dos cases.
+- **Variante padrão (`.logos`):** cinco colunas de células papel com raio 4px, logos quadrados em escala de cinza com multiply e opacidade 0.7, e uma linha limão de 2px que cresce na base no hover. Usar para os logos PNG antigos.
+
+**Proveniência de raster:** o build não contém raster gerado. Os únicos rasters do sistema são os logos reais de clientes do site anterior, copiados de `assets/img/clientes/*.png` para `site rba/public/assets/clientes/` (aliancafrancesa, cycloar, ddm, digio, fernandasaad, garimpo, giselesiqueira, hemera, inoveit, liv, rodolfofontana, santaplural), os logos vetoriais em `public/assets/clientes/lampa/` e as capas reais dos cases em `public/assets/cases/`. Capas e prints de cases vêm do CMS como material real dos projetos.
 
 ### Painel de destaque (`.prose-panel`)
 Bloco de afirmação dentro de uma seção clara: um cartão de raio 22px e padding `clamp(32px, 5vw, 72px)` com duas colunas (1.15fr e 1fr, gap 32px 64px, alinhadas pela base). À esquerda, um H2 grande (`clamp(40px, 5.6vw, 92px)`, line-height 0.96, tracking -0.05em, até 13ch) com o trecho-chave em `<em class="mark">`. À direita, `.prose-panel-side` empilha o parágrafo (`clamp(18px, 1.35vw, 20px)`, line-height 1.6) e um CTA opcional com 28px de intervalo. Abaixo de 900px vira uma coluna.
@@ -355,6 +451,9 @@ Círculo verde WhatsApp de 60px (56px no mobile) fixo a 24px do canto, ícone SV
 - **Do** manter Martian Mono a 13px para números de ordem, unidades de preço e nomes de tecnologia.
 - **Do** usar só material real como imagem: logos de clientes e prints dos projetos.
 - **Do** desligar toda transição e animação em prefers-reduced-motion, incluindo a linha rotativa e a deriva do log.
+- **Do** seguir a receita da home ao montar páginas internas: alternar escuro, papel e branco, uma afirmação em painel por página, prova antes da chamada final.
+- **Do** proteger todo efeito guiado por rolagem com `@supports (animation-timeline: view())` e `prefers-reduced-motion: no-preference`, de modo que sem suporte o conteúdo apareça estático e completo.
+- **Do** restringir efeitos de ponteiro (lente, tilt) a `hover: hover` e `pointerType === 'mouse'`.
 
 ### Don't:
 - **Don't** usar limão em qualquer outro elemento de conteúdo além da linha rotativa, dos destaques de frase e do CTA de WhatsApp.
@@ -363,5 +462,7 @@ Círculo verde WhatsApp de 60px (56px no mobile) fixo a 24px do canto, ícone SV
 - **Don't** usar fotografia de banco, ilustração ou imagem gerada.
 - **Don't** aplicar gradiente em texto; o único gradiente do sistema é a vinheta radial escura do hero.
 - **Don't** usar biblioteca de ícones nem glifos como ícone; setas, caret, mais e WhatsApp são SVG próprios.
-- **Don't** adicionar movimento além da linha rotativa, da deriva do log e dos hovers.
+- **Don't** adicionar movimento fora do vocabulário documentado (linha rotativa, deriva do log, lente, marca-texto desenhado, timeline com scrub, preenchimento circular, tilt, entrada escalonada, revelação do painel e hovers).
+- **Don't** repetir na mesma página um padrão de assinatura da home: um bloco de cards em destaque, uma timeline e um painel de afirmação por página, além da chamada final.
+- **Don't** usar a lente fora do hero da home.
 - **Don't** dar sombra a cards, planos ou formulários.

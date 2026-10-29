@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-29T11:42:00-03:00",
+  "generatedAt": "2026-10-29T18:27:08.822822+00:00",
   "title": "Design System: Quatro Ventos",
   "extensions": {
     "colorMeta": {
@@ -227,6 +227,11 @@
         "name": "header-solid",
         "value": "0 1px 0 rgb(255 255 255 / 0.12)",
         "purpose": "Linha inferior do header sólido, com backdrop-filter blur(14px)."
+      },
+      {
+        "name": "tilt",
+        "value": "0 24px 48px -24px rgb(0 0 0 / 0.35)",
+        "purpose": "Card de case em hover com tilt, fora da grade aberta."
       }
     ],
     "motion": [
@@ -254,6 +259,41 @@
         "name": "reduced-motion",
         "value": "prefers-reduced-motion: reduce zera transições e animações; a linha rotativa não inicia",
         "purpose": "Acessibilidade."
+      },
+      {
+        "name": "lens",
+        "value": "--lens-x/--lens-y via @property, transition 0.5s var(--ease); máscara radial 200px + backdrop-filter blur(3px)",
+        "purpose": "Lente nítida sobre o log no hero da home."
+      },
+      {
+        "name": "mark-draw",
+        "value": "background-size 0% para 100% 0.9em, view-timeline, entry 80% a cover 50%",
+        "purpose": "Destaque limão do H2 desenhado pela rolagem em seções claras."
+      },
+      {
+        "name": "timeline-scrub",
+        "value": "régua scale 0 a 1 (cover 20% a 55%); etapas blur 6px/opacity 0.12 para nítidas; ponto scale 0, 1.7, 1; número cinza para limão; deslocamento 5.83% por --i",
+        "purpose": "Timeline de método guiada pela rolagem."
+      },
+      {
+        "name": "circle-fill",
+        "value": "clip-path circle(0) para circle(150%) a partir do canto superior direito, 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Hover de cards em destaque e células de logo."
+      },
+      {
+        "name": "tilt",
+        "value": "perspective(900px) rotateX(-9deg * --tilt-y) rotateY(11deg * --tilt-x), 0.6s var(--ease); imagem -16px e scale 1.1",
+        "purpose": "Card de case seguindo o ponteiro (só mouse)."
+      },
+      {
+        "name": "intro-rise",
+        "value": "opacity 0 e translate 0 48px para 0, view(), escalonado por coluna --c",
+        "purpose": "Entrada de cards de case e células de logo."
+      },
+      {
+        "name": "reveal",
+        "value": "clip-path inset(10% 8%) para 0 em 0.9s cubic-bezier(0.16, 1, 0.3, 1); filhos sobem 16px com 0.35s e 0.5s de atraso; IntersectionObserver 0.4",
+        "purpose": "Entrada do painel de destaque."
       }
     ],
     "breakpoints": [
@@ -329,7 +369,7 @@
       "name": "CTA principal",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "Pílula roxa para todo CTA principal que não leva ao WhatsApp.",
+      "description": "Pílula sólida (branca no escuro, tinta no claro) para todo CTA principal que não leva ao WhatsApp.",
       "html": "<a class=\"ds-pill ds-pill-solid\" href=\"#\">Iniciar um projeto</a>",
       "css": ".ds-pill { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 54px; padding: 0 26px; border-radius: 999px; font-family: \"Host Grotesk\", system-ui, sans-serif; font-weight: 600; font-size: 16px; line-height: 1.2; white-space: nowrap; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); } .ds-pill:hover { transform: translateY(-2px); } .ds-pill:focus-visible { outline: 2px solid #0b0b0f; outline-offset: 3px; } .ds-pill-solid { background: #0b0b0f; color: #ffffff; } .ds-pill-solid:hover { background: #2a2a31; }"
     },
@@ -412,6 +452,46 @@
       "description": "Afirmação em cartão de 22px com H2 grande e trecho em marca-texto limão à esquerda, parágrafo e CTA à direita. Variante clara (branco sobre papel); a escura usa fundo noite com o destaque em texto limão.",
       "html": "<div class=\"ds-panel\"><h2 class=\"ds-panel-title\">Todo processo tem um ponto que <em class=\"ds-mark\">pode render mais.</em></h2><div class=\"ds-panel-side\"><p>Uma etapa manual que se repete, uma decisão que depende de alguém procurar informação, um atendimento que espera na fila. É nesse ponto que a IA entra.</p><a class=\"ds-pill-wa\" href=\"#\">Avaliar meu processo</a></div></div>",
       "css": ".ds-panel { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px 64px; align-items: end; padding: clamp(32px, 5vw, 72px); border-radius: 22px; background: #ffffff; color: #0b0b0f; font-family: \"Host Grotesk\", system-ui, sans-serif; } .ds-panel-title { margin: 0; font-size: clamp(40px, 5.6vw, 92px); font-weight: 650; line-height: 0.96; letter-spacing: -0.05em; max-width: 13ch; } .ds-mark { font-style: normal; padding: 0 0.1em; margin: 0 -0.04em; background-image: linear-gradient(#c8f25a, #c8f25a); background-repeat: no-repeat; background-size: 100% 0.9em; background-position: 0 72%; box-decoration-break: clone; -webkit-box-decoration-break: clone; } .ds-panel-side { display: grid; justify-items: start; gap: 28px; } .ds-panel-side p { margin: 0; font-size: clamp(18px, 1.35vw, 20px); line-height: 1.6; color: #3e3e44; } @media (max-width: 900px) { .ds-panel { grid-template-columns: minmax(0, 1fr); align-items: start; } }"
+    },
+    {
+      "name": "Cards em destaque",
+      "kind": "card",
+      "refersTo": "card-feature-lead",
+      "description": "Bento de quatro serviços: líder 2x2 em tinta, hover com círculo tinta crescendo da seta.",
+      "html": "<ul class=\"ds-feature\"><li class=\"ds-lead\"><a class=\"ds-fcard\" href=\"#\"><span class=\"ds-num\"><span class=\"ds-mono\">01</span><span class=\"ds-go\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M4.5 11.5l7-7M5.5 4.5h6v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></span><div><h3>Inteligência artificial</h3><p>Agentes, automação e LLMs.</p></div></a></li><li><a class=\"ds-fcard\" href=\"#\"><span class=\"ds-num\"><span class=\"ds-mono\">02</span><span class=\"ds-go\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M4.5 11.5l7-7M5.5 4.5h6v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></span><div><h3>Engenharia de software</h3><p>Plataformas e SaaS.</p></div></a></li></ul>",
+      "css": ".ds-feature{list-style:none;display:grid;grid-template-columns:2fr 1fr;gap:16px;padding:16px;background:#f4f4f1;font-family:'Host Grotesk',system-ui,sans-serif}.ds-fcard{position:relative;isolation:isolate;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:40px;min-height:220px;padding:28px;border-radius:22px;background:#fff;color:#0b0b0f;text-decoration:none}.ds-fcard::before{content:'';position:absolute;inset:0;z-index:-1;background:#0b0b0f;clip-path:circle(0 at calc(100% - 47px) 47px);transition:clip-path .6s cubic-bezier(.16,1,.3,1)}.ds-fcard:hover::before,.ds-fcard:focus-visible::before{clip-path:circle(150% at calc(100% - 47px) 47px)}.ds-fcard:hover,.ds-fcard:focus-visible{color:#fff}.ds-fcard:hover h3,.ds-fcard:focus-visible h3{color:#c8f25a}.ds-fcard:focus-visible{outline:2px solid #c8f25a;outline-offset:3px}.ds-num{display:flex;justify-content:space-between;align-items:center}.ds-mono{font-family:'Martian Mono',monospace;font-size:13px}.ds-go{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#f4f4f1;color:#0b0b0f;transition:transform .3s,background .3s}.ds-fcard:hover .ds-go{background:#c8f25a;transform:rotate(45deg)}.ds-fcard h3{margin:0 0 8px;font-size:24px;font-weight:650;letter-spacing:-.03em;transition:color .3s}.ds-fcard p{margin:0;font-size:16px;opacity:.8}.ds-lead .ds-fcard{background:#0b0b0f;color:#fff}.ds-lead .ds-fcard::before{background:#121217}.ds-lead .ds-mono{color:#c8f25a}.ds-lead .ds-go{background:#c8f25a;width:56px;height:56px}.ds-lead h3{font-size:44px;line-height:.98;letter-spacing:-.045em;max-width:12ch}"
+    },
+    {
+      "name": "Timeline de método",
+      "kind": "custom",
+      "refersTo": "steps-timeline",
+      "description": "Seis etapas presas a uma régua com ponto limão; a régua se preenche com a rolagem.",
+      "html": "<ol class=\"ds-tl\"><li><span class=\"ds-mono\">01</span><h3>Diagnóstico</h3><p>Processos e oportunidades mapeados.</p></li><li><span class=\"ds-mono\">02</span><h3>Protótipo</h3><p>A ideia validada em versão funcional.</p></li><li><span class=\"ds-mono\">03</span><h3>Desenvolvimento</h3><p>Frontend, backend e IA no mesmo time.</p></li></ol>",
+      "css": ".ds-tl{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:0 24px;margin:0;padding:48px 24px;background:#07070a;color:#fff;font-family:'Host Grotesk',system-ui,sans-serif;border-top:1px solid rgb(255 255 255 / .12);position:relative}.ds-tl::after{content:'';position:absolute;left:24px;right:24px;top:47px;height:1px;background:#c8f25a;transform-origin:left;scale:.66 1}.ds-tl li{position:relative;padding-top:32px}.ds-tl li::before{content:'';position:absolute;top:-6px;left:0;width:11px;height:11px;border-radius:50%;background:#c8f25a}.ds-mono{display:block;margin-bottom:18px;font-family:'Martian Mono',monospace;font-size:28px;color:#c8f25a}.ds-tl li:last-child .ds-mono{color:#c9c9c4}.ds-tl h3{margin:0 0 8px;font-size:21px;font-weight:600;letter-spacing:-.02em}.ds-tl p{margin:0;font-size:15.5px;line-height:1.5;color:#c9c9c4;max-width:24ch}"
+    },
+    {
+      "name": "Depoimento em grade",
+      "kind": "card",
+      "refersTo": "quote-card",
+      "description": "Card papel com aspas em marca d'água e autor no pé.",
+      "html": "<blockquote class=\"ds-quote\"><p>Faz anos que contamos com os serviços da Quatro Ventos e sempre fui atendida com profissionalismo, agilidade e qualidade.</p><footer><b>Vivien Uhlmann</b><span>Cycloar</span></footer></blockquote>",
+      "css": ".ds-quote{position:relative;overflow:hidden;display:flex;flex-direction:column;max-width:380px;margin:0;padding:40px 32px 28px;border-radius:22px;background:#f4f4f1;color:#0b0b0f;font-family:'Host Grotesk',system-ui,sans-serif}.ds-quote::before{content:'\\201C';position:absolute;top:-30px;right:8px;font-size:200px;line-height:1;color:rgb(11 11 15 / .06)}.ds-quote p{position:relative;margin:0 0 28px;font-size:18.5px;line-height:1.55;font-weight:450}.ds-quote footer{display:flex;flex-direction:column;gap:2px;padding-top:22px;border-top:1px solid rgb(11 11 15 / .12);font-size:16px}.ds-quote b{font-weight:600}.ds-quote span{color:#6b6b72}"
+    },
+    {
+      "name": "Card de case",
+      "kind": "card",
+      "refersTo": "case-cover",
+      "description": "Capa 4:3 com raio 14px, nome, metadados mono em pílula e botão Ver case; tilt com mouse.",
+      "html": "<article class=\"ds-case\"><div class=\"ds-cover\"></div><div class=\"ds-body\"><h3>Conexme</h3><p class=\"ds-meta\"><span>Webapp</span><span>2024</span></p><a class=\"ds-go-case\" href=\"#\">Ver case<svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M4.5 11.5l7-7M5.5 4.5h6v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a></div></article>",
+      "css": ".ds-case{width:340px;padding:24px;background:#07070a;color:#fff;font-family:'Host Grotesk',system-ui,sans-serif;transition:transform .6s cubic-bezier(.2,.7,.2,1)}.ds-case:hover{transform:perspective(900px) rotateX(-3deg) rotateY(4deg)}.ds-cover{aspect-ratio:4/3;border-radius:14px;background:linear-gradient(135deg,#1c1c24,#2a2a31)}.ds-body{display:grid;grid-template-columns:1fr auto;column-gap:16px;row-gap:10px;padding-top:18px}.ds-body h3{grid-column:1;margin:0;font-size:22px;letter-spacing:-.035em;transition:color .3s}.ds-case:hover h3{color:#c8f25a}.ds-meta{grid-column:1;display:flex;gap:8px;margin:0}.ds-meta span{padding:4px 10px;border:1px solid rgb(255 255 255 / .12);border-radius:999px;font-family:'Martian Mono',monospace;font-size:12px;color:#8d8d93}.ds-go-case{grid-column:2;grid-row:1/span 2;align-self:center;display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px 0 18px;border-radius:999px;box-shadow:inset 0 0 0 1px rgb(255 255 255 / .12);color:#fff;font-size:14.5px;font-weight:600;text-decoration:none;transition:background .25s,color .25s}.ds-go-case:hover,.ds-go-case:focus-visible{background:#fff;color:#0b0b0f}.ds-go-case svg{width:14px;height:14px;transition:transform .25s}.ds-go-case:hover svg{transform:translate(2px,-2px)}"
+    },
+    {
+      "name": "Célula de logo",
+      "kind": "custom",
+      "refersTo": "logo-cell",
+      "description": "Logo em silhueta tinta sobre papel; hover preenche em tinta a partir do canto e revela o logo original.",
+      "html": "<ul class=\"ds-logos\"><li><span class=\"ds-logo\">LOGO</span></li><li><span class=\"ds-logo\">LOGO</span></li><li><span class=\"ds-logo\">LOGO</span></li></ul>",
+      "css": ".ds-logos{list-style:none;display:grid;grid-template-columns:repeat(3,160px);gap:12px;margin:0;padding:16px;background:#fff;font-family:'Host Grotesk',system-ui,sans-serif}.ds-logos li{position:relative;isolation:isolate;overflow:hidden;display:grid;place-items:center;aspect-ratio:16/10;border-radius:22px;background:#f4f4f1}.ds-logos li::after{content:'';position:absolute;inset:0;z-index:-1;background:#0b0b0f;clip-path:circle(0 at calc(100% - 28px) 28px);transition:clip-path .6s cubic-bezier(.16,1,.3,1)}.ds-logos li:hover::after{clip-path:circle(150% at calc(100% - 28px) 28px)}.ds-logo{font-weight:700;letter-spacing:.08em;color:#0b0b0f;opacity:.6;transition:color .3s,opacity .3s}.ds-logos li:hover .ds-logo{color:#fff;opacity:1}"
     }
   ],
   "narrative": {
@@ -423,7 +503,7 @@
       "Limão restrito a três lugares e única cor da marca; ação e interação em branco e tinta.",
       "Martian Mono apenas para números, o log de agente e nomes de tecnologia.",
       "Pílulas para ações e etiquetas; cards brancos com raio de 22px; linhas de 1px para estruturar listas.",
-      "Um único momento de movimento: linha rotativa, deriva do log e hover. Tudo desligado em movimento reduzido."
+      "Movimento ligado à leitura: linha rotativa e deriva do log no hero, efeitos guiados pela rolagem nas seções (marca-texto, timeline, entrada de cards) e resposta ao ponteiro (lente, tilt, preenchimento circular). Tudo desligado em movimento reduzido."
     ],
     "rules": [
       {
@@ -458,7 +538,7 @@
       },
       {
         "name": "The Flat Page Rule",
-        "body": "Cards, planos, depoimentos e formulários não têm sombra. Sombra só para o que flutua sobre o conteúdo.",
+        "body": "Cards, planos, depoimentos e formulários não têm sombra. Sombra só para o que flutua sobre o conteúdo ou está sendo inclinado pelo ponteiro.",
         "section": "elevation"
       }
     ],
@@ -469,7 +549,10 @@
       "Do usar a seta SVG própria (traço de 1.6, diagonal para cima à direita) para toda indicação de destino, dentro de círculo quando for ícone isolado.",
       "Do manter Martian Mono a 13px para números de ordem, unidades de preço e nomes de tecnologia.",
       "Do usar só material real como imagem: logos de clientes e prints dos projetos.",
-      "Do desligar toda transição e animação em prefers-reduced-motion, incluindo a linha rotativa e a deriva do log."
+      "Do desligar toda transição e animação em prefers-reduced-motion, incluindo a linha rotativa e a deriva do log.",
+      "Do seguir a receita da home ao montar páginas internas: alternar escuro, papel e branco, uma afirmação em painel por página, prova antes da chamada final.",
+      "Do proteger todo efeito guiado por rolagem com `@supports (animation-timeline: view())` e `prefers-reduced-motion: no-preference`, de modo que sem suporte o conteúdo apareça estático e completo.",
+      "Do restringir efeitos de ponteiro (lente, tilt) a `hover: hover` e `pointerType === 'mouse'`."
     ],
     "donts": [
       "Don't usar limão em qualquer outro elemento de conteúdo além da linha rotativa, dos destaques de frase e do CTA de WhatsApp.",
@@ -478,7 +561,9 @@
       "Don't usar fotografia de banco, ilustração ou imagem gerada.",
       "Don't aplicar gradiente em texto; o único gradiente do sistema é a vinheta radial escura do hero.",
       "Don't usar biblioteca de ícones nem glifos como ícone; setas, caret, mais e WhatsApp são SVG próprios.",
-      "Don't adicionar movimento além da linha rotativa, da deriva do log e dos hovers.",
+      "Don't adicionar movimento fora do vocabulário documentado (linha rotativa, deriva do log, lente, marca-texto desenhado, timeline com scrub, preenchimento circular, tilt, entrada escalonada, revelação do painel e hovers).",
+      "Don't repetir na mesma página um padrão de assinatura da home: um bloco de cards em destaque, uma timeline e um painel de afirmação por página, além da chamada final.",
+      "Don't usar a lente fora do hero da home.",
       "Don't dar sombra a cards, planos ou formulários."
     ]
   }

@@ -44,14 +44,14 @@ Nota: A IA acelera cada etapa do nosso trabalho, da pesquisa aos testes, e entra
 6. **Evolução.** Melhoria contínua a partir do uso real.
 
 ### prova
-H2: Empresas que *crescem com a gente.*
-Nota: Do mercado financeiro à saúde e ao varejo, atendemos empresas de portes e setores diferentes com o mesmo cuidado: projeto bem planejado, entrega no prazo e suporte depois da publicação.
-Logos: Santa Plural, Rodolfo Fontana, Liv Decora, Inove IT, Hemera DTVM, Garimpo Home, Fernanda Saad, Gisele Siqueira Dermatologista, Digio, Data Driven Mkt.
-Cases (H2: Projetos que entregamos.; Nota: Sites institucionais, webapps e plataformas para educação, turismo e tecnologia, do planejamento à publicação.): Assessment Produtive (Webapp, 2025), Aliança Francesa Brasília (Criação de site, 2025), Conexme (Webapp, 2024), Tripfy (Site e webapp, 2023), Aliança Francesa Curitiba (Criação de site, 2022), Multiversidade PUCPR (Criação de site, 2021). Capas em `/assets/cases/{slug}.jpg`, vindas do projeto `lampa`.
+Ordem: depoimentos, cases, clientes.
+Clientes (H2: Empresas que *crescem com a gente.*; Nota: Do mercado financeiro à saúde e ao varejo, atendemos empresas de portes e setores diferentes com o mesmo cuidado: projeto bem planejado, entrega no prazo e suporte depois da publicação.): logos Incavel, 4KST, Aliança Francesa, AGMov, Bisuti, Conela, Costi, Momentum, Produtive. Arquivos em `/assets/clientes/lampa/` (brancos sobre transparente, vindos do projeto `lampa`).
 Depoimentos (H2: O que dizem *nossos clientes.*): Diogo Fontana, Vivien Uhlmann, Mayara Barros (textos publicados, ver `/cases`).
 Mayara Barros na home, versão curta: "Trabalhar com a Quatro Ventos tem sido uma experiência excelente. A equipe é extremamente profissional, ágil e sempre disponível para oferecer suporte quando necessário. O site da Aliança Francesa de Curitiba é um reflexo desse trabalho cuidadoso e bem-executado."
+Cases (H2: Projetos que entregamos.; Nota: Sites institucionais, webapps e plataformas para educação, turismo e tecnologia, do planejamento à publicação.): Assessment Produtive (Webapp, 2025), Aliança Francesa Brasília (Criação de site, 2025), Conexme (Webapp, 2024), Tripfy (Site e webapp, 2023), Aliança Francesa Curitiba (Criação de site, 2022), Multiversidade PUCPR (Criação de site, 2021). Capas em `/assets/cases/{slug}.jpg`, vindas do projeto `lampa`. Botão "Ver case" para `/cases/{slug}`.
 
 ### cta
+Formato: painel de destaque escuro (`.prose-panel`) sobre seção branca.
 H2: Qual processo poderia *render mais?*
 Corpo: Uma conversa basta para avaliar onde a IA entra, como e por onde começar.
 Botão: Falar com um especialista → WhatsApp
