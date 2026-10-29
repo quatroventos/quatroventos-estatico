@@ -28,16 +28,16 @@
         })(window,document,'script','dataLayer','GTM-KJHN8M');</script>
     <!-- End Google Tag Manager -->
 
-    <title>Desenvolvimento de Sites - Quatro Ventos</title>
-    <meta name="title" content="Desenvolvimento de Sites - Quatro Ventos">
-    <meta name="description" content="Conheça nosso serviço de Desenvolvimento de Sites, estamos prontos para executar seu projeto.">
+    <title>Criação de Sites - Quatro Ventos</title>
+    <meta name="title" content="Criação de Sites - Quatro Ventos">
+    <meta name="description" content="Conheça nosso serviço de Criação de Sites, estamos prontos para executar seu projeto.">
 
     <meta charset="utf-8"/>
 
-    <meta property="og:title" content="Desenvolvimento de Sites - Quatro Ventos">
-    <meta property="og:site_name" content="Desenvolvimento de Sites - Quatro Ventos">
-    <meta property="og:url" content="https://www.quatroventos.com.br/desenvolvimento-de-sites">
-    <meta property="og:description" content="Conheça nosso serviço de Desenvolvimento de Sites, estamos prontos para executar seu projeto.">
+    <meta property="og:title" content="Criação de Sites - Quatro Ventos">
+    <meta property="og:site_name" content="Criação de Sites - Quatro Ventos">
+    <meta property="og:url" content="https://www.quatroventos.com.br/criacao-de-sites">
+    <meta property="og:description" content="Conheça nosso serviço de Criação de Sites, estamos prontos para executar seu projeto.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://www.quatroventos.com.br/assets/img/hero-webdesign.png">
 
@@ -70,6 +70,7 @@
     <link href="./assets/owl.carousel.min.css" rel="stylesheet" media="print" onload="this.media='all'"/>
     <link href="./assets/owl.theme.default.min.css" rel="stylesheet" media="print" onload="this.media='all'"/>
     <link defer="" href="./assets/demo/demo.min.css" rel="stylesheet" media="print" onload="this.media='all'"/>
+    <link rel="stylesheet" href="assets/css/iphone-mockup.css">
     <!--    <link href="./assets/css/fullpage.min.css" rel="stylesheet"/>-->
 <!-- FONTE -->
 <link rel="stylesheet" href="./assets/css/fonts.css">
@@ -137,7 +138,7 @@
             width: 29px;
             height: 29px;
             margin: auto;
-            
+
         }
         .main-title{
             margin-top:30px;
@@ -176,15 +177,15 @@
         }
     </style>
 
+
     <div class="page-header header-filter section">
         <div class="page-header-image" style="background-color: #3694D1"></div>
         <div class="container">
             <div class="row">
                 <div class="col-md-6 ml-auto mr-auto text-left" data-aos="fade-right" data-aos-duration="600">
                     <h1 class="main-title title--dev">Desenvolvimento de sites</h1>
-                    <h5 class="main-description">Estamos prontos para atender seu projeto da arquitetura à publicação, conheça nosso serviço de desenvolvimento de sites.<br></h5>
-                    <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" class="btn header--cta btn-primary btn-round">Faça um orçamento sem compromisso!</a>
-                    <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" class="btn header--cta btn-round" style="background: #25D366;" target='_blank'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="icone" fill="white"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg> Fale com um especialista!</a>
+                    <h5 class="main-description">Transformamos sua visão em realidade digital. Da estratégia ao lançamento, criamos sites profissionais que geram resultados reais para seu negócio.<br></h5>
+                    <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" class="btn header--cta btn-primary btn-round">Faça um orçamento</a>
                 </div>
                 <div class="col-md-6 text-right" data-aos="fade-left" data-aos-duration="600" style="margin-top:100px;">
                     <img src="assets/img/desenvolvimento-de-sites.webp" alt="desenvolvimento-de-sites" class="img-hero">
@@ -217,7 +218,7 @@
         <div class="col-md-8 mr-auto ml-auto text-center">
             <h2 class="title" style="color:white;">Nossa Metodologia</h2>
             <h4 class="description" style="color:white;">
-                Todos os nossos projetos de <strong>desenvolvimento de sites</strong> passam por algumas etapas para garantir que você fique satisfeito com o produto final.
+                Cada projeto de criação de sites segue nosso processo comprovado de 6 etapas, garantindo que você tenha total controle e satisfação com o resultado final.
             </h4>
         </div>
 
@@ -230,7 +231,7 @@
                     </div>
                     <div class="description">
                         <h4 class="info-title">Arquitetura</h4>
-                        <p>Nosso primeiro passo é estudar o fluxo de navegação do usuário..</p>
+                        <p>Iniciamos com um estudo profundo do comportamento do seu público-alvo, mapeando cada ponto de contato para criar uma jornada de navegação que converte visitantes em clientes.</p>
                     </div>
                 </div>
 
@@ -240,7 +241,7 @@
                     </div>
                     <div class="description">
                         <h4 class="info-title">Prototipagem</h4>
-                        <p>Após validado o fluxo, desenhamos os protótipos das telas do site.</p>
+                        <p>Com base na arquitetura validada, desenvolvemos protótipos interativos que permitem visualizar exatamente como será seu site antes mesmo da programação começar.</p>
                     </div>
                 </div>
 
@@ -250,7 +251,7 @@
                     </div>
                     <div class="description">
                         <h4 class="info-title">Frontend</h4>
-                        <p>Com base nas telas desenhadas, programamos a parte visual do site.</p>
+                        <p>Nossos desenvolvedores especialistas transformam os protótipos em código limpo e otimizado, criando uma interface visual que impressiona e engaja seus usuários.</p>
                     </div>
                 </div>
 
@@ -260,7 +261,7 @@
                     </div>
                     <div class="description">
                         <h4 class="info-title">Backend</h4>
-                        <p>Enquanto trabalhamos no frontend, a parte funcional do site é programada.</p>
+                        <p>Simultaneamente ao frontend, construímos toda a estrutura funcional do seu site, garantindo performance, segurança e escalabilidade para o crescimento do seu negócio.</p>
                     </div>
                 </div>
 
@@ -270,7 +271,7 @@
                     </div>
                     <div class="description">
                         <h4 class="info-title">Homologação</h4>
-                        <p>Finalizadas as etapas anteriores, publicamos o site em um local privado para que seja avaliado.</p>
+                        <p>Antes do lançamento, seu site passa por rigorosos testes em ambiente privado, onde você pode avaliar cada funcionalidade e solicitar ajustes necessários.</p>
                     </div>
                 </div>
 
@@ -280,7 +281,7 @@
                     </div>
                     <div class="description">
                         <h4 class="info-title">Entrega</h4>
-                        <p>Quando tudo estiver testado e aprovado, será publicado no endereço final. </p>
+                        <p>Após sua aprovação completa, publicamos seu site no endereço definitivo, com acompanhamento total para garantir que tudo funcione perfeitamente.</p>
                     </div>
                 </div>
 
@@ -288,8 +289,7 @@
             </div>
             <div class="row" style="margin-top:50px;" >
                 <div class="col-md-12 text-center" data-aos="fade-up" data-aos-delay="1100">
-                    <p style="font-size:15px">*Antes da publicação, cada página do site passa por um checklist que inclui:<br>
-                        Revisão dos links, funcionalidades, testes em smartphones e navegadores.</p>
+                    <p style="font-size:15px">*Nosso compromisso com a qualidade: cada página passa por um checklist rigoroso que inclui testes de responsividade, velocidade de carregamento, compatibilidade entre navegadores e validação de todas as funcionalidades.</p>
                 </div>
             </div>
 
@@ -310,7 +310,7 @@
         <div class="manutencao">
             <div class="col-md-8 mr-auto ml-auto text-center">
                 <h2 class="title">Como são nossos sites?</h2>
-                <h4 class="description">Cada projeto é único, mas todos têm algumas características em comum.</h4>
+                <h4 class="description">Cada projeto é único e personalizado, mas todos compartilham características que garantem resultados excepcionais para nossos clientes.</h4>
             </div>
             <br>
             <div class="container">
@@ -323,7 +323,7 @@
                             </div>
                             <div class="description">
                                 <h4 class="info-title" >Responsivos</h4>
-                                <p>Todos os nossos sites são responsivos, isso quer dizer que não importa o tamanho da tela: celular, desktop, tablet, nossos sites ficam bem em qualquer uma delas.</p>
+                                <p>Desenvolvemos sites que se adaptam perfeitamente a qualquer dispositivo. Seja no smartphone, tablet ou desktop, seus visitantes terão sempre a melhor experiência de navegação possível.</p>
                             </div>
                         </div>
                         <div class="info info-horizontal" data-aos="fade-right" data-aos-delay="100">
@@ -332,7 +332,7 @@
                             </div>
                             <div class="description">
                                 <h4 class="info-title">Gerenciáveis</h4>
-                                <p>Você pode editar todo o conteúdo do seu site através do painel de controle.</p>
+                                <p>Você tem controle total sobre seu conteúdo através de nosso painel administrativo intuitivo. Atualize textos, imagens e páginas quando quiser, sem depender de terceiros.</p>
                             </div>
                         </div>
 
@@ -342,14 +342,14 @@
                             </div>
                             <div class="description">
                                 <h4 class="info-title">Otimizados para Velocidade</h4>
-                                <p>Otimizamos os arquivos e códigos para que nossos sites carreguem rapidamente e tenha o melhor desempenho possível.</p>
+                                <p>Utilizamos as mais avançadas técnicas de otimização para garantir que seu site carregue em menos de 3 segundos, mantendo seus visitantes engajados e melhorando seu posicionamento no Google.</p>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-4" data-aos="fade-up" data-aos-delay="300" style="display: flex; align-items: center;">
                         <div class="phone-container">
-                            <img src="assets/img/desenvolvimento-de-sites.webp" class="lazy" alt="desenvolvimento de sites">
+                            <img src="assets/img/desenvolvimento-de-sites.webp" class="lazy" alt="criação de sites">
                         </div>
                     </div>
 
@@ -360,7 +360,7 @@
                             </div>
                             <div class="description">
                                 <h4 class="info-title">Sob medida</h4>
-                                <p>Não cortamos caminho, seu projeto é criado exclusivamente para você, sem templates prontos.</p>
+                                <p>Rejeitamos templates genéricos. Cada linha de código é escrita especificamente para seu projeto, criando uma identidade digital única que reflete verdadeiramente sua marca.</p>
                             </div>
                         </div>
                         <div class="info info-horizontal" data-aos="fade-left" data-aos-delay="100">
@@ -369,7 +369,7 @@
                             </div>
                             <div class="description">
                                 <h4 class="info-title">Preparados para o Google</h4>
-                                <p>Deixamos o seu site preparado para a indexação no Google, seguindo todas as diretrizes necessárias para que ele seja entre no índice o quanto antes.</p>
+                                <p>Seu site nasce otimizado para SEO, seguindo todas as diretrizes do Google. Estrutura semântica, meta tags otimizadas e código limpo garantem melhor visibilidade nos resultados de busca.</p>
                             </div>
                         </div>
                         <div class="info info-horizontal" data-aos="fade-right" data-aos-delay="200">
@@ -378,7 +378,7 @@
                             </div>
                             <div class="description">
                                 <h4 class="info-title">Garantidos</h4>
-                                <p>Após a entrega, você tem uma garantia de 30 dias para eventuais alterações e correções que precisar.</p>
+                                <p>Oferecemos 30 dias de garantia total após a entrega. Qualquer correção necessária será realizada sem custo adicional, porque sua satisfação é nossa prioridade.</p>
                             </div>
                         </div>
                     </div>
@@ -400,181 +400,136 @@
 
         <div class="col-md-8 mr-auto ml-auto text-center">
             <h2 class="title">Conheça nosso trabalho</h2>
-            <h4 class="description">Veja alguns dos projetos de desenvolvimento que executamos. </h4>
-            
-        </div><br><br><br>
-
-        <div id="portfolio-carousel" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-
-                <li data-target="#portfolio-carousel" data-slide-to="0" class="active"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="1"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="2"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="3"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="4"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="5"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="6"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="7"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="8"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="9"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="10"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="11"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="12"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="13"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="14"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="15"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="16"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="17"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="18"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="19"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="20"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="21"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="22"></li>
-                <li data-target="#portfolio-carousel" data-slide-to="23"></li>
-
-
-            </ol>
-
-            <div class="carousel-inner" style="box-shadow: none;">
-
-                <?php include('portfolio.php'); ?>
-
-            </div><!-- /carousel-inner -->
-
-            <!-- Left and right controls -->
-            <a class="carousel-control-prev" href="#portfolio-carousel" data-slide="prev">
-                <span class="carousel-control-prev-icon"></span>
-            </a>
-            <a class="carousel-control-next" href="#portfolio-carousel" data-slide="next">
-                <span class="carousel-control-next-icon"></span>
-            </a>
+            <h4 class="description">Veja alguns dos projetos que desenvolvemos e como ajudamos empresas a alcançarem seus objetivos digitais.</h4>
 
         </div>
+
+        <?php include('portfolio-new.php'); ?>
+
     </div>
 
 
     <!-- tecnologias -->
-    <div class="section fp-auto-height" style="padding:0; background-color:#e26f6f;">
-        <br><br><br>
-        <div id="tecnologias" class="features-7" style="padding:30px 0;">
-            <div class="col-md-8 mr-auto ml-auto text-center">
-                <h2 class="title" style="color:white;">Algumas das tecnologias que utilizamos para desenvolvimento de sites</h2>
-            </div><br><br>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="owl-carousel owl-theme" data-aos="fade-up" >
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icone" fill="#EEA940"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M27.5 162.2L9 187.1h90.5l6.9-130.7-78.9 105.8zM396.3 45.7L267.7 32l135.7 147.2-7.1-133.5zM112.2 218.3l-11.2-22H9.9L234.8 458zm2-31.2h284l-81.5-88.5L256.3 33zm297.3 9.1L277.6 458l224.8-261.7h-90.9zM415.4 69L406 56.4l.9 17.3 6.1 113.4h90.3zM113.5 93.5l-4.6 85.6L244.7 32 116.1 45.7zm287.7 102.7h-290l42.4 82.9L256.3 480l144.9-283.8z"/></svg>
-                                    
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Sketch</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-bootstrap-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Bootstrap</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-wordpress-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Wordpress</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icone" fill="#802D68"><!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M.4 256C.4 397 114 511 255 511C397 511 511 397 511 256C511 116 397 2.1 255 2.1C114 2.1 .4 116 .4 256zM192 150V363H149V150H192zM234 150H362V193H234V150zM362 235V278H234V235H362zM234 320H362V363H234V320z"/></svg>
-                                        
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Elementor</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-css3-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">CSS3</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-php-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">PHP</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-javascript-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Javascript</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-jquery-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Jquery</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-html5-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">HTML5</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-photoshop-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Photoshop</h5>
-                                    </div>
-                                </div></div>
-
-                            <div class="card"><div class="card-body">
-                                    <div class="icon">
-                                        <i class="devicon-illustrator-plain colored"></i>
-                                    </div>
-                                    <div class="description">
-                                        <h5 class="info-title">Illustrator</h5>
-                                    </div>
-                                </div></div>
-
-                        </div></div>
-
-                </div>
-
-            </div>
-            <br><br><br>
-        </div>
-    </div>
-    <!-- tecnologias -->
+<!--    <div class="section fp-auto-height" style="padding:0; background-color:#e26f6f;">-->
+<!--        <br><br><br>-->
+<!--        <div id="tecnologias" class="features-7" style="padding:30px 0;">-->
+<!--            <div class="col-md-8 mr-auto ml-auto text-center">-->
+<!--                <h2 class="title" style="color:white;">Algumas das tecnologias que utilizamos para desenvolvimento de sites</h2>-->
+<!--            </div><br><br>-->
+<!--            <div class="container">-->
+<!--                <div class="row">-->
+<!--                    <div class="col-md-12">-->
+<!--                        <div class="owl-carousel owl-theme" data-aos="fade-up" >-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icone" fill="#EEA940"><path d="M27.5 162.2L9 187.1h90.5l6.9-130.7-78.9 105.8zM396.3 45.7L267.7 32l135.7 147.2-7.1-133.5zM112.2 218.3l-11.2-22H9.9L234.8 458zm2-31.2h284l-81.5-88.5L256.3 33zm297.3 9.1L277.6 458l224.8-261.7h-90.9zM415.4 69L406 56.4l.9 17.3 6.1 113.4h90.3zM113.5 93.5l-4.6 85.6L244.7 32 116.1 45.7zm287.7 102.7h-290l42.4 82.9L256.3 480l144.9-283.8z"/></svg>-->
+<!---->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Sketch</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-bootstrap-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Bootstrap</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-wordpress-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Wordpress</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="icone" fill="#802D68"><path d="M.4 256C.4 397 114 511 255 511C397 511 511 397 511 256C511 116 397 2.1 255 2.1C114 2.1 .4 116 .4 256zM192 150V363H149V150H192zM234 150H362V193H234V150zM362 235V278H234V235H362zM234 320H362V363H234V320z"/></svg>-->
+<!---->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Elementor</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-css3-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">CSS3</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-php-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">PHP</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-javascript-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Javascript</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-jquery-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Jquery</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-html5-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">HTML5</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-photoshop-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Photoshop</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                            <div class="card"><div class="card-body">-->
+<!--                                    <div class="icon">-->
+<!--                                        <i class="devicon-illustrator-plain colored"></i>-->
+<!--                                    </div>-->
+<!--                                    <div class="description">-->
+<!--                                        <h5 class="info-title">Illustrator</h5>-->
+<!--                                    </div>-->
+<!--                                </div></div>-->
+<!---->
+<!--                        </div></div>-->
+<!---->
+<!--                </div>-->
+<!---->
+<!--            </div>-->
+<!--            <br><br><br>-->
+<!--        </div>-->
+<!--    </div>-->
 
 
     <!-- Outros serviços -->
@@ -582,7 +537,7 @@
         <br><br><br>
         <div class="manutencao">
             <div class="col-md-8 mr-auto ml-auto text-center">
-                <h2 class="title">O que mais podemos fazer por você?</h2>
+                <h2 class="title">Soluções completas para seu sucesso digital</h2>
             </div>
             <br>
             <div class="container">

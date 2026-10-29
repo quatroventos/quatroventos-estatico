@@ -1,0 +1,4 @@
+Armazém LB
+Desenvolvemos o e-commerce do Armazém LB em WordPress + WooCommerce, totalmente integrado com meios de pagamento e Correios.
+O site destaca os produtos de decoração com imagens grandes e atrativas, além de um checkout simplificado para aumentar conversões.
+https://armazemlb.com.br
