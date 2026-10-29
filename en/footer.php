@@ -48,6 +48,9 @@
 <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
 <script src="../assets/js/now-ui-kit.js?v=1.3.1" type="text/javascript"></script>
 
+<!-- impeccable-live-start -->
+<script src="http://localhost:8401/live.js?token=75d4aebc-d882-49c3-8c5e-649e7229b50a"></script>
+<!-- impeccable-live-end -->
 </body>
 
 </html>

@@ -28,16 +28,16 @@
         })(window,document,'script','dataLayer','GTM-KJHN8M');</script>
     <!-- End Google Tag Manager -->
 
-    <title>Desenvolvimento de Sites - Quatro Ventos</title>
-    <meta name="title" content="Desenvolvimento de Sites - Quatro Ventos">
-    <meta name="description" content="Conheça nosso serviço de Desenvolvimento de Sites, estamos prontos para executar seu projeto.">
+    <title>Criação de Sites - Quatro Ventos</title>
+    <meta name="title" content="Criação de Sites - Quatro Ventos">
+    <meta name="description" content="Conheça nosso serviço de Criação de Sites, estamos prontos para executar seu projeto.">
 
     <meta charset="utf-8"/>
 
-    <meta property="og:title" content="Desenvolvimento de Sites - Quatro Ventos">
-    <meta property="og:site_name" content="Desenvolvimento de Sites - Quatro Ventos">
-    <meta property="og:url" content="https://www.quatroventos.com.br/desenvolvimento-de-sites">
-    <meta property="og:description" content="Conheça nosso serviço de Desenvolvimento de Sites, estamos prontos para executar seu projeto.">
+    <meta property="og:title" content="Criação de Sites - Quatro Ventos">
+    <meta property="og:site_name" content="Criação de Sites - Quatro Ventos">
+    <meta property="og:url" content="https://www.quatroventos.com.br/criacao-de-sites">
+    <meta property="og:description" content="Conheça nosso serviço de Criação de Sites, estamos prontos para executar seu projeto.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://www.quatroventos.com.br/assets/img/hero-webdesign.png">
 
@@ -79,10 +79,10 @@
         {
             "@context": "https://schema.org/",
             "@type": "Service",
-            "serviceType": "Desenvolvimento de Sites",
+            "serviceType": "Criação de Sites",
             "provider": {
                 "@type": "LocalBusiness",
-                "name": "Quatro Ventos - Desenvolvimento de Sites",
+                "name": "Quatro Ventos - Criação de Sites",
                 "telephone": "41 3039-9593"
             },
             "areaServed": {
@@ -91,11 +91,11 @@
             },
             "hasOfferCatalog": {
                 "@type": "OfferCatalog",
-                "name": "Desenvolvimento de Sites",
+                "name": "Criação de Sites",
                 "itemListElement": [
                     {
                         "@type": "OfferCatalog",
-                        "name": "Serviços de desenvolvimento de sites",
+                        "name": "Serviços de criação de sites",
                         "itemListElement": [
                             {
                                 "@type": "Offer",
@@ -183,9 +183,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 ml-auto mr-auto text-left" data-aos="fade-right" data-aos-duration="600">
-                    <h1 class="main-title title--dev">Desenvolvimento de sites</h1>
+                    <h1 class="main-title title--dev">Criação de sites</h1>
                     <h5 class="main-description">Transformamos sua visão em realidade digital. Da estratégia ao lançamento, criamos sites profissionais que geram resultados reais para seu negócio.<br></h5>
-                    <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" class="btn header--cta btn-primary btn-round">Faça um orçamento</a>
+                    <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593&text=Olá equipe da *Quatro Ventos*. Visitei o site de vocês e gostaria de tirar algumas dúvidas e/ou solicitar um orçamento para o serviço de *criação de sites*." class="btn header--cta btn-primary btn-round">Faça um orçamento</a>
                 </div>
                 <div class="col-md-6 text-right" data-aos="fade-left" data-aos-duration="600" style="margin-top:100px;">
                     <img src="assets/img/desenvolvimento-de-sites.webp" alt="desenvolvimento-de-sites" class="img-hero">
@@ -218,7 +218,7 @@
         <div class="col-md-8 mr-auto ml-auto text-center">
             <h2 class="title" style="color:white;">Nossa Metodologia</h2>
             <h4 class="description" style="color:white;">
-                Cada projeto de desenvolvimento de sites segue nosso processo comprovado de 6 etapas, garantindo que você tenha total controle e satisfação com o resultado final.
+                Cada projeto de criação de sites segue nosso processo comprovado de 6 etapas, garantindo que você tenha total controle e satisfação com o resultado final.
             </h4>
         </div>
 
@@ -295,7 +295,7 @@
 
             <div class="row" data-aos="fade-up" data-aos-delay="350">
                 <div class="col-md-12 text-center">
-                    <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato para orçar seu projeto.</a>
+                    <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593&text=Olá equipe da *Quatro Ventos*. Visitei o site de vocês e gostaria de tirar algumas dúvidas e/ou solicitar um orçamento para o serviço de *criação de sites*." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato para orçar seu projeto.</a>
                 </div>
             </div>
 
@@ -349,7 +349,7 @@
 
                     <div class="col-md-4" data-aos="fade-up" data-aos-delay="300" style="display: flex; align-items: center;">
                         <div class="phone-container">
-                            <img src="assets/img/desenvolvimento-de-sites.webp" class="lazy" alt="desenvolvimento de sites">
+                            <img src="assets/img/desenvolvimento-de-sites.webp" class="lazy" alt="criação de sites">
                         </div>
                     </div>
 
@@ -385,7 +385,7 @@
                 </div>
                 <div class="row" data-aos="fade-up" data-aos-delay="350">
                     <div class="col-md-12 text-center">
-                        <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato para orçar seu projeto.</a>
+                        <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593&text=Olá equipe da *Quatro Ventos*. Visitei o site de vocês e gostaria de tirar algumas dúvidas e/ou solicitar um orçamento para o serviço de *criação de sites*." target="_blank" class="btn btn-primary btn-round" style="margin:auto;">Entre em contato para orçar seu projeto.</a>
                     </div>
                 </div>
             </div>
@@ -414,7 +414,7 @@
 <!--        <br><br><br>-->
 <!--        <div id="tecnologias" class="features-7" style="padding:30px 0;">-->
 <!--            <div class="col-md-8 mr-auto ml-auto text-center">-->
-<!--                <h2 class="title" style="color:white;">Algumas das tecnologias que utilizamos para desenvolvimento de sites</h2>-->
+<!--                <h2 class="title" style="color:white;">Algumas das tecnologias que utilizamos para criação de sites</h2>-->
 <!--            </div><br><br>-->
 <!--            <div class="container">-->
 <!--                <div class="row">-->

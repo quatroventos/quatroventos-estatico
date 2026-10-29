@@ -13,6 +13,7 @@
             $images = array_filter($files, function ($file) {
                 return pathinfo($file, PATHINFO_EXTENSION) === 'png';
             });
+            $i = 1;
 
             foreach ($images as $image) {
                 $basename = pathinfo($image, PATHINFO_FILENAME);
@@ -28,6 +29,12 @@
                 $title = "Título não encontrado";
                 $description = "Descrição não disponível";
                 $link = "#";
+
+                $css = "";
+                if($i > 1){
+                    $css =  "border-top:1px solid #ccc;";
+                }
+
                 if (file_exists($textFile)) {
                     $lines = file($textFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                     if (count($lines) > 0) $title = $lines[0];
@@ -38,13 +45,13 @@
                     //mockup macbook
 
                     ?>
-                <div style="position: relative; width: 100%;" class="row mt-5" data-aos="fade-up" data-aos-duration="300">
+                <div style="position: relative; width: 100%; <?php echo $css; ?>" class="row mt-5" data-aos="fade-up" data-aos-duration="300">
                     <!-- Add or remove "with-glare" class. Removing the glare makes the screen interactive -->
                     <div class="col-12 col-lg-3 pt-5">
-                        <h3 class="fs-4 fw-bold mb-2"><?= htmlspecialchars($title) ?></h3>
+                        <h3 class="fs-4 fw-bold mb-2" style="font-weight: 700;"><?= htmlspecialchars($title) ?></h3>
                         <p class="fs-6"><?php echo htmlspecialchars($description) ?></p>
                         <p class="d-flex fs-6 justify-content-center justify-content-lg-start">
-                            <a href=<?php echo htmlspecialchars($link) ?> class="btn btn-sm btn-secondary rounded-pill" target="_blank">Ver ao vivo</a>&nbsp;<a href=<?php echo htmlspecialchars($link) ?> class="btn btn-sm btn-primary rounded-pill" target="_blank">Entre em contato</a>
+                            <a href=<?php echo htmlspecialchars($link) ?> class="btn btn-sm btn-secondary rounded-pill" target="_blank">Ver ao vivo</a>&nbsp;<a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" class="btn btn-sm btn-primary rounded-pill" target="_blank">Quero uma página assim!</a>
                         </p>
 
 
@@ -92,6 +99,7 @@
                     echo '</div>';
                     echo '</div>';
                 }
+                $i++;
             }
         } else {
             echo '<p>O diretório de portfólio não foi encontrado.</p>';

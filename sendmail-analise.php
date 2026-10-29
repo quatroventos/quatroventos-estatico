@@ -10,10 +10,8 @@
 
 $name = $_POST['name'];
 $email = $_POST['email'];
-//$company = $_POST['company'];
-//$wpp = $_POST['wpp'];
-//$service = $_POST['service'];
-$message = $_POST['message'];
+$site = $_POST['site'];
+$wpp = $_POST['whatsapp'];
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -44,23 +42,19 @@ try {
 
     //Content
     $mail->isHTML(true);                                  //Set email format to HTML
-    $mail->Subject = 'Contato através do site';
+    $mail->Subject = 'Pedido de análise';
     $mail->Body    = 'Nome: '.$name.'<br>';
-//    $mail->Body    .= 'Empresa: '.$company.'<br>';
     $mail->Body    .= 'E-mail: '.$email.'<br>';
-//    $mail->Body    .= 'Whatsapp: '.$wpp.'<br>';
-//    $mail->Body    .= 'Serviço: '.$service.'<br>';
-    $mail->Body    .= 'Mensagem: '.$message.'<br>';
+    $mail->Body    .= 'Whatsapp: '.$wpp.'<br>';
+    $mail->Body    .= 'Site: '.$site.'<br>';
 
     $mail->AltBody    = 'Nome: '.$name;
-//    $mail->AltBody    .= 'Empresa: '.$company;
     $mail->AltBody    .= 'E-mail: '.$email;
-//    $mail->AltBody    .= 'Whatsapp: '.$wpp;
-//    $mail->AltBody    .= 'Serviço: '.$service;
-    $mail->AltBody    .= 'Mensagem: '.$message;
+    $mail->AltBody    .= 'Whatsapp: '.$wpp;
+    $mail->AltBody    .= 'Site: '.$site;
 
     $mail->send();
-    header("Location: obrigado.php");
+    header("Location: obrigado-analise.php");
     exit();
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";

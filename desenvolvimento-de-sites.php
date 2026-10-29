@@ -28,16 +28,16 @@
         })(window,document,'script','dataLayer','GTM-KJHN8M');</script>
     <!-- End Google Tag Manager -->
 
-    <title>Criação de Sites - Quatro Ventos</title>
-    <meta name="title" content="Criação de Sites - Quatro Ventos">
-    <meta name="description" content="Conheça nosso serviço de Criação de Sites, estamos prontos para executar seu projeto.">
+    <title>Desenvolvimento de Sites - Quatro Ventos</title>
+    <meta name="title" content="Desenvolvimento de Sites - Quatro Ventos">
+    <meta name="description" content="Conheça nosso serviço de Desenvolvimento de Sites, estamos prontos para executar seu projeto.">
 
     <meta charset="utf-8"/>
 
-    <meta property="og:title" content="Criação de Sites - Quatro Ventos">
-    <meta property="og:site_name" content="Criação de Sites - Quatro Ventos">
-    <meta property="og:url" content="https://www.quatroventos.com.br/criacao-de-sites">
-    <meta property="og:description" content="Conheça nosso serviço de Criação de Sites, estamos prontos para executar seu projeto.">
+    <meta property="og:title" content="Desenvolvimento de Sites - Quatro Ventos">
+    <meta property="og:site_name" content="Desenvolvimento de Sites - Quatro Ventos">
+    <meta property="og:url" content="https://www.quatroventos.com.br/desenvolvimento-de-sites">
+    <meta property="og:description" content="Conheça nosso serviço de Desenvolvimento de Sites, estamos prontos para executar seu projeto.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://www.quatroventos.com.br/assets/img/hero-webdesign.png">
 
@@ -218,7 +218,7 @@
         <div class="col-md-8 mr-auto ml-auto text-center">
             <h2 class="title" style="color:white;">Nossa Metodologia</h2>
             <h4 class="description" style="color:white;">
-                Cada projeto de criação de sites segue nosso processo comprovado de 6 etapas, garantindo que você tenha total controle e satisfação com o resultado final.
+                Cada projeto de Desenvolvimento de sites segue nosso processo comprovado de 6 etapas, garantindo que você tenha total controle e satisfação com o resultado final.
             </h4>
         </div>
 
@@ -349,7 +349,7 @@
 
                     <div class="col-md-4" data-aos="fade-up" data-aos-delay="300" style="display: flex; align-items: center;">
                         <div class="phone-container">
-                            <img src="assets/img/desenvolvimento-de-sites.webp" class="lazy" alt="criação de sites">
+                            <img src="assets/img/desenvolvimento-de-sites.webp" class="lazy" alt="Desenvolvimento de sites">
                         </div>
                     </div>
 

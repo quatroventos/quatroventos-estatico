@@ -10,9 +10,9 @@
 
 $name = $_POST['name'];
 $email = $_POST['email'];
-$company = $_POST['company'];
-$wpp = $_POST['wpp'];
-$service = $_POST['service'];
+//$company = $_POST['company'];
+//$wpp = $_POST['wpp'];
+//$service = $_POST['service'];
 $message = $_POST['message'];
 
 use PHPMailer\PHPMailer\PHPMailer;
@@ -38,7 +38,7 @@ try {
 
     //Recipients
     $mail->setFrom('no-reply@quatroventos.com.br', $name);
-    $mail->addReplyTo($email, $name);
+//    $mail->addReplyTo($email);
     $mail->addAddress('contato@quatroventos.com.br', 'Quatro Ventos');     //Add a recipient
 
 
@@ -46,17 +46,17 @@ try {
     $mail->isHTML(true);                                  //Set email format to HTML
     $mail->Subject = 'Contato através do site';
     $mail->Body    = 'Nome: '.$name.'<br>';
-    $mail->Body    .= 'Empresa: '.$company.'<br>';
+//    $mail->Body    .= 'Empresa: '.$company.'<br>';
     $mail->Body    .= 'E-mail: '.$email.'<br>';
-    $mail->Body    .= 'Whatsapp: '.$wpp.'<br>';
-    $mail->Body    .= 'Serviço: '.$service.'<br>';
+//    $mail->Body    .= 'Whatsapp: '.$wpp.'<br>';
+//    $mail->Body    .= 'Serviço: '.$service.'<br>';
     $mail->Body    .= 'Mensagem: '.$message.'<br>';
 
     $mail->AltBody    = 'Nome: '.$name;
-    $mail->AltBody    .= 'Empresa: '.$company;
+//    $mail->AltBody    .= 'Empresa: '.$company;
     $mail->AltBody    .= 'E-mail: '.$email;
-    $mail->AltBody    .= 'Whatsapp: '.$wpp;
-    $mail->AltBody    .= 'Serviço: '.$service;
+//    $mail->AltBody    .= 'Whatsapp: '.$wpp;
+//    $mail->AltBody    .= 'Serviço: '.$service;
     $mail->AltBody    .= 'Mensagem: '.$message;
 
     $mail->send();

@@ -89,6 +89,9 @@
 <script src="./assets/js/now-ui-kit-no-motion.js" type="text/javascript"></script>
 
 
+<!-- impeccable-live-start -->
+<script src="http://localhost:8401/live.js?token=75d4aebc-d882-49c3-8c5e-649e7229b50a"></script>
+<!-- impeccable-live-end -->
 </body>
 
 </html>

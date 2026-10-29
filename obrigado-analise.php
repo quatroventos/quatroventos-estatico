@@ -19,7 +19,7 @@
 <html lang="en">
 
 <head>
-	
+
 
     <title>Obrigado! - Quatro Ventos</title>
     <meta name="title" content="Obrigado! - Quatro Ventos">
@@ -77,7 +77,7 @@
             <div class="row">
                 <div class="col-md-6 ml-auto mr-auto text-left" data-aos="fade-right" data-aos-duration="600">
                     <h1 class="main-title">Obrigado!</h1>
-                    <h5 class="main-description">Sua mensagem foi enviada, assim que possível lhe responderemos.</h5>
+                    <h5 class="main-description">Recebemos seu pedido! Em até 24 horas enviaremos sua análise no e-mail informado.</h5>
                     <a href="https://api.whatsapp.com/send?l=pt-BR&phone=554130399593" class="btn header--cta btn-outline-primary btn-round">Fale via WhatsApp!</a>
                 </div>
                 <div class="col-md-6 text-right" data-aos="fade-left" data-aos-duration="600" style="margin-top:100px;">
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
             <br><br><br>

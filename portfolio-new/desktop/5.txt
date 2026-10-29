@@ -1,4 +1,3 @@
 Aliança Francesa de Brasília
-Desenvolvemos o website da Aliança Francesa de Brasília em WordPress + Elementor, com agenda integrada e plugins personalizados para cadastro de cursos.
-Uma solução que facilita a gestão de conteúdo e fortalece a presença digital da instituição.
+Desenvolvemos o website da Aliança Francesa de Brasília em WordPress + Elementor, com agenda integrada e plugins personalizados para cadastro de cursos. Uma solução que facilita a gestão de conteúdo e fortalece a presença digital da instituição.
 https://afbrasilia.org.br

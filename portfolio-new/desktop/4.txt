@@ -1,5 +1,3 @@
 Conexme
-Uma plataforma completa para gestão de talentos e oportunidades.
-Com filtros inteligentes, empresas cadastram vagas e encontram profissionais de forma ágil. Assim como profissinais podem cadastrar-se em busca de vagas.
-O sistema inclui gestão de usuários e clientes, controle de assinaturas, checkout integrado, renovação automática de créditos e painel de conteúdo completo e controle de otimização para SEO.
+Uma plataforma completa para gestão de talentos e oportunidades. Com filtros inteligentes, empresas cadastram vagas e encontram profissionais de forma ágil. Assim como profissinais podem cadastrar-se em busca de vagas. O sistema inclui gestão de usuários e clientes, controle de assinaturas, checkout integrado, renovação automática de créditos e painel de conteúdo completo e controle de otimização para SEO.
 https://conexme.com.br/

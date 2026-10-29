@@ -1,4 +1,3 @@
 Draft
-O site da Construtora Draft foi desenvolvido em WordPress + Elementor, com foco em destacar os empreendimentos.
-Cada projeto ganhou uma página personalizada, adaptada à sua identidade visual, com imagens de alta qualidade para valorizar a apresentação.
+O site da Construtora Draft foi desenvolvido em WordPress + Elementor, com foco em destacar os empreendimentos. Cada projeto ganhou uma página personalizada, adaptada à sua identidade visual, com imagens de alta qualidade para valorizar a apresentação.
 http://draftbr.com.br

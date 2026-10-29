@@ -8,7 +8,7 @@
 
 <script src="./assets/js/core/jquery.min.js" type="text/javascript"></script>
 <body class="signup-page sidebar-collapse">
-	
+
 	<!-- Google Tag Manager (noscript) -->
 	<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KJHN8M"
 	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -45,7 +45,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-primary btn-round" style="font-size:0.83em" href="#contato">
+                    <a class="nav-link btn btn-primary btn-round" style="font-size:0.83em" href="https://wa.me/554130399593?text=Gostaria%20de%20um%20orçamento.">
                         <p><i class="now-ui-icons files_paper  "></i> <strong>Solicitar proposta</strong></p>
                     </a>
                 </li>

@@ -1,0 +1,485 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-29T11:42:00-03:00",
+  "title": "Design System: Quatro Ventos",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Noite",
+        "canonical": "#07070a",
+        "tonalRamp": [
+          "#07070a",
+          "#121217",
+          "#1f1f26",
+          "#3a3a42",
+          "#5a5a63",
+          "#8d8d93",
+          "#c9c9c4",
+          "#f4f4f1"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta",
+        "canonical": "#0b0b0f",
+        "tonalRamp": [
+          "#0b0b0f",
+          "#18181e",
+          "#2a2a31",
+          "#3e3e44",
+          "#55555c",
+          "#6b6b72",
+          "#a3a3a8",
+          "#e6e6e3"
+        ]
+      },
+      "panel": {
+        "role": "neutral",
+        "displayName": "Painel",
+        "canonical": "#121217",
+        "tonalRamp": [
+          "#07070a",
+          "#121217",
+          "#1f1f26",
+          "#2c2c34",
+          "#3a3a42",
+          "#5a5a63",
+          "#8d8d93",
+          "#c9c9c4"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Papel",
+        "canonical": "#f4f4f1",
+        "tonalRamp": [
+          "#2a2a27",
+          "#4a4a46",
+          "#6c6c67",
+          "#8f8f8a",
+          "#b3b3ae",
+          "#d4d4cf",
+          "#e8e8e4",
+          "#f4f4f1"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Branco",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#262626",
+          "#474747",
+          "#6b6b6b",
+          "#8f8f8f",
+          "#b3b3b3",
+          "#d6d6d6",
+          "#ededed",
+          "#ffffff"
+        ]
+      },
+      "lime": {
+        "role": "secondary",
+        "displayName": "Limão Sinal",
+        "canonical": "#c8f25a",
+        "tonalRamp": [
+          "#2a3610",
+          "#45591a",
+          "#647f26",
+          "#86a832",
+          "#a8d042",
+          "#c8f25a",
+          "#dcf795",
+          "#f0fbd4"
+        ]
+      },
+      "olive": {
+        "role": "accent",
+        "displayName": "Oliva",
+        "canonical": "#5f7a12",
+        "tonalRamp": [
+          "#1f2806",
+          "#33420a",
+          "#4a5f0e",
+          "#5f7a12",
+          "#7d9e1c",
+          "#a3c83a",
+          "#c8f25a",
+          "#eefbcc"
+        ]
+      },
+      "whatsapp": {
+        "role": "tertiary",
+        "displayName": "Verde WhatsApp",
+        "canonical": "#25d366",
+        "tonalRamp": [
+          "#0a3a1c",
+          "#0f5a2b",
+          "#16803d",
+          "#1ea851",
+          "#25d366",
+          "#5fe08f",
+          "#9cecb9",
+          "#d8f8e4"
+        ]
+      },
+      "on-dark-soft": {
+        "role": "neutral",
+        "displayName": "Texto Suave em escuro",
+        "canonical": "#c9c9c4"
+      },
+      "on-dark-mute": {
+        "role": "neutral",
+        "displayName": "Texto Mudo em escuro",
+        "canonical": "#8d8d93"
+      },
+      "on-light-soft": {
+        "role": "neutral",
+        "displayName": "Texto Suave em claro",
+        "canonical": "#3e3e44"
+      },
+      "on-light-mute": {
+        "role": "neutral",
+        "displayName": "Texto Mudo em claro",
+        "canonical": "#6b6b72"
+      },
+      "line-dark": {
+        "role": "neutral",
+        "displayName": "Linha em escuro",
+        "canonical": "rgb(255 255 255 / 0.12)"
+      },
+      "line-light": {
+        "role": "neutral",
+        "displayName": "Linha em claro",
+        "canonical": "rgb(11 11 15 / 0.12)"
+      },
+      "danger": {
+        "role": "neutral",
+        "displayName": "Erro",
+        "canonical": "#b42318",
+        "tonalRamp": [
+          "#3d0b07",
+          "#5e120c",
+          "#8a1c12",
+          "#b42318",
+          "#d8483c",
+          "#e88178",
+          "#f3b8b2",
+          "#fbe5e3"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "H1 dos heros. Na home com linha rotativa o teto cai para 108px."
+      },
+      "display-inner": {
+        "displayName": "Display interno",
+        "purpose": "H1 de páginas internas, até 18ch."
+      },
+      "headline-statement": {
+        "displayName": "Headline de chamada",
+        "purpose": "H2 da chamada e do segundo de dois blocos de texto seguidos."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "H2 de seção."
+      },
+      "row-title": {
+        "displayName": "Título de linha",
+        "purpose": "Linhas de link em lista."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "H3 de cards, etapas e linhas título-texto."
+      },
+      "lead": {
+        "displayName": "Lead",
+        "purpose": "Abertura abaixo do H1."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto corrido; 17px abaixo de 640px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Pílulas de ação."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Números de ordem, unidade de preço, contador, nomes de tecnologia e log de agente."
+      }
+    },
+    "shadows": [
+      {
+        "name": "dropdown",
+        "value": "0 0 0 1px rgb(255 255 255 / 0.12), 0 24px 48px rgb(0 0 0 / 0.45)",
+        "purpose": "Submenu do header."
+      },
+      {
+        "name": "float",
+        "value": "0 10px 30px rgb(0 0 0 / 0.35)",
+        "purpose": "Botão flutuante de WhatsApp."
+      },
+      {
+        "name": "header-solid",
+        "value": "0 1px 0 rgb(255 255 255 / 0.12)",
+        "purpose": "Linha inferior do header sólido, com backdrop-filter blur(14px)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(0.2, 0.7, 0.2, 1)",
+        "purpose": "Curva padrão de hover e estados (0.2s a 0.3s)."
+      },
+      {
+        "name": "rotate",
+        "value": "transform 0.9s cubic-bezier(0.75, 0, 0.2, 1), intervalo 2800ms",
+        "purpose": "Troca da linha rotativa do H1."
+      },
+      {
+        "name": "drift",
+        "value": "drift 60s linear infinite (translateY -50%)",
+        "purpose": "Deriva do log de agente no hero."
+      },
+      {
+        "name": "hover-lift",
+        "value": "translateY(-2px) pílula, translateY(-4px) card, translateY(-3px) scale(1.04) WhatsApp",
+        "purpose": "Elevação de hover."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce zera transições e animações; a linha rotativa não inicia",
+        "purpose": "Acessibilidade."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "nav",
+        "value": "1140px"
+      },
+      {
+        "name": "lg",
+        "value": "1100px"
+      },
+      {
+        "name": "md",
+        "value": "900px"
+      },
+      {
+        "name": "sm",
+        "value": "640px"
+      }
+    ],
+    "sectionTones": {
+      "dark": [
+        "hero",
+        "steps",
+        "cta"
+      ],
+      "white": [
+        "quotes",
+        "logos"
+      ],
+      "light": [
+        "prose",
+        "list",
+        "cards",
+        "portfolio",
+        "plans",
+        "faq",
+        "contact",
+        "cases",
+        "cases-list"
+      ],
+      "collapse": "Seção com o mesmo tom da anterior (exceto hero) zera o padding superior.",
+      "stackedProse": "Dois prose seguidos: o segundo usa a variante empilhada."
+    },
+    "rasterProvenance": {
+      "generated": [],
+      "sourced": [
+        {
+          "kind": "logos de clientes",
+          "origin": "assets/img/clientes/*.png (site anterior)",
+          "destination": "site rba/public/assets/clientes/",
+          "files": [
+            "aliancafrancesa.png",
+            "cycloar.png",
+            "ddm.png",
+            "digio.png",
+            "fernandasaad.png",
+            "garimpo.png",
+            "giselesiqueira.png",
+            "hemera.png",
+            "inoveit.png",
+            "liv.png",
+            "rodolfofontana.png",
+            "santaplural.png"
+          ]
+        }
+      ],
+      "cms": "Capas e prints de cases são enviados pelo CMS como material real dos projetos."
+    }
+  },
+  "components": [
+    {
+      "name": "CTA principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Pílula roxa para todo CTA principal que não leva ao WhatsApp.",
+      "html": "<a class=\"ds-pill ds-pill-solid\" href=\"#\">Iniciar um projeto</a>",
+      "css": ".ds-pill { display: inline-flex; align-items: center; justify-content: center; gap: 12px; min-height: 54px; padding: 0 26px; border-radius: 999px; font-family: \"Host Grotesk\", system-ui, sans-serif; font-weight: 600; font-size: 16px; line-height: 1.2; white-space: nowrap; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); } .ds-pill:hover { transform: translateY(-2px); } .ds-pill:focus-visible { outline: 2px solid #0b0b0f; outline-offset: 3px; } .ds-pill-solid { background: #0b0b0f; color: #ffffff; } .ds-pill-solid:hover { background: #2a2a31; }"
+    },
+    {
+      "name": "CTA de WhatsApp",
+      "kind": "button",
+      "refersTo": "button-whatsapp",
+      "description": "Pílula tinta com texto e contorno limão e seta em círculo; exclusiva para destino WhatsApp.",
+      "html": "<a class=\"ds-pill-wa\" href=\"#\">Falar no WhatsApp<span class=\"ds-pill-wa-arrow\"><svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" aria-hidden=\"true\"><path d=\"M4.5 11.5l7-7M5.5 4.5h6v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></a>",
+      "css": ".ds-pill-wa { display: inline-flex; align-items: center; gap: 12px; min-height: 54px; padding: 0 14px 0 26px; border-radius: 999px; background: #0b0b0f; color: #c8f25a; box-shadow: inset 0 0 0 2px #c8f25a; font-family: \"Host Grotesk\", system-ui, sans-serif; font-weight: 600; font-size: 16px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); } .ds-pill-wa:hover { transform: translateY(-2px); background: #c8f25a; color: #0b0b0f; } .ds-pill-wa:focus-visible { outline: 2px solid #c8f25a; outline-offset: 3px; } .ds-pill-wa-arrow { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: #c8f25a; color: #0b0b0f; } .ds-pill-wa:hover .ds-pill-wa-arrow { background: #0b0b0f; color: #c8f25a; }"
+    },
+    {
+      "name": "CTA secundário",
+      "kind": "button",
+      "refersTo": "button-line",
+      "description": "Pílula transparente com contorno interno; versão sobre fundo escuro.",
+      "html": "<div class=\"ds-dark-bg\"><a class=\"ds-pill-line\" href=\"#\">Ver cases</a></div>",
+      "css": ".ds-dark-bg { background: #07070a; padding: 24px; } .ds-pill-line { display: inline-flex; align-items: center; min-height: 54px; padding: 0 26px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 0.7); color: #ffffff; font-family: \"Host Grotesk\", system-ui, sans-serif; font-weight: 600; font-size: 16px; text-decoration: none; transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.25s, background-color 0.25s; } .ds-pill-line:hover { transform: translateY(-2px); box-shadow: inset 0 0 0 1.5px #ffffff; background: rgb(255 255 255 / 0.06); } .ds-pill-line:focus-visible { outline: 2px solid #c8f25a; outline-offset: 3px; }"
+    },
+    {
+      "name": "Card de navegação",
+      "kind": "card",
+      "refersTo": "card-nav",
+      "description": "Card numerado de lista com texto e link em todos os itens; vira tinta e sobe no hover.",
+      "html": "<div class=\"ds-paper-bg\"><a class=\"ds-card\" href=\"#\"><span class=\"ds-card-num\"><span class=\"ds-mono\">01</span><span class=\"ds-card-go\"><svg viewBox=\"0 0 16 16\" width=\"15\" height=\"15\" aria-hidden=\"true\"><path d=\"M4.5 11.5l7-7M5.5 4.5h6v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></span><span><span class=\"ds-card-title\">Agentes de IA</span><span class=\"ds-card-text\">Agentes que leem, decidem e executam etapas do processo.</span></span></a></div>",
+      "css": ".ds-paper-bg { background: #f4f4f1; padding: 24px; } .ds-card { display: flex; flex-direction: column; justify-content: space-between; gap: 40px; min-height: 260px; max-width: 320px; padding: 28px; border-radius: 22px; background: #ffffff; color: #0b0b0f; text-decoration: none; font-family: \"Host Grotesk\", system-ui, sans-serif; transition: background-color 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), color 0.3s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); } .ds-card-num { display: flex; justify-content: space-between; align-items: center; color: #6b6b72; } .ds-mono { font-family: \"Martian Mono\", ui-monospace, monospace; font-size: 13px; } .ds-card-go { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #f4f4f1; color: #0b0b0f; transition: background-color 0.3s, transform 0.3s; } .ds-card-title { display: block; margin-bottom: 10px; font-size: 26px; font-weight: 650; line-height: 1.08; letter-spacing: -0.03em; } .ds-card-text { display: block; font-size: 16px; line-height: 1.5; color: #3e3e44; } .ds-card:hover { background: #0b0b0f; color: #ffffff; transform: translateY(-4px); } .ds-card:hover .ds-card-num, .ds-card:hover .ds-card-text { color: rgb(255 255 255 / 0.82); } .ds-card:hover .ds-card-go { background: #ffffff; transform: rotate(45deg); } .ds-card:focus-visible { outline: 2px solid #0b0b0f; outline-offset: 3px; }"
+    },
+    {
+      "name": "Linha de link",
+      "kind": "custom",
+      "refersTo": "row-title",
+      "description": "Lista de itens com link e sem texto; título grande com seta circular, seta em tinta no hover.",
+      "html": "<ul class=\"ds-rows\"><li><a href=\"#\">Automação de atendimento<span class=\"ds-rows-go\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M4.5 11.5l7-7M5.5 4.5h6v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></a></li><li><a href=\"#\">Sistemas sob medida<span class=\"ds-rows-go\"><svg viewBox=\"0 0 16 16\" width=\"16\" height=\"16\" aria-hidden=\"true\"><path d=\"M4.5 11.5l7-7M5.5 4.5h6v6\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></span></a></li></ul>",
+      "css": ".ds-rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgb(11 11 15 / 0.12); background: #f4f4f1; color: #0b0b0f; font-family: \"Host Grotesk\", system-ui, sans-serif; } .ds-rows li { border-bottom: 1px solid rgb(11 11 15 / 0.12); } .ds-rows a { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 22px 4px; font-size: 30px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.1; color: inherit; text-decoration: none; transition: color 0.25s cubic-bezier(0.2, 0.7, 0.2, 1), padding 0.3s cubic-bezier(0.2, 0.7, 0.2, 1); } .ds-rows-go { flex: none; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1.5px rgb(11 11 15 / 0.12); transition: background-color 0.25s, box-shadow 0.25s, color 0.25s; } .ds-rows a:hover { padding-left: 14px; } .ds-rows a:hover .ds-rows-go { background: #0b0b0f; color: #ffffff; box-shadow: none; } .ds-rows a:focus-visible { outline: 2px solid #0b0b0f; outline-offset: 3px; }"
+    },
+    {
+      "name": "Etiquetas",
+      "kind": "chip",
+      "refersTo": "chip",
+      "description": "Lista de seis ou mais itens curtos sem texto nem link.",
+      "html": "<ul class=\"ds-chips\"><li>Laravel</li><li>React</li><li>n8n</li><li>OpenAI</li><li>WhatsApp API</li><li>PostgreSQL</li></ul>",
+      "css": ".ds-chips { list-style: none; margin: 0; padding: 24px; display: flex; flex-wrap: wrap; gap: 10px; background: #f4f4f1; } .ds-chips li { font-family: \"Host Grotesk\", system-ui, sans-serif; font-size: 15.5px; font-weight: 500; padding: 12px 18px; border-radius: 999px; background: #ffffff; color: #0b0b0f; }"
+    },
+    {
+      "name": "Campo de formulário",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Campo do formulário de contato; foco troca borda para tinta e fundo para branco.",
+      "html": "<label class=\"ds-field\">Nome<input type=\"text\" placeholder=\"Seu nome\"></label>",
+      "css": ".ds-field { display: grid; gap: 8px; max-width: 360px; padding: 24px; background: #ffffff; font-family: \"Host Grotesk\", system-ui, sans-serif; font-size: 14.5px; font-weight: 500; color: #3e3e44; } .ds-field input { width: 100%; min-height: 52px; padding: 12px 16px; border-radius: 14px; border: 1px solid rgb(11 11 15 / 0.12); background: #f4f4f1; color: #0b0b0f; font: inherit; font-size: 16px; font-weight: 400; transition: border-color 0.2s, background-color 0.2s; } .ds-field input:focus { outline: none; border-color: #0b0b0f; background: #ffffff; }"
+    },
+    {
+      "name": "Navegação principal",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Header escuro com marca, links em pílula e CTA sólido branco pequeno.",
+      "html": "<header class=\"ds-nav\"><a class=\"ds-brand\" href=\"#\">quatro<b>ventos</b></a><nav><a href=\"#\" aria-current=\"page\">IA</a><a href=\"#\">Automações</a><a href=\"#\">Sistemas</a><a href=\"#\">Cases</a></nav><a class=\"ds-nav-cta\" href=\"#\">Iniciar um projeto</a></header>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 32px; height: 88px; padding: 0 32px; background: #07070a; color: #ffffff; font-family: \"Host Grotesk\", system-ui, sans-serif; } .ds-brand { font-size: 27px; font-weight: 300; letter-spacing: -0.04em; line-height: 1; color: inherit; text-decoration: none; } .ds-brand b { font-weight: 700; } .ds-nav nav { display: flex; gap: 4px; margin: 0 auto; } .ds-nav nav a { display: inline-flex; align-items: center; height: 44px; padding: 0 14px; border-radius: 999px; font-size: 15.5px; color: #c9c9c4; text-decoration: none; transition: color 0.2s, background-color 0.2s; } .ds-nav nav a:hover, .ds-nav nav a[aria-current=\"page\"] { color: #ffffff; background: rgb(255 255 255 / 0.07); } .ds-nav nav a:focus-visible { outline: 2px solid #c8f25a; outline-offset: 3px; } .ds-nav-cta { display: inline-flex; align-items: center; min-height: 46px; padding: 0 20px; border-radius: 999px; background: #ffffff; color: #0b0b0f; font-size: 15px; font-weight: 600; text-decoration: none; transition: transform 0.25s, background-color 0.25s; } .ds-nav-cta:hover { background: #e4e4df; transform: translateY(-2px); }"
+    },
+    {
+      "name": "Linha rotativa",
+      "kind": "custom",
+      "refersTo": "display",
+      "description": "Assinatura do hero da home: H1 com segunda linha em limão trocando a cada 2.8s.",
+      "html": "<div class=\"ds-hero\"><h1>Processos melhores com <span class=\"ds-rot\"><span class=\"ds-rot-a\">agentes de IA</span><span class=\"ds-rot-b\">automações</span></span></h1></div>",
+      "css": ".ds-hero { background: #07070a; color: #ffffff; padding: 48px 32px; font-family: \"Host Grotesk\", system-ui, sans-serif; } .ds-hero h1 { margin: 0; font-size: 64px; font-weight: 650; line-height: 0.98; letter-spacing: -0.05em; } .ds-rot { display: grid; overflow: hidden; color: #c8f25a; padding-bottom: 0.06em; } .ds-rot > span { grid-area: 1 / 1; white-space: nowrap; } .ds-rot-a { animation: ds-rot-a 5.6s cubic-bezier(0.75, 0, 0.2, 1) infinite; } .ds-rot-b { transform: translateY(105%); animation: ds-rot-b 5.6s cubic-bezier(0.75, 0, 0.2, 1) infinite; } @keyframes ds-rot-a { 0%, 42% { transform: none; } 50%, 92% { transform: translateY(-105%); } 92.01% { transform: translateY(105%); } 100% { transform: none; } } @keyframes ds-rot-b { 0%, 42% { transform: translateY(105%); } 50%, 92% { transform: none; } 100% { transform: translateY(-105%); } } @media (prefers-reduced-motion: reduce) { .ds-rot-a, .ds-rot-b { animation: none; } }"
+    },
+    {
+      "name": "Botão flutuante de WhatsApp",
+      "kind": "button",
+      "refersTo": "whatsapp-float",
+      "description": "Círculo verde fixo no canto inferior direito.",
+      "html": "<a class=\"ds-wa-float\" href=\"#\" aria-label=\"Conversar no WhatsApp\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2s-1 .2-3.4-.7a11.6 11.6 0 0 1-4.6-4.1c-.4-.6-1.2-1.6-1.2-3s.8-2.1 1-2.4.6-.4.8-.4h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.4 0 .6l-.4.6-.4.5c-.2.2-.3.3-.1.7a8 8 0 0 0 3.9 3.4c.4.2.6.1.8-.1l.8-1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.3s0 .7-.1 1.3Z\"/></svg></a>",
+      "css": ".ds-wa-float { width: 60px; height: 60px; border-radius: 50%; display: grid; place-items: center; background: #25d366; box-shadow: 0 10px 30px rgb(0 0 0 / 0.35); transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.2, 1); } .ds-wa-float:hover { transform: translateY(-3px) scale(1.04); } .ds-wa-float:focus-visible { outline: 2px solid #0b0b0f; outline-offset: 3px; } .ds-wa-float svg { width: 30px; height: 30px; fill: #ffffff; }"
+    },
+    {
+      "name": "Painel de destaque",
+      "kind": "container",
+      "refersTo": "panel-statement-light",
+      "description": "Afirmação em cartão de 22px com H2 grande e trecho em marca-texto limão à esquerda, parágrafo e CTA à direita. Variante clara (branco sobre papel); a escura usa fundo noite com o destaque em texto limão.",
+      "html": "<div class=\"ds-panel\"><h2 class=\"ds-panel-title\">Todo processo tem um ponto que <em class=\"ds-mark\">pode render mais.</em></h2><div class=\"ds-panel-side\"><p>Uma etapa manual que se repete, uma decisão que depende de alguém procurar informação, um atendimento que espera na fila. É nesse ponto que a IA entra.</p><a class=\"ds-pill-wa\" href=\"#\">Avaliar meu processo</a></div></div>",
+      "css": ".ds-panel { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 32px 64px; align-items: end; padding: clamp(32px, 5vw, 72px); border-radius: 22px; background: #ffffff; color: #0b0b0f; font-family: \"Host Grotesk\", system-ui, sans-serif; } .ds-panel-title { margin: 0; font-size: clamp(40px, 5.6vw, 92px); font-weight: 650; line-height: 0.96; letter-spacing: -0.05em; max-width: 13ch; } .ds-mark { font-style: normal; padding: 0 0.1em; margin: 0 -0.04em; background-image: linear-gradient(#c8f25a, #c8f25a); background-repeat: no-repeat; background-size: 100% 0.9em; background-position: 0 72%; box-decoration-break: clone; -webkit-box-decoration-break: clone; } .ds-panel-side { display: grid; justify-items: start; gap: 28px; } .ds-panel-side p { margin: 0; font-size: clamp(18px, 1.35vw, 20px); line-height: 1.6; color: #3e3e44; } @media (max-width: 900px) { .ds-panel { grid-template-columns: minmax(0, 1fr); align-items: start; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "A operação rodando ao fundo",
+    "overview": "O site é uma vitrine escura e editorial em que a IA trabalhando é o próprio pano de fundo: um log de agente em fonte mono corre desfocado atrás do título, e a segunda linha do H1 troca, em limão, entre o que a Quatro Ventos entrega. Fora das aberturas, a página vira leitura: papel claro, tipografia grande com tracking negativo, linhas finas separando conteúdo e cards brancos de canto generoso. O contraste entre aberturas escuras e seções de leitura claras é o ritmo da página.\n\nA densidade é baixa e a escala tipográfica é alta. A hierarquia vem do tamanho e do peso da Host Grotesk, não de rótulos, ícones ou cor. A cor aparece pouco e com função fixa: limão marca a frase que importa e o WhatsApp; ação e interação são monocromáticas (branco no escuro, tinta no claro). Não há fotografia de banco, ilustração, gradiente em texto nem rótulo de seção acima do título. As únicas imagens são material real: logos de clientes e prints de projetos dos cases.\n\nTodas as páginas são montadas por seções do CMS, e cada tipo de seção carrega um tom fixo. O sistema decide o fundo, o espaçamento entre seções e a forma das listas a partir do conteúdo, não do editor.",
+    "keyCharacteristics": [
+      "Aberturas escuras (hero, etapas, chamada) alternadas com seções de leitura em papel e seções de prova em branco.",
+      "H1 e H2 enormes em Host Grotesk peso 650, tracking entre -0.045em e -0.05em, entrelinha abaixo de 1.",
+      "Limão restrito a três lugares e única cor da marca; ação e interação em branco e tinta.",
+      "Martian Mono apenas para números, o log de agente e nomes de tecnologia.",
+      "Pílulas para ações e etiquetas; cards brancos com raio de 22px; linhas de 1px para estruturar listas.",
+      "Um único momento de movimento: linha rotativa, deriva do log e hover. Tudo desligado em movimento reduzido."
+    ],
+    "rules": [
+      {
+        "name": "The Three Places Rule",
+        "body": "O limão aparece como cor de composição apenas na linha rotativa, nos destaques de frase do título e no CTA de WhatsApp. Estados de sistema (anel de foco sobre fundo escuro, seleção de texto, link de pular para o conteúdo) também usam limão por legibilidade; nenhum outro elemento de conteúdo pode usá-lo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Lime Is The Only Color Rule",
+        "body": "Fora do limão, o site é preto, branco e cinza. O componente de CTA decide sozinho: link de WhatsApp vira pílula limão, qualquer outro destino vira pílula sólida (branca no escuro, tinta no claro).",
+        "section": "colors"
+      },
+      {
+        "name": "The Tone By Type Rule",
+        "body": "O fundo é do tipo de seção, nunca do editor: hero, etapas e chamada são escuros; depoimentos e logos são brancos; todos os demais são papel.",
+        "section": "colors"
+      },
+      {
+        "name": "The Mono Is Machine Rule",
+        "body": "Martian Mono só aparece em números, no log de agente e em nomes de tecnologia. Nunca em título, rótulo de seção ou botão.",
+        "section": "typography"
+      },
+      {
+        "name": "The Size Is Hierarchy Rule",
+        "body": "Não existe eyebrow nem rótulo acima de título. A hierarquia é feita por tamanho, peso e tracking.",
+        "section": "typography"
+      },
+      {
+        "name": "The Asterisk Highlight Rule",
+        "body": "O destaque de frase é escrito no CMS como trecho entre asteriscos no título e renderizado como marca limão. É o único jeito de colorir parte de um título; não há gradiente em texto.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Page Rule",
+        "body": "Cards, planos, depoimentos e formulários não têm sombra. Sombra só para o que flutua sobre o conteúdo.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do usar o componente de CTA para toda ação: ele aplica limão ao WhatsApp e a pílula sólida ao resto.",
+      "Do escrever destaques de título como trecho entre asteriscos no CMS, no máximo um por título.",
+      "Do deixar o tipo de seção decidir o tom (escuro, papel ou branco) e confiar no colapso de padding entre seções do mesmo tom.",
+      "Do usar a seta SVG própria (traço de 1.6, diagonal para cima à direita) para toda indicação de destino, dentro de círculo quando for ícone isolado.",
+      "Do manter Martian Mono a 13px para números de ordem, unidades de preço e nomes de tecnologia.",
+      "Do usar só material real como imagem: logos de clientes e prints dos projetos.",
+      "Do desligar toda transição e animação em prefers-reduced-motion, incluindo a linha rotativa e a deriva do log."
+    ],
+    "donts": [
+      "Don't usar limão em qualquer outro elemento de conteúdo além da linha rotativa, dos destaques de frase e do CTA de WhatsApp.",
+      "Don't usar o verde WhatsApp fora do botão flutuante.",
+      "Don't colocar eyebrow, rótulo ou kicker acima de títulos.",
+      "Don't usar fotografia de banco, ilustração ou imagem gerada.",
+      "Don't aplicar gradiente em texto; o único gradiente do sistema é a vinheta radial escura do hero.",
+      "Don't usar biblioteca de ícones nem glifos como ícone; setas, caret, mais e WhatsApp são SVG próprios.",
+      "Don't adicionar movimento além da linha rotativa, da deriva do log e dos hovers.",
+      "Don't dar sombra a cards, planos ou formulários."
+    ]
+  }
+}
