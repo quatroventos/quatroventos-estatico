@@ -6,6 +6,7 @@ import type { StaticPageProps } from '../index';
 import { MaintainCanvas } from '../../hero';
 import { LeadForm } from '../../sections';
 import { Arrow, revealOnView } from '../../ui';
+import { BillingSwitch, PlanBase, PlanCard, type Plan } from '../plans';
 
 const WHATSAPP = 'https://wa.me/554130399593?text=Gostaria%20de%20um%20plano%20de%20manuten%C3%A7%C3%A3o%20para%20o%20meu%20site.';
 
@@ -18,10 +19,10 @@ const PLAN_BASE = [
   'Atendimento de quem desenvolve',
 ];
 
-const PLANS = [
-  { name: 'Basic', price: 350, from: 'Para começar', adds: ['Backups semanais', 'Checagem de disponibilidade diária', 'Inspeção visual mensal', '1h técnica por mês'] },
-  { name: 'Standard', price: 520, featured: true, from: 'Tudo do Basic, com', adds: ['Checagem de disponibilidade horária', 'Inspeção visual semanal', '3h técnicas por mês', 'Monitoramento de segurança'] },
-  { name: 'Pro', price: 990, from: 'Tudo do Standard, com', adds: ['Atendimento prioritário', 'Backups diários', 'Inspeção visual duas vezes por semana', '6h técnicas por mês', 'Testes de checkout semanais'] },
+const PLANS: Plan[] = [
+  { name: 'Basic', monthly: 350, annual: 3500, from: 'Para começar', adds: ['Backups semanais', 'Checagem de disponibilidade diária', 'Inspeção visual mensal', '1h técnica por mês'] },
+  { name: 'Standard', monthly: 520, annual: 5200, featured: true, from: 'Tudo do Basic, com', adds: ['Checagem de disponibilidade horária', 'Inspeção visual semanal', '3h técnicas por mês', 'Monitoramento de segurança'] },
+  { name: 'Pro', monthly: 990, annual: 9900, from: 'Tudo do Standard, com', adds: ['Atendimento prioritário', 'Backups diários', 'Inspeção visual duas vezes por semana', '6h técnicas por mês', 'Testes de checkout semanais'] },
 ];
 
 const PREVENTIVE = [
@@ -69,8 +70,6 @@ const FAQ: { q: string; a: ReactNode }[] = [
   { q: 'Meu site foi invadido. A manutenção resolve?', a: <>A limpeza de malware e a restauração do site são feitas na recuperação. Depois dela, o plano de manutenção evita a reincidência. <a href="/recuperacao-de-site-wordpress">Recuperação de site WordPress</a></> },
 ];
 
-const money = (value: number) => value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-
 function WhatsAppCta({ label }: { label: string }) {
   return (
     <a className="pill lime" href={WHATSAPP} target="_blank" rel="noreferrer">
@@ -105,55 +104,14 @@ export default function PageManutencaoDeSites(_props: StaticPageProps) {
         <div className="wrap">
           <header className="sec-head plan-head">
             <h2 className="h2">Planos de manutenção de sites <em className="mark">sob medida para o seu negócio.</em></h2>
-            <div className="plan-billing" role="group" aria-label="Período de cobrança">
-              <button type="button" aria-pressed={!annual} onClick={() => setAnnual(false)}>Mensal</button>
-              <button type="button" aria-pressed={annual} onClick={() => setAnnual(true)}>
-                Anual
-                <span className="plan-save">2 meses grátis</span>
-              </button>
-            </div>
+            <BillingSwitch annual={annual} onChange={setAnnual} />
           </header>
           <div className="plan-tiers">
             {PLANS.map((plan) => (
-              <article className={`plan-tier${plan.featured ? ' is-featured' : ''}`} key={plan.name} ref={revealOnView}>
-                {plan.featured && <span className="plan-flag">Recomendado</span>}
-                <h3 className="name">{plan.name}</h3>
-                <div className="plan-price" aria-live="polite">
-                  <p className="price" key={annual ? 'a' : 'm'}>{money(annual ? (plan.price * 10) / 12 : plan.price)}<small>/mês</small></p>
-                  <p className="plan-bill">
-                    {annual ? <><s>{money(plan.price)}</s> {money(plan.price * 10)} cobrados por ano</> : 'Cobrança mensal'}
-                  </p>
-                </div>
-                <ul className="plan-adds">
-                  <li className="is-from">{plan.from}</li>
-                  {plan.adds.map((item) => (
-                    <li key={item}>
-                      <span className="plan-tick"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength={1} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-                <a className="pill solid plan-cta" href={WHATSAPP} target="_blank" rel="noreferrer">
-                  Contratar o {plan.name}
-                  <span className="arrow"><Arrow /></span>
-                </a>
-              </article>
+              <PlanCard key={plan.name} plan={plan} annual={annual} href={WHATSAPP} />
             ))}
           </div>
-          <div className="plan-base" ref={revealOnView}>
-            <div>
-              <h3>Em todos os planos</h3>
-              <p>Cada plano sobe a frequência dos cuidados e as horas técnicas do anterior.</p>
-            </div>
-            <ul>
-              {PLAN_BASE.map((item) => (
-                <li key={item}>
-                  <span className="plan-tick"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength={1} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <PlanBase title="Em todos os planos" text="Cada plano sobe a frequência dos cuidados e as horas técnicas do anterior." items={PLAN_BASE} />
         </div>
       </section>
       {/* seção: list */}

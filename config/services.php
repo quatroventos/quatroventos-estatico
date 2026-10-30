@@ -43,4 +43,19 @@ return [
         'queue_connection' => env('OPENAI_QUEUE_CONNECTION'),
     ],
 
+    'meta' => [
+        'key' => env('META_API_KEY'),
+        'base_url' => env('META_BASE_URL', 'https://api.meta.ai/v1'),
+        'image_model' => env('META_IMAGE_MODEL', 'muse-image-1.0'),
+        'image_timeout' => (int) env('META_IMAGE_TIMEOUT', 180),
+    ],
+
+    'mockup' => [
+        'chrome_binary' => env('MOCKUP_CHROME_PATH'),
+    ],
+
+    'runway' => [
+        'key' => env('RUNWAY_API_KEY'),
+    ],
+
 ];

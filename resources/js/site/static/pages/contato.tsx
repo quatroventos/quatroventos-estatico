@@ -94,19 +94,17 @@ export default function PageContato({ form }: StaticPageProps) {
         </div>
       </section>
       {/* seção: contact */}
-      <section className="section on-light is-flush is-mark-draw" id="contato">
-        <div className="wrap">
-          <div className="contact-grid">
-            <div>
-              <h2 className="h2">Envie uma <em className="mark">mensagem.</em></h2>
-              <div className="rich">
-                <p>Conte qual processo ou projeto quer melhorar. Avaliamos o caso e indicamos por onde começar.</p>
-                <p>Curitiba, PR</p>
-              </div>
+      <section className="section on-dark" id="contato">
+        <div className="wrap contact-split">
+          <div>
+            <h2 className="h2">Envie uma <em className="mark">mensagem.</em></h2>
+            <div className="rich lead">
+              <p>Conte qual processo ou projeto quer melhorar. Avaliamos o caso e indicamos por onde começar.</p>
+              <p>Curitiba, PR</p>
             </div>
-            <div className="form-card">
-              <ContactForm form={form} />
-            </div>
+          </div>
+          <div className="form-card is-dark">
+            <ContactForm form={form} />
           </div>
         </div>
       </section>

@@ -1,50 +1,138 @@
 // Gerado por scripts/export-static-pages.mjs a partir de /hospedagem-de-sites (CMS).
 // Editável à mão durante o ajuste de layout; ao voltar para o CMS, a estrutura é portada para sections.tsx.
 // Segue a receita de página da home e o padrão de /agentes-de-ia (DESIGN.md, Layout).
-import type { ReactNode } from 'react';
+// Planos, preços e recursos copiados de fireflyhost.com.br em 29/10/2026; o checkout é o da Firefly Host (financeiro.fireflyhost.com.br).
+// Nos cards ficam só os diferenciais, na ordem acessos, simultâneos, armazenamento, e-mails, backups e extras; o comum vai para a base da categoria.
+import { useState, type ReactNode } from 'react';
 import type { StaticPageProps } from '../index';
-import { CaseShowcase } from '../../case-showcase';
 import { HostCanvas } from '../../hero';
 import { LeadForm } from '../../sections';
 import { Arrow, revealOnView } from '../../ui';
-import { placeholderCase } from '../showcase';
+import { BillingSwitch, PlanBase, PlanCard, PlanTabs, type Plan } from '../plans';
 
 const WHATSAPP = 'https://wa.me/554130399593?text=Gostaria%20de%20contratar%20uma%20hospedagem%20de%20site.';
+const FIREFLY = 'https://fireflyhost.com.br/';
+const STORE = 'https://financeiro.fireflyhost.com.br/index.php?rp=/store/';
 
-const USES = [
-  { title: 'E-mails ilimitados', text: 'Quantas contas de e-mail forem necessárias, dentro do espaço de e-mail do plano.' },
-  { title: 'SSL', text: 'Certificado para o site abrir em HTTPS, incluído em todos os planos.' },
-  { title: 'Anti-spam', text: 'Filtro nas caixas de e-mail para barrar mensagens indesejadas.' },
-  { title: 'Suporte de quem desenvolve', text: 'Atendimento do mesmo time que desenvolve e mantém sites.' },
+type HostPlan = Plan & { checkout: string };
+type Category = { id: string; tab: string; title: string; text: string; common: string[]; plans: HostPlan[] };
+
+const ALL_PLANS = ['SSL grátis, com renovação automática', 'Migração gratuita, feita pela equipe', 'Suporte 100% humano', 'Uptime de 99,9%'];
+
+const CATEGORIES: Category[] = [
+  {
+    id: 'sites',
+    tab: 'Sites',
+    title: 'Hospedagem de sites',
+    text: 'Estabilidade, performance e segurança para sites que não podem parar.',
+    common: ['Subdomínios ilimitados', 'Firewall'],
+    plans: [
+      {
+        name: 'Basic',
+        monthly: 45,
+        annual: 550,
+        checkout: `${STORE}hospedagem-profissional/hospedagem-profissional-basic`,
+        adds: ['Até 5.000 acessos mensais', 'Até 30 acessos simultâneos', '10 GB de armazenamento NVMe', '10 contas de e-mail'],
+      },
+      {
+        name: 'Pro',
+        monthly: 75,
+        annual: 750,
+        featured: true,
+        checkout: `${STORE}hospedagem-profissional/hospedagem-pro`,
+        adds: ['Até 15.000 acessos mensais', 'Até 150 acessos simultâneos', '20 GB de armazenamento NVMe', '20 contas de e-mail', 'Backups diários'],
+      },
+      {
+        name: 'Ultra',
+        monthly: 95,
+        annual: 950,
+        checkout: `${STORE}hospedagem-profissional/hospedagem-ultra`,
+        adds: ['Até 50.000 acessos mensais', 'Até 500 acessos simultâneos', '50 GB de armazenamento NVMe', '30 contas de e-mail', 'Backups diários', 'Cache avançado', 'Antivírus'],
+      },
+    ],
+  },
+  {
+    id: 'wordpress',
+    tab: 'WordPress',
+    title: 'Hospedagem otimizada para WordPress',
+    text: 'Cache em nível de servidor para um WordPress até 10x mais rápido.',
+    common: ['Instalador de WordPress em 1 clique', 'Instalação feita pela equipe, sem custo', 'Acelerador de WordPress', 'Anti-malware'],
+    plans: [
+      {
+        name: 'WP Basic',
+        monthly: 75,
+        annual: 740,
+        checkout: `${STORE}hospedagem-wordpress/wordpress-basic`,
+        adds: ['Até 10.000 acessos mensais', 'Até 100 acessos simultâneos', '10 GB de armazenamento NVMe', 'Backups semanais'],
+      },
+      {
+        name: 'WP Pro',
+        monthly: 95,
+        annual: 950,
+        featured: true,
+        checkout: `${STORE}hospedagem-wordpress/wordpress-pro`,
+        adds: ['Até 20.000 acessos mensais', 'Até 200 acessos simultâneos', '20 GB de armazenamento NVMe', 'Backups diários'],
+      },
+      {
+        name: 'WP Ultra',
+        monthly: 120,
+        annual: 1200,
+        checkout: `${STORE}hospedagem-wordpress/wp-ultra`,
+        adds: ['Mais de 50.000 acessos mensais', 'Mais de 500 acessos simultâneos', '50 GB de armazenamento NVMe', 'Backups diários', 'Licença Elementor Pro'],
+      },
+    ],
+  },
+  {
+    id: 'woocommerce',
+    tab: 'WooCommerce',
+    title: 'Hospedagem otimizada para WooCommerce',
+    text: 'Plataforma segura e rápida para a loja online vender mais.',
+    common: ['Instalador de WooCommerce em 1 clique', 'Instalação feita pela equipe, sem custo', 'Acelerador de WordPress', 'Anti-malware', 'Licença Elementor Pro', 'Backups diários'],
+    plans: [
+      {
+        name: 'Woo Basic',
+        monthly: 95,
+        annual: 950,
+        checkout: `${STORE}hospedagem-woocommerce/woo-basic`,
+        adds: ['Até 10.000 clientes por mês', 'Até 100 clientes simultâneos', '10 GB de armazenamento NVMe'],
+      },
+      {
+        name: 'Woo Pro',
+        monthly: 125,
+        annual: 1250,
+        featured: true,
+        checkout: `${STORE}hospedagem-woocommerce/woo-pro`,
+        adds: ['Até 20.000 clientes por mês', 'Até 200 clientes simultâneos', '20 GB de armazenamento NVMe'],
+      },
+      {
+        name: 'Woo Ultra',
+        monthly: 175,
+        annual: 1750,
+        checkout: `${STORE}hospedagem-woocommerce/wooultra`,
+        adds: ['Mais de 50.000 clientes por mês', 'Mais de 500 clientes simultâneos', '50 GB de armazenamento NVMe'],
+      },
+    ],
+  },
 ];
 
-const PLANS = [
-  { name: 'Basic', price: 'R$ 37,50', text: 'Mensal R$ 45,00. 1 GB para arquivos, 10 GB para e-mails, contas de e-mail ilimitadas, SSL e anti-spam.' },
-  { name: 'Standard', price: 'R$ 58,50', text: 'Mensal R$ 70,00. 3 GB para arquivos, 20 GB para e-mails, contas de e-mail ilimitadas, SSL e anti-spam.' },
-  { name: 'Business', price: 'R$ 140,50', text: 'Mensal R$ 170,00. 5 GB para arquivos, 30 GB para e-mails, contas de e-mail ilimitadas, SSL e anti-spam.' },
-  { name: 'Pro', price: 'R$ 190,50', text: 'Mensal R$ 230,00. 10 GB para arquivos, 50 GB para e-mails, contas de e-mail ilimitadas, SSL e anti-spam.' },
-];
-
-const STEPS = [
-  { title: 'Plano', text: 'Escolha pelo espaço para arquivos e e-mails que o site e a equipe precisam.' },
-  { title: 'Configuração', text: 'Domínio, SSL, anti-spam e contas de e-mail configurados.' },
-  { title: 'Publicação', text: 'Site no ar em HTTPS e caixas de e-mail funcionando.' },
-  { title: 'Suporte', text: 'Atendimento do mesmo time que desenvolve e mantém sites.' },
-];
-
-const RELATED = [
-  { title: 'Desenvolvimento de sites', href: '/desenvolvimento-de-sites' },
-  { title: 'Software sob medida', href: '/software-sob-medida' },
-  { title: 'Manutenção', href: '/manutencao-de-sites' },
-  { title: 'VPS para aplicações', href: '/vps-e-infraestrutura' },
+const FEATURES = [
+  { title: 'Armazenamento NVMe', text: 'Discos NVMe, mais rápidos que SSD comum, para o site e o banco de dados responderem sem espera.' },
+  { title: 'Cache avançado', text: 'Cache em nível de servidor que entrega as páginas mais rápido e alivia o processamento.' },
+  { title: 'Firewall de aplicação (WAF)', text: 'Filtro de requisições maliciosas e bloqueio de tentativas de acesso por força bruta.' },
+  { title: 'Proteção anti-DDoS', text: 'Mitigação de ataques de negação de serviço antes de chegarem ao site.' },
+  { title: 'Scanner de malware', text: 'Varredura dos arquivos da conta para detectar código malicioso cedo.' },
+  { title: 'Backups com JetBackup', text: 'Arquivos e bancos de dados restaurados pelo próprio cPanel, com retenção de 7 dias.' },
+  { title: 'Isolamento com CloudLinux', text: 'Cada conta isolada com CageFS e recursos próprios. O vizinho não derruba o seu site.' },
+  { title: 'cPanel, PHP e MariaDB', text: 'Painel cPanel, escolha da versão do PHP por site e bancos MariaDB.' },
+  { title: 'E-mail profissional', text: 'Contas no seu domínio, com anti-spam e SMTP dedicado para as mensagens chegarem.' },
 ];
 
 const FAQ: { q: string; a: ReactNode }[] = [
-  { q: 'Qual a diferença entre o preço anual e o mensal?', a: 'O valor em destaque em cada plano é o preço mensal no pagamento anual antecipado. No pagamento mês a mês vale o valor mensal indicado no plano: Basic R$ 45,00, Standard R$ 70,00, Business R$ 170,00 e Pro R$ 230,00.' },
-  { q: 'Quantas contas de e-mail posso criar?', a: 'Todos os planos têm contas de e-mail ilimitadas. O que muda entre eles é o espaço para e-mails, de 10 GB a 50 GB.' },
-  { q: 'O SSL está incluído?', a: 'Sim. SSL e anti-spam fazem parte de todos os planos.' },
-  { q: 'A hospedagem serve para sistemas e aplicações?', a: <>Os planos atendem sites e e-mails. Aplicações, APIs, n8n e bancos de dados rodam melhor em um servidor gerenciado. <a href="/vps-e-infraestrutura">VPS e infraestrutura</a></> },
-  { q: 'Vocês fazem a migração do site?', a: <>A troca de hospedagem, com tudo ajustado e funcionando, é um dos atendimentos da manutenção. <a href="/manutencao-de-sites">Manutenção de sites</a></> },
+  { q: 'Quem é a Firefly Host?', a: 'É a empresa de hospedagem da Quatro Ventos. A infraestrutura e o atendimento são os mesmos; a contratação e a cobrança acontecem pela Firefly Host.' },
+  { q: 'Qual a diferença entre o pagamento mensal e o anual?', a: 'No plano anual, o pagamento é antecipado e tem desconto de dois meses. O seletor Mensal e Anual mostra o valor equivalente por mês e o total cobrado por ano.' },
+  { q: 'A migração é gratuita?', a: 'Sim. A equipe migra o site e os e-mails para a nova hospedagem sem custo.' },
+  { q: 'Como funcionam os backups?', a: 'Os planos com backups diários guardam arquivos e bancos de dados com retenção de 7 dias e restauração pelo JetBackup no cPanel.' },
+  { q: 'A hospedagem serve para sistemas e aplicações?', a: <>Os planos de hospedagem atendem sites, WordPress e lojas WooCommerce. Aplicações, APIs, n8n e bancos de dados rodam melhor em um Cloud VPS. Veja os planos de <a href="/vps-e-infraestrutura#planos">VPS e infraestrutura</a>.</> },
 ];
 
 function WhatsAppCta({ label }: { label: string }) {
@@ -56,7 +144,21 @@ function WhatsAppCta({ label }: { label: string }) {
   );
 }
 
+function planWhatsApp(plan: Plan) {
+  return `https://wa.me/554130399593?text=${encodeURIComponent(`Gostaria de contratar o plano ${plan.name} da Firefly Host.`)}`;
+}
+
 export default function PageHospedagemDeSites(_props: StaticPageProps) {
+  const [annual, setAnnual] = useState(false);
+  const [categoryId, setCategoryId] = useState(CATEGORIES[0].id);
+  const [switched, setSwitched] = useState(false);
+  const category = CATEGORIES.find((item) => item.id === categoryId) ?? CATEGORIES[0];
+
+  const selectCategory = (id: string) => {
+    setCategoryId(id);
+    setSwitched(true);
+  };
+
   return (
     <>
       {/* seção: hero */}
@@ -67,24 +169,74 @@ export default function PageHospedagemDeSites(_props: StaticPageProps) {
             <h1 className="display is-inner">Hospedagem <em className="mark">de sites.</em></h1>
             <div className="hero-foot">
               <div className="rich lead">
-                <p>Planos a partir de R$ 37,50 por mês, com desconto no pagamento anual antecipado. Infraestrutura própria, com suporte de quem desenvolve.</p>
+                <p>Planos a partir de R$ 45,00 por mês na Firefly Host, a empresa de hospedagem da Quatro Ventos. Armazenamento NVMe, cPanel e suporte 100% humano, com a mesma infraestrutura e o mesmo atendimento.</p>
               </div>
             </div>
           </div>
           <LeadForm className="hero-form" id="contato" whatsappHref={WHATSAPP} />
         </div>
       </section>
-      {/* seção: list */}
-      <section className="section on-light is-mark-draw">
+      {/* seção: plans */}
+      <section className="section on-light" id="planos">
         <div className="wrap">
-          <header className="sec-head">
-            <h2 className="h2">O que todo plano <em className="mark">inclui.</em></h2>
-            <div className="rich intro">
-              <p>Os planos mudam no espaço para arquivos e e-mails. O resto vem em todos.</p>
+          <header className="sec-head plan-head">
+            <h2 className="h2">Planos de hospedagem <em className="mark">para cada tipo de projeto.</em></h2>
+            <div className="plan-switches">
+              <PlanTabs items={CATEGORIES} activeId={category.id} label="Tipo de hospedagem" controls="planos-categoria" onChange={selectCategory} />
+              <BillingSwitch annual={annual} onChange={setAnnual} />
             </div>
           </header>
-          <ul className="uses-band">
-            {USES.map((item) => (
+          <div className={`plan-category${switched ? ' is-swap' : ''}`} id="planos-categoria" key={category.id}>
+            <div className="plan-category-head">
+              <h3>{category.title}</h3>
+              <p>{category.text}</p>
+            </div>
+            <div className="plan-tiers">
+              {category.plans.map((plan) => (
+                <PlanCard key={plan.name} plan={plan} annual={annual} href={plan.checkout} altHref={planWhatsApp(plan)} heading="h4" instant={switched} />
+              ))}
+            </div>
+            <PlanBase
+              title="Em todos os planos"
+              text="Os planos mudam no volume de acessos, no armazenamento e nos recursos extras. O resto vem em todos."
+              items={[...category.common, ...ALL_PLANS]}
+              heading="h4"
+              instant={switched}
+            />
+          </div>
+          <p className="plan-note">Contratação e cobrança pela Firefly Host. Para aplicações e alto tráfego, veja os planos de <a href="/vps-e-infraestrutura#planos">VPS e infraestrutura</a>.</p>
+        </div>
+      </section>
+      {/* seção: firefly */}
+      <section className="section on-light is-flush">
+        <div className="wrap">
+          <div className="prose-panel firefly-panel is-reveal" ref={revealOnView}>
+            <div className="firefly-brand">
+              <img src="/assets/parceiros/firefly-host.svg" alt="Firefly Host" width={507} height={125} loading="lazy" />
+              <p>A empresa de hospedagem da Quatro Ventos</p>
+            </div>
+            <div className="prose-panel-side">
+              <div className="rich">
+                <p>A Firefly Host é a empresa de hospedagem da Quatro Ventos, criada depois de 20 anos hospedando sites com o nosso nome. A infraestrutura e o atendimento são os mesmos: quem cuida do seu servidor é o mesmo time que desenvolve e mantém sites.</p>
+              </div>
+              <div className="actions">
+                <a className="pill line" href={FIREFLY} target="_blank" rel="noreferrer">Conhecer a Firefly Host</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      {/* seção: exemplos */}
+      <section className="section on-dark">
+        <div className="wrap">
+          <header className="sec-head">
+            <h2 className="h2">Segurança e desempenho <em className="mark">na infraestrutura.</em></h2>
+            <div className="rich intro">
+              <p>Os recursos da plataforma da Firefly Host. Limites, frequência de backup e extras de cada plano estão nos cards acima.</p>
+            </div>
+          </header>
+          <ul className="ex-grid is-plain">
+            {FEATURES.map((item) => (
               <li key={item.title}>
                 <h3 className="h3">{item.title}</h3>
                 <p>{item.text}</p>
@@ -93,82 +245,6 @@ export default function PageHospedagemDeSites(_props: StaticPageProps) {
           </ul>
         </div>
       </section>
-      {/* seção: plans */}
-      <section className="section on-light is-flush" id="planos">
-        <div className="wrap">
-          <header className="sec-head is-solo">
-            <h2 className="h2">Planos (preço mensal no plano anual)</h2>
-          </header>
-          <div className="plans">
-            {PLANS.map((plan) => (
-              <article className="plan" key={plan.name}>
-                <h3 className="name">{plan.name}</h3>
-                <p className="price">{plan.price}<small>/mês</small></p>
-                <div className="rich">
-                  <p>{plan.text}</p>
-                </div>
-                <WhatsAppCta label="Contratar" />
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-      {/* seção: prose */}
-      <section className="section on-light is-flush is-mark-draw">
-        <div className="wrap">
-          <div className="prose-panel is-reveal" ref={revealOnView}>
-            <h2 className="h2">Infraestrutura <em className="mark">própria.</em></h2>
-            <div className="prose-panel-side">
-              <div className="rich">
-                <p>Os sites ficam na infraestrutura da Quatro Ventos, e o suporte é feito pelo mesmo time que desenvolve. Quando um problema aparece, quem atende entende tanto do servidor quanto do site.</p>
-              </div>
-              <div className="actions">
-                <WhatsAppCta label="Escolher o plano" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* seção: steps */}
-      <section className="section on-dark is-timeline-head">
-        <div className="wrap">
-          <header className="sec-head">
-            <h2 className="h2">Do plano ao site no ar.</h2>
-            <div className="rich intro">
-              <p>Domínio, certificado e e-mails configurados pelo time, sem a empresa precisar mexer em painel técnico.</p>
-            </div>
-          </header>
-          <ol className="steps is-timeline is-4 is-scrub">
-            {STEPS.map((step, index) => (
-              <li key={step.title}>
-                <span className="mono">{String(index + 1).padStart(2, '0')}</span>
-                <h3 className="h3">{step.title}</h3>
-                <div className="rich"><p>{step.text}</p></div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-      {/* seção: list */}
-      <section className="section on-light is-mark-draw">
-        <div className="wrap">
-          <header className="sec-head is-solo">
-            <h2 className="h2">Serviços <em className="mark">relacionados.</em></h2>
-          </header>
-          <ul className="link-rows">
-            {RELATED.map((item) => (
-              <li key={item.href}>
-                <a href={item.href}>{item.title}<span className="go"><Arrow /></span></a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
-      <CaseShowcase
-        title="Sites hospedados."
-        intro="Sites e e-mails na infraestrutura da Quatro Ventos, com suporte de quem desenvolve."
-        items={[placeholderCase('hs-1', ['Hospedagem']), placeholderCase('hs-2', ['E-mails'])]}
-      />
       {/* seção: faq */}
       <section className="section on-light">
         <div className="wrap">
@@ -192,7 +268,7 @@ export default function PageHospedagemDeSites(_props: StaticPageProps) {
             <h2 className="h2">Dúvida sobre o <em className="mark">plano ideal?</em></h2>
             <div className="prose-panel-side">
               <div className="rich">
-                <p>Conte o tamanho do site e quantas contas de e-mail a empresa usa hoje. Indicamos o plano que cabe.</p>
+                <p>Conte o tipo de site, o volume de acessos e quantas contas de e-mail a empresa usa hoje. Indicamos o plano que cabe.</p>
               </div>
               <div className="actions">
                 <WhatsAppCta label="Falar com um especialista" />

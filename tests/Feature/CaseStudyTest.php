@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\CaseStudy;
 use App\Models\Page;
+use Database\Seeders\CaseStudySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -217,5 +218,19 @@ class CaseStudyTest extends TestCase
 
         $this->assertStringContainsString(url('/cases/digio'), $xml);
         $this->assertStringNotContainsString(url('/cases/rascunho'), $xml);
+    }
+
+    public function test_seeder_publishes_cases_with_text_and_keeps_panel_edits(): void
+    {
+        $this->seed(CaseStudySeeder::class);
+
+        $this->get('/cases/seucommerce')->assertOk()->assertSee('seucommerce.com.br', false);
+        $this->get('/cases/tripfy')->assertNotFound();
+
+        CaseStudy::query()->where('slug', 'seucommerce')->update(['title' => 'Editado no painel']);
+        $this->seed(CaseStudySeeder::class);
+
+        $this->assertSame('Editado no painel', CaseStudy::query()->where('slug', 'seucommerce')->value('title'));
+        $this->assertSame(13, CaseStudy::query()->count());
     }
 }
