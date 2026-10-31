@@ -1,25 +1,13 @@
 services:
-  mysql:
-    image: mysql:8.4
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: ${DB_DATABASE}
-      MYSQL_USER: ${DB_USERNAME}
-      MYSQL_PASSWORD: ${DB_PASSWORD}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-    volumes:
-      - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u${DB_USERNAME}", "-p${DB_PASSWORD}"]
-      interval: 10s
-      timeout: 5s
-      retries: 20
-
   redis:
     image: redis:7-alpine
     restart: unless-stopped
     volumes:
       - redis_data:/data
+    networks:
+      default:
+        aliases:
+          - quatroventos-redis
 
   app:
     build:
@@ -35,19 +23,18 @@ services:
       RUN_MIGRATIONS: "true"
       RUN_SEED: "false"
       DB_CONNECTION: mysql
-      DB_HOST: mysql
-      REDIS_HOST: redis
+      REDIS_HOST: quatroventos-redis
       QUEUE_CONNECTION: redis
       CACHE_STORE: redis
       SESSION_DRIVER: redis
       SESSION_SECURE_COOKIE: "true"
     volumes:
       - app_storage:/var/www/html/storage
+    networks:
+      - default
+      - easypanel
     depends_on:
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_started
+      - redis
 
   queue:
     build:
@@ -60,11 +47,16 @@ services:
     environment:
       RUN_MIGRATIONS: "false"
       RUN_SEED: "false"
-      DB_HOST: mysql
-      REDIS_HOST: redis
+      DB_CONNECTION: mysql
+      REDIS_HOST: quatroventos-redis
+      QUEUE_CONNECTION: redis
+      CACHE_STORE: redis
     volumes:
       - app_storage:/var/www/html/storage
     entrypoint: ["/bin/sh", "-c", "php artisan queue:work --sleep=1 --tries=3"]
+    networks:
+      - default
+      - easypanel
     depends_on:
       - app
 
@@ -79,15 +71,23 @@ services:
     environment:
       RUN_MIGRATIONS: "false"
       RUN_SEED: "false"
-      DB_HOST: mysql
-      REDIS_HOST: redis
+      DB_CONNECTION: mysql
+      REDIS_HOST: quatroventos-redis
+      QUEUE_CONNECTION: redis
+      CACHE_STORE: redis
     volumes:
       - app_storage:/var/www/html/storage
     entrypoint: ["/bin/sh", "-c", "php artisan schedule:work"]
+    networks:
+      - default
+      - easypanel
     depends_on:
       - app
 
+networks:
+  easypanel:
+    external: true
+
 volumes:
-  mysql_data:
   redis_data:
   app_storage:
