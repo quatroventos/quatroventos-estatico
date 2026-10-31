@@ -28,10 +28,12 @@ class MockupStudioTest extends TestCase
             ->assertSee('Mockup studio')
             ->assertSee('Gerar foto')
             ->assertSee('Capturar tela')
+            ->assertSee('Studio Display')
             ->assertSee('id="crop-start"', false)
             ->assertSee('id="crop-end"', false)
             ->assertSee('Os sliders cortam só na vertical.')
-            ->assertDontSee('Animar mockup');
+            ->assertDontSee('Animar mockup')
+            ->assertDontSee('Detectar tela');
     }
 
     public function test_animation_controls_render_when_the_runway_key_is_set(): void
@@ -109,8 +111,41 @@ class MockupStudioTest extends TestCase
 
             return $request->url() === 'https://api.meta.ai/v1/images/edits'
                 && str_contains($body, '#FF00FF')
+                && str_contains($body, 'dynamic island')
                 && str_contains($body, 'tripfy.jpg')
                 && str_contains($body, 'muse-image-1.0');
+        });
+    }
+
+    public function test_studio_display_prompt_keeps_the_reference_hardware(): void
+    {
+        config([
+            'mockup.studio' => true,
+            'services.meta.key' => 'test-key',
+            'services.meta.base_url' => 'https://api.meta.ai/v1',
+            'services.meta.image_model' => 'muse-image-1.0',
+        ]);
+
+        Http::fake([
+            'https://api.meta.ai/v1/images/edits' => Http::response([
+                'data' => [['b64_json' => base64_encode('png-bytes')]],
+            ]),
+        ]);
+
+        $this->postJson('/ferramentas/mockups/gerar', [
+            ...$this->payload(),
+            'device' => 'studio-display',
+            'size' => '2048x1152',
+            'references' => ['afcuritiba'],
+        ])->assertOk();
+
+        Http::assertSent(function ($request): bool {
+            $body = $request->body();
+
+            return str_contains($body, 'flat rectangular panel')
+                && str_contains($body, 'Not a curved iMac arm')
+                && str_contains($body, 'afcuritiba.jpg')
+                && str_contains($body, '#FF00FF');
         });
     }
 
@@ -195,7 +230,7 @@ class MockupStudioTest extends TestCase
         $this->mock(DeviceScreenshot::class, function ($mock): void {
             $mock->shouldReceive('capture')
                 ->once()
-                ->with('https://exemplo.test/app', 'macbook')
+                ->with('https://exemplo.test/app', 'macbook', true)
                 ->andReturn('png-bytes');
         });
 
@@ -206,6 +241,24 @@ class MockupStudioTest extends TestCase
             ->assertJsonPath('image', 'data:image/png;base64,'.base64_encode('png-bytes'))
             ->assertJsonPath('width', 3024)
             ->assertJsonPath('height', 1964);
+    }
+
+    public function test_capture_can_skip_the_popup_cleanup(): void
+    {
+        config(['mockup.studio' => true]);
+
+        $this->mock(DeviceScreenshot::class, function ($mock): void {
+            $mock->shouldReceive('capture')
+                ->once()
+                ->with('https://exemplo.test/app', 'iphone', false)
+                ->andReturn('png-bytes');
+        });
+
+        $this->postJson('/ferramentas/mockups/capturar', [
+            'url' => 'https://exemplo.test/app',
+            'device' => 'iphone',
+            'clean' => false,
+        ])->assertOk();
     }
 
     /**

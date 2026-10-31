@@ -63,6 +63,7 @@ class Page extends Model
             'slug' => $this->slug,
             'seo_title' => $this->seo_title,
             'seo_description' => $this->seo_description,
+            'seo_keyword' => $this->seo_keyword,
             'canonical' => $this->canonical,
             'og_image' => $this->og_image,
             'og_image_alt' => $this->og_image_alt,

@@ -13,8 +13,6 @@ class TourDefinition
         'inbox',
         'pages',
         'page-editor',
-        'team',
-        'branches',
         'menu',
         'certifications',
         'users',

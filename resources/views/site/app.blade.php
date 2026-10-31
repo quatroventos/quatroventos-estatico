@@ -36,8 +36,12 @@
     @if(!empty($payload['jsonld']))
       <script type="application/ld+json">{!! json_encode($payload['jsonld'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
     @endif
-    @viteReactRefresh
-    @vite(['resources/css/site.css', 'resources/js/site/main.tsx'])
+    @if(!empty($cmsPreview))
+      @viteReactRefresh
+      @vite(['resources/css/site.css', 'resources/js/site/main.tsx'])
+    @else
+      @vite(['resources/css/site.css', 'resources/js/site/behaviors.js'])
+    @endif
     @if(!empty($site?->tag_header))
       {!! $site->tag_header !!}
     @endif
@@ -46,10 +50,15 @@
     @if(!empty($site?->tag_body))
       {!! $site->tag_body !!}
     @endif
-    <div id="site-root"></div>
-    <script>
-      window.__SITE__ = @json(['page' => $payload, 'site' => $sitePayload]);
-    </script>
+    @if(!empty($cmsPreview))
+      <div id="site-root"></div>
+      <script>
+        @php($previewBoot = ['page' => $payload, 'site' => $sitePayload, 'preview' => true, 'draftUrl' => $previewDraftUrl ?? null])
+        window.__SITE__ = @json($previewBoot);
+      </script>
+    @else
+      {!! $fragment ?? '' !!}
+    @endif
     @if(empty($cmsPreview))
       <script src="{{ asset('js/t.js') }}"></script>
     @endif

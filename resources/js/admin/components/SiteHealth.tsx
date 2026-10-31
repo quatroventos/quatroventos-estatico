@@ -10,7 +10,7 @@ const categories: { key: keyof Pick<LighthouseReport, 'performance' | 'accessibi
   { key: 'seo', label: 'SEO' },
 ];
 
-function scoreTone(score: number | null): 'green' | 'gold' | 'coral' | 'muted' {
+export function scoreTone(score: number | null): 'green' | 'gold' | 'coral' | 'muted' {
   if (score == null) {
     return 'muted';
   }
@@ -26,9 +26,9 @@ function scoreTone(score: number | null): 'green' | 'gold' | 'coral' | 'muted' {
   return 'coral';
 }
 
-function formatMs(ms: number | null): string {
+export function formatMs(ms: number | null): string {
   if (ms == null) {
-    return '—';
+    return 'n/d';
   }
 
   if (ms >= 1000) {
@@ -38,7 +38,7 @@ function formatMs(ms: number | null): string {
   return `${ms}ms`;
 }
 
-function ScoreRing({ score, label }: { score: number | null; label: string }) {
+export function ScoreRing({ score, label }: { score: number | null; label: string }) {
   const radius = 34;
   const circumference = 2 * Math.PI * radius;
   const progress = score == null ? 0 : Math.max(0, Math.min(score, 100)) / 100;
@@ -58,7 +58,7 @@ function ScoreRing({ score, label }: { score: number | null; label: string }) {
         />
       </svg>
       <div>
-        <strong>{score ?? '—'}</strong>
+        <strong>{score ?? 'n/d'}</strong>
         <span>{label}</span>
       </div>
     </div>
@@ -95,7 +95,7 @@ function StrategyCard({
                 <text x="0" y={y + 11} className="health-bar-label">{category.label}</text>
                 <rect x="86" y={y} width="148" height="14" rx="4" className="health-bar-track" />
                 <rect x="86" y={y} width={Math.max(width, value > 0 ? 4 : 0)} height="14" rx="4" className={`health-bar-fill ${tone}`} />
-                <text x="262" y={y + 11} textAnchor="end" className="health-bar-value">{report?.[category.key] ?? '—'}</text>
+                <text x="262" y={y + 11} textAnchor="end" className="health-bar-value">{report?.[category.key] ?? 'n/d'}</text>
               </g>
             );
           })}
@@ -105,7 +105,7 @@ function StrategyCard({
         <div><dt>LCP</dt><dd>{formatMs(report?.metrics.lcp_ms ?? null)}</dd></div>
         <div><dt>FCP</dt><dd>{formatMs(report?.metrics.fcp_ms ?? null)}</dd></div>
         <div><dt>TBT</dt><dd>{formatMs(report?.metrics.tbt_ms ?? null)}</dd></div>
-        <div><dt>CLS</dt><dd>{report?.metrics.cls ?? '—'}</dd></div>
+        <div><dt>CLS</dt><dd>{report?.metrics.cls ?? 'n/d'}</dd></div>
       </dl>
     </article>
   );

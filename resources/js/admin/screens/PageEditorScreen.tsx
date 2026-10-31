@@ -1,15 +1,21 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type ReactNode, useEffect, useId, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronDown, ChevronRight, History, PanelLeft, PanelLeftClose, Save, X } from 'lucide-react';
 import { api, firstError } from '../api';
 import { AppShell } from '../components/AppShell';
 import { SchemaForm, type Section } from '../components/SchemaForm';
+import { LivePreviewButton } from '../components/LivePreview';
+import { OgCaptureButton } from '../components/OgCapture';
+import { AI_UNAVAILABLE, FieldAiWrap, type FieldAiContext } from '../components/SectionCopy';
+import { SeoLength } from '../components/SeoLength';
+import { SeoInsights, writeTarget, type SeoTarget } from '../components/SeoInsights';
 import { MediaField } from '../components/MediaField';
 import { PageOutline, type OutlineSection } from '../components/PageOutline';
 import type { LibraryItem } from '../components/SectionPicker';
 import { GooglePreview } from '../components/GooglePreview';
 import { Modal } from '../components/Modal';
 import { formatDate } from '../lib';
+import { scoreTone } from '../components/SiteHealth';
 import { composeSeoTitle, resolveSeoDescription, type SeoDefaults } from '../seo';
 import { useTour } from '../tour/TourProvider';
 import { TranslationTabs, useTranslationConfig, useTranslationJob, type TranslationState } from '../components/TranslationBar';
@@ -35,6 +41,7 @@ type PageDetail = {
   status: string;
   seo_title: string;
   seo_description: string | null;
+  seo_keyword: string | null;
   canonical: string | null;
   og_image: string | null;
   og_image_alt: string | null;
@@ -64,24 +71,42 @@ function newId(): string {
   return `s${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
 }
 
+type BoxState = { page: boolean; seo: boolean; insights: boolean };
+
+const BOXES_KEY = 'cms-page-boxes';
+
+function readBoxes(): BoxState {
+  const fallback = { page: true, seo: true, insights: true };
+  try {
+    return { ...fallback, ...JSON.parse(localStorage.getItem(BOXES_KEY) ?? '{}') };
+  } catch {
+    return fallback;
+  }
+}
+
 function EditorBox({
   title,
+  meta,
   open,
   onToggle,
   children,
 }: {
   title: string;
+  meta?: ReactNode;
   open: boolean;
   onToggle: () => void;
   children: ReactNode;
 }) {
+  const bodyId = useId();
+
   return (
     <section className={`editor-box${open ? ' is-open' : ''}`}>
-      <button type="button" className="editor-box-toggle" onClick={onToggle}>
+      <button type="button" className="editor-box-toggle" aria-expanded={open} aria-controls={bodyId} onClick={onToggle}>
         {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
         {title}
+        {meta}
       </button>
-      {open ? <div className="editor-box-body">{children}</div> : null}
+      {open ? <div className="editor-box-body" id={bodyId}>{children}</div> : null}
     </section>
   );
 }
@@ -99,7 +124,8 @@ export function PageEditorScreen() {
   const [error, setError] = useState('');
   const [saved, setSaved] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(() => localStorage.getItem('cms-page-sidebar') !== '0');
-  const [boxes, setBoxes] = useState({ page: true, seo: true });
+  const [boxes, setBoxes] = useState<BoxState>(readBoxes);
+  const [seoScore, setSeoScore] = useState<number | null>(null);
   const [versionsOpen, setVersionsOpen] = useState(false);
   const [revisions, setRevisions] = useState<PageRevision[]>([]);
   const [revisionsLoading, setRevisionsLoading] = useState(false);
@@ -215,6 +241,12 @@ export function PageEditorScreen() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [versionsOpen]);
+
+  function toggleBox(key: keyof BoxState) {
+    const next = { ...boxes, [key]: !boxes[key] };
+    setBoxes(next);
+    localStorage.setItem(BOXES_KEY, JSON.stringify(next));
+  }
 
   function toggleSidebar() {
     const next = !sidebarOpen;
@@ -355,6 +387,45 @@ export function PageEditorScreen() {
   const isTranslation = page.translation_of !== null;
   const pathPrefix = page.path.replace(/\/[^/]*$/, '/').replace(/^\/$/, '/');
   const localeName = translationConfig?.locales.find((item) => item.code === page.locale)?.name ?? page.locale;
+  const seoAi: FieldAiContext | undefined = isTranslation ? undefined : {
+    disabled: !translationConfig?.configured,
+    request: () => ({
+      kind: 'page',
+      target: 'seo',
+      page_id: page.id,
+      title: page.seo_title,
+      path: page.path,
+      seo_title: page.seo_title,
+      seo_description: page.seo_description ?? '',
+      seo_keyword: page.seo_keyword ?? '',
+      sections: page.content.sections.map((item) => ({ type: item.type, data: item.data })),
+    }),
+  };
+
+  function applySeoFix(target: SeoTarget, value: string) {
+    setSaved(false);
+    setPage((current) => {
+      if (!current) {
+        return current;
+      }
+      const next = writeTarget({
+        keyword: current.seo_keyword ?? '',
+        seo_title: current.seo_title,
+        seo_description: current.seo_description ?? '',
+        slug: current.slug,
+        path: current.path,
+        og_image_alt: current.og_image_alt ?? '',
+        sections: current.content.sections.map((item) => ({ type: item.type, data: item.data })),
+      }, target, value);
+      return {
+        ...current,
+        seo_title: next.seo_title,
+        seo_description: next.seo_description,
+        og_image_alt: next.og_image_alt ?? current.og_image_alt,
+        content: { sections: current.content.sections.map((item, index) => ({ ...item, data: next.sections[index]?.data ?? item.data })) },
+      };
+    });
+  }
 
   return (
     <AppShell title={page.seo_title} subtitle="Editor de página" full>
@@ -409,17 +480,32 @@ export function PageEditorScreen() {
             </div>
             <div className="panel-body">
               {current ? (
-                <SchemaForm
-                  fields={current.fields}
-                  content={currentData}
-                  context={{ pageSlug: page.slug }}
-                  onChange={(data) => {
-                    const sections = page.content.sections.map((item, index) => (
-                      index === section ? { ...item, data } : item
-                    ));
-                    patchPage({ ...page, content: { sections } });
-                  }}
-                />
+                <>
+                  <SchemaForm
+                    key={page.content.sections[section]?.id ?? section}
+                    fields={current.fields}
+                    content={currentData}
+                    context={{ pageSlug: page.slug }}
+                    ai={isTranslation ? undefined : {
+                      disabled: !translationConfig?.configured,
+                      request: () => ({
+                        kind: 'page',
+                        page_id: page.id,
+                        index: section,
+                        title: page.seo_title,
+                        description: page.seo_description ?? undefined,
+                        path: page.path,
+                        sections: page.content.sections.map((item) => ({ type: item.type, data: item.data })),
+                      }),
+                    }}
+                    onChange={(data) => {
+                      const sections = page.content.sections.map((item, index) => (
+                        index === section ? { ...item, data } : item
+                      ));
+                      patchPage({ ...page, content: { sections } });
+                    }}
+                  />
+                </>
               ) : (
                 <p className="desc">Adicione uma seção pelo painel lateral.</p>
               )}
@@ -427,37 +513,45 @@ export function PageEditorScreen() {
           </div>
         </div>
         <aside className="editor-inspect">
+          <div className="inspect-actions" data-tour="editor-save">
+            <LivePreviewButton
+              previewPath={`preview/${page.id}`}
+              endpoint={`/preview/pages/${page.id}`}
+              body={{ content: page.content, seo_title: page.seo_title, seo_description: page.seo_description }}
+            />
+            <button className="btn btn-primary" type="button" disabled={!dirty} onClick={() => void save()}>
+              Atualizar
+            </button>
+          </div>
           <div className="inspect-scroll">
-            <EditorBox title="Página" open={boxes.page} onToggle={() => setBoxes({ ...boxes, page: !boxes.page })}>
-              {isTranslation ? (
-                <>
-                  <div className="field">
-                    <label>Status em {localeName}</label>
-                    <div className="status-pills">
-                      <button type="button" className={page.status === 'draft' ? 'is-on' : undefined} onClick={() => patchPage({ ...page, status: 'draft' })}>Rascunho</button>
-                      <button type="button" className={page.status === 'published' ? 'is-on' : undefined} onClick={() => patchPage({ ...page, status: 'published' })}>Publicada</button>
-                    </div>
-                    <p className="hint">{page.translated_at ? `Traduzida com IA em ${formatDate(page.translated_at)}.` : 'Tradução manual.'}</p>
+            {isTranslation ? (
+              <EditorBox title="Página" open={boxes.page} onToggle={() => toggleBox('page')}>
+                <div className="field">
+                  <span className="field-label" id="page-status-label">Status em {localeName}</span>
+                  <div className="status-pills" role="group" aria-labelledby="page-status-label">
+                    <button type="button" className={page.status === 'draft' ? 'is-on' : undefined} aria-pressed={page.status === 'draft'} onClick={() => patchPage({ ...page, status: 'draft' })}>Rascunho</button>
+                    <button type="button" className={page.status === 'published' ? 'is-on' : undefined} aria-pressed={page.status === 'published'} onClick={() => patchPage({ ...page, status: 'published' })}>Publicada</button>
                   </div>
-                  <button
-                    className="btn btn-secondary lang-retranslate"
-                    type="button"
-                    disabled={!translationConfig?.configured || translationJob.running[page.locale]}
-                    onClick={() => setRetranslateOpen(true)}
-                  >
-                    {translationJob.running[page.locale] ? 'Traduzindo' : 'Retraduzir a partir do PT'}
-                  </button>
-                </>
-              ) : null}
-              <div className="form-actions" data-tour="editor-save">
-                <button className="btn btn-primary" type="button" disabled={!dirty} onClick={() => void save()}>
-                  Atualizar
+                  <p className="hint">{page.translated_at ? `Traduzida com IA em ${formatDate(page.translated_at)}.` : 'Tradução manual.'}</p>
+                </div>
+                <button
+                  className="btn btn-secondary lang-retranslate"
+                  type="button"
+                  disabled={!translationConfig?.configured || translationJob.running[page.locale]}
+                  onClick={() => setRetranslateOpen(true)}
+                >
+                  {translationJob.running[page.locale] ? 'Traduzindo' : 'Retraduzir a partir do PT'}
                 </button>
-              </div>
-            </EditorBox>
+              </EditorBox>
+            ) : null}
 
             <div data-tour="editor-seo">
-            <EditorBox title="SEO" open={boxes.seo} onToggle={() => setBoxes({ ...boxes, seo: !boxes.seo })}>
+            <EditorBox
+              title="SEO"
+              meta={seoScore !== null ? <span className={`editor-box-score is-${scoreTone(seoScore)}`} title="Nota SEO">{seoScore}</span> : null}
+              open={boxes.seo}
+              onToggle={() => toggleBox('seo')}
+            >
               <GooglePreview
                 title={composeSeoTitle(page.seo_title, defaults)}
                 description={resolveSeoDescription(page.seo_description, defaults)}
@@ -465,10 +559,12 @@ export function PageEditorScreen() {
                 slug={page.path.replace(/^\//, '') || page.slug || slug}
               />
               <div className="field">
-                <label>Slug</label>
+                <label htmlFor="page-slug">Slug</label>
                 <div className="slug-field">
                   <span>{pathPrefix}</span>
                   <input
+                    id="page-slug"
+                    aria-describedby="page-slug-hint"
                     value={isHome ? '' : page.slug}
                     placeholder={isHome ? '' : 'pagina'}
                     disabled={isHome}
@@ -478,58 +574,124 @@ export function PageEditorScreen() {
                     })}
                   />
                 </div>
-                <p className="hint">{isHome ? `A home publica em ${page.path}.` : 'URL pública da página.'}</p>
+                <p className="hint" id="page-slug-hint">{isHome ? `A home publica em ${page.path}.` : 'URL pública da página.'}</p>
               </div>
               <div className="field">
-                <label>Título SEO</label>
-                <input value={page.seo_title} onChange={(event) => patchPage({ ...page, seo_title: event.target.value })} />
-                <p className="hint">Sem o nome do site, o template padrão entra no título público.</p>
-              </div>
-              <div className="field">
-                <label>Description</label>
-                <textarea
-                  value={page.seo_description ?? ''}
-                  placeholder={defaults?.seo_description ?? ''}
-                  onChange={(event) => patchPage({ ...page, seo_description: event.target.value })}
+                <label htmlFor="page-seo-keyword">Palavra-chave</label>
+                <input
+                  id="page-seo-keyword"
+                  value={page.seo_keyword ?? ''}
+                  maxLength={120}
+                  placeholder="ex.: agentes de ia para atendimento"
+                  aria-describedby="page-seo-keyword-hint"
+                  onChange={(event) => patchPage({ ...page, seo_keyword: event.target.value })}
                 />
-                <p className="hint">Vazio usa a description padrão do SEO do site.</p>
+                <p className="hint" id="page-seo-keyword-hint">Termo principal que esta página deve ranquear. A IA e a nota SEO usam este termo.</p>
               </div>
               <div className="field">
-                <label>Canonical</label>
-                <input value={page.canonical ?? ''} onChange={(event) => patchPage({ ...page, canonical: event.target.value })} />
+                <label htmlFor="page-seo-title">Título SEO</label>
+                <FieldAiWrap ai={seoAi} type="text" path="seo_title" value={page.seo_title} onApply={(value) => patchPage({ ...page, seo_title: value })}>
+                  <input
+                    id="page-seo-title"
+                    value={page.seo_title}
+                    aria-describedby="page-seo-title-length page-seo-title-hint"
+                    onChange={(event) => patchPage({ ...page, seo_title: event.target.value })}
+                  />
+                </FieldAiWrap>
+                <SeoLength id="page-seo-title-length" kind="title" text={composeSeoTitle(page.seo_title, defaults)} fallback={!page.seo_title.trim()} />
+                <p className="hint" id="page-seo-title-hint">Sem o nome do site, o template padrão entra no título público.</p>
+              </div>
+              <div className="field">
+                <label htmlFor="page-seo-description">Descrição SEO</label>
+                <FieldAiWrap ai={seoAi} type="textarea" path="seo_description" value={page.seo_description ?? ''} onApply={(value) => patchPage({ ...page, seo_description: value })}>
+                  <textarea
+                    id="page-seo-description"
+                    value={page.seo_description ?? ''}
+                    placeholder={defaults?.seo_description ?? ''}
+                    aria-describedby="page-seo-description-length page-seo-description-hint"
+                    onChange={(event) => patchPage({ ...page, seo_description: event.target.value })}
+                  />
+                </FieldAiWrap>
+                <SeoLength id="page-seo-description-length" kind="description" text={resolveSeoDescription(page.seo_description, defaults)} fallback={!page.seo_description?.trim()} />
+                <p className="hint" id="page-seo-description-hint">Vazio usa a descrição padrão do SEO do site.</p>
               </div>
               <MediaField
                 label="OG image"
                 value={page.og_image}
+                hint="Vazio usa a OG image padrão do site."
                 onChange={(value) => patchPage({ ...page, og_image: value })}
               />
-              <p className="hint">Vazio usa a OG image padrão do site.</p>
+              <OgCaptureButton
+                endpoint={`/og-image/pages/${page.id}`}
+                body={{ content: page.content, seo_title: page.seo_title, seo_description: page.seo_description }}
+                onCaptured={(path) => {
+                  setSaved(false);
+                  setPage((current) => (current ? {
+                    ...current,
+                    og_image: path,
+                    og_image_alt: current.og_image_alt?.trim() ? current.og_image_alt : composeSeoTitle(current.seo_title, defaults),
+                  } : current));
+                }}
+              />
               <div className="field">
-                <label>Alt da OG image</label>
+                <label htmlFor="page-og-alt">Alt da OG image</label>
                 <input
+                  id="page-og-alt"
                   value={page.og_image_alt ?? ''}
                   placeholder={defaults?.seo_og_image_alt ?? ''}
                   onChange={(event) => patchPage({ ...page, og_image_alt: event.target.value })}
                 />
               </div>
-              <div className="field">
-                <label>Robots</label>
-                <input
-                  value={page.robots ?? ''}
-                  placeholder={defaults?.seo_robots ?? ''}
-                  onChange={(event) => patchPage({ ...page, robots: event.target.value })}
-                />
-              </div>
-              <div className="field">
-                <label>Twitter card</label>
-                <input
-                  value={page.twitter_card ?? ''}
-                  placeholder={defaults?.twitter_card ?? ''}
-                  onChange={(event) => patchPage({ ...page, twitter_card: event.target.value })}
-                />
-              </div>
+              <details className="seo-advanced">
+                <summary>Avançado</summary>
+                <div className="field">
+                  <label htmlFor="page-canonical">Canonical</label>
+                  <input id="page-canonical" value={page.canonical ?? ''} onChange={(event) => patchPage({ ...page, canonical: event.target.value })} />
+                </div>
+                <div className="field">
+                  <label htmlFor="page-robots">Robots</label>
+                  <input
+                    id="page-robots"
+                    value={page.robots ?? ''}
+                    placeholder={defaults?.seo_robots ?? ''}
+                    onChange={(event) => patchPage({ ...page, robots: event.target.value })}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="page-twitter-card">Twitter card</label>
+                  <input
+                    id="page-twitter-card"
+                    value={page.twitter_card ?? ''}
+                    placeholder={defaults?.twitter_card ?? ''}
+                    onChange={(event) => patchPage({ ...page, twitter_card: event.target.value })}
+                  />
+                </div>
+              </details>
             </EditorBox>
             </div>
+
+            <EditorBox title="Análise SEO e desempenho" open={boxes.insights} onToggle={() => toggleBox('insights')}>
+              <SeoInsights
+                kind="page"
+                id={page.id}
+                aiDisabled={!translationConfig?.configured || isTranslation}
+                aiNote={isTranslation ? 'Correções por IA só na página original em português.' : AI_UNAVAILABLE}
+                onScore={setSeoScore}
+                market={!isTranslation}
+                onKeyword={(keyword) => patchPage({ ...page, seo_keyword: keyword })}
+                input={{
+                  keyword: page.seo_keyword ?? '',
+                  seo_title: page.seo_title,
+                  seo_description: page.seo_description ?? '',
+                  slug: page.slug,
+                  path: page.path,
+                  og_image_alt: page.og_image_alt ?? '',
+                  sections: page.content.sections.map((item) => ({ type: item.type, data: item.data })),
+                }}
+                lighthouse={{ kind: 'pages', id: page.id }}
+                onApply={(target, value) => applySeoFix(target, value)}
+              />
+            </EditorBox>
 
             <button className="versions-trigger" type="button" data-tour="editor-versions" onClick={() => void openVersions()}>
               <History size={13} />

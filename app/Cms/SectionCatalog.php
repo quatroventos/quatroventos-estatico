@@ -283,14 +283,6 @@ class SectionCatalog
     {
         $deps = [];
 
-        if ($group === 'about' && (in_array('leaders_title', $keys, true) || $preview === 'values')) {
-            $deps[] = 'team';
-        }
-
-        if ($group === 'structure' && ($preview === 'units' || in_array('units', $keys, true))) {
-            $deps[] = 'branches';
-        }
-
         if ($group === 'contact' && ($preview === 'form' || in_array('form', $keys, true))) {
             $deps[] = 'form';
         }

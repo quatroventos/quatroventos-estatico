@@ -1,11 +1,11 @@
 // Gerado por scripts/export-static-pages.mjs. STATIC_MODE é editado à mão.
 import type { ComponentType } from 'react';
-import type { SiteForm } from '../types';
+import type { Section, SiteForm } from '../types';
 
 // true: o front renderiza as páginas de ./pages; false: renderiza as seções vindas do CMS.
 export const STATIC_MODE = true;
 
-export type StaticPageProps = { form: SiteForm | null };
+export type StaticPageProps = { form: SiteForm | null; sections?: Section[] };
 
 export const STATIC_PAGES: Record<string, () => Promise<{ default: ComponentType<StaticPageProps> }>> = {
   "agentes-de-ia": () => import('./pages/agentes-de-ia'),

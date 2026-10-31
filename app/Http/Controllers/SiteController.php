@@ -9,6 +9,8 @@ use App\Services\SitemapService;
 use App\Services\SystemOptions;
 use App\Support\Locales;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -69,10 +71,13 @@ class SiteController extends Controller
     {
         $case = CaseStudy::query()->published()->forLocale(Locales::current())->where('slug', $slug)->firstOrFail();
 
+        $payload = $content->caseStudy($case);
+
         return view('site.app', [
             'site' => app(SystemOptions::class)->site(),
-            'payload' => $content->caseStudy($case),
+            'payload' => $payload,
             'sitePayload' => $content->site($case->localeCode()),
+            'fragment' => $this->fragmentFor($payload),
             'cmsPreview' => false,
         ]);
     }
@@ -97,23 +102,52 @@ class SiteController extends Controller
     {
         $base = rtrim((string) config('app.url'), '/');
 
-        return response(
-            "User-agent: *\nAllow: /\nSitemap: {$base}/sitemap.xml\n",
-            200,
-            ['Content-Type' => 'text/plain; charset=UTF-8']
-        );
+        $allow = "Allow: /\n";
+        $body = "User-agent: *\n{$allow}\n"
+            ."User-agent: GPTBot\n{$allow}\n"
+            ."User-agent: OAI-SearchBot\n{$allow}\n"
+            ."User-agent: Google-Extended\n{$allow}\n"
+            ."Sitemap: {$base}/sitemap.xml\n";
+
+        return response($body, 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
     }
 
     private function render(Page $page, bool $cmsPreview = false): View
     {
         $content = app(PublicContent::class);
 
+        $payload = $content->page($page);
+
         return view('site.app', [
             'page' => $page,
             'site' => app(SystemOptions::class)->site(),
-            'payload' => $content->page($page),
+            'payload' => $payload,
             'sitePayload' => $content->site($page->localeCode()),
+            'fragment' => $cmsPreview ? '' : $this->fragmentFor($payload),
             'cmsPreview' => $cmsPreview,
         ]);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function fragmentFor(array $payload): string
+    {
+        $locale = is_string($payload['locale'] ?? null) ? $payload['locale'] : 'pt-BR';
+        $path = is_string($payload['path'] ?? null) ? $payload['path'] : '/';
+        $relative = trim($path, '/');
+        $name = $relative === '' ? 'index.html' : $relative.'.html';
+        $file = storage_path('app/prerender/'.$locale.'/'.$name);
+
+        if (is_file($file)) {
+            return File::get($file);
+        }
+
+        if (app()->environment('production')) {
+            Log::error('HTML público ausente.', ['file' => $file]);
+            abort(500);
+        }
+
+        return '<main id="conteudo"><p class="wrap" role="status">O HTML desta URL ainda não foi gerado. Rode php artisan site:prerender.</p></main>';
     }
 }

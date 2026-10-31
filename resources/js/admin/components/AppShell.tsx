@@ -2,7 +2,6 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   Award,
   BriefcaseBusiness,
-  Building2,
   CircleHelp,
   FileText,
   Image,
@@ -19,7 +18,6 @@ import {
   Tag,
   UserRound,
   Users,
-  UsersRound,
 } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { useAuth } from '../auth';
@@ -45,8 +43,6 @@ const groups = [
     items: [
       { to: '/paginas', label: 'Páginas', icon: FileText, ability: 'pages' },
       { to: '/cases', label: 'Cases', icon: BriefcaseBusiness, ability: 'cases' },
-      { to: '/equipe', label: 'Equipe', icon: UsersRound, ability: 'team' },
-      { to: '/filiais', label: 'Filiais', icon: Building2, ability: 'branches' },
     ],
   },
   {
@@ -80,6 +76,7 @@ export function AppShell({
   eyebrow,
   subtitle,
   actions,
+  titleAction,
   children,
   inbox = false,
   full = false,
@@ -88,6 +85,7 @@ export function AppShell({
   eyebrow?: string;
   subtitle?: string;
   actions?: ReactNode;
+  titleAction?: ReactNode;
   children: ReactNode;
   inbox?: boolean;
   full?: boolean;
@@ -142,7 +140,12 @@ export function AppShell({
       {eyebrow ? <span className="eyebrow">{eyebrow}</span> : null}
       <div className="section-header">
         <div>
-          <h2>{title}</h2>
+          {titleAction ? (
+            <div className="page-title-row">
+              <h2>{title}</h2>
+              {titleAction}
+            </div>
+          ) : <h2>{title}</h2>}
           {subtitle ? <p className="desc">{subtitle}</p> : null}
         </div>
         {actions ?? null}

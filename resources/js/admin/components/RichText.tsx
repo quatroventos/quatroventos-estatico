@@ -34,10 +34,10 @@ export function RichText({
     if (!editor) {
       return;
     }
-    const current = editor.getHTML();
+    const current = editor.getHTML() === '<p></p>' ? '' : editor.getHTML();
     const next = value || '';
-    if (next !== current && next !== '' && current === '<p></p>') {
-      editor.commands.setContent(next);
+    if (next !== current) {
+      editor.commands.setContent(next, { emitUpdate: false });
     }
   }, [value, editor]);
 

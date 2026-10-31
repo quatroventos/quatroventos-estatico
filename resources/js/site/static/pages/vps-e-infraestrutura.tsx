@@ -2,12 +2,12 @@
 // Editável à mão durante o ajuste de layout; ao voltar para o CMS, a estrutura é portada para sections.tsx.
 // Segue a receita de página da home e o padrão de /agentes-de-ia (DESIGN.md, Layout).
 // Planos e preços de Cloud VPS copiados de fireflyhost.com.br em 29/10/2026; a Firefly não tem checkout por plano de VPS, a contratação é pelo WhatsApp.
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { StaticPageProps } from '../index';
 import { VpsCanvas } from '../../hero';
 import { LeadForm } from '../../sections';
 import { Arrow, revealOnView } from '../../ui';
-import { BillingSwitch, PlanBase, PlanCard, PlanTabs, type Plan } from '../plans';
+import { BillingSwitch, PlanBase, PlanCard, PlanTabs, type Plan } from '../../plans';
 const WHATSAPP = 'https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20um%20VPS%20gerenciado.';
 
 type Tier = { id: string; tab: string; title: string; text: string; common: string[]; plans: Plan[] };
@@ -85,16 +85,6 @@ function WhatsAppCta({ label }: { label: string }) {
 }
 
 export default function PageVpsEInfraestrutura(_props: StaticPageProps) {
-  const [annual, setAnnual] = useState(false);
-  const [tierId, setTierId] = useState(TIERS[0].id);
-  const [switched, setSwitched] = useState(false);
-  const tier = TIERS.find((item) => item.id === tierId) ?? TIERS[0];
-
-  const selectTier = (id: string) => {
-    setTierId(id);
-    setSwitched(true);
-  };
-
   return (
     <>
       {/* seção: hero */}
@@ -118,27 +108,30 @@ export default function PageVpsEInfraestrutura(_props: StaticPageProps) {
           <header className="sec-head plan-head">
             <h2 className="h2">Planos de Cloud VPS <em className="mark">para cada carga.</em></h2>
             <div className="plan-switches">
-              <PlanTabs items={TIERS} activeId={tier.id} label="Tipo de VPS" controls="planos-vps" onChange={selectTier} />
-              <BillingSwitch annual={annual} onChange={setAnnual} />
+              <PlanTabs items={TIERS} label="Tipo de VPS" controls="planos-vps" />
+              <BillingSwitch />
             </div>
           </header>
-          <div className={`plan-category${switched ? ' is-swap' : ''}`} id="planos-vps" key={tier.id}>
-            <div className="plan-category-head">
-              <h3>{tier.title}</h3>
-              <p>{tier.text}</p>
-            </div>
-            <div className="plan-tiers">
-              {tier.plans.map((plan) => (
-                <PlanCard key={plan.name} plan={plan} annual={annual} href={planWhatsApp(plan)} heading="h4" instant={switched} />
-              ))}
-            </div>
-            <PlanBase
-              title="Em todos os planos"
-              text="Os planos mudam em vCPUs, memória e armazenamento. O resto vem em todos."
-              items={[...tier.common, ...ALL_VPS]}
-              heading="h4"
-              instant={switched}
-            />
+          <div id="planos-vps">
+            {TIERS.map((tier, index) => (
+              <div className="plan-category" data-plan-panel={tier.id} hidden={index > 0} key={tier.id}>
+                <div className="plan-category-head">
+                  <h3>{tier.title}</h3>
+                  <p>{tier.text}</p>
+                </div>
+                <div className="plan-tiers">
+                  {tier.plans.map((plan) => (
+                    <PlanCard key={plan.name} plan={plan} href={planWhatsApp(plan)} heading="h4" />
+                  ))}
+                </div>
+                <PlanBase
+                  title="Em todos os planos"
+                  text="Os planos mudam em vCPUs, memória e armazenamento. O resto vem em todos."
+                  items={[...tier.common, ...ALL_VPS]}
+                  heading="h4"
+                />
+              </div>
+            ))}
           </div>
           <p className="plan-note">Infraestrutura da Firefly Host, a empresa de hospedagem da Quatro Ventos. O plano cobre o servidor e a instalação; a gestão da aplicação (deploy com Docker, monitoramento e suporte) é orçada à parte. Para sites, WordPress e WooCommerce, veja os planos de <a href="/hospedagem-de-sites#planos">hospedagem de sites</a>.</p>
         </div>

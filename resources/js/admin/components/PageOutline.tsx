@@ -57,6 +57,8 @@ const LAYOUTS: Record<string, Layout> = {
   cases: 'pair',
   'cases-list': 'cards',
   contact: 'form',
+  gallery: 'cards',
+  results: 'list',
 };
 
 const HINTS: Record<Layout, string> = {

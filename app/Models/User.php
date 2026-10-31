@@ -84,8 +84,6 @@ class User extends Authenticatable
             'audit' => $root,
             'pages' => $member,
             'cases' => $member,
-            'team' => $member,
-            'branches' => $member,
             'messages' => $member,
             'careers' => $member,
             'messages_delete' => $member,

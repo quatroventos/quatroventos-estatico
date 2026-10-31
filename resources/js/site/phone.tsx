@@ -97,7 +97,7 @@ export function PhoneInput({ name, value, onChange, invalid, countryLabel, id }:
           }}
         >
           {PHONE_COUNTRIES.map((option) => (
-            <option key={option.iso} value={option.iso}>{`${flag(option.iso)} ${countryName(option.iso)} (+${option.dial})`}</option>
+            <option key={option.iso} value={option.iso} data-dial={option.dial} data-masks={option.masks.join('|')}>{`${flag(option.iso)} ${countryName(option.iso)} (+${option.dial})`}</option>
           ))}
         </select>
       </span>

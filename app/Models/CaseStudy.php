@@ -25,6 +25,8 @@ class CaseStudy extends Model
         'industria' => 'Indústria',
     ];
 
+    public const COVER_RATIOS = ['og', '16x9', '16x10'];
+
     protected $guarded = [];
 
     protected $attributes = [
@@ -36,7 +38,7 @@ class CaseStudy extends Model
      */
     public function translatableHashFields(): array
     {
-        return ['slug', 'title', 'summary', 'cover_alt', 'gallery', 'challenge', 'solution', 'deliverables', 'results', 'testimonial', 'seo_title', 'seo_description'];
+        return ['slug', 'title', 'summary', 'tags', 'cover_alt', 'content', 'seo_title', 'seo_description'];
     }
 
     protected function casts(): array
@@ -44,11 +46,13 @@ class CaseStudy extends Model
         return [
             'translated_at' => 'datetime',
             'services' => 'array',
+            'tags' => 'array',
             'gallery' => 'array',
             'deliverables' => 'array',
             'stack' => 'array',
             'results' => 'array',
             'testimonial' => 'array',
+            'content' => 'array',
             'featured' => 'boolean',
             'year' => 'integer',
             'sort' => 'integer',
@@ -84,5 +88,39 @@ class CaseStudy extends Model
     public function sectorLabel(): ?string
     {
         return self::SECTORS[$this->sector] ?? null;
+    }
+
+    /**
+     * @return list<array{id: string, type: string, data: array<string, mixed>}>
+     */
+    public function sections(): array
+    {
+        $sections = is_array($this->content) ? ($this->content['sections'] ?? []) : [];
+
+        return is_array($sections) ? array_values(array_filter($sections, 'is_array')) : [];
+    }
+
+    /**
+     * Prints dos cards de listagem: os da primeira galeria do conteúdo.
+     *
+     * @return list<array{path: string, caption: string, alt: string}>
+     */
+    public function prints(): array
+    {
+        foreach ($this->sections() as $section) {
+            if (($section['type'] ?? null) !== 'site.gallery') {
+                continue;
+            }
+
+            $items = is_array($section['data']['items'] ?? null) ? $section['data']['items'] : [];
+
+            return array_values(array_map(fn (array $item) => [
+                'path' => (string) $item['image'],
+                'caption' => (string) ($item['caption'] ?? ''),
+                'alt' => (string) ($item['alt'] ?? ''),
+            ], array_filter($items, fn ($item) => is_array($item) && filled($item['image'] ?? null))));
+        }
+
+        return [];
     }
 }

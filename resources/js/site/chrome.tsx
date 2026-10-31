@@ -228,8 +228,8 @@ function MobileItem({ item, expanded, onToggle, tabbable }: { item: MenuNode; ex
           </button>
         ) : null}
       </div>
-      {item.children.length && expanded ? (
-        <ul className="sub" id={id}>
+      {item.children.length ? (
+        <ul className="sub" id={id} hidden={!expanded}>
           {item.children.map((child) => (
             <li key={`${child.href}-${child.label}`}><LinkTo href={child.href}>{child.label}</LinkTo></li>
           ))}

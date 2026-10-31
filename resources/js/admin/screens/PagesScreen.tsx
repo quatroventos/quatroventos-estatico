@@ -14,6 +14,7 @@ type PageRow = {
   slug: string;
   template: string;
   seo_title: string;
+  section: string;
   updated_at: string;
   translations?: Record<string, TranslationState>;
 };
@@ -106,6 +107,15 @@ export function PagesScreen() {
     })
     : pages;
   const firstDeletable = filtered.findIndex((page) => page.template !== 'home' && page.slug !== 'home');
+  const sections = filtered.reduce<{ name: string; pages: { page: PageRow; index: number }[] }[]>((groups, page, index) => {
+    const group = groups.find((item) => item.name === page.section);
+    if (group) {
+      group.pages.push({ page, index });
+    } else {
+      groups.push({ name: page.section, pages: [{ page, index }] });
+    }
+    return groups;
+  }, []);
 
   return (
     <AppShell
@@ -132,10 +142,18 @@ export function PagesScreen() {
           onChange={(event) => setQuery(event.target.value)}
         />
       </div>
-      <div className="panel table-panel" data-tour="pages-table">
-        {filtered.length === 0 ? (
+      {filtered.length === 0 ? (
+        <div className="panel table-panel" data-tour="pages-table">
           <div className="empty">{pages.length ? 'Nenhuma página encontrada.' : 'Nenhuma página cadastrada.'}</div>
-        ) : (
+        </div>
+      ) : (
+      <div className="page-groups" data-tour="pages-table">
+        {sections.map((section) => (
+        <section className="panel table-panel" key={section.name}>
+          <div className="panel-head">
+            <h3>{section.name}</h3>
+            <p>{section.pages.length === 1 ? '1 página' : `${section.pages.length} páginas`}</p>
+          </div>
         <table>
           <thead>
             <tr>
@@ -146,7 +164,7 @@ export function PagesScreen() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((page, index) => (
+            {section.pages.map(({ page, index }) => (
               <tr key={page.id}>
                 <td className="person">
                   <strong>{page.seo_title}</strong>
@@ -180,8 +198,10 @@ export function PagesScreen() {
             ))}
           </tbody>
         </table>
-        )}
+        </section>
+        ))}
       </div>
+      )}
 
       {open ? (
         <Modal
@@ -244,6 +264,7 @@ export function PagesScreen() {
         >
           {error ? <div className="form-error">{error}</div> : null}
           <p className="desc">A página /{deleteSlug} será excluída, junto com as traduções dela. Links do menu que apontam para ela precisam ser ajustados à parte.</p>
+        </Modal>
       ) : null}
     </AppShell>
   );

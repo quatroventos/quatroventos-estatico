@@ -14,30 +14,26 @@ class MediaOptimizationTest extends TestCase
 
     private string $assetsDir;
 
+    private string $storageDir;
+
+    /**
+     * The service scans storage/app/public, so it runs against a throwaway
+     * storage root instead of the real uploads.
+     */
     protected function setUp(): void
     {
         parent::setUp();
 
+        $this->storageDir = sys_get_temp_dir().'/media-optimization-'.uniqid();
+        $this->app->useStoragePath($this->storageDir);
+
         $this->assetsDir = storage_path('app/public/assets');
         File::ensureDirectoryExists($this->assetsDir);
-        File::cleanDirectory($this->assetsDir);
-
-        $optimized = storage_path('app/public/optimized');
-        if (is_dir($optimized)) {
-            File::deleteDirectory($optimized);
-        }
     }
 
     protected function tearDown(): void
     {
-        if (is_dir($this->assetsDir)) {
-            File::cleanDirectory($this->assetsDir);
-        }
-
-        $optimized = storage_path('app/public/optimized');
-        if (is_dir($optimized)) {
-            File::deleteDirectory($optimized);
-        }
+        File::deleteDirectory($this->storageDir);
 
         parent::tearDown();
     }

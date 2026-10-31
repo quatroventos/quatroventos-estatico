@@ -212,15 +212,15 @@ class LocalizationTest extends TestCase
 
         Http::fake([
             'api.openai.com/*' => Http::sequence()
-                ->push(['choices' => [['message' => ['content' => json_encode(['items' => [
+                ->push(['output' => [['type' => 'message', 'content' => [['type' => 'output_text', 'text' => json_encode(['items' => [
                     ['id' => 'sections.0.data.title', 'text' => 'Agents'],
                     ['id' => 'sections.0.data.body', 'text' => '<p>See the <a href="/contato">contact</a>.</p>'],
-                ]])]]]])
-                ->push(['choices' => [['message' => ['content' => json_encode([
+                ]])]]]]])
+                ->push(['output' => [['type' => 'message', 'content' => [['type' => 'output_text', 'text' => json_encode([
                     'slug' => 'AI Agents',
                     'seo_title' => 'AI agents for operations',
                     'seo_description' => 'Agents that work inside your operation.',
-                ])]]]]),
+                ])]]]]]),
         ]);
 
         $row = app(PageTranslator::class)->translate($source, 'en');

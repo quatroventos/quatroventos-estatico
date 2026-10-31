@@ -20,6 +20,41 @@ class Seo
     public const FALLBACK_SITE_NAME = 'Quatro Ventos';
 
     /**
+     * Limites do que o Google exibe sem cortar. O título conta já composto com o template.
+     */
+    public const TITLE_MAX = 60;
+
+    public const DESCRIPTION_MIN = 120;
+
+    public const DESCRIPTION_MAX = 160;
+
+    /**
+     * Caracteres disponíveis para o título da página depois que o template acrescenta separador e nome do site.
+     */
+    public static function titleBudget(?SiteSetting $site): int
+    {
+        return max(20, self::TITLE_MAX - (mb_strlen(self::composeTitle('x', $site)) - 1));
+    }
+
+    /**
+     * Corta no último espaço antes do limite, sem deixar pontuação solta no fim.
+     */
+    public static function fit(string $text, int $max): string
+    {
+        $text = trim((string) preg_replace('/\s+/u', ' ', $text));
+
+        if (mb_strlen($text) <= $max) {
+            return $text;
+        }
+
+        $cut = mb_substr($text, 0, $max + 1);
+        $space = mb_strrpos($cut, ' ');
+        $cut = $space !== false && $space > $max * 0.6 ? mb_substr($cut, 0, $space) : mb_substr($text, 0, $max);
+
+        return rtrim($cut, " \t,;:|-–—");
+    }
+
+    /**
      * @return array{
      *     seo_separator: string,
      *     seo_title_template: string,

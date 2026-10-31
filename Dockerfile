@@ -35,6 +35,8 @@ RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --opti
 
 COPY . /var/www/html
 COPY --from=assets /app/public/build /var/www/html/public/build
+COPY --from=assets /usr/local/bin/node /usr/local/bin/node
+COPY --from=assets /app/node_modules /var/www/html/node_modules
 
 RUN composer dump-autoload -o --no-dev \
     && chmod +x /entrypoint.sh \

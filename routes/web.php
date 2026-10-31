@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\MockupStudioController;
+use App\Http\Controllers\OgCaptureController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SiteFormController;
 use App\Http\Middleware\DetectLocale;
 use App\Models\Page;
 use Illuminate\Support\Facades\Route;
+
+Route::get('/__og/{token}', OgCaptureController::class)->where('token', '[A-Za-z0-9]{40}')->name('og-capture');
 
 Route::get('/ferramentas/mockups', [MockupStudioController::class, 'show'])->name('mockup-studio.show');
 Route::post('/ferramentas/mockups/gerar', [MockupStudioController::class, 'generate'])

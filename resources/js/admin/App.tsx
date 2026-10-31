@@ -13,10 +13,8 @@ import { MediaOptimizationScreen } from './screens/MediaOptimizationScreen';
 import { BackupScreen } from './screens/BackupScreen';
 import { SeoScreen } from './screens/SeoScreen';
 import {
-  BranchesScreen,
   CertificationsScreen,
   MenuScreen,
-  TeamScreen,
   UsersScreen,
 } from './screens/ResourceScreens';
 import { ProfileScreen } from './screens/ProfileScreen';
@@ -57,8 +55,6 @@ export function App() {
       <Route path="/paginas/:slug" element={<Guard ability="pages"><PageEditorScreen /></Guard>} />
       <Route path="/cases" element={<Guard ability="cases"><CasesScreen /></Guard>} />
       <Route path="/cases/:id" element={<Guard ability="cases"><CaseEditorScreen /></Guard>} />
-      <Route path="/equipe" element={<Guard ability="team"><TeamScreen /></Guard>} />
-      <Route path="/filiais" element={<Guard ability="branches"><BranchesScreen /></Guard>} />
       <Route path="/site" element={<Guard ability="settings"><SiteScreen /></Guard>} />
       <Route path="/cache" element={<Guard ability="cache"><CacheScreen /></Guard>} />
       <Route path="/imagens" element={<Guard ability="cache"><MediaOptimizationScreen /></Guard>} />

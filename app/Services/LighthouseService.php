@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\MeasurePageLighthouseJob;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Throwable;
@@ -112,6 +113,7 @@ class LighthouseService
         $audits = $lighthouse['audits'] ?? [];
 
         return [
+            'audits' => $this->failedAudits($categories, $audits),
             'performance' => $this->score($categories['performance']['score'] ?? null),
             'accessibility' => $this->score($categories['accessibility']['score'] ?? null),
             'best_practices' => $this->score($categories['best-practices']['score'] ?? null),
@@ -126,6 +128,146 @@ class LighthouseService
                     : null,
             ],
         ];
+    }
+
+    public static function pageKey(string $path): string
+    {
+        return 'lighthouse:page:'.md5($path);
+    }
+
+    /**
+     * Última medição de uma página específica (path público, como /agentes-de-ia).
+     *
+     * @return array{url: string, status: 'idle'|'running'|'ready'|'error'|'unavailable', message?: string, fetched_at: ?string, mobile: ?array<string, mixed>, desktop: ?array<string, mixed>}
+     */
+    public function pageReport(string $path): array
+    {
+        $cached = Cache::get(self::pageKey($path));
+
+        if (is_array($cached)) {
+            return $cached;
+        }
+
+        $url = $this->pageUrl($path);
+
+        return $this->isLocalUrl($url)
+            ? $this->pageState($url, 'unavailable', 'Defina LIGHTHOUSE_URL com o domínio público do site. O Lighthouse precisa acessar a página pela internet.')
+            : $this->pageState($url, 'idle');
+    }
+
+    /**
+     * @return array{url: string, status: string, message?: string, fetched_at: ?string, mobile: ?array<string, mixed>, desktop: ?array<string, mixed>}
+     */
+    public function startPage(string $path): array
+    {
+        $url = $this->pageUrl($path);
+
+        if ($this->isLocalUrl($url)) {
+            return $this->pageReport($path);
+        }
+
+        $previous = Cache::get(self::pageKey($path));
+        $state = [
+            ...(is_array($previous) ? $previous : $this->pageState($url, 'idle')),
+            'url' => $url,
+            'status' => 'running',
+            'message' => null,
+        ];
+        Cache::put(self::pageKey($path), $state, now()->addDays(7));
+
+        dispatch(new MeasurePageLighthouseJob($path));
+
+        return $state;
+    }
+
+    public function measurePage(string $path): void
+    {
+        $url = $this->pageUrl($path);
+
+        try {
+            $state = [
+                'url' => $url,
+                'status' => 'ready',
+                'message' => null,
+                'fetched_at' => now()->toIso8601String(),
+                'mobile' => $this->fetchStrategy($url, 'mobile'),
+                'desktop' => $this->fetchStrategy($url, 'desktop'),
+            ];
+        } catch (Throwable $e) {
+            report($e);
+
+            $state = $this->pageState($url, 'error', 'O PageSpeed não conseguiu medir a página. Confira se ela está publicada e acessível.');
+        }
+
+        Cache::put(self::pageKey($path), $state, now()->addDays(7));
+    }
+
+    public function failPage(string $path, string $message): void
+    {
+        Cache::put(self::pageKey($path), $this->pageState($this->pageUrl($path), 'error', $message), now()->addDays(7));
+    }
+
+    private function pageUrl(string $path): string
+    {
+        return rtrim($this->targetUrl(), '/').'/'.ltrim($path, '/');
+    }
+
+    /**
+     * @return array{url: string, status: string, message?: string, fetched_at: ?string, mobile: null, desktop: null}
+     */
+    private function pageState(string $url, string $status, ?string $message = null): array
+    {
+        return [
+            'url' => $url,
+            'status' => $status,
+            'message' => $message,
+            'fetched_at' => null,
+            'mobile' => null,
+            'desktop' => null,
+        ];
+    }
+
+    /**
+     * Auditorias reprovadas, da pior para a melhor, sem as métricas (já exibidas à parte).
+     *
+     * @param  array<string, mixed>  $categories
+     * @param  array<string, mixed>  $audits
+     * @return list<array{id: string, title: string, display: ?string, score: int, category: string, weight: int}>
+     */
+    private function failedAudits(array $categories, array $audits): array
+    {
+        $failed = [];
+
+        foreach ($categories as $categoryId => $category) {
+            foreach ((array) ($category['auditRefs'] ?? []) as $ref) {
+                $id = (string) ($ref['id'] ?? '');
+                $audit = $audits[$id] ?? null;
+
+                if ($id === '' || isset($failed[$id]) || ! is_array($audit) || ($ref['group'] ?? null) === 'metrics') {
+                    continue;
+                }
+
+                $score = $audit['score'] ?? null;
+
+                if (! is_numeric($score) || $score >= 0.9 || in_array($audit['scoreDisplayMode'] ?? '', ['notApplicable', 'manual', 'informative', 'error'], true)) {
+                    continue;
+                }
+
+                $failed[$id] = [
+                    'id' => $id,
+                    'title' => trim((string) preg_replace('/`([^`]*)`/', '$1', (string) ($audit['title'] ?? $id))),
+                    'display' => filled($audit['displayValue'] ?? null) ? (string) $audit['displayValue'] : null,
+                    'score' => (int) round((float) $score * 100),
+                    'category' => (string) $categoryId,
+                    'weight' => (int) ($ref['weight'] ?? 0),
+                ];
+            }
+        }
+
+        $failed = array_values($failed);
+        usort($failed, fn (array $a, array $b) => [$a['score'], -$a['weight']] <=> [$b['score'], -$b['weight']]);
+
+        return array_slice($failed, 0, 15);
     }
 
     private function queueRefresh(): void

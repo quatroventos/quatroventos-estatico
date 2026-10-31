@@ -2,20 +2,20 @@
 // Editável à mão durante o ajuste de layout; ao voltar para o CMS, a estrutura é portada para sections.tsx.
 // Segue a receita de página da home e o padrão de /sobre (hero sem formulário, logos e CTA iguais).
 // Lista única de thumbs, com busca por texto (sem acento e sem caixa) e filtro por categoria.
-import { useId, useMemo, useState, type ReactNode } from 'react';
-import { flushSync } from 'react-dom';
 import type { StaticPageProps } from '../index';
+import type { CaseCard } from '../../types';
 import { AgentLog, Rotating, trackLens } from '../../hero';
-import { Arrow, resetTilt, revealOnView, trackTilt } from '../../ui';
+import { CasesBrowser, type BrowserCase, type BrowserCategory } from '../../cases-browser';
+import { Arrow, revealOnView } from '../../ui';
 import { SHOWCASE } from '../showcase';
 
 const WHATSAPP = 'https://wa.me/554130399593?text=Vi%20os%20cases%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto.';
 
 type Category = 'ia' | 'software' | 'sites';
 
-type Thumb = { name: string; cover: string; href: string; meta: string[]; category: Category };
+type Thumb = BrowserCase;
 
-const CATEGORIES: { id: Category; label: string }[] = [
+const CATEGORIES: BrowserCategory[] = [
   { id: 'ia', label: 'Inteligência artificial' },
   { id: 'software', label: 'Software e webapps' },
   { id: 'sites', label: 'Sites' },
@@ -67,92 +67,25 @@ function WhatsAppCta({ label }: { label: string }) {
   );
 }
 
-const normalize = (value: string) => value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+function cmsThumbs(sections: StaticPageProps['sections']): Thumb[] | null {
+  const browser = sections?.find((section) => section.type.endsWith('cases-browser'));
+  const cases = browser?.data.cases;
+  if (!Array.isArray(cases)) {
+    return null;
+  }
 
-const categoryLabel = (id: Category) => CATEGORIES.find((item) => item.id === id)?.label ?? '';
-
-const transitionName = (href: string) => `cv-${href.replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '')}`;
-
-function CasesBrowser({ head }: { head: ReactNode }) {
-  const searchId = useId();
-  const [query, setQueryState] = useState('');
-  const [category, setCategoryState] = useState<Category | ''>('');
-  const term = normalize(query);
-
-  const morph = (update: () => void) => {
-    const doc = document as Document & { startViewTransition?: (callback: () => void) => unknown };
-    if (!doc.startViewTransition || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      update();
-      return;
-    }
-    doc.startViewTransition(() => flushSync(update));
-  };
-  const setQuery = (value: string) => morph(() => setQueryState(value));
-  const setCategory = (value: Category | '') => morph(() => setCategoryState(value));
-
-  const matching = useMemo(
-    () => THUMBS.filter((item) => !term || normalize([item.name, ...item.meta, categoryLabel(item.category)].join(' ')).includes(term)),
-    [term],
-  );
-  const visible = category ? matching.filter((item) => item.category === category) : matching;
-  const countOf = (id: Category | '') => (id ? matching.filter((item) => item.category === id).length : matching.length);
-
-  const clear = () => {
-    setQuery('');
-    setCategory('');
-  };
-
-  return (
-    <>
-      <div className="cases-band">
-        {head}
-        <div className="cases-band-tools">
-          <div className="cases-filter" role="group" aria-label="Categoria">
-            {[{ id: '' as const, label: 'Todos' }, ...CATEGORIES].map((item) => (
-              <button key={item.id || 'all'} type="button" aria-pressed={category === item.id} onClick={() => setCategory(item.id)}>
-                {item.label}
-                <span className="cases-filter-n">{countOf(item.id)}</span>
-              </button>
-            ))}
-          </div>
-          <div className="cases-search">
-            <label className="sr-only" htmlFor={searchId}>Buscar projeto</label>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM15.5 15.5L20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
-            <input id={searchId} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar por nome, setor ou tipo" autoComplete="off" />
-          </div>
-        </div>
-      </div>
-      <p className="sr-only" aria-live="polite">{visible.length === 1 ? '1 projeto' : `${visible.length} projetos`}</p>
-      {visible.length ? (
-        <div className="cases-grid is-3 is-open is-cover-16x10">
-          {visible.map((item) => <CaseThumb key={item.href} item={item} />)}
-        </div>
-      ) : (
-        <div className="cases-empty">
-          <p>Nenhum projeto encontrado{query ? ` para "${query.trim()}"` : ''}.</p>
-          <button type="button" className="pill line" onClick={clear}>Limpar a busca</button>
-        </div>
-      )}
-    </>
-  );
+  return (cases as CaseCard[]).map((item) => ({
+    name: item.client,
+    cover: item.cover?.src ?? '',
+    href: item.path,
+    meta: item.tags ?? [],
+    category: item.category ?? '',
+  }));
 }
 
-function CaseThumb({ item }: { item: Thumb }) {
-  return (
-    <article className="case-card is-tilt" style={{ viewTransitionName: transitionName(item.href) }} onPointerMove={trackTilt} onPointerLeave={resetTilt}>
-      <a className="case-card-cover" href={item.href} tabIndex={-1} aria-hidden="true">
-        <img src={item.cover} alt="" loading="lazy" />
-      </a>
-      <div className="case-card-body">
-        <h3>{item.name}</h3>
-        <p className="case-meta">{item.meta.map((tag) => <span key={tag}>{tag}</span>)}</p>
-        <a className="case-go" href={item.href} aria-label={`Ver case: ${item.name}`}>Ver case<Arrow /></a>
-      </div>
-    </article>
-  );
-}
+export default function PageCases({ sections }: StaticPageProps) {
+  const thumbs = cmsThumbs(sections) ?? THUMBS;
 
-export default function PageCases(_props: StaticPageProps) {
   return (
     <>
       {/* seção: hero */}
@@ -178,6 +111,8 @@ export default function PageCases(_props: StaticPageProps) {
       <section className="section on-light is-mark-draw" id="projetos">
         <div className="wrap">
           <CasesBrowser
+            items={thumbs}
+            categories={CATEGORIES}
             head={
               <header className="sec-head">
                 <h2 className="h2">Projetos que <em className="mark">entregamos.</em></h2>

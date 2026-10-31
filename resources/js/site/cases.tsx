@@ -51,7 +51,7 @@ function Lightbox({ images, index, onClose, onMove }: { images: CaseImage[]; ind
   );
 }
 
-function Gallery({ images, compact = false }: { images: CaseImage[]; compact?: boolean }) {
+export function Gallery({ images, compact = false }: { images: CaseImage[]; compact?: boolean }) {
   const [open, setOpen] = useState<number | null>(null);
 
   if (images.length === 0) {
@@ -177,11 +177,27 @@ function Block({ tone = 'light', children }: { tone?: 'light' | 'dark'; children
   );
 }
 
-export function CasePage({ item, whatsapp }: { item: CaseDetail; whatsapp: string | null }) {
+export function CaseResults({ title, items }: { title: string; items: Array<{ value: string; label: string }> }) {
+  return (
+    <>
+      {title ? <header className="sec-head is-solo"><h2 className="h2">{title}</h2></header> : null}
+      <dl className="case-results">
+        {items.map((result, index) => (
+          <div key={`${result.value}-${index}`}>
+            {result.value ? <dt>{result.value}</dt> : null}
+            {result.label ? <dd>{result.label}</dd> : null}
+          </div>
+        ))}
+      </dl>
+    </>
+  );
+}
+
+export function CasePage({ item, whatsapp, children }: { item: CaseDetail; whatsapp: string | null; children?: ReactNode }) {
   return (
     <article className="case-page">
-      <header className="hero case-hero">
-        <AgentLog />
+      <header className={item.cover ? 'hero case-hero has-cover' : 'hero case-hero'}>
+        {item.cover ? <img className="case-hero-cover" src={item.cover.src} alt={item.cover.alt} fetchPriority="high" /> : <AgentLog />}
         <div className="wrap">
           <nav className="breadcrumb" aria-label={t('cases.breadcrumb')}>
             <a href={localePath('/')}>{t('cases.home')}</a> <span aria-hidden="true">/</span> <a href={localePath('/cases')}>{t('cases.title')}</a> <span aria-hidden="true">/</span> <span>{item.client}</span>
@@ -194,83 +210,10 @@ export function CasePage({ item, whatsapp }: { item: CaseDetail; whatsapp: strin
             {item.services.map((service) => <a key={service.slug} href={service.path}>{service.label}</a>)}
           </p>
           {item.url ? <a className="case-link" href={item.url} target="_blank" rel="noreferrer">{t('cases.published')}<Arrow /></a> : null}
-          {item.cover ? <img className="case-cover" src={item.cover.src} alt={item.cover.alt} /> : null}
         </div>
       </header>
 
-      {item.challenge ? (
-        <Block>
-          <div className="prose-grid">
-            <h2 className="h2">{t('cases.challenge')}</h2>
-            <Rich value={item.challenge} />
-          </div>
-        </Block>
-      ) : null}
-
-      {item.solution || item.deliverables.length ? (
-        <Block>
-          <div className="prose-grid">
-            <h2 className="h2">{t('cases.solution')}</h2>
-            <div>
-              <Rich value={item.solution} />
-              {item.deliverables.length ? (
-                <ul className="case-deliverables">
-                  {item.deliverables.map((deliverable) => <li key={deliverable}>{deliverable}</li>)}
-                </ul>
-              ) : null}
-            </div>
-          </div>
-        </Block>
-      ) : null}
-
-      {item.gallery.length ? (
-        <Block>
-          <header className="sec-head is-solo"><h2 className="h2">{t('cases.prints')}</h2></header>
-          <Gallery images={item.gallery} />
-        </Block>
-      ) : null}
-
-      {item.stack.length ? (
-        <Block>
-          <div className="prose-grid">
-            <h2 className="h2">{t('cases.stack')}</h2>
-            <ul className="case-stack">
-              {item.stack.map((tech) => <li key={tech}>{tech}</li>)}
-            </ul>
-          </div>
-        </Block>
-      ) : null}
-
-      {item.results.length ? (
-        <Block>
-          <header className="sec-head is-solo"><h2 className="h2">{t('cases.results')}</h2></header>
-          <dl className="case-results">
-            {item.results.map((result, index) => (
-              <div key={`${result.value}-${index}`}>
-                {result.value ? <dt>{result.value}</dt> : null}
-                {result.label ? <dd>{result.label}</dd> : null}
-              </div>
-            ))}
-          </dl>
-        </Block>
-      ) : null}
-
-      {item.testimonial?.quote ? (
-        <Block>
-          <div className="quote-solo">
-            <span className="q-mark" aria-hidden="true">“</span>
-            <blockquote>
-              <Rich value={item.testimonial.quote} />
-              {item.testimonial.author ? (
-                <footer className="quote-by">
-                  <b>{item.testimonial.author}</b>
-                  {item.testimonial.role ? <span>{item.testimonial.role}</span> : null}
-                </footer>
-              ) : null}
-            </blockquote>
-          </div>
-        </Block>
-      ) : null}
+      {children}
 
       {item.next ? (
         <Block>

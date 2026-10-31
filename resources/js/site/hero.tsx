@@ -1,7 +1,7 @@
 import { useEffect, useState, type PointerEvent, type ReactNode } from 'react';
 import { getLocale, t } from './i18n';
 import { LOGS } from './i18n/log';
-import { Cta, Rich, strings, text, type Data } from './ui';
+import { Cta, Marked, Rich, strings, text, type Data } from './ui';
 
 function LogLines() {
   return (
@@ -2248,47 +2248,90 @@ export function Rotating({ items }: { items: string[] }) {
   );
 }
 
-export function Hero({ data, after }: { data: Data; after?: ReactNode }) {
+export const VISUALS: Record<string, () => ReactNode> = {
+  'flow-agent': () => <FlowCanvas />,
+  'flow-automation': () => <FlowCanvas preset="automation" />,
+  rag: () => <RagCanvas />,
+  n8n: () => <N8nCanvas />,
+  llm: () => <LlmCanvas />,
+  system: () => <SystemCanvas />,
+  software: () => <SoftwareCanvas />,
+  saas: () => <SaasCanvas />,
+  modernize: () => <ModernizeCanvas />,
+  pipeline: () => <PipelineCanvas />,
+  ux: () => <UxCanvas />,
+  qa: () => <QaCanvas />,
+  sites: () => <SitesCanvas />,
+  landing: () => <LandingCanvas />,
+  ecom: () => <EcomCanvas />,
+  wp: () => <WpCanvas />,
+  seo: () => <SeoCanvas />,
+  sustain: () => <SustainCanvas />,
+  maintain: () => <MaintainCanvas />,
+  recover: () => <RecoverCanvas />,
+  host: () => <HostCanvas />,
+  vps: () => <VpsCanvas />,
+};
+
+// Três formatos: home (linha rotativa e lente), com animação (canvas ao fundo) e interno (log do agente). O aside entra ao lado do título, em hero-split.
+export function Hero({ data, aside }: { data: Data; aside?: ReactNode }) {
   const title = text(data, 'title');
   const rotating = strings(data, 'rotating');
   const badges = strings(data, 'badges');
   const home = rotating.length > 0;
+  const visualKey = text(data, 'visual');
+  const visual = visualKey in VISUALS ? VISUALS[visualKey] : undefined;
   const lead = text(data, 'subtitle');
   const hasActions = Boolean(text(data, 'primary_href') || text(data, 'secondary_href'));
+  const classes = home ? 'hero is-home is-lens' : visual ? 'hero has-flow' : 'hero';
+
+  const heading = (
+    <h1 className={home ? 'display' : 'display is-inner'}>
+      {home ? (
+        <>
+          <span className="sr-only">{`${title} ${rotating[0]}`}</span>
+          <span aria-hidden="true">
+            {title}
+            <Rotating items={rotating} />
+          </span>
+        </>
+      ) : <Marked value={title} />}
+    </h1>
+  );
+
+  const body = (
+    <>
+      {heading}
+      {lead || hasActions ? (
+        <div className="hero-foot">
+          <Rich className="lead" value={lead} />
+          {hasActions ? (
+            <div className="actions">
+              <Cta href={text(data, 'primary_href')} label={text(data, 'primary_label')} variant="primary" />
+              <Cta href={text(data, 'secondary_href')} label={text(data, 'secondary_label')} variant="line" />
+            </div>
+          ) : null}
+        </div>
+      ) : null}
+      {badges.length ? (
+        <ul className="badges">
+          {badges.map((badge) => <li key={badge}>{badge}</li>)}
+        </ul>
+      ) : null}
+    </>
+  );
 
   return (
-    <section className={home ? 'hero is-home' : 'hero'}>
-      <AgentLog />
-      <div className="wrap">
-        <h1 className={home ? 'display' : 'display is-inner'}>
-          {home ? (
-            <>
-              <span className="sr-only">{`${title} ${rotating[0]}`}</span>
-              <span aria-hidden="true">
-                {title}
-                <Rotating items={rotating} />
-              </span>
-            </>
-          ) : title}
-        </h1>
-        {lead || hasActions ? (
-          <div className="hero-foot">
-            <Rich className="lead" value={lead} />
-            {hasActions ? (
-              <div className="actions">
-                <Cta href={text(data, 'primary_href')} label={text(data, 'primary_label')} variant="primary" />
-                <Cta href={text(data, 'secondary_href')} label={text(data, 'secondary_label')} variant="line" />
-              </div>
-            ) : null}
-          </div>
-        ) : null}
-        {badges.length ? (
-          <ul className="badges">
-            {badges.map((badge) => <li key={badge}>{badge}</li>)}
-          </ul>
-        ) : null}
-        {after}
-      </div>
+    <section className={classes} onPointerMove={home ? trackLens : undefined}>
+      {visual ? visual() : <AgentLog />}
+      {aside ? (
+        <div className="wrap hero-split">
+          <div>{body}</div>
+          {aside}
+        </div>
+      ) : (
+        <div className="wrap">{body}</div>
+      )}
     </section>
   );
 }

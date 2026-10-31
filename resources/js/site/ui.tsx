@@ -68,6 +68,10 @@ export function isExternal(href: string): boolean {
     return false;
   }
 
+  if (typeof window === 'undefined') {
+    return true;
+  }
+
   try {
     return new URL(href).origin !== window.location.origin;
   } catch {

@@ -41,6 +41,35 @@ return [
         'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
         'timeout' => (int) env('OPENAI_TIMEOUT', 120),
         'queue_connection' => env('OPENAI_QUEUE_CONNECTION'),
+        'prompts' => [
+            'writer' => null,
+            'seo_title' => null,
+            'seo_description' => null,
+            'keyword' => null,
+        ],
+    ],
+
+    'openseo' => [
+        'key' => env('OPENSEO_API_KEY'),
+        'url' => env('OPENSEO_MCP_URL', 'https://app.openseo.so/mcp'),
+        'host_header' => env('OPENSEO_HOST_HEADER'),
+        'project' => env('OPENSEO_PROJECT_ID'),
+        'location_code' => env('OPENSEO_LOCATION_CODE') ? (int) env('OPENSEO_LOCATION_CODE') : null,
+        'language_code' => env('OPENSEO_LANGUAGE_CODE'),
+        'site_url' => trim((string) env('OPENSEO_SITE_URL', env('APP_URL', '')), '/'),
+        'timeout' => (int) env('OPENSEO_TIMEOUT', 90),
+        'paid' => (bool) env('OPENSEO_PAID_ENABLED', false),
+    ],
+
+    'serpbear' => [
+        'url' => env('SERPBEAR_URL'),
+        'key' => env('SERPBEAR_API_KEY'),
+        'username' => env('SERPBEAR_USERNAME'),
+        'password' => env('SERPBEAR_PASSWORD'),
+        'domain' => env('SERPBEAR_DOMAIN'),
+        'country' => env('SERPBEAR_COUNTRY', 'BR'),
+        'devices' => env('SERPBEAR_DEVICES', 'desktop'),
+        'timeout' => (int) env('SERPBEAR_TIMEOUT', 60),
     ],
 
     'meta' => [

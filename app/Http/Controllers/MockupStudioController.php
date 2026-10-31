@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CaseStudy;
 use App\Services\Mockup\DeviceSceneGenerator;
 use App\Services\Mockup\DeviceScreenshot;
 use App\Services\Mockup\MockupCatalog;
@@ -14,9 +15,9 @@ use RuntimeException;
 
 class MockupStudioController extends Controller
 {
-    public function show(): Response
+    public function show(Request $request): Response
     {
-        $this->ensureLocal();
+        $this->ensureStudio();
 
         return response()
             ->view('tools.mockup-studio', [
@@ -26,6 +27,7 @@ class MockupStudioController extends Controller
                     'captureUrl' => route('mockup-studio.capture'),
                     'configured' => filled(config('services.meta.key')),
                     'runway' => filled(config('services.runway.key')),
+                    'cover' => $this->coverDestination($request),
                     'viewports' => collect(MockupCatalog::viewports())
                         ->map(fn (array $viewport): array => [
                             'label' => $viewport['label'],
@@ -47,7 +49,7 @@ class MockupStudioController extends Controller
 
     public function generate(Request $request, DeviceSceneGenerator $generator): JsonResponse
     {
-        $this->ensureLocal();
+        $this->ensureStudio();
 
         $data = $request->validate([
             'device' => ['required', 'string', Rule::in(array_keys(MockupCatalog::devices()))],
@@ -91,7 +93,7 @@ class MockupStudioController extends Controller
 
     public function advance(Request $request, DeviceSceneGenerator $generator): JsonResponse
     {
-        $this->ensureLocal();
+        $this->ensureStudio();
 
         $data = $request->validate([
             'frame' => ['required', 'file', 'mimes:png,jpg,jpeg,webp', 'max:20480'],
@@ -134,11 +136,12 @@ class MockupStudioController extends Controller
 
     public function capture(Request $request, DeviceScreenshot $screenshots): JsonResponse
     {
-        $this->ensureLocal();
+        $this->ensureStudio();
 
         $data = $request->validate([
             'url' => ['required', 'string', 'url', 'max:2000'],
             'device' => ['required', 'string', Rule::in(array_keys(MockupCatalog::viewports()))],
+            'clean' => ['sometimes', 'boolean'],
         ], [
             'url.required' => 'Informe a URL.',
             'url.url' => 'URL inválida.',
@@ -158,7 +161,7 @@ class MockupStudioController extends Controller
         set_time_limit(50);
 
         try {
-            $png = $screenshots->capture($data['url'], $data['device']);
+            $png = $screenshots->capture($data['url'], $data['device'], (bool) ($data['clean'] ?? true));
         } catch (RuntimeException $exception) {
             return response()->json(['message' => $exception->getMessage()], 422);
         }
@@ -172,10 +175,34 @@ class MockupStudioController extends Controller
         ]);
     }
 
-    private function ensureLocal(): void
+    /**
+     * @return array{saveUrl: string, alt: string}|null
+     */
+    private function coverDestination(Request $request): ?array
+    {
+        if ($request->query('case') !== '1') {
+            return null;
+        }
+
+        $user = $request->user();
+
+        if ($user === null || ! $user->can('create', CaseStudy::class)) {
+            return null;
+        }
+
+        $alt = trim(strip_tags((string) $request->query('alt', '')));
+
+        return [
+            'saveUrl' => url('/'.cms_admin_path().'/api/cases/mockup'),
+            'alt' => mb_substr($alt, 0, 255),
+        ];
+    }
+
+    private function ensureStudio(): void
     {
         $allowed = app()->environment('local')
-            || (app()->environment('testing') && config('mockup.studio') === true);
+            || (app()->environment('testing') && config('mockup.studio') === true)
+            || (auth()->user()?->can('create', CaseStudy::class) ?? false);
 
         abort_unless($allowed, 404);
     }

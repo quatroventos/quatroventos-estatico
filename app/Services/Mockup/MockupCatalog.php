@@ -30,6 +30,11 @@ final class MockupCatalog
                 'device' => 'macbook',
                 'file' => 'afbrasilia.jpg',
             ],
+            'afcuritiba' => [
+                'label' => 'Studio Display',
+                'device' => 'studio-display',
+                'file' => 'afcuritiba.jpg',
+            ],
         ];
     }
 
@@ -42,6 +47,7 @@ final class MockupCatalog
             'iphone' => 'iPhone',
             'ipad' => 'iPad',
             'macbook' => 'MacBook',
+            'studio-display' => 'Studio Display',
         ];
     }
 
@@ -113,6 +119,13 @@ final class MockupCatalog
                 'label' => '1512×982 @2x',
                 'width' => 1512,
                 'height' => 982,
+                'scale' => 2,
+                'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15',
+            ],
+            'studio-display' => [
+                'label' => '2560×1440 @2x',
+                'width' => 2560,
+                'height' => 1440,
                 'scale' => 2,
                 'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Safari/605.1.15',
             ],

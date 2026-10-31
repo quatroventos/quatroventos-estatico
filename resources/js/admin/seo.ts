@@ -21,6 +21,10 @@ export type SeoPagePreview = {
   resolved_description: string | null;
 };
 
+export const SEO_TITLE_MAX = 60;
+export const SEO_DESCRIPTION_MIN = 120;
+export const SEO_DESCRIPTION_MAX = 160;
+
 export function composeSeoTitle(pageTitle: string, defaults: SeoDefaults | null | undefined): string {
   const siteName = defaults?.og_site_name?.trim() || '';
   const title = pageTitle.trim();

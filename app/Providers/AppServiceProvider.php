@@ -2,14 +2,18 @@
 
 namespace App\Providers;
 
+use App\Models\CaseStudy;
 use App\Models\Certification;
 use App\Models\FormOption;
 use App\Models\MenuItem;
+use App\Models\Page;
 use App\Models\SiteSetting;
+use App\Observers\SitePrerenderObserver;
 use App\Observers\SystemOptionsObserver;
 use App\Policies\AdminOnlyPolicy;
 use App\Policies\FormOptionPolicy;
 use App\Services\MailSettings;
+use App\Services\Seo\SeoIntegrations;
 use App\Services\SystemOptions;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -21,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        $this->app->singleton(SeoIntegrations::class);
     }
 
     public function boot(): void
@@ -36,6 +40,10 @@ class AppServiceProvider extends ServiceProvider
         Certification::observe(SystemOptionsObserver::class);
         FormOption::observe(SystemOptionsObserver::class);
 
+        foreach ([Page::class, CaseStudy::class, SiteSetting::class, MenuItem::class, Certification::class, FormOption::class] as $model) {
+            $model::observe(SitePrerenderObserver::class);
+        }
+
         $appUrl = (string) config('app.url');
         if (str_starts_with($appUrl, 'https://')) {
             URL::forceScheme('https');
@@ -43,6 +51,12 @@ class AppServiceProvider extends ServiceProvider
 
         try {
             app(MailSettings::class)->apply();
+        } catch (\Throwable) {
+            //
+        }
+
+        try {
+            app(SeoIntegrations::class)->apply();
         } catch (\Throwable) {
             //
         }

@@ -14,6 +14,7 @@ export default defineConfig({
                 'resources/js/admin/main.tsx',
                 'resources/css/site.css',
                 'resources/js/site/main.tsx',
+                'resources/js/site/behaviors.js',
             ],
             refresh: true,
             fonts: [
@@ -28,9 +29,10 @@ export default defineConfig({
     server: {
         host: '127.0.0.1',
         port: 5173,
+        allowedHosts: ['host.docker.internal'],
         strictPort: true,
         watch: {
-            ignored: ['**/storage/framework/views/**'],
+            ignored: ['**/storage/framework/views/**', '**/storage/app/prerender/**'],
         },
     },
 });

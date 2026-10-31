@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Cms\SectionCatalog;
 use App\Http\Controllers\Admin\Concerns\RestoresSoftDeletedModels;
 use App\Http\Controllers\Controller;
 use App\Models\CaseStudy;
 use App\Models\Page;
+use App\Models\SiteSetting;
 use App\Support\Locales;
+use App\Support\Seo;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -15,14 +18,18 @@ class CaseStudyController extends Controller
 {
     use RestoresSoftDeletedModels;
 
+    private const EXCLUDED_SECTIONS = ['site.hero', 'site.cases-browser', 'site.cases-list', 'site.contact', 'site.pricing'];
+
     public function index(Request $request): JsonResponse
     {
         $this->authorize('viewAny', CaseStudy::class);
 
         return response()->json([
             'data' => $this->scopedQuery($request, CaseStudy::class)->originals()->with('translations')->ordered()->get()->map(fn (CaseStudy $case) => $this->summary($case)),
-            'sectors' => $this->sectors(),
-            'services' => $this->services(),
+            'library' => $this->library(),
+            'sectors' => self::sectorOptions(),
+            'services' => self::serviceOptions(),
+            'seo' => Seo::defaults(SiteSetting::query()->first()),
         ]);
     }
 
@@ -37,9 +44,12 @@ class CaseStudyController extends Controller
                 'path' => $caseStudy->publicPath(),
                 'stale' => $caseStudy->isTranslationStale(),
                 'translations' => $this->translationStatus($caseStudy->sourceRow()),
+                'content' => ['sections' => $caseStudy->sections()],
             ],
-            'sectors' => $this->sectors(),
-            'services' => $this->services(),
+            'library' => $this->library(),
+            'sectors' => self::sectorOptions(),
+            'services' => self::serviceOptions(),
+            'seo' => Seo::defaults(SiteSetting::query()->first()),
         ]);
     }
 
@@ -94,31 +104,23 @@ class CaseStudyController extends Controller
             'sector' => ['nullable', Rule::in(array_keys(CaseStudy::SECTORS))],
             'services' => ['nullable', 'array'],
             'services.*' => ['nullable', 'string', 'max:120'],
+            'tags' => ['nullable', 'array', 'max:4'],
+            'tags.*' => ['nullable', 'string', 'max:60'],
             'year' => ['nullable', 'integer', 'min:1990', 'max:2100'],
             'cover_path' => ['nullable', 'string', 'max:500'],
             'cover_alt' => ['nullable', 'string', 'max:255'],
-            'gallery' => ['nullable', 'array'],
-            'gallery.*.path' => ['required', 'string', 'max:500'],
-            'gallery.*.caption' => ['nullable', 'string', 'max:300'],
-            'gallery.*.alt' => ['nullable', 'string', 'max:255'],
-            'challenge' => ['nullable', 'string'],
-            'solution' => ['nullable', 'string'],
-            'deliverables' => ['nullable', 'array'],
-            'deliverables.*' => ['nullable', 'string', 'max:300'],
-            'stack' => ['nullable', 'array'],
-            'stack.*' => ['nullable', 'string', 'max:120'],
-            'results' => ['nullable', 'array'],
-            'results.*.value' => ['nullable', 'string', 'max:60'],
-            'results.*.label' => ['nullable', 'string', 'max:300'],
-            'testimonial' => ['nullable', 'array'],
-            'testimonial.quote' => ['nullable', 'string'],
-            'testimonial.author' => ['nullable', 'string', 'max:255'],
-            'testimonial.role' => ['nullable', 'string', 'max:255'],
+            'cover_ratio' => ['nullable', Rule::in(CaseStudy::COVER_RATIOS)],
+            'content' => ['nullable', 'array'],
+            'content.sections' => ['nullable', 'array'],
+            'content.sections.*.id' => ['required', 'string', 'max:40'],
+            'content.sections.*.type' => ['required', 'string', Rule::in(self::sectionTypes())],
+            'content.sections.*.data' => ['nullable', 'array'],
             'url' => ['nullable', 'url', 'max:500'],
             'featured' => ['boolean'],
             'sort' => ['nullable', 'integer', 'min:0'],
             'seo_title' => ['nullable', 'string', 'max:255'],
             'seo_description' => ['nullable', 'string', 'max:500'],
+            'seo_keyword' => ['nullable', 'string', 'max:120'],
         ], [
             'slug.required' => 'Informe o endereço do case.',
             'slug.regex' => 'Use apenas letras minúsculas, números e hífens.',
@@ -126,20 +128,19 @@ class CaseStudyController extends Controller
             'client.required' => 'Informe o cliente.',
             'title.required' => 'Informe o título.',
             'summary.max' => 'O resumo aceita até 300 caracteres.',
-            'gallery.*.path.required' => 'Envie a imagem de cada print da galeria.',
+            'content.sections.*.type.in' => 'Tipo de seção inválido para case.',
             'url.url' => 'Informe uma URL completa, com https://.',
         ]);
 
         $data['services'] = array_values(array_unique(array_filter($data['services'] ?? [])));
-        $data['gallery'] = array_values($data['gallery'] ?? []);
-        $data['deliverables'] = $this->strings($data['deliverables'] ?? []);
-        $data['stack'] = $this->strings($data['stack'] ?? []);
-        $data['results'] = array_values(array_filter(
-            $data['results'] ?? [],
-            fn (array $row) => filled($row['value'] ?? null) || filled($row['label'] ?? null)
-        ));
-        $testimonial = $data['testimonial'] ?? [];
-        $data['testimonial'] = filled($testimonial['quote'] ?? null) ? $testimonial : null;
+        $data['tags'] = $this->strings($data['tags'] ?? []);
+        if (array_key_exists('content', $data) || $case === null) {
+            $data['content'] = ['sections' => array_values(array_map(fn (array $section) => [
+                'id' => $section['id'],
+                'type' => $section['type'],
+                'data' => $section['data'] ?? [],
+            ], $data['content']['sections'] ?? []))];
+        }
         $data['featured'] = (bool) ($data['featured'] ?? false);
         $data['sort'] = (int) ($data['sort'] ?? 0);
 
@@ -205,9 +206,33 @@ class CaseStudyController extends Controller
     }
 
     /**
+     * Seções do site disponíveis no case. O hero vem dos dados do case; listagens de cases, formulário e planos ficam nas páginas.
+     *
+     * @return list<string>
+     */
+    private static function sectionTypes(): array
+    {
+        return array_values(array_filter(
+            SectionCatalog::types(),
+            fn (string $type) => str_starts_with($type, 'site.') && ! in_array($type, self::EXCLUDED_SECTIONS, true)
+        ));
+    }
+
+    /**
+     * @return list<array{group: string, group_label: string, items: list<array<string, mixed>>}>
+     */
+    private function library(): array
+    {
+        return array_map(fn (array $group) => [
+            ...$group,
+            'items' => array_values(array_filter($group['items'], fn (array $item) => in_array($item['type'], self::sectionTypes(), true))),
+        ], SectionCatalog::library());
+    }
+
+    /**
      * @return list<array{value: string, label: string}>
      */
-    private function sectors(): array
+    public static function sectorOptions(): array
     {
         return collect(CaseStudy::SECTORS)
             ->map(fn (string $label, string $value) => ['value' => $value, 'label' => $label])
@@ -218,7 +243,7 @@ class CaseStudyController extends Controller
     /**
      * @return list<array{value: string, label: string}>
      */
-    private function services(): array
+    public static function serviceOptions(): array
     {
         return Page::query()
             ->originals()

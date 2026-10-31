@@ -1,12 +1,52 @@
 // Gerado por scripts/export-static-pages.mjs a partir de / (CMS).
 // Editável à mão durante o ajuste de layout; ao voltar para o CMS, a estrutura é portada para sections.tsx.
 import type { StaticPageProps } from '../index';
+import { toShowcase } from '../../blocks';
 import { CaseFeatures } from '../../case-showcase';
+import type { CaseCard } from '../../types';
 import { AgentLog, Rotating, trackLens } from '../../hero';
 import { Arrow, resetTilt, revealOnView, trackTilt } from '../../ui';
 import { SHOWCASE } from '../showcase';
 
-export default function PageHome(_props: StaticPageProps) {
+function caseList(value: unknown): CaseCard[] {
+  return Array.isArray(value) ? (value as CaseCard[]).filter((item) => item && typeof item.slug === 'string') : [];
+}
+
+// Destaque e grade vêm da seção case-grid da home no CMS; rascunhos já chegam filtrados.
+function HomeCases({ sections }: { sections: StaticPageProps['sections'] }) {
+  const grid = sections?.find((section) => section.type.endsWith('case-grid'));
+
+  if (!grid) {
+    return <CaseFeatures items={[SHOWCASE['fiscal-hub']]} />;
+  }
+
+  const featured = caseList(grid.data.featured_cases);
+  const cases = caseList(grid.data.cases);
+
+  return (
+    <>
+      {featured.length ? <CaseFeatures items={featured.map(toShowcase)} /> : null}
+      {cases.length ? (
+        <div className="cases-grid is-3 is-open">
+          {cases.map((item) => (
+            <article className="case-card is-tilt" key={item.slug} onPointerMove={trackTilt} onPointerLeave={resetTilt}>
+              <a className="case-card-cover" href={item.path} tabIndex={-1} aria-hidden="true">
+                {item.cover?.src ? <img src={item.cover.src} alt="" loading="lazy" /> : null}
+              </a>
+              <div className="case-card-body">
+                <h3>{item.client}</h3>
+                {item.tags?.length ? <p className="case-meta">{item.tags.map((tag) => <span key={tag}>{tag}</span>)}</p> : null}
+                <a className="case-go" href={item.path} aria-label={`Ver case ${item.client}`}>Ver case<Arrow /></a>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : null}
+    </>
+  );
+}
+
+export default function PageHome({ sections }: StaticPageProps) {
   return (
     <>
       {/* seção: hero */}
@@ -120,7 +160,7 @@ export default function PageHome(_props: StaticPageProps) {
             <h2 className="h2">Todo processo tem um ponto que <em className="mark">pode render mais.</em></h2>
             <div className="prose-panel-side">
               <div className="rich">
-                <p>Uma etapa manual que se repete, uma decisão que depende de alguém procurar informação, um atendimento que espera na fila. É nesse ponto que a IA entra. Partimos do processo real, encontramos onde a inteligência artificial gera ganho e construímos a solução integrada aos sistemas que já sustentam a operação.</p>
+                <p>Começamos pelo seu processo, não pela ferramenta. Identificamos onde a IA economiza tempo ou acelera uma decisão e entregamos a solução ligada aos sistemas que você já usa.</p>
               </div>
               <div className="actions">
                 <a className="pill lime" href="https://wa.me/554130399593?text=Gostaria%20de%20avaliar%20um%20processo." target="_blank" rel="noreferrer">Avaliar meu processo<span className="arrow"><svg className="icon-arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg></span></a>
@@ -218,69 +258,7 @@ export default function PageHome(_props: StaticPageProps) {
               <p>Sites institucionais, webapps e plataformas para finanças, educação, turismo e tecnologia, do planejamento à publicação.</p>
             </div>
           </header>
-          <CaseFeatures items={[SHOWCASE['fiscal-hub']]} />
-          <div className="cases-grid is-3 is-open">
-            <article className="case-card is-tilt" onPointerMove={trackTilt} onPointerLeave={resetTilt}>
-              <a className="case-card-cover" href="/cases/assessment-produtive" tabIndex={-1} aria-hidden="true">
-                <img src="/assets/cases/assessment.jpg" alt="" loading="lazy" />
-              </a>
-              <div className="case-card-body">
-                <h3>Assessment Produtive</h3>
-                <p className="case-meta"><span>Webapp</span><span>2025</span></p>
-                <a className="case-go" href="/cases/assessment-produtive" aria-label="Ver case Assessment Produtive">Ver case<Arrow /></a>
-              </div>
-            </article>
-            <article className="case-card is-tilt" onPointerMove={trackTilt} onPointerLeave={resetTilt}>
-              <a className="case-card-cover" href="/cases/alianca-francesa-brasilia" tabIndex={-1} aria-hidden="true">
-                <img src="/assets/cases/afbrasilia.jpg" alt="" loading="lazy" />
-              </a>
-              <div className="case-card-body">
-                <h3>Aliança Francesa Brasília</h3>
-                <p className="case-meta"><span>Criação de site</span><span>2025</span></p>
-                <a className="case-go" href="/cases/alianca-francesa-brasilia" aria-label="Ver case Aliança Francesa Brasília">Ver case<Arrow /></a>
-              </div>
-            </article>
-            <article className="case-card is-tilt" onPointerMove={trackTilt} onPointerLeave={resetTilt}>
-              <a className="case-card-cover" href="/cases/conexme" tabIndex={-1} aria-hidden="true">
-                <img src="/assets/cases/conexme.jpg" alt="" loading="lazy" />
-              </a>
-              <div className="case-card-body">
-                <h3>Conexme</h3>
-                <p className="case-meta"><span>Webapp</span><span>2024</span></p>
-                <a className="case-go" href="/cases/conexme" aria-label="Ver case Conexme">Ver case<Arrow /></a>
-              </div>
-            </article>
-            <article className="case-card is-tilt" onPointerMove={trackTilt} onPointerLeave={resetTilt}>
-              <a className="case-card-cover" href="/cases/tripfy" tabIndex={-1} aria-hidden="true">
-                <img src="/assets/cases/tripfy.jpg" alt="" loading="lazy" />
-              </a>
-              <div className="case-card-body">
-                <h3>Tripfy</h3>
-                <p className="case-meta"><span>Site e webapp</span><span>2023</span></p>
-                <a className="case-go" href="/cases/tripfy" aria-label="Ver case Tripfy">Ver case<Arrow /></a>
-              </div>
-            </article>
-            <article className="case-card is-tilt" onPointerMove={trackTilt} onPointerLeave={resetTilt}>
-              <a className="case-card-cover" href="/cases/alianca-francesa-curitiba" tabIndex={-1} aria-hidden="true">
-                <img src="/assets/cases/afcuritiba.jpg" alt="" loading="lazy" />
-              </a>
-              <div className="case-card-body">
-                <h3>Aliança Francesa Curitiba</h3>
-                <p className="case-meta"><span>Criação de site</span><span>2022</span></p>
-                <a className="case-go" href="/cases/alianca-francesa-curitiba" aria-label="Ver case Aliança Francesa Curitiba">Ver case<Arrow /></a>
-              </div>
-            </article>
-            <article className="case-card is-tilt" onPointerMove={trackTilt} onPointerLeave={resetTilt}>
-              <a className="case-card-cover" href="/cases/multiversidade-pucpr" tabIndex={-1} aria-hidden="true">
-                <img src="/assets/cases/puc.jpg" alt="" loading="lazy" />
-              </a>
-              <div className="case-card-body">
-                <h3>Multiversidade PUCPR</h3>
-                <p className="case-meta"><span>Criação de site</span><span>2021</span></p>
-                <a className="case-go" href="/cases/multiversidade-pucpr" aria-label="Ver case Multiversidade PUCPR">Ver case<Arrow /></a>
-              </div>
-            </article>
-          </div>
+          <HomeCases sections={sections} />
         </div>
       </section>
       {/* seção: clientes */}

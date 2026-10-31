@@ -15,12 +15,12 @@ class CaseStudyTranslator
      *
      * @var list<string>
      */
-    private const FIELDS = ['title', 'summary', 'cover_alt', 'challenge', 'solution', 'deliverables', 'results', 'testimonial', 'gallery'];
+    private const FIELDS = ['title', 'summary', 'tags', 'cover_alt', 'content'];
 
     /**
      * @var list<string>
      */
-    private const COPIED = ['client', 'sector', 'services', 'year', 'cover_path', 'stack', 'url', 'featured', 'sort'];
+    private const COPIED = ['client', 'sector', 'services', 'year', 'cover_path', 'cover_ratio', 'stack', 'url', 'featured', 'sort'];
 
     public function __construct(private TextTranslator $translator) {}
 
@@ -48,7 +48,7 @@ class CaseStudyTranslator
             'slug' => $source->slug,
             'title' => (string) ($source->seo_title ?: $source->title),
             'description' => (string) ($source->seo_description ?: $source->summary),
-            'summary' => mb_substr(strip_tags((string) ($result['summary'] ?? '').' '.(string) ($result['challenge'] ?? '')), 0, 1500),
+            'summary' => mb_substr(strip_tags((string) ($result['summary'] ?? '').' '.implode(' ', ContentStrings::extract(is_array($result['content'] ?? null) ? $result['content'] : []))), 0, 1500),
         ], $locale);
 
         return DB::transaction(function () use ($source, $locale, $result, $seo) {

@@ -4,13 +4,14 @@ namespace Tests\Feature;
 
 use App\Models\Page;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class PublicContentTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_home_renders_react_shell_with_payload(): void
+    public function test_home_serves_prerendered_html_without_react(): void
     {
         Page::query()->create([
             'slug' => 'home',
@@ -21,10 +22,65 @@ class PublicContentTest extends TestCase
             'content' => ['sections' => [['id' => 'a', 'type' => 'site.hero', 'data' => ['title' => 'Processos melhores']]]],
         ]);
 
-        $this->get('/')
+        $file = storage_path('app/prerender/pt-BR/index.html');
+        $backup = is_file($file) ? File::get($file) : null;
+        File::ensureDirectoryExists(dirname($file));
+        File::put($file, '<main id="conteudo"><h1>Processos melhores</h1></main>');
+
+        try {
+            $this->get('/')
+                ->assertOk()
+                ->assertSee('<title>Início', false)
+                ->assertSee('<main id="conteudo"><h1>Processos melhores</h1></main>', false)
+                ->assertDontSee('id="site-root"', false)
+                ->assertDontSee('window.__SITE__', false)
+                ->assertDontSee('site/main.tsx', false);
+        } finally {
+            if ($backup === null) {
+                File::delete($file);
+            } else {
+                File::put($file, $backup);
+            }
+        }
+    }
+
+    public function test_missing_fragment_is_a_notice_outside_production(): void
+    {
+        Page::query()->create([
+            'slug' => 'home',
+            'template' => 'home',
+            'status' => 'published',
+            'published_at' => now(),
+            'seo_title' => 'Início',
+            'content' => ['sections' => []],
+        ]);
+
+        $file = storage_path('app/prerender/pt-BR/index.html');
+        $backup = is_file($file) ? File::get($file) : null;
+        File::delete($file);
+
+        try {
+            $this->get('/')
+                ->assertOk()
+                ->assertSee('php artisan site:prerender', false)
+                ->assertDontSee('id="site-root"', false);
+        } finally {
+            if ($backup !== null) {
+                File::ensureDirectoryExists(dirname($file));
+                File::put($file, $backup);
+            }
+        }
+    }
+
+    public function test_robots_allows_ai_crawlers(): void
+    {
+        $this->get('/robots.txt')
             ->assertOk()
-            ->assertSee('id="site-root"', false)
-            ->assertSee('Processos melhores', false);
+            ->assertSee('User-agent: GPTBot', false)
+            ->assertSee('User-agent: OAI-SearchBot', false)
+            ->assertSee('User-agent: Google-Extended', false)
+            ->assertDontSee('Disallow', false)
+            ->assertSee('Sitemap:', false);
     }
 
     public function test_page_api_returns_sections(): void

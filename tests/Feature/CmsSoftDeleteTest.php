@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Certification;
 use App\Models\ContactSubmission;
-use App\Models\TeamMember;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -11,37 +11,37 @@ class CmsSoftDeleteTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_team_member_can_be_soft_deleted_and_restored(): void
+    public function test_certification_can_be_soft_deleted_and_restored(): void
     {
         $admin = $this->makeAdmin();
-        $member = TeamMember::query()->create([
-            'name' => 'Ana',
-            'role' => 'Sócia',
+        $member = Certification::query()->create([
+            'label' => 'ISO 9001',
+            'type' => 'badge',
             'sort' => 1,
         ]);
 
         $this->actingAs($admin)
-            ->deleteJson("/gestao/api/team-members/{$member->id}")
+            ->deleteJson("/gestao/api/certifications/{$member->id}")
             ->assertNoContent();
 
-        $this->assertSoftDeleted('team_members', ['id' => $member->id]);
+        $this->assertSoftDeleted('certifications', ['id' => $member->id]);
 
         $this->actingAs($admin)
-            ->getJson('/gestao/api/team-members')
+            ->getJson('/gestao/api/certifications')
             ->assertOk()
             ->assertJsonCount(0, 'data');
 
         $this->actingAs($admin)
-            ->getJson('/gestao/api/team-members?trashed=1')
+            ->getJson('/gestao/api/certifications?trashed=1')
             ->assertOk()
             ->assertJsonPath('data.0.id', $member->id);
 
         $this->actingAs($admin)
-            ->postJson("/gestao/api/team-members/{$member->id}/restore")
+            ->postJson("/gestao/api/certifications/{$member->id}/restore")
             ->assertOk()
             ->assertJsonPath('data.id', $member->id);
 
-        $this->assertDatabaseHas('team_members', ['id' => $member->id, 'deleted_at' => null]);
+        $this->assertDatabaseHas('certifications', ['id' => $member->id, 'deleted_at' => null]);
     }
 
     public function test_contact_submission_can_be_soft_deleted_and_restored(): void

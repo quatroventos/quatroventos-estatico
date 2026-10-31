@@ -17,14 +17,89 @@ use Illuminate\Validation\Rule;
 
 class PageController extends Controller
 {
+    private const INSTITUTIONAL = 'Institucional';
+
+    private const OUTSIDE_MENU = 'Fora do menu';
+
     public function index(): JsonResponse
     {
         $this->authorize('viewAny', Page::class);
 
-        $pages = Page::query()->originals()->with('translations')->orderedByMenu()->get()
-            ->map(fn (Page $page) => [...$this->summary($page), 'translations' => $this->translationStatus($page)]);
+        $sections = $this->menuSections();
+
+        $pages = Page::query()->originals()->with('translations')->orderBy('slug')->get()
+            ->map(function (Page $page) use ($sections) {
+                $place = $sections[$page->slug] ?? ['section' => self::OUTSIDE_MENU, 'order' => [PHP_INT_MAX, 0]];
+
+                return [...$this->summary($page), 'section' => $place['section'], 'translations' => $this->translationStatus($page), '_order' => $place['order']];
+            })
+            ->sortBy(fn (array $page) => $page['_order'])
+            ->map(fn (array $page) => array_diff_key($page, ['_order' => true]))
+            ->values();
 
         return response()->json(['data' => $pages]);
+    }
+
+    /**
+     * Agrupa as paginas pela navegacao: filhas de um item do cabecalho ficam na secao dele,
+     * o restante do cabecalho, a home e o rodape ficam em Institucional.
+     *
+     * @return array<string, array{section: string, order: array{int, int}}>
+     */
+    private function menuSections(): array
+    {
+        $items = MenuItem::query()
+            ->where('locale', Locales::default())
+            ->where('is_active', true)
+            ->orderBy('sort')
+            ->get();
+
+        $slugOf = function (string $href): ?string {
+            if (preg_match('#^https?://#i', $href) === 1) {
+                return null;
+            }
+
+            $path = trim((string) (parse_url($href, PHP_URL_PATH) ?: $href), '/');
+
+            return $path === '' ? 'home' : $path;
+        };
+
+        $header = $items->where('group', 'header');
+        $parents = $header->whereNull('parent_id')->values();
+        $sections = ['home' => ['section' => self::INSTITUTIONAL, 'order' => [0, 0]]];
+
+        foreach ($parents as $index => $parent) {
+            $children = $header->where('parent_id', $parent->id)->values();
+            $slug = $slugOf($parent->href);
+
+            if ($children->isEmpty()) {
+                if ($slug !== null) {
+                    $sections[$slug] ??= ['section' => self::INSTITUTIONAL, 'order' => [0, $index + 1]];
+                }
+
+                continue;
+            }
+
+            if ($slug !== null) {
+                $sections[$slug] = ['section' => $parent->label, 'order' => [$index + 1, 0]];
+            }
+
+            foreach ($children as $childIndex => $child) {
+                $childSlug = $slugOf($child->href);
+                if ($childSlug !== null) {
+                    $sections[$childSlug] ??= ['section' => $parent->label, 'order' => [$index + 1, $childIndex + 1]];
+                }
+            }
+        }
+
+        foreach ($items->where('group', '!=', 'header')->values() as $index => $item) {
+            $slug = $slugOf($item->href);
+            if ($slug !== null) {
+                $sections[$slug] ??= ['section' => self::INSTITUTIONAL, 'order' => [0, 100 + $index]];
+            }
+        }
+
+        return $sections;
     }
 
     public function store(Request $request): JsonResponse
@@ -87,6 +162,7 @@ class PageController extends Controller
             ],
             'seo_title' => ['required', 'string', 'max:255'],
             'seo_description' => ['nullable', 'string'],
+            'seo_keyword' => ['nullable', 'string', 'max:120'],
             'canonical' => ['nullable', 'string', 'max:500'],
             'og_image' => ['nullable', 'string', 'max:500'],
             'og_image_alt' => ['nullable', 'string', 'max:255'],
@@ -181,6 +257,7 @@ class PageController extends Controller
             'status' => $page->isOriginal() ? 'published' : $page->status,
             'seo_title' => $snapshot['seo_title'] ?? $page->seo_title,
             'seo_description' => $snapshot['seo_description'] ?? null,
+            'seo_keyword' => $snapshot['seo_keyword'] ?? $page->seo_keyword,
             'canonical' => $snapshot['canonical'] ?? null,
             'og_image' => $snapshot['og_image'] ?? null,
             'og_image_alt' => $snapshot['og_image_alt'] ?? null,
@@ -205,7 +282,7 @@ class PageController extends Controller
      */
     private function pageChanged(Page $page, array $data): bool
     {
-        foreach (['status', 'slug', 'seo_title', 'seo_description', 'canonical', 'og_image', 'og_image_alt', 'robots', 'twitter_card', 'content'] as $field) {
+        foreach (['status', 'slug', 'seo_title', 'seo_description', 'seo_keyword', 'canonical', 'og_image', 'og_image_alt', 'robots', 'twitter_card', 'content'] as $field) {
             if (! array_key_exists($field, $data)) {
                 continue;
             }
@@ -308,6 +385,7 @@ class PageController extends Controller
         return [
             ...$this->summary($page),
             'seo_description' => $page->seo_description,
+            'seo_keyword' => $page->seo_keyword,
             'canonical' => $page->canonical,
             'og_image' => $page->og_image,
             'og_image_alt' => $page->og_image_alt,

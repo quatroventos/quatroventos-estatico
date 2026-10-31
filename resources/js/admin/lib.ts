@@ -14,8 +14,6 @@ export type Abilities = {
   form_options: boolean;
   pages: boolean;
   cases: boolean;
-  team: boolean;
-  branches: boolean;
   messages: boolean;
   careers: boolean;
   messages_delete: boolean;

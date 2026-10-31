@@ -23,7 +23,7 @@ fi
 chown -R www-data:www-data storage bootstrap/cache || true
 chmod -R ug+rwx storage bootstrap/cache || true
 
-php artisan storage:link --force || true
+ln -sfn ../storage/app/public public/storage
 
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   php artisan migrate --force
@@ -31,6 +31,11 @@ fi
 
 if [ "${RUN_SEED:-false}" = "true" ]; then
   php artisan db:seed --class=InitialContentSeeder --force
+fi
+
+if [ "${RUN_PRERENDER:-true}" = "true" ] && command -v node >/dev/null 2>&1; then
+  php artisan site:prerender || echo "site:prerender falhou; o HTML publico pode estar desatualizado."
+  chown -R www-data:www-data storage/app/prerender storage/app/prerender-payloads.json 2>/dev/null || true
 fi
 
 if [ "${APP_ENV:-production}" = "production" ] && [ "${APP_DEBUG:-false}" = "false" ]; then

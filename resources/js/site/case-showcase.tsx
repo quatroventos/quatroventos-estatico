@@ -1,5 +1,44 @@
-import type { ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
+import type { CaseCard } from './types';
 import { Arrow, resetTilt, trackTilt } from './ui';
+
+/** Cases publicados no CMS, por slug do original. Null enquanto o payload do site não chegou. */
+export const CmsCases = createContext<Record<string, CaseCard> | null>(null);
+
+/**
+ * Aplica os dados do CMS sobre o case fixo da página estática.
+ * Case com link interno que não está publicado sai da lista, porque a página dele daria 404.
+ */
+export function useCmsShowcase(items: ShowcaseCase[]): ShowcaseCase[] {
+  const cms = useContext(CmsCases);
+
+  if (cms === null) {
+    return items;
+  }
+
+  return items.flatMap((item) => {
+    if (item.placeholder) {
+      return [item];
+    }
+
+    const card = cms[item.slug];
+    if (!card) {
+      return item.external ? [item] : [];
+    }
+
+    const ratio = card.cover_ratio === '16x9' || card.cover_ratio === '16x10' ? card.cover_ratio : undefined;
+
+    return [{
+      ...item,
+      name: card.client || item.name,
+      cover: card.cover?.src || item.cover,
+      ratio: card.cover?.src ? ratio : item.ratio,
+      tags: card.tags?.length ? card.tags : item.tags,
+      text: card.summary || item.text,
+      href: item.external ? item.href : card.path,
+    }];
+  });
+}
 
 export type ShowcaseCase = {
   slug: string;
@@ -56,15 +95,17 @@ export function CaseFeature({ item }: { item: ShowcaseCase }) {
 }
 
 export function CaseFeatures({ items }: { items: ShowcaseCase[] }) {
+  const resolved = useCmsShowcase(items);
+
   return (
     <div className="cases-grid is-single is-open">
-      {items.map((item) => <CaseFeature key={item.slug} item={item} />)}
+      {resolved.map((item) => <CaseFeature key={item.slug} item={item} />)}
     </div>
   );
 }
 
 export function CaseShowcase({ title, intro, items, tone = 'dark' }: { title: ReactNode; intro?: ReactNode; items: ShowcaseCase[]; tone?: 'dark' | 'light' | 'white' }) {
-  if (items.length === 0) {
+  if (useCmsShowcase(items).length === 0) {
     return null;
   }
 

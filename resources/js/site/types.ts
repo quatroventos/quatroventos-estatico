@@ -40,20 +40,17 @@ export type CaseCard = {
   summary: string;
   sector: string | null;
   services: Array<{ slug: string; label: string; path: string }>;
+  tags?: string[];
   cover: CaseImage | null;
+  cover_ratio?: string | null;
   gallery: CaseImage[];
   featured: boolean;
+  category?: string;
 };
 
 export type CaseDetail = CaseCard & {
   year: number | null;
   url: string | null;
-  challenge: string;
-  solution: string;
-  deliverables: string[];
-  stack: string[];
-  results: Array<{ value?: string; label?: string }>;
-  testimonial: { quote?: string; author?: string; role?: string } | null;
   next: CaseCard | null;
 };
 
@@ -107,6 +104,7 @@ export type SitePayload = {
   };
   seo: Record<string, unknown>;
   form: SiteForm | null;
+  cases?: Record<string, CaseCard>;
 };
 
 declare global {
@@ -114,6 +112,8 @@ declare global {
     __SITE__?: {
       page: PagePayload;
       site: SitePayload;
+      preview?: boolean;
+      draftUrl?: string | null;
     };
   }
 }

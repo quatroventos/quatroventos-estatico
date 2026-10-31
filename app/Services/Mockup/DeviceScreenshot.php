@@ -2,14 +2,17 @@
 
 namespace App\Services\Mockup;
 
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Process;
-use Illuminate\Support\Str;
 use RuntimeException;
 
-class DeviceScreenshot
+class DeviceScreenshot extends HeadlessChrome
 {
-    public function capture(string $url, string $device): string
+    private const DEADLINE_SECONDS = 40;
+
+    private const LOAD_TIMEOUT_SECONDS = 20;
+
+    private const SETTLE_MS = 2500;
+
+    public function capture(string $url, string $device, bool $clean = true): string
     {
         $viewport = MockupCatalog::viewports()[$device] ?? null;
 
@@ -17,79 +20,68 @@ class DeviceScreenshot
             throw new RuntimeException('Dispositivo inválido.');
         }
 
-        $binary = $this->chromeBinary();
-        $directory = storage_path('app/mockup-captures');
-        File::ensureDirectoryExists($directory);
-        $profile = $directory.'/'.Str::uuid()->toString();
-        $screenshot = $profile.'.png';
-        File::ensureDirectoryExists($profile);
-
-        try {
-            $result = Process::timeout(40)->run([
-                $binary,
-                '--headless=new',
-                '--disable-gpu',
-                '--hide-scrollbars',
-                '--no-first-run',
-                '--no-default-browser-check',
-                '--disable-extensions',
-                '--disable-background-networking',
-                '--user-data-dir='.$profile,
-                '--user-agent='.$viewport['user_agent'],
-                '--force-device-scale-factor='.$viewport['scale'],
-                '--window-size='.$viewport['width'].','.$viewport['height'],
-                '--virtual-time-budget=12000',
-                '--timeout=25000',
-                '--screenshot='.$screenshot,
-                $url,
-            ]);
-
-            $bytes = is_file($screenshot) ? (string) file_get_contents($screenshot) : '';
-
-            if (! str_starts_with($bytes, "\x89PNG")) {
-                $detail = trim($result->errorOutput()."\n".$result->output());
-
-                throw new RuntimeException(
-                    'O Chrome não devolveu a print.'
-                    .($detail !== '' ? ' '.mb_substr($detail, 0, 240) : '')
-                );
-            }
-
-            return $bytes;
-        } finally {
-            File::deleteDirectory($profile);
-            if (is_file($screenshot)) {
-                unlink($screenshot);
-            }
-        }
+        return $this->withPage(
+            $viewport['width'],
+            $viewport['height'],
+            self::DEADLINE_SECONDS,
+            fn (string $session): string => $this->shoot($session, $url, $viewport, $clean),
+        );
     }
 
-    private function chromeBinary(): string
+    /**
+     * @param  array{width: int, height: int, scale: int, user_agent: string}  $viewport
+     */
+    private function shoot(string $session, string $url, array $viewport, bool $clean): string
     {
-        $configured = config('services.mockup.chrome_binary');
+        $mobile = str_contains($viewport['user_agent'], 'Mobile');
 
-        if (is_string($configured) && $configured !== '') {
-            if (! is_executable($configured)) {
-                throw new RuntimeException('Não achei o Chrome para capturar a página.');
-            }
+        $this->send('Page.enable', [], $session);
+        $this->send('Emulation.setDeviceMetricsOverride', [
+            'width' => $viewport['width'],
+            'height' => $viewport['height'],
+            'deviceScaleFactor' => $viewport['scale'],
+            'mobile' => $mobile,
+        ], $session);
+        $this->send('Emulation.setTouchEmulationEnabled', ['enabled' => $mobile], $session);
+        $this->send('Emulation.setUserAgentOverride', ['userAgent' => $viewport['user_agent']], $session);
 
-            return $configured;
+        if ($clean) {
+            $this->send('Page.addScriptToEvaluateOnNewDocument', [
+                'source' => (string) file_get_contents(resource_path('mockup/capture-cleaner.js')),
+            ], $session);
         }
 
-        $candidates = [
-            '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
-            '/usr/bin/google-chrome',
-            '/usr/bin/google-chrome-stable',
-            '/usr/bin/chromium',
-            '/usr/bin/chromium-browser',
-        ];
+        $navigation = $this->send('Page.navigate', ['url' => $url], $session);
 
-        foreach ($candidates as $path) {
-            if (is_executable($path)) {
-                return $path;
-            }
+        if (! empty($navigation['errorText'])) {
+            throw new RuntimeException('Não consegui abrir a página: '.$navigation['errorText'].'.');
         }
 
-        throw new RuntimeException('Não achei o Chrome para capturar a página.');
+        $this->waitFor('Page.loadEventFired', min($this->deadline - 8, microtime(true) + self::LOAD_TIMEOUT_SECONDS));
+        $this->pump(microtime(true) + self::SETTLE_MS / 1000);
+
+        if ($clean) {
+            $this->send('Runtime.evaluate', ['expression' => 'window.__mockupSweep && window.__mockupSweep()'], $session);
+            $this->pump(microtime(true) + 0.6);
+        }
+
+        $shot = $this->send('Page.captureScreenshot', ['format' => 'png', 'fromSurface' => true], $session);
+        $bytes = base64_decode((string) ($shot['data'] ?? ''), true);
+
+        if (! is_string($bytes) || ! str_starts_with($bytes, "\x89PNG")) {
+            throw new RuntimeException('O Chrome não devolveu a print.');
+        }
+
+        return $bytes;
+    }
+
+    protected function missingChromeMessage(): string
+    {
+        return 'Não achei o Chrome para capturar a página.';
+    }
+
+    protected function timeoutMessage(): string
+    {
+        return 'A página demorou demais para carregar.';
     }
 }

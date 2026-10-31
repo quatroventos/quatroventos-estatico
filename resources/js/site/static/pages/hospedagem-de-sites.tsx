@@ -3,12 +3,12 @@
 // Segue a receita de página da home e o padrão de /agentes-de-ia (DESIGN.md, Layout).
 // Planos, preços e recursos copiados de fireflyhost.com.br em 29/10/2026; o checkout é o da Firefly Host (financeiro.fireflyhost.com.br).
 // Nos cards ficam só os diferenciais, na ordem acessos, simultâneos, armazenamento, e-mails, backups e extras; o comum vai para a base da categoria.
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { StaticPageProps } from '../index';
 import { HostCanvas } from '../../hero';
 import { LeadForm } from '../../sections';
 import { Arrow, revealOnView } from '../../ui';
-import { BillingSwitch, PlanBase, PlanCard, PlanTabs, type Plan } from '../plans';
+import { BillingSwitch, PlanBase, PlanCard, PlanTabs, type Plan } from '../../plans';
 
 const WHATSAPP = 'https://wa.me/554130399593?text=Gostaria%20de%20contratar%20uma%20hospedagem%20de%20site.';
 const FIREFLY = 'https://fireflyhost.com.br/';
@@ -149,16 +149,6 @@ function planWhatsApp(plan: Plan) {
 }
 
 export default function PageHospedagemDeSites(_props: StaticPageProps) {
-  const [annual, setAnnual] = useState(false);
-  const [categoryId, setCategoryId] = useState(CATEGORIES[0].id);
-  const [switched, setSwitched] = useState(false);
-  const category = CATEGORIES.find((item) => item.id === categoryId) ?? CATEGORIES[0];
-
-  const selectCategory = (id: string) => {
-    setCategoryId(id);
-    setSwitched(true);
-  };
-
   return (
     <>
       {/* seção: hero */}
@@ -182,27 +172,30 @@ export default function PageHospedagemDeSites(_props: StaticPageProps) {
           <header className="sec-head plan-head">
             <h2 className="h2">Planos de hospedagem <em className="mark">para cada tipo de projeto.</em></h2>
             <div className="plan-switches">
-              <PlanTabs items={CATEGORIES} activeId={category.id} label="Tipo de hospedagem" controls="planos-categoria" onChange={selectCategory} />
-              <BillingSwitch annual={annual} onChange={setAnnual} />
+              <PlanTabs items={CATEGORIES} label="Tipo de hospedagem" controls="planos-categoria" />
+              <BillingSwitch />
             </div>
           </header>
-          <div className={`plan-category${switched ? ' is-swap' : ''}`} id="planos-categoria" key={category.id}>
-            <div className="plan-category-head">
-              <h3>{category.title}</h3>
-              <p>{category.text}</p>
-            </div>
-            <div className="plan-tiers">
-              {category.plans.map((plan) => (
-                <PlanCard key={plan.name} plan={plan} annual={annual} href={plan.checkout} altHref={planWhatsApp(plan)} heading="h4" instant={switched} />
-              ))}
-            </div>
-            <PlanBase
-              title="Em todos os planos"
-              text="Os planos mudam no volume de acessos, no armazenamento e nos recursos extras. O resto vem em todos."
-              items={[...category.common, ...ALL_PLANS]}
-              heading="h4"
-              instant={switched}
-            />
+          <div id="planos-categoria">
+            {CATEGORIES.map((category, index) => (
+              <div className="plan-category" data-plan-panel={category.id} hidden={index > 0} key={category.id}>
+                <div className="plan-category-head">
+                  <h3>{category.title}</h3>
+                  <p>{category.text}</p>
+                </div>
+                <div className="plan-tiers">
+                  {category.plans.map((plan) => (
+                    <PlanCard key={plan.name} plan={plan} href={plan.checkout} altHref={planWhatsApp(plan)} heading="h4" />
+                  ))}
+                </div>
+                <PlanBase
+                  title="Em todos os planos"
+                  text="Os planos mudam no volume de acessos, no armazenamento e nos recursos extras. O resto vem em todos."
+                  items={[...category.common, ...ALL_PLANS]}
+                  heading="h4"
+                />
+              </div>
+            ))}
           </div>
           <p className="plan-note">Contratação e cobrança pela Firefly Host. Para aplicações e alto tráfego, veja os planos de <a href="/vps-e-infraestrutura#planos">VPS e infraestrutura</a>.</p>
         </div>

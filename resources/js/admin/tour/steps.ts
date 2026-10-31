@@ -44,7 +44,7 @@ export function stepsFor(tourId: TourId, abilities?: Abilities): TourStep[] {
     return [
       step('shell-sidebar', 'Menu', 'Este menu leva você a todas as áreas do painel.', { eyebrow: 'Painel', placement: 'right' }),
       step('shell-nav-operacao', 'Operação', 'Acompanhe as visitas ao site e as mensagens recebidas pelo contato.', { placement: 'right' }),
-      step('shell-nav-conteudo', 'Conteúdo', 'Monte páginas com seções, edite a equipe e as filiais: textos, fotos e informações que o visitante vê.', { placement: 'right' }),
+      step('shell-nav-conteudo', 'Conteúdo', 'Monte páginas com seções e edite os cases: textos, imagens e informações que o visitante vê.', { placement: 'right' }),
       step('shell-nav-config', 'Configuração', configBody, { placement: 'right' }),
       step('shell-nav-sistema', 'Sistema', systemBody, { placement: 'right' }),
       step('shell-title', 'Título da tela', 'Mostra em qual área você está no momento.'),
@@ -120,51 +120,6 @@ export function stepsFor(tourId: TourId, abilities?: Abilities): TourStep[] {
         prepare: 'page-editor.openVersions',
         cleanup: 'page-editor.closeVersions',
         placement: 'left',
-      }),
-    ];
-  }
-
-  if (tourId === 'team') {
-    return [
-      ...crudBase('membro da equipe', 'Adicionar membro', 'os membros da equipe'),
-      step('crud-modal', 'Ficha do membro', 'Nome, cargo, uma breve apresentação e a foto. É o que aparece na página Quem somos.', {
-        prepare: 'crud.openCreate',
-        cleanup: 'crud.close',
-      }),
-      step('crud-field-bio', 'Bio', 'Texto sobre a pessoa. Você pode usar negrito, listas e links.', {
-        prepare: 'crud.openCreate',
-        cleanup: 'crud.close',
-        optional: true,
-      }),
-      step('crud-field-photo_path', 'Foto', 'Envie a foto do profissional. Se quiser, remova e deixe sem imagem.', {
-        prepare: 'crud.openCreate',
-        cleanup: 'crud.close',
-        optional: true,
-      }),
-      step('crud-modal-save', 'Salvar', 'Salve para guardar. Cancelar fecha sem criar o cadastro.', {
-        prepare: 'crud.openCreate',
-        cleanup: 'crud.close',
-        optional: true,
-      }),
-    ];
-  }
-
-  if (tourId === 'branches') {
-    return [
-      ...crudBase('filial', 'Adicionar filial', 'as filiais', 'f'),
-      step('crud-modal', 'Ficha da filial', 'Cidade, estado e o nome que aparece na página Estrutura. Se for a sede, marque essa opção.', {
-        prepare: 'crud.openCreate',
-        cleanup: 'crud.close',
-      }),
-      step('crud-field-is_headquarters', 'Sede', 'Marque apenas na unidade principal do escritório.', {
-        prepare: 'crud.openCreate',
-        cleanup: 'crud.close',
-        optional: true,
-      }),
-      step('crud-modal-save', 'Salvar', 'Salve quando os dados estiverem corretos.', {
-        prepare: 'crud.openCreate',
-        cleanup: 'crud.close',
-        optional: true,
       }),
     ];
   }
@@ -245,15 +200,18 @@ export function stepsFor(tourId: TourId, abilities?: Abilities): TourStep[] {
   }
 
   if (tourId === 'seo') {
+    const settings = { prepare: 'seo.showSettings' };
     return [
-      step('seo-sitemap', 'Mapa do site', 'Lista das páginas publicadas no sitemap.'),
-      step('seo-copy', 'Copiar link', 'Copia o endereço para você colar no Search Console ou onde precisar.'),
-      step('seo-generate', 'Atualizar lista', 'Atualiza a lista com as páginas publicadas e os endereços extras.'),
-      step('seo-extra', 'URLs extras', 'Um endereço por linha, se alguma página importante não estiver na lista automática.'),
-      step('seo-defaults', 'Padrão das páginas', 'Título e descrição usados quando a página ainda não tem os seus próprios.'),
-      step('seo-fill', 'Preencher vazios', 'Se marcar ao salvar, completa as páginas que ainda estão sem título ou descrição.'),
-      step('seo-save', 'Salvar', 'Salve o padrão. Páginas que já têm texto próprio continuam com o que você escreveu nelas.'),
-      step('seo-preview', 'Prévia no Google', 'Uma ideia de como o resultado pode aparecer na busca. Troque a página no seletor para conferir.'),
+      step('seo-tabs', 'Desempenho, configuração e integrações', 'Desempenho mostra os dados do OpenSEO e o ranking do SerpBear. Configuração guarda o sitemap e o padrão de títulos. Integrações reúne chaves, endereços e prompts da IA.', { prepare: 'seo.showPerformance' }),
+      step('seo-openseo-nav', 'Blocos de desempenho', 'Auditoria, Search Console, palavras-chave, ranking, indexação e IA. Consultas pagas só aparecem se liberadas em Integrações e sempre pedem confirmação com o custo.', { prepare: 'seo.showPerformance', optional: true }),
+      step('seo-sitemap', 'Mapa do site', 'Lista das páginas publicadas no sitemap.', settings),
+      step('seo-copy', 'Copiar link', 'Copia o endereço para você colar no Search Console ou onde precisar.', settings),
+      step('seo-generate', 'Atualizar lista', 'Atualiza a lista com as páginas publicadas e os endereços extras.', settings),
+      step('seo-extra', 'URLs extras', 'Um endereço por linha, se alguma página importante não estiver na lista automática.', settings),
+      step('seo-defaults', 'Padrão das páginas', 'Título e descrição usados quando a página ainda não tem os seus próprios.', settings),
+      step('seo-fill', 'Preencher vazios', 'Se marcar ao salvar, completa as páginas que ainda estão sem título ou descrição.', settings),
+      step('seo-save', 'Salvar', 'Salve o padrão. Páginas que já têm texto próprio continuam com o que você escreveu nelas.', settings),
+      step('seo-preview', 'Prévia no Google', 'Uma ideia de como o resultado pode aparecer na busca. Troque a página no seletor para conferir.', settings),
     ];
   }
 

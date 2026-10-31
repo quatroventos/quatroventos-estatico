@@ -1,0 +1,164 @@
+{
+  "slug": "integracao-de-llm",
+  "template": "custom",
+  "status": "published",
+  "seo_title": "Integração de ChatGPT, Claude e Gemini em sistemas | Quatro Ventos",
+  "seo_description": "Integração de LLMs (OpenAI, Claude, Gemini) em sistemas existentes: APIs, prompts, avaliação, custo e segurança.",
+  "robots": "index, follow, max-image-preview:large",
+  "twitter_card": "summary_large_image",
+  "og_image": "/assets/og/integracao-de-llm.jpg",
+  "og_image_alt": "ChatGPT, Claude e Gemini dentro do sistema. Quatro Ventos.",
+  "sections": [
+    {
+      "id": "hero-1",
+      "type": "site.hero",
+      "data": {
+        "title": "ChatGPT, Claude e Gemini *dentro do sistema.*",
+        "subtitle": "<p>O sistema já funciona. A IA entra onde melhora o processo: classificar, resumir, gerar, extrair, responder. Integrada à stack existente, com custo controlado.</p>",
+        "visual": "llm",
+        "lead_form": true,
+        "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20integrar%20IA%20ao%20nosso%20sistema."
+      }
+    },
+    {
+      "id": "examples-1",
+      "type": "site.examples",
+      "data": {
+        "title": "Integrações *comuns.*",
+        "intro": "<p>Etapas em que um modelo de linguagem assume a leitura, a escrita ou a interpretação de texto dentro de um sistema que já está em uso.</p>",
+        "items": [
+          {
+            "title": "Resumo e classificação",
+            "text": "Resumo e classificação de textos, tickets e documentos, para a equipe ler menos e encaminhar mais rápido."
+          },
+          {
+            "title": "Geração de conteúdo",
+            "text": "Geração de descrições, e-mails e conteúdos a partir dos dados do sistema, com revisão antes de publicar."
+          },
+          {
+            "title": "Extração estruturada",
+            "text": "Extração estruturada de informações de PDFs e imagens, em campos prontos para gravar no banco."
+          },
+          {
+            "title": "Assistente no painel",
+            "text": "Assistentes dentro do painel do sistema, que respondem dúvidas e executam ações do usuário."
+          },
+          {
+            "title": "Tradução e adaptação",
+            "text": "Tradução e adaptação de conteúdo para outros idiomas, públicos ou canais, mantendo o tom definido."
+          },
+          {
+            "title": "Busca em linguagem natural",
+            "text": "O usuário pergunta em texto livre e o sistema consulta os próprios dados para responder."
+          },
+          {
+            "title": "Respostas sugeridas",
+            "text": "Sugestões de resposta para atendentes, com base no histórico do cliente e nas políticas da empresa."
+          },
+          {
+            "title": "Revisão e validação",
+            "text": "Cadastros, textos e documentos conferidos contra regras definidas, com o que está fora do padrão sinalizado."
+          }
+        ],
+        "more_title": "Qualquer etapa com texto",
+        "more_text": "Se uma etapa do sistema depende de ler, escrever ou interpretar texto, ela pode ganhar um modelo de linguagem.",
+        "more_label": "Conte qual é a sua",
+        "more_href": "#contato",
+        "mark_draw": true
+      }
+    },
+    {
+      "id": "panel-1",
+      "type": "site.panel",
+      "data": {
+        "title": "Na stack *que já existe.*",
+        "body": "<p>Stack: PHP/Laravel, Node.js, Python, React e a tecnologia que o sistema já usa. A IA entra no código atual, sem trocar de plataforma e com custo controlado.</p>",
+        "cta_label": "Avaliar uma integração",
+        "cta_href": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20integrar%20IA%20ao%20nosso%20sistema.",
+        "mark_draw": true
+      }
+    },
+    {
+      "id": "steps-1",
+      "type": "site.steps",
+      "data": {
+        "title": "Da etapa escolhida à produção.",
+        "intro": "<p>A integração só entra no sistema depois de testada com dados reais. Em produção, qualidade e custo seguem monitorados.</p>",
+        "timeline": true,
+        "items": [
+          {
+            "title": "Mapeamento",
+            "body": "<p>As etapas do sistema em que a IA melhora o processo.</p>"
+          },
+          {
+            "title": "Prova de conceito",
+            "body": "<p>Modelo e prompt testados com dados reais.</p>"
+          },
+          {
+            "title": "Integração",
+            "body": "<p>Código, cache, limites e registro de custo na stack existente.</p>"
+          },
+          {
+            "title": "Produção",
+            "body": "<p>Publicação com qualidade e custo monitorados.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "checklist-1",
+      "type": "site.checklist",
+      "data": {
+        "title": "Além da *chamada de API.*",
+        "items": [
+          "Escolha de modelo por tarefa, custo e latência",
+          "Prompts versionados e testados",
+          "Avaliação automática de qualidade",
+          "Cache, limites e fallback entre fornecedores",
+          "Registro de uso e custo por funcionalidade",
+          "Tratamento de dados sensíveis"
+        ],
+        "mark_draw": true
+      }
+    },
+    {
+      "id": "faq-1",
+      "type": "site.faq",
+      "data": {
+        "title": "Perguntas frequentes",
+        "items": [
+          {
+            "question": "É preciso reescrever o sistema?",
+            "answer": "<p>Não. A IA entra integrada à stack existente, nas etapas em que melhora o processo.</p>"
+          },
+          {
+            "question": "Qual modelo é usado?",
+            "answer": "<p>O que oferecer o melhor equilíbrio entre custo, qualidade e latência para cada tarefa: OpenAI, Claude, Gemini ou modelos abertos.</p>"
+          },
+          {
+            "question": "Os dados vão treinar o modelo?",
+            "answer": "<p>Usamos APIs e configurações em que os dados enviados não são usados para treinar os modelos dos fornecedores, com tratamento de dados sensíveis antes do envio.</p>"
+          },
+          {
+            "question": "Como o custo é controlado?",
+            "answer": "<p>Com cache, limites de uso e registro de consumo e custo por funcionalidade, acompanhados desde a entrada em produção.</p>"
+          },
+          {
+            "question": "E se um fornecedor ficar fora do ar?",
+            "answer": "<p>A integração pode ter fallback para outro fornecedor, para que a funcionalidade continue respondendo.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "panel-2",
+      "type": "site.panel",
+      "data": {
+        "title": "Que etapa do sistema a IA *pode assumir?*",
+        "body": "<p>Uma conversa basta para identificar a etapa, escolher o modelo e estimar o custo de uso.</p>",
+        "cta_label": "Conversar no WhatsApp",
+        "cta_href": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20integrar%20IA%20ao%20nosso%20sistema."
+      }
+    }
+  ]
+}

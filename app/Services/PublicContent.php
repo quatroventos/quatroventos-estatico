@@ -16,6 +16,13 @@ use Illuminate\Support\Str;
 
 class PublicContent
 {
+    /**
+     * Seções cujos cases são resolvidos no payload público.
+     *
+     * @var list<string>
+     */
+    private const CASE_SECTIONS = ['site.cases', 'site.cases-list', 'site.showcase', 'site.case-grid', 'site.cases-browser'];
+
     private const HOME_LABEL = ['pt-BR' => 'Início', 'en' => 'Home', 'es' => 'Inicio'];
 
     /** @var array<string, array<string, array{label: string, path: string}>> */
@@ -64,6 +71,9 @@ class PublicContent
             ],
             'seo' => [...Seo::defaults($site), 'og_locale' => Locales::ogLocale($locale)],
             'form' => $this->form($site, $locale),
+            'cases' => (object) $this->casesBySourceSlug($locale)
+                ->map(fn (CaseStudy $case) => $this->caseCard($case, 0, $locale))
+                ->all(),
         ];
     }
 
@@ -140,17 +150,11 @@ class PublicContent
             'locale' => $locale,
             'alternates' => $alternates,
             'template' => 'case',
-            'sections' => [],
+            'sections' => $this->resolveSections($case->sections(), $locale, null),
             'case' => [
-                ...$this->caseCard($case, null, $locale),
+                ...$this->caseCard($case, 0, $locale),
                 'year' => $case->year,
                 'url' => $case->url,
-                'challenge' => (string) $case->challenge,
-                'solution' => (string) $case->solution,
-                'deliverables' => $case->deliverables ?? [],
-                'stack' => $case->stack ?? [],
-                'results' => $case->results ?? [],
-                'testimonial' => $case->testimonial,
                 'next' => $next ? $this->caseCard($next, 0, $locale) : null,
             ],
             'seo' => [
@@ -213,12 +217,11 @@ class PublicContent
     private function caseCard(CaseStudy $case, ?int $prints, ?string $locale = null): array
     {
         $locale ??= $case->localeCode();
-        $gallery = collect($case->gallery ?? [])
-            ->filter(fn ($item) => is_array($item) && filled($item['path'] ?? null))
+        $gallery = collect($case->prints())
             ->map(fn (array $item) => [
                 'src' => media($item['path']),
-                'caption' => (string) ($item['caption'] ?? ''),
-                'alt' => (string) ($item['alt'] ?? ($item['caption'] ?? '')),
+                'caption' => $item['caption'],
+                'alt' => $item['alt'] !== '' ? $item['alt'] : $item['caption'],
             ])
             ->values();
 
@@ -230,7 +233,9 @@ class PublicContent
             'summary' => (string) $case->summary,
             'sector' => $case->sectorLabel(),
             'services' => $this->serviceLinks($case->services ?? [], $locale),
+            'tags' => array_values($case->tags ?? []),
             'cover' => $case->cover_path ? ['src' => media($case->cover_path), 'alt' => $case->cover_alt ?: $case->title] : null,
+            'cover_ratio' => $case->cover_ratio,
             'gallery' => ($prints === null ? $gallery : $gallery->take($prints))->all(),
             'featured' => $case->featured,
         ];
@@ -297,29 +302,84 @@ class PublicContent
      * @param  array<string, mixed>  $data
      * @return array<string, mixed>
      */
-    private function resolveCases(string $type, array $data, Page $page): array
+    private function resolveCases(string $type, array $data, string $locale, ?string $serviceSlug): array
     {
-        $locale = $page->localeCode();
-
         if ($type === 'site.cases-list') {
             $data['cases'] = $this->cases(null, $locale);
 
             return $data;
         }
 
+        if ($type === 'site.cases-browser') {
+            return $this->resolveBrowser($data, $locale);
+        }
+
+        if ($type === 'site.showcase' || $type === 'site.case-grid') {
+            $published = $this->casesBySourceSlug($locale);
+            $data['cases'] = $this->pickCases($data['items'] ?? null, $published, $locale);
+
+            if ($type === 'site.case-grid') {
+                $data['featured_cases'] = $this->pickCases($data['featured'] ?? null, $published, $locale);
+            }
+
+            return $data;
+        }
+
         $slugs = array_values(array_filter(is_array($data['items'] ?? null) ? $data['items'] : [], 'is_string'));
         $published = $this->casesBySourceSlug($locale);
-        $serviceSlug = $page->sourceRow()->slug;
 
         $selected = $slugs !== []
             ? collect($slugs)->map(fn (string $slug) => $published->get($slug))->filter()
-            : $published->filter(fn (CaseStudy $case) => $case->hasService($serviceSlug))->values();
+            : $published->filter(fn (CaseStudy $case) => $serviceSlug !== null && $case->hasService($serviceSlug))->values();
 
         $layout = ($data['layout'] ?? '') === 'destaque' ? 'destaque' : 'par';
         $limit = $layout === 'destaque' ? 1 : 2;
 
         $data['layout'] = $layout;
         $data['cases'] = $selected->take($limit)->map(fn (CaseStudy $case) => $this->caseCard($case, 3, $locale))->values()->all();
+
+        return $data;
+    }
+
+    /**
+     * Cases publicados na ordem escolhida no painel; slugs de rascunho ou removidos ficam de fora.
+     *
+     * @param  Collection<string, CaseStudy>  $published
+     * @return list<array<string, mixed>>
+     */
+    private function pickCases(mixed $slugs, Collection $published, string $locale): array
+    {
+        return collect(is_array($slugs) ? $slugs : [])
+            ->filter(fn ($slug) => is_string($slug))
+            ->map(fn (string $slug) => $published->get($slug))
+            ->filter()
+            ->map(fn (CaseStudy $case) => $this->caseCard($case, 0, $locale))
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Todos os cases publicados, cada um na primeira categoria cujos serviços ele atende.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function resolveBrowser(array $data, string $locale): array
+    {
+        $categories = collect(is_array($data['categories'] ?? null) ? $data['categories'] : [])
+            ->filter(fn ($category) => is_array($category) && filled($category['id'] ?? null))
+            ->values();
+
+        $data['cases'] = $this->casesBySourceSlug($locale)
+            ->map(function (CaseStudy $case) use ($categories, $locale) {
+                $original = $case->original ?? $case;
+                $category = $categories->first(fn (array $category) => collect(is_array($category['services'] ?? null) ? $category['services'] : [])
+                    ->contains(fn ($service) => is_string($service) && $original->hasService($service)));
+
+                return [...$this->caseCard($case, 0, $locale), 'category' => (string) ($category['id'] ?? '')];
+            })
+            ->values()
+            ->all();
 
         return $data;
     }
@@ -335,6 +395,16 @@ class PublicContent
             return [];
         }
 
+        return $this->resolveSections($raw, $page->localeCode(), $page->sourceRow()->slug);
+    }
+
+    /**
+     * @param  array<int, mixed>  $raw
+     * @param  string|null  $serviceSlug  Página de serviço que filtra o bloco "Cases selecionados" sem seleção manual.
+     * @return list<array{id: string, type: string, data: array<string, mixed>}>
+     */
+    private function resolveSections(array $raw, string $locale, ?string $serviceSlug): array
+    {
         $sections = [];
 
         foreach ($raw as $section) {
@@ -349,11 +419,11 @@ class PublicContent
 
             $data = is_array($section['data'] ?? null) ? $section['data'] : [];
 
-            if ($type === 'site.cases' || $type === 'site.cases-list') {
-                $data = $this->resolveCases($type, $data, $page);
+            if (in_array($type, self::CASE_SECTIONS, true)) {
+                $data = $this->resolveCases($type, $data, $locale, $serviceSlug);
             }
 
-            $data = $this->links->data($data, $page->localeCode());
+            $data = $this->links->data($data, $locale);
 
             $sections[] = [
                 'id' => is_string($section['id'] ?? null) && $section['id'] !== ''

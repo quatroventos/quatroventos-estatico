@@ -132,6 +132,7 @@ class DeviceSceneGenerator
             'iphone' => 'a modern black smartphone with flat edges, thin bezels and a small camera island',
             'ipad' => 'a modern black tablet with thin bezels',
             'macbook' => 'a space-gray laptop, open, with the keyboard and trackpad visible and thin screen bezels',
+            'studio-display' => 'an Apple Studio Display on its aluminum stand: a 27-inch monitor with a thin black glass, a silver chin and no keyboard',
         ];
         $angles = [
             'frontal' => 'viewed nearly straight on, only a few degrees of turn',
@@ -149,11 +150,15 @@ class DeviceSceneGenerator
 
         $lines = [
             'Create a new photorealistic studio photograph in the same material and lighting language as the reference images: dark charcoal set, soft directional light, black metal, one thin red accent, no people.',
-            'The references are style only. Do not copy their screen content, logos, or exact crop.',
+            $input['device'] === 'studio-display'
+                ? 'Copy the monitor hardware from the reference. It is an Apple Studio Display: one flat rectangular panel, not curved, not bent, and not an iMac. Thin black bezel of even width on all four sides. A small circular camera sits flush in the top bezel, centered, not a webcam perched above the frame and not a notch. The stand is the one in the reference: a short center neck and a flat rectangular aluminum foot on the surface. Not a curved iMac arm, not a round base, not a pole, not a laptop.'
+                : 'The references are style only. Do not copy their screen content, logos, or exact crop.',
             'Device: '.($devices[$input['device']] ?? 'a black device').', '.($angles[$input['angle']] ?? 'three-quarter view').', '.$orientation.'.',
             $scenes[$input['scene']] ?? 'Dark studio surface.',
-            'The entire display area, edge to edge inside the bezel, is a perfectly flat solid fill of pure magenta #FF00FF. No interface, no icons, no wallpaper, no status bar, no text, no window chrome, and no reflection strong enough to break the flat magenta. Keep the bezel black and the body realistic.',
-            'Frame the device large. New composition, not a duplicate of a reference.',
+            $this->screenInstruction($input['device']),
+            $input['device'] === 'studio-display'
+                ? 'Do not copy the website or the logos on the reference screen. You may change the angle and the set. Do not redesign the monitor. No interface, no icons, no text and no wallpaper. The only magenta in the picture is the flat lit display. The glass is one rigid plane.'
+                : 'No interface, no icons, no text, no wallpaper and no colored frame. The only magenta in the picture is the flat lit display. Frame the device large. New composition, not a duplicate of a reference.',
         ];
 
         if ($note !== '') {
@@ -161,6 +166,16 @@ class DeviceSceneGenerator
         }
 
         return implode("\n", $lines);
+    }
+
+    private function screenInstruction(string $device): string
+    {
+        return match ($device) {
+            'iphone' => 'The lit display is a perfectly flat solid magenta #FF00FF and stops at a realistic corner radius. A black dynamic island with the front camera sits at the top center of the glass. The island and the rounded corners are physical black hardware, not magenta.',
+            'macbook' => 'The lit display is a perfectly flat solid magenta #FF00FF with slightly rounded corners. A black webcam notch is cut into the top center of the display. The notch and the corner radius are aluminum, not magenta.',
+            'studio-display' => 'The lit display is a perfectly flat solid magenta #FF00FF. The panel is not curved. A small black camera is flush in the top center of the bezel, outside the magenta. The bezel and the stand are metal, not magenta.',
+            default => 'The lit display is a perfectly flat solid magenta #FF00FF rounded rectangle. The corner radius is black bezel, not magenta. The front camera stays in the bezel, outside the magenta.',
+        };
     }
 
     /**
@@ -174,9 +189,11 @@ class DeviceSceneGenerator
         $note = trim(strip_tags((string) ($input['note'] ?? '')));
 
         $move = match ($input['motion']) {
-            'open' => $input['device'] === 'macbook'
-                ? 'Open the laptop lid a little more, one small step from a more closed angle toward open. Do not jump the lid to fully open.'
-                : 'Raise the device a little more toward upright, one small step from lying on the surface toward standing. Do not jump to a new pose.',
+            'open' => match ($input['device']) {
+                'macbook' => 'Open the laptop lid a little more, one small step from a more closed angle toward open. Do not jump the lid to fully open.',
+                'studio-display' => 'Tilt the monitor a few degrees on its stand. Do not detach the stand and do not turn it into a laptop.',
+                default => 'Raise the device a little more toward upright, one small step from lying on the surface toward standing. Do not jump to a new pose.',
+            },
             'flat' => 'Do not move the device, the camera, or the set. Replace only the display contents.',
             default => 'Rotate the device a little in place, about '.$degrees.' degrees to its right. Do not orbit the camera and do not change the crop.',
         };

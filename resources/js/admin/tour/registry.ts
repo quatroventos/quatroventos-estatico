@@ -11,8 +11,6 @@ const routes: RouteTour[] = [
   { tour: 'inbox', ability: 'messages', match: (path) => path.startsWith('/mensagens') },
   { tour: 'page-editor', ability: 'pages', match: (path) => path.startsWith('/paginas/') },
   { tour: 'pages', ability: 'pages', match: (path) => path === '/paginas' },
-  { tour: 'team', ability: 'team', match: (path) => path === '/equipe' },
-  { tour: 'branches', ability: 'branches', match: (path) => path === '/filiais' },
   { tour: 'site', ability: 'settings', match: (path) => path === '/site' },
   { tour: 'seo', ability: 'seo', match: (path) => path === '/seo' },
   { tour: 'menu', ability: 'menu', match: (path) => path === '/menu' },

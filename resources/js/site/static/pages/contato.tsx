@@ -1,6 +1,7 @@
 // Gerado por scripts/export-static-pages.mjs a partir de /contato (CMS).
 // Editável à mão durante o ajuste de layout; ao voltar para o CMS, a estrutura é portada para sections.tsx.
 import type { CSSProperties, ReactNode } from 'react';
+import { GLYPHS } from '../../glyphs';
 import type { StaticPageProps } from '../index';
 import { AgentLog, Rotating, trackLens } from '../../hero';
 import { ContactForm } from '../../sections';
@@ -14,35 +15,20 @@ const CHANNELS: { title: string; value: string; href: string; external?: boolean
     value: '(41) 3039-9593',
     href: WHATSAPP,
     external: true,
-    glyph: (
-      <>
-        <path d="M20 6a14 14 0 0 0-12 21.2L6 34l7-1.9A14 14 0 1 0 20 6Z" pathLength={1} />
-        <path d="M15 15c0 6 4 10 10 10" pathLength={1} style={{ '--j': 1 } as CSSProperties} />
-      </>
-    ),
+    glyph: GLYPHS.whatsapp,
   },
   {
     title: 'E-mail',
     value: 'contato@quatroventos.com.br',
     href: 'mailto:contato@quatroventos.com.br',
-    glyph: (
-      <>
-        <rect x="5" y="9" width="30" height="22" rx="4" pathLength={1} />
-        <path d="m6 11 14 11 14-11" pathLength={1} style={{ '--j': 1 } as CSSProperties} />
-      </>
-    ),
+    glyph: GLYPHS.mail,
   },
   {
     title: 'Suporte para clientes',
     value: 'Abertura de chamado no suporte',
     href: 'https://quatroventos.freshdesk.com/support/home',
     external: true,
-    glyph: (
-      <>
-        <path d="M8 23v-3a12 12 0 0 1 24 0v3" pathLength={1} />
-        <path d="M8 22h4v9H8a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2ZM32 22h-4v9h4a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2Z" pathLength={1} style={{ '--j': 1 } as CSSProperties} />
-      </>
-    ),
+    glyph: GLYPHS.support,
   },
 ];
 

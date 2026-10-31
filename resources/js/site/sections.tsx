@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
-import { CasesList, CasesPair } from './cases';
+import { CaseResults, CasesList, CasesPair, Gallery } from './cases';
 import { Hero } from './hero';
 import type { FormField, Section, SiteForm } from './types';
-import { Arrow, Cta, LinkTo, Marked, Rich, pad, plain, rows, text, type Data } from './ui';
+import { AdhocBlock, CaseGridBlock, CasesBrowserBlock, ChecklistBlock, ExamplesBlock, FiguresBlock, GlyphsBlock, Head, HistoryBlock, MethodBlock, PanelBlock, PricingBlock, ShowcaseBlock, StackBlock, UsesBlock, hasStackLayers, hasCases, placeholders } from './blocks';
+import { Arrow, Cta, LinkTo, Marked, Rich, pad, plain, rows, strings, text, type Data } from './ui';
 import { t } from './i18n';
 import { PhoneInput, isPhoneComplete, phoneToString, type PhoneValue } from './phone';
 
@@ -14,10 +15,21 @@ const TONES: Record<string, Tone> = {
   cta: 'dark',
   quotes: 'white',
   logos: 'white',
+  showcase: 'dark',
+  'case-grid': 'dark',
+  adhoc: 'dark',
+  method: 'dark',
 };
+
+const LISTS = ['list', 'cards', 'steps', 'portfolio', 'plans', 'faq', 'quotes', 'logos', 'uses', 'examples', 'glyphs', 'checklist', 'history', 'method', 'figures', 'gallery', 'results'];
 
 function kindOf(section: Section): string {
   return section.type.split('.').pop() ?? section.type;
+}
+
+function toneOf(kind: string, data: Data, byType = false): Tone {
+  const tone = byType ? '' : text(data, 'tone');
+  return tone === 'dark' || tone === 'light' || tone === 'white' ? tone : TONES[kind] ?? 'light';
 }
 
 function isEmpty(section: Section): boolean {
@@ -27,15 +39,29 @@ function isEmpty(section: Section): boolean {
   if (kind === 'cases') {
     return !Array.isArray(data.cases) || data.cases.length === 0;
   }
-  if (['list', 'cards', 'steps', 'portfolio', 'plans', 'faq', 'quotes', 'logos'].includes(kind)) {
-    return rows(data).length === 0;
+  if (kind === 'showcase') {
+    return !hasCases(data, 'cases') && placeholders(data).length === 0;
+  }
+  if (kind === 'case-grid') {
+    return !hasCases(data, 'cases', 'featured_cases');
+  }
+  if (kind === 'pricing') {
+    return rows(data, 'categories').length === 0;
+  }
+  if (LISTS.includes(kind)) {
+    return rows(data).length === 0 && strings(data, 'items').length === 0;
   }
 
   return false;
 }
 
-export function Sections({ sections, form }: { sections: Section[]; form: SiteForm | null }) {
+/**
+ * Em páginas de case (`variant="case"`) o tom vem só do tipo de seção,
+ * ignorando o tom escolhido no editor, para que todo case siga o mesmo ritmo.
+ */
+export function Sections({ sections, form, variant }: { sections: Section[]; form: SiteForm | null; variant?: 'case' }) {
   const visible = sections.filter((section) => !isEmpty(section));
+  const isCase = variant === 'case';
   let previous: Tone | null = null;
   let previousKind = '';
 
@@ -43,56 +69,47 @@ export function Sections({ sections, form }: { sections: Section[]; form: SiteFo
     <>
       {visible.map((section) => {
         const kind = kindOf(section);
-        const tone = TONES[kind] ?? 'light';
+        const data = section.data ?? {};
+        const tone = toneOf(kind, data, isCase);
         const flush = previous === tone && kind !== 'hero';
         const stacked = kind === 'prose' && previousKind === 'prose';
         previous = tone;
         previousKind = kind;
 
-        return <SectionView key={section.id} kind={kind} data={section.data ?? {}} tone={tone} flush={flush} stacked={stacked} form={form} />;
+        return <SectionView key={section.id} kind={kind} data={data} tone={tone} flush={flush} stacked={stacked} form={form} isCase={isCase} />;
       })}
     </>
   );
 }
 
-function Shell({ tone, flush, id, className, children }: { tone: Tone; flush: boolean; id?: string; className?: string; children: ReactNode }) {
-  const classes = ['section', `on-${tone}`, flush ? 'is-flush' : '', className ?? ''].filter(Boolean).join(' ');
+type ShellProps = { tone: Tone; flush: boolean; mark: boolean; id?: string; className?: string; wrapClass?: string; children: ReactNode };
+
+function Shell({ tone, flush, mark, id, className, wrapClass, children }: ShellProps) {
+  const classes = ['section', `on-${tone}`, flush ? 'is-flush' : '', mark ? 'is-mark-draw' : '', className ?? ''].filter(Boolean).join(' ');
 
   return (
-    <section className={classes} id={id}>
-      <div className="wrap">{children}</div>
+    <section className={classes} id={id || undefined}>
+      <div className={wrapClass ? `wrap ${wrapClass}` : 'wrap'}>{children}</div>
     </section>
   );
 }
 
-function Head({ title, intro, href }: { title: string; intro?: string; href?: string }) {
-  if (!title && !intro) {
-    return null;
-  }
-
-  return (
-    <header className={intro ? 'sec-head' : 'sec-head is-solo'}>
-      {title ? (
-        <h2 className="h2">
-          {href ? <a href={href}><Marked value={title} /><span className="head-go"><Arrow /></span></a> : <Marked value={title} />}
-        </h2>
-      ) : <span />}
-      {intro ? <Rich className="intro" value={intro} /> : null}
-    </header>
-  );
-}
-
-function SectionView({ kind, data, tone, flush, stacked, form }: { kind: string; data: Data; tone: Tone; flush: boolean; stacked: boolean; form: SiteForm | null }) {
-  const shell = { tone, flush };
+function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind: string; data: Data; tone: Tone; flush: boolean; stacked: boolean; form: SiteForm | null; isCase: boolean }) {
+  const shell = { tone, flush, mark: Boolean(data.mark_draw), id: text(data, 'anchor') };
 
   switch (kind) {
-    case 'hero':
-      return <Hero data={data} />;
+    case 'hero': {
+      const lead = data.lead_form
+        ? <LeadForm className="hero-form" id="contato" whatsappHref={text(data, 'lead_whatsapp')} title={text(data, 'lead_title') || undefined} />
+        : undefined;
+
+      return <Hero data={data} aside={lead} />;
+    }
 
     case 'prose':
       return (
         <Shell {...shell}>
-          <div className={stacked ? 'prose-grid is-stack' : 'prose-grid'}>
+          <div className={isCase ? 'prose-grid is-case' : stacked ? 'prose-grid is-stack' : 'prose-grid'}>
             {text(data, 'title') ? <h2 className="h2"><Marked value={text(data, 'title')} /></h2> : <span />}
             <Rich value={text(data, 'body')} />
           </div>
@@ -102,20 +119,27 @@ function SectionView({ kind, data, tone, flush, stacked, form }: { kind: string;
     case 'list':
     case 'cards':
     case 'portfolio':
+      if (kind === 'list' && hasStackLayers(data) && (text(data, 'layout') === 'stack' || (isCase && /^stack\b/i.test(plain(text(data, 'title')))))) {
+        return <Shell {...shell}><StackBlock data={data} /></Shell>;
+      }
+
       return (
         <Shell {...shell}>
-          <Head title={text(data, 'title')} href={text(data, 'href')} />
-          <ListBody items={rows(data)} />
-          {text(data, 'intro') ? <Rich className="list-note" value={text(data, 'intro')} /> : null}
+          <Head title={text(data, 'title')} intro={text(data, 'intro')} href={text(data, 'href')} />
+          <ListBody items={rows(data)} feature={Boolean(data.feature)} wide={text(data, 'columns') !== '3'} />
         </Shell>
       );
 
-    case 'steps':
+    case 'steps': {
+      const items = rows(data);
+      const timeline = Boolean(data.timeline);
+      const size = items.length === 4 || items.length === 5 ? ` is-${items.length}` : '';
+
       return (
-        <Shell {...shell}>
-          <Head title={text(data, 'title')} />
-          <ol className="steps">
-            {rows(data).map((item, index) => (
+        <Shell {...shell} className={timeline ? 'is-timeline-head' : undefined}>
+          <Head title={text(data, 'title')} intro={timeline ? text(data, 'intro') : undefined} />
+          <ol className={timeline ? `steps is-timeline${size} is-scrub` : 'steps'}>
+            {items.map((item, index) => (
               <li key={`${text(item, 'title')}-${index}`}>
                 <span className="mono">{pad(index)}</span>
                 <h3 className="h3">{text(item, 'title')}</h3>
@@ -123,13 +147,14 @@ function SectionView({ kind, data, tone, flush, stacked, form }: { kind: string;
               </li>
             ))}
           </ol>
-          {text(data, 'intro') ? <Rich className="steps-note" value={text(data, 'intro')} /> : null}
+          {!timeline && text(data, 'intro') ? <Rich className="steps-note" value={text(data, 'intro')} /> : null}
         </Shell>
       );
+    }
 
     case 'plans':
       return (
-        <Shell {...shell} id="planos">
+        <Shell {...shell} id={shell.id || 'planos'}>
           <Head title={text(data, 'title')} intro={text(data, 'intro')} />
           <div className="plans">
             {rows(data).map((item, index) => (
@@ -147,28 +172,56 @@ function SectionView({ kind, data, tone, flush, stacked, form }: { kind: string;
         </Shell>
       );
 
-    case 'quotes':
+    case 'pricing':
       return (
-        <Shell {...shell}>
-          <Quotes title={text(data, 'title')} items={rows(data)} />
+        <Shell {...shell} id={shell.id || 'planos'}>
+          <PricingBlock data={data} />
         </Shell>
       );
 
-    case 'logos':
+    case 'quotes':
       return (
         <Shell {...shell}>
-          <Head title={text(data, 'title')} />
-          <ul className="logos">
-            {rows(data).map((item, index) => (
-              <li key={`${text(item, 'name')}-${index}`}>
-                {text(item, 'image')
-                  ? <img src={text(item, 'image')} alt={text(item, 'image_alt') || text(item, 'name')} loading="lazy" />
-                  : <span className="logo-name">{text(item, 'name')}</span>}
-              </li>
-            ))}
-          </ul>
+          <Quotes title={text(data, 'title')} items={rows(data)} even={Boolean(data.even) || isCase} />
         </Shell>
       );
+
+    case 'logos': {
+      const clients = Boolean(data.clients);
+
+      if (isCase && rows(data).every((item) => !text(item, 'image'))) {
+        return (
+          <Shell {...shell}>
+            <Head title={text(data, 'title')} intro={text(data, 'intro')} />
+            <ListBody items={rows(data).map((item) => ({ title: text(item, 'name') }))} />
+          </Shell>
+        );
+      }
+
+      const list = (
+        <ul className={data.mono ? 'logos is-mono' : 'logos'}>
+          {rows(data).map((item, index) => (
+            <li key={`${text(item, 'name')}-${index}`}>
+              {text(item, 'image')
+                ? <img src={text(item, 'image')} alt={text(item, 'image_alt') || text(item, 'name')} loading="lazy" />
+                : <span className="logo-name">{text(item, 'name')}</span>}
+            </li>
+          ))}
+        </ul>
+      );
+
+      return (
+        <Shell {...shell} wrapClass={clients ? 'clients' : undefined}>
+          {clients ? (
+            <header className="clients-head">
+              <h2 className="h2"><Marked value={text(data, 'title')} /></h2>
+              <Rich className="intro" value={text(data, 'intro')} />
+            </header>
+          ) : <Head title={text(data, 'title')} intro={text(data, 'intro')} />}
+          {list}
+        </Shell>
+      );
+    }
 
     case 'faq':
       return (
@@ -205,8 +258,22 @@ function SectionView({ kind, data, tone, flush, stacked, form }: { kind: string;
       );
 
     case 'contact':
+      if (text(data, 'variant') === 'split') {
+        return (
+          <Shell {...shell} id={shell.id || 'contato'} wrapClass="contact-split">
+            <div>
+              {text(data, 'title') ? <h2 className="h2"><Marked value={text(data, 'title')} /></h2> : null}
+              <Rich className="lead" value={text(data, 'intro')} />
+            </div>
+            <div className={tone === 'dark' ? 'form-card is-dark' : 'form-card'}>
+              <ContactForm form={form} />
+            </div>
+          </Shell>
+        );
+      }
+
       return (
-        <Shell {...shell} id="contato">
+        <Shell {...shell} id={shell.id || 'contato'}>
           <div className="contact-grid">
             <div>
               {text(data, 'title') ? <h2 className="h2"><Marked value={text(data, 'title')} /></h2> : null}
@@ -233,19 +300,75 @@ function SectionView({ kind, data, tone, flush, stacked, form }: { kind: string;
         </Shell>
       );
 
+    case 'gallery': {
+      const images = rows(data)
+        .filter((item) => text(item, 'image'))
+        .map((item) => ({ src: text(item, 'image'), caption: text(item, 'caption'), alt: text(item, 'alt') || text(item, 'caption') }));
+
+      return (
+        <Shell {...shell}>
+          <Head title={text(data, 'title')} intro={text(data, 'intro')} />
+          <Gallery images={images} />
+        </Shell>
+      );
+    }
+
+    case 'results':
+      return (
+        <Shell {...shell}>
+          <CaseResults title={text(data, 'title')} items={rows(data).map((item) => ({ value: text(item, 'value'), label: text(item, 'label') }))} />
+        </Shell>
+      );
+
+    case 'uses':
+      return <Shell {...shell}><UsesBlock data={data} /></Shell>;
+
+    case 'examples':
+      return <Shell {...shell}><ExamplesBlock data={data} /></Shell>;
+
+    case 'glyphs':
+      return <Shell {...shell}><GlyphsBlock data={data} /></Shell>;
+
+    case 'checklist':
+      return <Shell {...shell}><ChecklistBlock data={data} /></Shell>;
+
+    case 'panel':
+      return <Shell {...shell}><PanelBlock data={data} /></Shell>;
+
+    case 'figures':
+      return <Shell {...shell}><FiguresBlock data={data} /></Shell>;
+
+    case 'showcase':
+      return <Shell {...shell}><ShowcaseBlock data={data} /></Shell>;
+
+    case 'case-grid':
+      return <Shell {...shell}><CaseGridBlock data={data} /></Shell>;
+
+    case 'cases-browser':
+      return <Shell {...shell}><CasesBrowserBlock data={data} /></Shell>;
+
+    case 'adhoc':
+      return <Shell {...shell}><AdhocBlock data={data} /></Shell>;
+
+    case 'history':
+      return <Shell {...shell}><HistoryBlock data={data} /></Shell>;
+
+    case 'method':
+      return <Shell {...shell} className="is-timeline-head"><MethodBlock data={data} /></Shell>;
+
     default:
       return null;
   }
 }
 
-function ListBody({ items }: { items: Data[] }) {
+function ListBody({ items, feature = false, wide = true }: { items: Data[]; feature?: boolean; wide?: boolean }) {
   const withBody = items.some((item) => text(item, 'body'));
   const allLinked = items.length > 0 && items.every((item) => text(item, 'href'));
   const withLinks = items.some((item) => text(item, 'href'));
 
   if (withBody && allLinked) {
     return (
-      <ul className={items.length === 4 ? 'cards is-4' : items.length === 5 ? 'cards is-5' : 'cards'}>
+      <ul className={['cards', wide && (items.length === 4 || items.length === 5) ? `is-${items.length}` : '', feature ? 'is-feature' : ''].filter(Boolean).join(' ')}>
         {items.map((item, index) => (
           <li key={`${text(item, 'title')}-${index}`}>
             <LinkTo className="card" href={text(item, 'href')}>
@@ -323,7 +446,7 @@ function QuoteBy({ item }: { item: Data }) {
   );
 }
 
-function Quotes({ title, items }: { title: string; items: Data[] }) {
+function Quotes({ title, items, even = false }: { title: string; items: Data[]; even?: boolean }) {
   if (items.length === 1) {
     const item = items[0];
 
@@ -341,7 +464,7 @@ function Quotes({ title, items }: { title: string; items: Data[] }) {
   return (
     <>
       <Head title={title} />
-      <div className="quotes">
+      <div className={even ? `quotes is-even${items.length === 2 ? ' is-2' : ''}` : 'quotes'}>
         {items.map((item, index) => (
           <blockquote key={`${text(item, 'author')}-${index}`}>
             <Rich value={text(item, 'quote')} />
@@ -393,7 +516,7 @@ export function ContactForm({ form }: { form: SiteForm | null }) {
   }
 
   return (
-    <form onSubmit={(event) => void submit(event)}>
+    <form className="site-form" data-endpoint="/api/contato" data-sent={t('form.sent')} data-error={t('form.error')} data-invalid={t('form.invalid')} onSubmit={(event) => void submit(event)}>
       <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" className="hp" aria-hidden="true" />
       {fields.map((field) => (
         <Field
@@ -484,10 +607,10 @@ export function LeadForm({ whatsappHref, title, className, id }: { whatsappHref:
   const chatHref = withWhatsAppText(whatsappHref, firstName ? t('lead.wa_text', { name: firstName }) : '');
 
   return (
-    <div className={['lead-card', sent ? 'is-sent' : '', className ?? ''].filter(Boolean).join(' ')} id={id}>
+    <div className={['lead-card', sent ? 'is-sent' : '', className ?? ''].filter(Boolean).join(' ')} id={id} data-whatsapp={whatsappHref}>
       <div className="lead-flip">
         <div className="lead-face lead-front" inert={sent ? true : undefined}>
-          <form className="lead-form" onSubmit={(event) => void submit(event)}>
+          <form className="lead-form" data-phone-invalid={t('lead.phone_invalid')} data-error={t('form.error')} data-invalid={t('form.invalid')} data-sending={t('form.sending')} onSubmit={(event) => void submit(event)}>
             <h2 className="lead-form-title">{title || t('lead.title')}</h2>
             <p className="lead-form-text">{t('lead.text')}</p>
             <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" className="hp" aria-hidden="true" />
@@ -532,9 +655,9 @@ export function LeadForm({ whatsappHref, title, className, id }: { whatsappHref:
           <span className="lead-check" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </span>
-          <h2 className="lead-form-title" ref={backTitle} tabIndex={-1}>{firstName ? t('lead.thanks_title', { name: firstName }) : t('lead.thanks_title_plain')}</h2>
-          <p className="lead-back-text">{sent?.whatsapp ? t('lead.thanks_text', { phone: sent.whatsapp }) : t('lead.thanks_text_plain')}</p>
-          <a className="pill lime" href={chatHref} target="_blank" rel="noreferrer">
+          <h2 className="lead-form-title" data-template={t('lead.thanks_title')} data-fallback={t('lead.thanks_title_plain')} ref={backTitle} tabIndex={-1}>{firstName ? t('lead.thanks_title', { name: firstName }) : t('lead.thanks_title_plain')}</h2>
+          <p className="lead-back-text" data-template={t('lead.thanks_text')} data-fallback={t('lead.thanks_text_plain')}>{sent?.whatsapp ? t('lead.thanks_text', { phone: sent.whatsapp }) : t('lead.thanks_text_plain')}</p>
+          <a className="pill lime" href={chatHref} data-wa-template={t('lead.wa_text')} target="_blank" rel="noreferrer">
             {t('lead.whatsapp_now')}
             <span className="arrow"><Arrow /></span>
           </a>
@@ -602,7 +725,7 @@ function Field({
   if (field.type === 'checkbox') {
     return (
       <label className="check">
-        <input type="checkbox" name={field.name} required={field.required} checked={value === '1'} onChange={(event) => onChange(event.target.checked ? '1' : '')} />
+        <input type="checkbox" name={field.name} value="1" required={field.required} checked={value === '1'} onChange={(event) => onChange(event.target.checked ? '1' : '')} />
         <span>{label}</span>
         {errorNode}
       </label>

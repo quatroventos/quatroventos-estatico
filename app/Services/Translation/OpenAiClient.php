@@ -26,16 +26,15 @@ class OpenAiClient
             ->acceptJson()
             ->timeout((int) config('services.openai.timeout', 120))
             ->retry(2, 1500, throw: false)
-            ->post(rtrim((string) config('services.openai.base_url'), '/').'/chat/completions', [
+            ->post(rtrim((string) config('services.openai.base_url'), '/').'/responses', [
                 'model' => (string) config('services.openai.model'),
                 'temperature' => 0.2,
-                'messages' => [
-                    ['role' => 'system', 'content' => $system],
-                    ['role' => 'user', 'content' => $user],
-                ],
-                'response_format' => [
-                    'type' => 'json_schema',
-                    'json_schema' => [
+                'store' => false,
+                'instructions' => $system,
+                'input' => $user,
+                'text' => [
+                    'format' => [
+                        'type' => 'json_schema',
                         'name' => $schemaName,
                         'strict' => true,
                         'schema' => $schema,
@@ -49,13 +48,43 @@ class OpenAiClient
             throw new RuntimeException('OpenAI '.$response->status().': '.mb_substr($message, 0, 300));
         }
 
-        $content = $response->json('choices.0.message.content');
-        $decoded = is_string($content) ? json_decode($content, true) : null;
+        if ($response->json('status') === 'incomplete') {
+            throw new RuntimeException('OpenAI interrompeu a resposta: '.($response->json('incomplete_details.reason') ?? 'motivo desconhecido').'.');
+        }
+
+        $content = $this->outputText((array) $response->json('output', []));
+        $decoded = $content !== '' ? json_decode($content, true) : null;
 
         if (! is_array($decoded)) {
             throw new RuntimeException('Resposta da OpenAI fora do formato esperado.');
         }
 
         return $decoded;
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $output
+     */
+    private function outputText(array $output): string
+    {
+        $text = '';
+
+        foreach ($output as $item) {
+            if (($item['type'] ?? null) !== 'message') {
+                continue;
+            }
+
+            foreach ((array) ($item['content'] ?? []) as $part) {
+                if (($part['type'] ?? null) === 'refusal') {
+                    throw new RuntimeException('OpenAI recusou: '.mb_substr((string) ($part['refusal'] ?? ''), 0, 300));
+                }
+
+                if (($part['type'] ?? null) === 'output_text') {
+                    $text .= (string) ($part['text'] ?? '');
+                }
+            }
+        }
+
+        return $text;
     }
 }

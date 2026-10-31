@@ -92,6 +92,8 @@ const META: Record<string, PreviewMeta> = {
   cases: { ...CARDS, description: 'Cases vinculados ao serviço' },
   'cases-list': { ...CARDS, description: 'Todos os cases, com filtro por serviço' },
   contact: { family: 'cta', icon: ClipboardList, description: 'Formulário de contato' },
+  gallery: { family: 'media', icon: LayoutGrid, description: 'Prints com legenda e ampliação ao clicar' },
+  results: { ...LIST, description: 'Resultados com valor e descrição' },
 };
 
 const FALLBACK: PreviewMeta = { family: 'text', icon: AlignLeft, description: 'Bloco de conteúdo' };

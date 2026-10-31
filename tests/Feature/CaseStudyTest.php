@@ -2,10 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\PrerenderSiteJob;
 use App\Models\CaseStudy;
 use App\Models\Page;
 use Database\Seeders\CaseStudySeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class CaseStudyTest extends TestCase
@@ -35,14 +37,15 @@ class CaseStudyTest extends TestCase
             'sector' => 'financas',
             'services' => ['software-sob-medida'],
             'cover_path' => 'https://cdn.test/capa.png',
-            'gallery' => [
-                ['path' => 'https://cdn.test/1.png', 'caption' => 'Tela 1'],
-                ['path' => 'https://cdn.test/2.png', 'caption' => 'Tela 2'],
-                ['path' => 'https://cdn.test/3.png', 'caption' => 'Tela 3'],
-                ['path' => 'https://cdn.test/4.png', 'caption' => 'Tela 4'],
-            ],
-            'challenge' => '<p>Desafio</p>',
-            'solution' => '<p>Solução</p>',
+            'content' => ['sections' => [
+                ['id' => 'a', 'type' => 'site.prose', 'data' => ['title' => 'Desafio', 'body' => '<p>Desafio</p>']],
+                ['id' => 'b', 'type' => 'site.gallery', 'data' => ['title' => 'Prints', 'items' => [
+                    ['image' => 'https://cdn.test/1.png', 'caption' => 'Tela 1'],
+                    ['image' => 'https://cdn.test/2.png', 'caption' => 'Tela 2'],
+                    ['image' => 'https://cdn.test/3.png', 'caption' => 'Tela 3'],
+                    ['image' => 'https://cdn.test/4.png', 'caption' => 'Tela 4'],
+                ]]],
+            ]],
             'published_at' => now(),
         ], $overrides));
     }
@@ -59,18 +62,23 @@ class CaseStudyTest extends TestCase
                 'client' => 'Digio',
                 'title' => 'Web app de onboarding',
                 'services' => ['software-sob-medida', ''],
-                'gallery' => [['path' => '/storage/media/1.png', 'caption' => 'Tela']],
-                'deliverables' => ['Painel', ' '],
-                'results' => [['value' => '', 'label' => '']],
-                'testimonial' => ['quote' => '', 'author' => 'X'],
+                'content' => ['sections' => [
+                    ['id' => 'a', 'type' => 'site.prose', 'data' => ['title' => 'Solução', 'body' => '<p>Painel</p>']],
+                    ['id' => 'b', 'type' => 'site.results', 'data' => ['items' => [['value' => '24h', 'label' => 'Janela']]]],
+                ]],
                 'featured' => true,
             ])
             ->assertCreated()
             ->assertJsonPath('data.services', ['software-sob-medida'])
-            ->assertJsonPath('data.deliverables', ['Painel'])
-            ->assertJsonPath('data.results', [])
-            ->assertJsonPath('data.testimonial', null)
+            ->assertJsonPath('data.content.sections.0.data.title', 'Solução')
+            ->assertJsonPath('data.content.sections.1.type', 'site.results')
             ->json('data.id');
+
+        $this->actingAs($editor)
+            ->getJson("/gestao/api/cases/{$id}")
+            ->assertOk()
+            ->assertJsonCount(2, 'data.content.sections')
+            ->assertJsonMissing(['type' => 'site.hero']);
 
         $this->assertNotNull(CaseStudy::query()->find($id)?->published_at);
 
@@ -88,7 +96,24 @@ class CaseStudyTest extends TestCase
                 'title' => 'Novo título',
             ])
             ->assertOk()
-            ->assertJsonPath('data.title', 'Novo título');
+            ->assertJsonPath('data.title', 'Novo título')
+            ->assertJsonCount(2, 'data.content.sections');
+    }
+
+    public function test_case_rejects_sections_reserved_to_pages(): void
+    {
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/cases', [
+                'slug' => 'digio',
+                'status' => 'draft',
+                'client' => 'Digio',
+                'title' => 'Web app',
+                'content' => ['sections' => [
+                    ['id' => 'a', 'type' => 'site.hero', 'data' => ['title' => 'Hero']],
+                ]],
+            ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('content.sections.0.type');
     }
 
     public function test_case_slug_must_be_unique(): void
@@ -120,6 +145,31 @@ class CaseStudyTest extends TestCase
         $this->assertStringContainsString('BreadcrumbList', $html);
     }
 
+    public function test_site_payload_lists_published_cases_by_slug(): void
+    {
+        $this->makeCase();
+        $this->makeCase(['slug' => 'rascunho', 'status' => 'draft', 'published_at' => null]);
+
+        $this->getJson('/api/site')
+            ->assertOk()
+            ->assertJsonPath('cases.digio.client', 'Digio')
+            ->assertJsonPath('cases.digio.cover.src', 'https://cdn.test/capa.png')
+            ->assertJsonPath('cases.digio.path', '/cases/digio')
+            ->assertJsonMissingPath('cases.rascunho');
+    }
+
+    public function test_saving_content_schedules_one_prerender(): void
+    {
+        config(['cms.prerender_on_save' => true]);
+        Queue::fake();
+
+        $case = $this->makeCase();
+        $case->update(['title' => 'Outro título']);
+        $this->servicePage('software-sob-medida');
+
+        Queue::assertPushed(PrerenderSiteJob::class, 1);
+    }
+
     public function test_draft_case_is_not_public(): void
     {
         $this->makeCase(['status' => 'draft']);
@@ -146,8 +196,20 @@ class CaseStudyTest extends TestCase
         $this->getJson('/api/cases/digio')
             ->assertOk()
             ->assertJsonPath('template', 'case')
-            ->assertJsonCount(4, 'case.gallery')
             ->assertJsonPath('case.next.slug', 'ivorecap');
+    }
+
+    public function test_case_page_payload_carries_its_sections(): void
+    {
+        $this->makeCase();
+
+        $this->getJson('/api/cases/digio')
+            ->assertOk()
+            ->assertJsonCount(2, 'sections')
+            ->assertJsonPath('sections.0.type', 'site.prose')
+            ->assertJsonPath('sections.0.data.body', '<p>Desafio</p>')
+            ->assertJsonPath('sections.1.type', 'site.gallery')
+            ->assertJsonCount(4, 'sections.1.data.items');
     }
 
     public function test_service_page_resolves_selected_and_automatic_cases(): void
@@ -182,6 +244,49 @@ class CaseStudyTest extends TestCase
             ->assertOk()
             ->assertJsonCount(2, 'sections.0.data.cases')
             ->assertJsonPath('sections.0.data.cases.0.slug', 'ivorecap');
+    }
+
+    public function test_showcase_and_case_grid_keep_chosen_order_and_skip_drafts(): void
+    {
+        $this->makeCase(['tags' => ['Webapp', '2025'], 'cover_ratio' => '16x9']);
+        $this->makeCase(['slug' => 'dialogos', 'client' => 'Diálogos de Carreira']);
+        $this->makeCase(['slug' => 'rascunho', 'client' => 'Rascunho', 'status' => 'draft']);
+
+        $this->servicePage('desenvolvimento-de-saas', [
+            ['id' => 'a', 'type' => 'site.showcase', 'data' => ['items' => ['dialogos', 'rascunho', 'digio']]],
+            ['id' => 'b', 'type' => 'site.case-grid', 'data' => ['featured' => ['digio'], 'items' => ['rascunho', 'dialogos']]],
+        ]);
+
+        $this->getJson('/api/pages/desenvolvimento-de-saas')
+            ->assertOk()
+            ->assertJsonCount(2, 'sections.0.data.cases')
+            ->assertJsonPath('sections.0.data.cases.0.slug', 'dialogos')
+            ->assertJsonPath('sections.0.data.cases.1.tags', ['Webapp', '2025'])
+            ->assertJsonPath('sections.1.data.featured_cases.0.cover_ratio', '16x9')
+            ->assertJsonCount(1, 'sections.1.data.cases')
+            ->assertJsonPath('sections.1.data.cases.0.slug', 'dialogos');
+    }
+
+    public function test_cases_browser_assigns_first_matching_category(): void
+    {
+        $this->makeCase(['services' => ['agentes-de-ia', 'software-sob-medida']]);
+        $this->makeCase(['slug' => 'dialogos', 'client' => 'Diálogos de Carreira', 'services' => ['sites-wordpress']]);
+        $this->makeCase(['slug' => 'avulso', 'client' => 'Avulso', 'services' => []]);
+
+        $this->servicePage('cases', [
+            ['id' => 'a', 'type' => 'site.cases-browser', 'data' => ['categories' => [
+                ['id' => 'ia', 'label' => 'IA', 'services' => ['agentes-de-ia']],
+                ['id' => 'software', 'label' => 'Software', 'services' => ['software-sob-medida']],
+                ['id' => 'web', 'label' => 'Web', 'services' => ['sites-wordpress']],
+            ]]],
+        ]);
+
+        $cases = collect($this->getJson('/api/pages/cases')->assertOk()->json('sections.0.data.cases'))
+            ->pluck('category', 'slug');
+
+        $this->assertSame('ia', $cases['digio']);
+        $this->assertSame('web', $cases['dialogos']);
+        $this->assertSame('', $cases['avulso']);
     }
 
     public function test_admin_page_editor_keeps_site_sections(): void

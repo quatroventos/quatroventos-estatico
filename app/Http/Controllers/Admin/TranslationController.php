@@ -103,6 +103,6 @@ class TranslationController extends Controller
     private function guard(string $locale, TextTranslator $translator): void
     {
         abort_unless(in_array($locale, Locales::translated(), true), 404);
-        abort_unless($translator->configured(), 422, 'Defina OPENAI_API_KEY no .env para traduzir com IA.');
+        abort_unless($translator->configured(), 422, 'Defina a chave da OpenAI em SEO > Integrações para traduzir com IA.');
     }
 }

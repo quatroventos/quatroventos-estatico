@@ -12,7 +12,8 @@ class ContentStrings
     private const SKIP_KEYS = [
         'id', 'type', 'layout', 'image', 'src', 'icon', 'variant', 'theme', 'tone', 'filter',
         'href', 'url', 'path', 'slug', 'anchor', 'kind', 'value', 'cover_path', 'services', 'stack',
-        'whatsapp', 'email', 'phone', 'year', 'sector', 'featured', 'sort',
+        'whatsapp', 'email', 'phone', 'year', 'sector', 'featured', 'sort', 'glyph', 'visual', 'logo_place',
+        'panel_id', 'monthly', 'annual',
     ];
 
     /**
@@ -20,7 +21,7 @@ class ContentStrings
      *
      * @var list<string>
      */
-    private const REFERENCE_SECTIONS = ['site.cases'];
+    private const REFERENCE_SECTIONS = ['site.cases', 'site.showcase', 'site.case-grid'];
 
     /**
      * @param  array<int|string, mixed>  $data
@@ -54,6 +55,7 @@ class ContentStrings
             foreach ($keys as $index => $key) {
                 if (! is_array($ref) || ! array_key_exists($key, $ref)) {
                     unset($ref);
+
                     continue 2;
                 }
 

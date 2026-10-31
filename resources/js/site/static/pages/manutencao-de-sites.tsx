@@ -1,12 +1,13 @@
 // Gerado por scripts/export-static-pages.mjs a partir de /manutencao-de-sites (CMS).
 // Editável à mão durante o ajuste de layout; ao voltar para o CMS, a estrutura é portada para sections.tsx.
 // Segue a receita de página da home e o padrão de /agentes-de-ia (DESIGN.md, Layout).
-import { useState, type ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import type { StaticPageProps } from '../index';
 import { MaintainCanvas } from '../../hero';
 import { LeadForm } from '../../sections';
 import { Arrow, revealOnView } from '../../ui';
-import { BillingSwitch, PlanBase, PlanCard, type Plan } from '../plans';
+import { AdhocBoard } from '../../adhoc';
+import { BillingSwitch, PlanBase, PlanCard, type Plan } from '../../plans';
 
 const WHATSAPP = 'https://wa.me/554130399593?text=Gostaria%20de%20um%20plano%20de%20manuten%C3%A7%C3%A3o%20para%20o%20meu%20site.';
 
@@ -34,14 +35,6 @@ const PREVENTIVE = [
   { title: 'Suporte', text: 'Disponíveis por chat ou e-mail para responder todas as questões relacionadas ao site.' },
 ];
 
-const ADHOC_ICONS: Record<string, ReactNode> = {
-  update: <path d="M20 11a8 8 0 0 0-14.5-4.5M4 4v3h3M4 13a8 8 0 0 0 14.5 4.5M20 20v-3h-3" />,
-  speed: <path d="M4 17a8 8 0 1 1 16 0M12 17l4-5M10.5 17h3" />,
-  shield: <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3zM9 12l2 2 4-4" />,
-  move: <path d="M7 8h11l-3-3M17 16H6l3 3" />,
-  power: <path d="M12 3v8M7.5 6.5a7 7 0 1 0 9 0" />,
-  search: <path d="M10.5 17a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13zM15.5 15.5L20 20" />,
-};
 
 const ADHOC = [
   [
@@ -80,8 +73,6 @@ function WhatsAppCta({ label }: { label: string }) {
 }
 
 export default function PageManutencaoDeSites(_props: StaticPageProps) {
-  const [annual, setAnnual] = useState(false);
-
   return (
     <>
       {/* seção: hero */}
@@ -104,11 +95,11 @@ export default function PageManutencaoDeSites(_props: StaticPageProps) {
         <div className="wrap">
           <header className="sec-head plan-head">
             <h2 className="h2">Planos de manutenção de sites <em className="mark">sob medida para o seu negócio.</em></h2>
-            <BillingSwitch annual={annual} onChange={setAnnual} />
+            <BillingSwitch />
           </header>
           <div className="plan-tiers">
             {PLANS.map((plan) => (
-              <PlanCard key={plan.name} plan={plan} annual={annual} href={WHATSAPP} />
+              <PlanCard key={plan.name} plan={plan} href={WHATSAPP} />
             ))}
           </div>
           <PlanBase title="Em todos os planos" text="Cada plano sobe a frequência dos cuidados e as horas técnicas do anterior." items={PLAN_BASE} />
@@ -158,38 +149,7 @@ export default function PageManutencaoDeSites(_props: StaticPageProps) {
               <p>Atendimentos avulsos, sem plano de manutenção, feitos pelo mesmo time que desenvolve.</p>
             </div>
           </header>
-          <div className="adhoc" ref={revealOnView}>
-            {ADHOC.map((column, side) => (
-              <ul className={`adhoc-list ${side === 0 ? 'is-left' : 'is-right'}`} key={side}>
-                {column.map((item) => (
-                  <li key={item.title}>
-                    <span className="adhoc-icon" aria-hidden="true">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">{ADHOC_ICONS[item.icon]}</svg>
-                    </span>
-                    <div>
-                      <h3 className="h3">{item.title}</h3>
-                      <p>{item.text}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            ))}
-            <div className="adhoc-screen" aria-hidden="true">
-              <div className="adhoc-bar">
-                <i /><i /><i />
-                <span className="mono">seusite.com.br</span>
-              </div>
-              <ol className="adhoc-log">
-                {ADHOC_LOG.map((line) => (
-                  <li key={line}>
-                    <span className="plan-tick"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" pathLength={1} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg></span>
-                    <span className="mono">{line}</span>
-                  </li>
-                ))}
-              </ol>
-              <span className="adhoc-status"><i />No ar</span>
-            </div>
-          </div>
+          <AdhocBoard columns={ADHOC} url="seusite.com.br" log={ADHOC_LOG} status="No ar" />
           <div className="adhoc-cta">
             <WhatsAppCta label="Falar com um especialista" />
           </div>

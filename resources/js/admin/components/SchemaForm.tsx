@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { api } from '../api';
 import { getPath, setPath } from '../lib';
 import { MediaField } from './MediaField';
 import { RichText } from './RichText';
+import { acceptsAi, FieldAi, type FieldAiContext } from './SectionCopy';
 
 export type Field = {
   type: string;
@@ -15,6 +16,8 @@ export type Field = {
   fields?: Field[];
   options?: { value: string; label: string }[];
   max?: number;
+  all?: boolean;
+  hint?: string;
 };
 
 export type SchemaContext = {
@@ -61,7 +64,7 @@ function CasesPicker({
     void loadCaseOptions().then(setCases);
   }, []);
 
-  const linked = (cases ?? []).filter((item) => !context?.pageSlug || item.services.includes(context.pageSlug));
+  const linked = (cases ?? []).filter((item) => field.all || !context?.pageSlug || item.services.includes(context.pageSlug));
 
   function toggle(slug: string) {
     if (selected.includes(slug)) {
@@ -97,7 +100,7 @@ function CasesPicker({
           </label>
         ))}
       </div>
-      <p className="hint">Sem seleção, entram automaticamente os cases publicados vinculados a esta página.</p>
+      <p className="hint">{field.hint ?? 'Sem seleção, entram automaticamente os cases publicados vinculados a esta página.'}</p>
     </div>
   );
 }
@@ -110,15 +113,48 @@ export type Section = {
   fields: Field[];
 };
 
+function AiSlot({
+  type,
+  name,
+  path,
+  value,
+  ai,
+  onChange,
+  children,
+}: {
+  type: string;
+  name: string;
+  path: string;
+  value: unknown;
+  ai?: FieldAiContext;
+  onChange: (value: string) => void;
+  children: ReactNode;
+}) {
+  if (!ai || !acceptsAi(type, name)) {
+    return <>{children}</>;
+  }
+
+  return (
+    <div className={`field-ai-wrap is-${type}`}>
+      {children}
+      <FieldAi ai={ai} path={path} value={value} onApply={onChange} />
+    </div>
+  );
+}
+
 function FieldControl({
   field,
   value,
   context,
+  path,
+  ai,
   onChange,
 }: {
   field: Field;
   value: unknown;
   context?: SchemaContext;
+  path: string;
+  ai?: FieldAiContext;
   onChange: (value: unknown) => void;
 }) {
   if (field.type === 'cases') {
@@ -135,6 +171,7 @@ function FieldControl({
             <option key={option.value} value={option.value}>{option.label}</option>
           ))}
         </select>
+        {field.hint ? <p className="hint">{field.hint}</p> : null}
       </div>
     );
   }
@@ -143,7 +180,9 @@ function FieldControl({
     return (
       <div className="field">
         <label>{field.label}</label>
-        <textarea value={(value as string) ?? ''} onChange={(event) => onChange(event.target.value)} />
+        <AiSlot type={field.type} name={field.name} path={path} value={value} ai={ai} onChange={onChange}>
+          <textarea value={(value as string) ?? ''} onChange={(event) => onChange(event.target.value)} />
+        </AiSlot>
       </div>
     );
   }
@@ -159,6 +198,7 @@ function FieldControl({
           />{' '}
           {field.label}
         </label>
+        {field.hint ? <p className="hint">{field.hint}</p> : null}
       </div>
     );
   }
@@ -167,7 +207,9 @@ function FieldControl({
     return (
       <div className="field">
         <label>{field.label}</label>
-        <RichText value={(value as string) ?? ''} onChange={onChange} />
+        <AiSlot type={field.type} name={field.name} path={path} value={value} ai={ai} onChange={onChange}>
+          <RichText value={(value as string) ?? ''} onChange={onChange} />
+        </AiSlot>
       </div>
     );
   }
@@ -193,31 +235,46 @@ function FieldControl({
         {items.map((item, index) => (
           <div className="repeater-item" key={index}>
             {simple ? (
-              field.itemType === 'rich' ? (
-                <RichText
-                  value={typeof item === 'string' ? item : ''}
-                  onChange={(next) => {
-                    const copy = [...items];
-                    copy[index] = next;
-                    onChange(copy);
-                  }}
-                />
-              ) : (
-                <input
-                  value={typeof item === 'string' ? item : ''}
-                  onChange={(event) => {
-                    const copy = [...items];
-                    copy[index] = event.target.value;
-                    onChange(copy);
-                  }}
-                />
-              )
+              <AiSlot
+                type={field.itemType ?? 'text'}
+                name={field.name}
+                path={`${path}.${index}`}
+                value={item}
+                ai={ai}
+                onChange={(next) => {
+                  const copy = [...items];
+                  copy[index] = next;
+                  onChange(copy);
+                }}
+              >
+                {field.itemType === 'rich' ? (
+                  <RichText
+                    value={typeof item === 'string' ? item : ''}
+                    onChange={(next) => {
+                      const copy = [...items];
+                      copy[index] = next;
+                      onChange(copy);
+                    }}
+                  />
+                ) : (
+                  <input
+                    value={typeof item === 'string' ? item : ''}
+                    onChange={(event) => {
+                      const copy = [...items];
+                      copy[index] = event.target.value;
+                      onChange(copy);
+                    }}
+                  />
+                )}
+              </AiSlot>
             ) : (
               (field.fields ?? []).map((child) => (
                 <FieldControl
                   key={child.name}
                   field={child}
                   context={context}
+                  path={`${path}.${index}.${child.name}`}
+                  ai={ai}
                   value={(item as Record<string, unknown>)?.[child.name]}
                   onChange={(next) => {
                     const copy = [...items] as Record<string, unknown>[];
@@ -250,7 +307,10 @@ function FieldControl({
   return (
     <div className="field">
       <label>{field.label}</label>
-      <input value={(value as string) ?? ''} onChange={(event) => onChange(event.target.value)} />
+      <AiSlot type={field.type} name={field.name} path={path} value={value} ai={ai} onChange={onChange}>
+        <input value={(value as string) ?? ''} onChange={(event) => onChange(event.target.value)} />
+      </AiSlot>
+      {field.hint ? <p className="hint">{field.hint}</p> : null}
     </div>
   );
 }
@@ -259,11 +319,13 @@ export function SchemaForm({
   fields,
   content,
   context,
+  ai,
   onChange,
 }: {
   fields: Field[];
   content: Record<string, unknown>;
   context?: SchemaContext;
+  ai?: FieldAiContext;
   onChange: (content: Record<string, unknown>) => void;
 }) {
   return (
@@ -273,6 +335,8 @@ export function SchemaForm({
           key={field.name}
           field={field}
           context={context}
+          path={field.name}
+          ai={ai}
           value={getPath(content, field.name)}
           onChange={(next) => onChange(setPath(content, field.name, next))}
         />

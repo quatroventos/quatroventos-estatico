@@ -6,8 +6,6 @@ export const TOUR_IDS = [
   'inbox',
   'pages',
   'page-editor',
-  'team',
-  'branches',
   'menu',
   'certifications',
   'users',

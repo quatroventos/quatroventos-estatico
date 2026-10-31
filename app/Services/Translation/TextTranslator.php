@@ -2,7 +2,9 @@
 
 namespace App\Services\Translation;
 
+use App\Models\SiteSetting;
 use App\Support\Locales;
+use App\Support\Seo;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -110,8 +112,8 @@ class TextTranslator
         $decoded = $this->client->json(
             'You are a senior SEO specialist writing metadata in '.$language.' for the website of Quatro Ventos, '
                 .'a Brazilian software, web and AI company. Do not translate literally: research intent and use the terms people '
-                .'actually search for in '.$language.'. Title: up to 60 characters, no brand suffix (it is added automatically). '
-                .'Description: 140 to 160 characters, declarative, no clickbait, no emojis. Slug: short, lowercase ASCII, '
+                .'actually search for in '.$language.'. Title: up to '.Seo::titleBudget(SiteSetting::query()->first()).' characters including spaces, no brand suffix (it is added automatically). '
+                .'Description: '.Seo::DESCRIPTION_MIN.' to '.Seo::DESCRIPTION_MAX.' characters including spaces, declarative, no clickbait, no emojis. Slug: short, lowercase ASCII, '
                 .'words separated by hyphens, in '.$language.', main keyword first. Keep brand and product names untouched: '
                 .implode(', ', self::KEEP).'.',
             json_encode($source, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) ?: '{}',
@@ -130,8 +132,8 @@ class TextTranslator
 
         return [
             'slug' => Str::slug((string) ($decoded['slug'] ?? '')),
-            'seo_title' => trim((string) ($decoded['seo_title'] ?? '')),
-            'seo_description' => trim((string) ($decoded['seo_description'] ?? '')),
+            'seo_title' => Seo::fit((string) ($decoded['seo_title'] ?? ''), Seo::titleBudget(SiteSetting::query()->first())),
+            'seo_description' => Seo::fit((string) ($decoded['seo_description'] ?? ''), Seo::DESCRIPTION_MAX),
         ];
     }
 

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { CmsCases } from './case-showcase';
 import { CasePage } from './cases';
 import { Footer, Header, WhatsAppFloat } from './chrome';
 import { AgentLog } from './hero';
@@ -33,8 +34,50 @@ export function App() {
   const locales = site?.locales?.length ? site.locales : LOCALES;
   const { locale, path } = splitLocalePath(location.pathname, locales);
   const booted = useRef(boot?.page ? `${boot.page.locale ?? DEFAULT_LOCALE}:${boot.page.slug}` : null);
+  const preview = Boolean(boot?.preview);
+  const previewScrolled = useRef(false);
 
-  setLocale(locale);
+  setLocale(preview ? page?.locale ?? DEFAULT_LOCALE : locale);
+
+  useEffect(() => {
+    if (!preview) {
+      return;
+    }
+
+    const draftUrl = boot?.draftUrl;
+    if (!draftUrl) {
+      return;
+    }
+
+    let version = '';
+    let stopped = false;
+    let timer = 0;
+
+    async function poll() {
+      try {
+        const response = await fetch(`${draftUrl}?since=${encodeURIComponent(version)}`, {
+          headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+          credentials: 'same-origin',
+        });
+        if (response.status === 200) {
+          const draft = (await response.json()) as { version: string; page: PagePayload };
+          version = draft.version;
+          setPage(draft.page);
+        }
+      } catch {
+        // A próxima consulta tenta de novo.
+      }
+      if (!stopped) {
+        timer = window.setTimeout(() => void poll(), 1000);
+      }
+    }
+
+    void poll();
+    return () => {
+      stopped = true;
+      window.clearTimeout(timer);
+    };
+  }, [preview, boot?.draftUrl]);
 
   useEffect(() => {
     if (site && (site.locale ?? DEFAULT_LOCALE) === locale) {
@@ -49,6 +92,9 @@ export function App() {
   useEffect(() => {
     const slug = slugFromPath(path);
     const hreflang = locales.find((item) => item.code === locale)?.hreflang ?? locale;
+    if (preview) {
+      return;
+    }
     if (booted.current === `${locale}:${slug}` && window.__SITE__?.page) {
       booted.current = null;
       applySeo(window.__SITE__.page.seo, hreflang);
@@ -88,9 +134,10 @@ export function App() {
   }, [location.pathname, locale, path]);
 
   useEffect(() => {
-    if (!page) {
+    if (!page || (preview && previewScrolled.current)) {
       return;
     }
+    previewScrolled.current = preview;
 
     const target = location.hash ? document.querySelector(location.hash) : null;
     if (target) {
@@ -123,23 +170,31 @@ export function App() {
     }
 
     event.preventDefault();
+    if (preview) {
+      return;
+    }
     navigate(`${url.pathname}${url.search}${url.hash}`);
   }
 
   const route = slugFromPath(path);
-  const synced = page != null && page.slug === route && (page.locale ?? DEFAULT_LOCALE) === locale;
-  const staticLoader = STATIC_MODE && locale === DEFAULT_LOCALE ? STATIC_PAGES[route] : undefined;
+  const synced = page != null && (preview || (page.slug === route && (page.locale ?? DEFAULT_LOCALE) === locale));
+  const staticLoader = STATIC_MODE && !(typeof window !== 'undefined' && window.__SITE__?.preview) && locale === DEFAULT_LOCALE ? STATIC_PAGES[route] : undefined;
   const StaticPage = useMemo(() => (staticLoader ? lazy(staticLoader) : null), [staticLoader]);
 
   return (
+    <CmsCases.Provider value={site?.cases ?? null}>
     <div onClick={onClick}>
       <Header site={site} pathname={location.pathname} locale={locale} alternates={synced ? page?.alternates : undefined} />
       <main id="conteudo" tabIndex={-1}>
         {missing ? <NotFound whatsapp={site?.whatsapp_url ?? null} /> : null}
-        {!missing && synced && page?.case ? <CasePage item={page.case} whatsapp={site?.whatsapp_url ?? null} /> : null}
+        {!missing && synced && page?.case ? (
+          <CasePage item={page.case} whatsapp={site?.whatsapp_url ?? null}>
+            <Sections sections={page.sections} form={site?.form ?? null} variant="case" />
+          </CasePage>
+        ) : null}
         {!missing && synced && page && !page.case && StaticPage ? (
           <Suspense fallback={null}>
-            <StaticPage form={site?.form ?? null} />
+            <StaticPage form={site?.form ?? null} sections={page.sections} />
           </Suspense>
         ) : null}
         {!missing && synced && page && !page.case && !StaticPage ? <Sections sections={page.sections} form={site?.form ?? null} /> : null}
@@ -147,6 +202,7 @@ export function App() {
       <Footer site={site} locale={locale} alternates={synced ? page?.alternates : undefined} />
       <WhatsAppFloat href={site?.whatsapp_url} />
     </div>
+    </CmsCases.Provider>
   );
 }
 

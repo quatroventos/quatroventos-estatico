@@ -175,7 +175,7 @@ export default function PageErpECrm(_props: StaticPageProps) {
         </div>
       </section>
       {/* seção: faq */}
-      <section className="section on-light">
+      <section className="section on-light is-flush">
         <div className="wrap">
           <div className="faq-grid">
             <h2 className="h2">Perguntas frequentes</h2>

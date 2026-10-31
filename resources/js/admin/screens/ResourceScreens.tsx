@@ -6,57 +6,6 @@ import { CrudPage } from './CrudPage';
 
 export { MenuScreen } from './MenuScreen';
 
-export function TeamScreen() {
-  return (
-    <CrudPage
-      eyebrow="Conteúdo"
-      title="Equipe"
-      description="Liderança e profissionais exibidos no site."
-      endpoint="/team-members"
-      createLabel="Adicionar membro"
-      columns={[
-        { key: 'name', label: 'Nome' },
-        { key: 'role', label: 'Cargo' },
-        { key: 'sort', label: 'Ordem' },
-      ]}
-      fields={[
-        { name: 'name', label: 'Nome' },
-        { name: 'role', label: 'Cargo' },
-        { name: 'bio', label: 'Bio', type: 'rich' },
-        { name: 'photo_path', label: 'Foto', type: 'media' },
-        { name: 'sort', label: 'Ordem', type: 'number' },
-      ]}
-    />
-  );
-}
-
-export function BranchesScreen() {
-  return (
-    <CrudPage
-      eyebrow="Conteúdo"
-      title="Filiais"
-      description="Unidades e seletor de cidade."
-      endpoint="/branches"
-      createLabel="Adicionar filial"
-      columns={[
-        { key: 'city', label: 'Cidade' },
-        { key: 'state', label: 'UF' },
-        { key: 'select_label', label: 'Label' },
-      ]}
-      fields={[
-        { name: 'slug', label: 'Slug' },
-        { name: 'city', label: 'Cidade' },
-        { name: 'state', label: 'UF' },
-        { name: 'select_label', label: 'Label do seletor' },
-        { name: 'eyebrow', label: 'Eyebrow' },
-        { name: 'address', label: 'Endereço', type: 'textarea' },
-        { name: 'is_headquarters', label: 'Sede', type: 'toggle' },
-        { name: 'sort', label: 'Ordem', type: 'number' },
-      ]}
-    />
-  );
-}
-
 export function CertificationsScreen() {
   const typeLabels: Record<string, string> = {
     badge: 'Selo',
