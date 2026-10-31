@@ -5,11 +5,15 @@ namespace Tests\Feature;
 use App\Models\Backup;
 use App\Models\Page;
 use App\Models\SiteSetting;
+use App\Models\User;
 use App\Services\BackupService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
+use ZipArchive;
 
 class CmsBackupTest extends TestCase
 {
@@ -135,6 +139,73 @@ class CmsBackupTest extends TestCase
 
         $this->assertSame(0, Artisan::call('backup:run'));
         $this->assertSame('ok', Backup::query()->value('status'));
+    }
+
+    public function test_uploaded_backup_from_another_install_can_be_restored(): void
+    {
+        Storage::fake('local');
+        Storage::fake('public');
+        $this->makeSettings(['name' => 'Produção vazia']);
+        $admin = $this->makeAdmin();
+
+        $path = tempnam(sys_get_temp_dir(), 'backup-test-');
+        $zip = new ZipArchive;
+        $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->addFromString('manifest.json', json_encode(['tables' => ['site_settings']]));
+        $zip->addFromString('database.json', json_encode(['tables' => [
+            'site_settings' => [['id' => 1, 'name' => 'Quatro Ventos', 'og_site_name' => 'Quatro Ventos', 'og_locale' => 'pt_BR', 'twitter_card' => 'summary_large_image']],
+            'users' => [['id' => $admin->id, 'name' => $admin->name, 'email' => $admin->email, 'password' => $admin->password]],
+        ]]));
+        $zip->addFromString('files/public/media/logo.txt', 'logo local');
+        $zip->close();
+
+        $this->actingAs($admin)
+            ->post('/gestao/api/backup/import', ['file' => new UploadedFile($path, 'local.zip', 'application/zip', null, true)], ['Accept' => 'application/json'])
+            ->assertOk()
+            ->assertJsonPath('data.items.0.trigger', 'upload')
+            ->assertJsonPath('data.items.0.status', 'ok');
+
+        $backup = Backup::query()->where('trigger', 'upload')->firstOrFail();
+
+        $this->actingAs($admin)->postJson("/gestao/api/backup/{$backup->id}/restore")->assertOk();
+
+        $this->assertSame('Quatro Ventos', SiteSetting::query()->value('name'));
+        $this->assertSame('logo local', Storage::disk('public')->get('media/logo.txt'));
+    }
+
+    public function test_upload_that_is_not_a_cms_backup_is_rejected(): void
+    {
+        Storage::fake('local');
+        $this->makeSettings();
+
+        $path = tempnam(sys_get_temp_dir(), 'backup-test-');
+        $zip = new ZipArchive;
+        $zip->open($path, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->addFromString('foto.txt', 'x');
+        $zip->close();
+
+        $this->actingAs($this->makeAdmin())
+            ->post('/gestao/api/backup/import', ['file' => new UploadedFile($path, 'qualquer.zip', 'application/zip', null, true)], ['Accept' => 'application/json'])
+            ->assertStatus(422)
+            ->assertJsonPath('message', 'O zip não é um backup do CMS (faltam manifest.json e database.json).');
+
+        $this->assertSame(0, Backup::query()->count());
+    }
+
+    public function test_bootstrap_admin_is_created_only_on_an_empty_install(): void
+    {
+        config(['cms.bootstrap_admin.email' => 'admin@quatroventos.com.br', 'cms.bootstrap_admin.password' => 'senha-forte-123']);
+
+        $this->assertSame(0, Artisan::call('cms:ensure-admin'));
+
+        $admin = User::query()->where('email', 'admin@quatroventos.com.br')->firstOrFail();
+        $this->assertTrue($admin->isRoot());
+        $this->assertTrue(Hash::check('senha-forte-123', $admin->password));
+
+        config(['cms.bootstrap_admin.email' => 'outro@quatroventos.com.br']);
+        Artisan::call('cms:ensure-admin');
+
+        $this->assertSame(1, User::query()->count());
     }
 
     /**

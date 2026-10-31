@@ -1,5 +1,5 @@
-import { type FormEvent, useEffect, useState } from 'react';
-import { Download, RotateCcw, Settings2, Trash2 } from 'lucide-react';
+import { type ChangeEvent, type FormEvent, useEffect, useRef, useState } from 'react';
+import { Download, RotateCcw, Settings2, Trash2, Upload } from 'lucide-react';
 import { AppShell } from '../components/AppShell';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { Modal } from '../components/Modal';
@@ -50,6 +50,7 @@ export function BackupScreen() {
   const [confirmText, setConfirmText] = useState('');
   const [trashed, setTrashed] = useState(false);
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const load = (payload: BackupPanel) => {
     setPanel(payload);
@@ -107,6 +108,29 @@ export function BackupScreen() {
       const payload = await api<{ data: BackupPanel }>('/backup/run', { method: 'POST' });
       load(payload.data);
       setOk('Backup gerado.');
+    } catch (err) {
+      setError(firstError(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function importFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) {
+      return;
+    }
+    setError('');
+    setOk('');
+    setBusy(true);
+    try {
+      const body = new FormData();
+      body.append('file', file);
+      const payload = await api<{ data: BackupPanel }>('/backup/import', { method: 'POST', body });
+      setTrashed(false);
+      load(payload.data);
+      setOk('Backup importado. Use o botão de restaurar na linha "Importado" para aplicar.');
     } catch (err) {
       setError(firstError(err));
     } finally {
@@ -194,6 +218,11 @@ export function BackupScreen() {
             <Settings2 size={14} />
             Configurar backups
           </button>
+          <input ref={fileInput} type="file" accept=".zip,application/zip" hidden onChange={(event) => void importFile(event)} />
+          <button className="btn btn-secondary" type="button" disabled={busy} onClick={() => fileInput.current?.click()}>
+            <Upload size={14} />
+            Importar backup
+          </button>
           <button className="btn btn-primary" type="button" data-tour="backup-manual" disabled={busy} onClick={() => void runNow()}>
             Backup manual
           </button>
@@ -233,7 +262,7 @@ export function BackupScreen() {
                   <span>{item.filename ?? '—'}</span>
                 </td>
                 <td>{formatBytes(item.size)}</td>
-                <td>{item.trigger === 'schedule' ? 'Agendado' : (item.user_name ?? 'Manual')}</td>
+                <td>{item.trigger === 'schedule' ? 'Agendado' : item.trigger === 'upload' ? `Importado${item.user_name ? ` por ${item.user_name}` : ''}` : (item.user_name ?? 'Manual')}</td>
                 <td>
                   <span className={`badge ${item.status === 'ok' ? 'badge-green' : 'badge-neutral'}`}>
                     {item.status === 'ok' ? 'Ok' : 'Falhou'}
@@ -323,7 +352,7 @@ export function BackupScreen() {
             </>
           )}
         >
-          <p className="desc">Isso substitui o banco e os arquivos atuais pelo snapshot. Digite <strong>RESTAURAR</strong> para confirmar.</p>
+          <p className="desc">Isso substitui o banco e os arquivos atuais pelo snapshot, inclusive os usuários: depois de restaurar, entre com um login que existia no backup. Digite <strong>RESTAURAR</strong> para confirmar.</p>
           <div className="field">
             <label>Confirmação</label>
             <input value={confirmText} onChange={(event) => setConfirmText(event.target.value)} placeholder="RESTAURAR" />

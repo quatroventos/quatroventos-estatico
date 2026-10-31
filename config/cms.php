@@ -8,6 +8,11 @@ return [
     'capture_vite_url' => trim((string) env('OG_CAPTURE_VITE_URL', 'http://host.docker.internal:5173'), '/'),
     'options_ttl' => (int) env('CMS_OPTIONS_TTL', 3600),
     'prerender_on_save' => (bool) env('CMS_PRERENDER_ON_SAVE', true),
+    'bootstrap_admin' => [
+        'name' => env('ADMIN_NAME', 'Administrador'),
+        'email' => env('ADMIN_EMAIL'),
+        'password' => env('ADMIN_PASSWORD'),
+    ],
     'backup' => [
         'hour' => (int) env('BACKUP_HOUR', 3),
         'retention_days' => (int) env('BACKUP_RETENTION_DAYS', 7),

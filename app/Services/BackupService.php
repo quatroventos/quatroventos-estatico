@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Backup;
 use App\Models\SiteSetting;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -130,6 +131,52 @@ class BackupService
         }
 
         return $backup->fresh() ?? $backup;
+    }
+
+    /**
+     * Registra um zip gerado por outra instalação (ex.: o ambiente local) para restaurar depois.
+     *
+     * @return array<string, mixed>
+     */
+    public function import(UploadedFile $file, ?User $user): array
+    {
+        $zip = new ZipArchive;
+
+        if ($zip->open($file->getRealPath()) !== true) {
+            throw new RuntimeException('Arquivo zip inválido.');
+        }
+
+        $valid = $zip->locateName('database.json') !== false && $zip->locateName('manifest.json') !== false;
+        $zip->close();
+
+        if (! $valid) {
+            throw new RuntimeException('O zip não é um backup do CMS (faltam manifest.json e database.json).');
+        }
+
+        $backup = Backup::query()->create([
+            'filename' => '',
+            'size' => 0,
+            'status' => 'failed',
+            'trigger' => 'upload',
+            'user_id' => $user?->id,
+        ]);
+
+        $filename = Storage::disk(self::DISK)->putFileAs(self::DIRECTORY, $file, 'rba-import-'.now()->format('Ymd-His').'-'.$backup->id.'.zip');
+
+        if ($filename === false) {
+            $backup->update(['error' => 'Não foi possível gravar o arquivo enviado.']);
+
+            throw new RuntimeException('Não foi possível gravar o arquivo enviado.');
+        }
+
+        $backup->update([
+            'filename' => $filename,
+            'size' => Storage::disk(self::DISK)->size($filename),
+            'status' => 'ok',
+            'error' => null,
+        ]);
+
+        return $this->panel();
     }
 
     public function download(Backup $backup): StreamedResponse

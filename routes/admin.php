@@ -110,6 +110,7 @@ Route::prefix($admin)->group(function () {
             Route::get('backup', [BackupController::class, 'index']);
             Route::put('backup', [BackupController::class, 'update']);
             Route::post('backup/run', [BackupController::class, 'run']);
+            Route::post('backup/import', [BackupController::class, 'import'])->middleware('throttle:10,1');
             Route::get('backup/{backup}/download', [BackupController::class, 'download']);
             Route::post('backup/{backup}/restore', [BackupController::class, 'restore']);
             Route::post('backup/{backup}/undelete', [BackupController::class, 'undelete'])->whereNumber('backup');

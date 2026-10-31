@@ -27,6 +27,7 @@ ln -sfn ../storage/app/public public/storage
 
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   php artisan migrate --force
+  php artisan cms:ensure-admin || true
 fi
 
 if [ "${RUN_SEED:-false}" = "true" ]; then

@@ -8,6 +8,7 @@ use App\Models\SiteSetting;
 use App\Services\BackupService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class BackupController extends Controller
@@ -47,6 +48,19 @@ class BackupController extends Controller
         }
 
         return response()->json(['data' => $backups->panel()]);
+    }
+
+    public function import(Request $request, BackupService $backups): JsonResponse
+    {
+        $this->authorize('viewAny', SiteSetting::class);
+
+        $request->validate(['file' => ['required', 'file', 'mimes:zip', 'max:262144']]);
+
+        try {
+            return response()->json(['data' => $backups->import($request->file('file'), $request->user())]);
+        } catch (RuntimeException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
     }
 
     public function download(Backup $backup, BackupService $backups): StreamedResponse
