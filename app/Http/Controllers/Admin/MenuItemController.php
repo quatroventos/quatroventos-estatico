@@ -180,13 +180,14 @@ class MenuItemController extends Controller
 
         $synced = DB::transaction(function () use ($data, $locale) {
             $group = $data['group'];
+
+            MenuItem::query()->where('locale', $locale)->where('group', $group)->update(['parent_id' => null]);
+
             $existing = MenuItem::query()
                 ->where('locale', $locale)
                 ->where('group', $group)
                 ->get()
                 ->keyBy('id');
-
-            MenuItem::query()->where('locale', $locale)->where('group', $group)->update(['parent_id' => null]);
 
             $kept = [];
             $lastRootId = null;

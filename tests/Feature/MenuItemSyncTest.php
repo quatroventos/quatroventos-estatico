@@ -109,6 +109,26 @@ class MenuItemSyncTest extends TestCase
         ]);
     }
 
+    public function test_removing_an_item_keeps_unchanged_children_under_their_parent(): void
+    {
+        $parent = MenuItem::query()->create(['group' => 'header', 'label' => 'Web', 'href' => '/web', 'sort' => 1, 'is_active' => true]);
+        $child = MenuItem::query()->create(['group' => 'header', 'label' => 'Sites', 'href' => '/sites', 'parent_id' => $parent->id, 'sort' => 1, 'is_active' => true]);
+        $removed = MenuItem::query()->create(['group' => 'header', 'label' => 'Contato', 'href' => '/contato', 'sort' => 2, 'is_active' => true]);
+
+        $this->actingAs($this->makeEditor())
+            ->putJson('/gestao/api/menu-items/sync', [
+                'group' => 'header',
+                'items' => [
+                    ['id' => $parent->id, 'label' => 'Web', 'href' => '/web', 'depth' => 0],
+                    ['id' => $child->id, 'label' => 'Sites', 'href' => '/sites', 'depth' => 1],
+                ],
+            ])
+            ->assertOk();
+
+        $this->assertSame($parent->id, $child->fresh()->parent_id);
+        $this->assertDatabaseMissing('menu_items', ['id' => $removed->id, 'deleted_at' => null]);
+    }
+
     public function test_sync_rejects_submenu_without_parent(): void
     {
         $this->actingAs($this->makeEditor())
