@@ -489,7 +489,7 @@ export function FormEditorScreen() {
                           <input
                             type="checkbox"
                             checked={Boolean(field.required)}
-                            disabled={['lgpd', 'curriculo', 'nome', 'email'].includes(field.name)}
+                            disabled={['lgpd', 'curriculo', 'nome', 'email'].includes(field.name) || (form.key === 'contact' && field.name === 'telefone')}
                             onChange={(event) => updateField(section.key, field.key, { required: event.target.checked })}
                           />
                           Obrigatório

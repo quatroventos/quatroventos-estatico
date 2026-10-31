@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Services\AuditLogger;
+use App\Services\TwoFactorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,12 @@ use Illuminate\Validation\ValidationException;
 class AuthController extends Controller
 {
     public const IMPERSONATOR_KEY = 'cms_impersonator_id';
+
+    public const TWO_FACTOR_PENDING_KEY = 'cms_two_factor_pending';
+
+    public const TWO_FACTOR_SETUP_KEY = 'cms_two_factor_setup_secret';
+
+    private const TWO_FACTOR_MAX_ATTEMPTS = 5;
 
     public function login(Request $request): JsonResponse
     {
@@ -52,21 +59,111 @@ class AuthController extends Controller
             ]);
         }
 
-        $request->session()->forget(self::IMPERSONATOR_KEY);
+        $request->session()->forget([self::IMPERSONATOR_KEY, self::TWO_FACTOR_SETUP_KEY]);
+        $request->session()->put(self::TWO_FACTOR_PENDING_KEY, [
+            'user_id' => $user->id,
+            'expires_at' => now()->addMinutes(10)->getTimestamp(),
+        ]);
+
+        if ($user->hasCompletedTwoFactor()) {
+            return response()->json(['status' => 'two_factor_challenge']);
+        }
+
+        $twoFactor = app(TwoFactorService::class);
+        $secret = $twoFactor->makeSecret();
+        $request->session()->put(self::TWO_FACTOR_SETUP_KEY, $secret);
+
+        return response()->json([
+            'status' => 'two_factor_setup',
+            'secret' => $secret,
+            'otpauth' => $twoFactor->otpauthUri($user, $secret),
+        ]);
+    }
+
+    public function twoFactor(Request $request, TwoFactorService $twoFactor): JsonResponse
+    {
+        $data = $request->validate([
+            'code' => ['nullable', 'required_without:recovery_code', 'string', 'max:16'],
+            'recovery_code' => ['nullable', 'string', 'max:32'],
+        ]);
+
+        $pending = $request->session()->get(self::TWO_FACTOR_PENDING_KEY);
+        $user = is_array($pending) && ($pending['expires_at'] ?? 0) >= now()->getTimestamp()
+            ? User::query()->find($pending['user_id'] ?? null)
+            : null;
+
+        if ($user === null || ! $user->isCmsMember()) {
+            $request->session()->forget([self::TWO_FACTOR_PENDING_KEY, self::TWO_FACTOR_SETUP_KEY]);
+
+            throw ValidationException::withMessages([
+                'code' => 'Sessão de login expirada. Entre novamente.',
+            ]);
+        }
+
+        $setupSecret = $request->session()->get(self::TWO_FACTOR_SETUP_KEY);
+        $recoveryCodes = null;
+
+        if (is_string($setupSecret) && ! $user->hasCompletedTwoFactor()) {
+            $valid = filled($data['code'] ?? null) && $twoFactor->verify($setupSecret, $data['code']);
+
+            if ($valid) {
+                $recoveryCodes = $twoFactor->generateRecoveryCodes();
+                $user->forceFill([
+                    'app_authentication_secret' => $setupSecret,
+                    'app_authentication_recovery_codes' => $twoFactor->hashRecoveryCodes($recoveryCodes),
+                ])->save();
+            }
+        } elseif (filled($data['code'] ?? null)) {
+            $valid = $twoFactor->verify((string) $user->app_authentication_secret, $data['code']);
+        } else {
+            $valid = $twoFactor->consumeRecoveryCode($user, (string) $data['recovery_code']);
+        }
+
+        if (! $valid) {
+            app(AuditLogger::class)->record(
+                $request,
+                $user,
+                'login.two_factor_failed',
+                $user->name.' errou o código de dois fatores',
+                422,
+            );
+
+            $attempts = ($pending['attempts'] ?? 0) + 1;
+
+            if ($attempts >= self::TWO_FACTOR_MAX_ATTEMPTS) {
+                $request->session()->forget([self::TWO_FACTOR_PENDING_KEY, self::TWO_FACTOR_SETUP_KEY]);
+
+                throw ValidationException::withMessages([
+                    'code' => 'Muitas tentativas. Entre novamente.',
+                ]);
+            }
+
+            $request->session()->put(self::TWO_FACTOR_PENDING_KEY, [...$pending, 'attempts' => $attempts]);
+
+            throw ValidationException::withMessages([
+                'code' => 'Código inválido.',
+            ]);
+        }
+
+        $request->session()->forget([self::TWO_FACTOR_PENDING_KEY, self::TWO_FACTOR_SETUP_KEY]);
         Auth::login($user);
         $request->session()->regenerate();
 
         app(AuditLogger::class)->record(
             $request,
             $user,
-            'login',
-            $user->name.' entrou no painel',
+            $recoveryCodes !== null ? 'two_factor.enabled' : 'login',
+            $recoveryCodes !== null
+                ? $user->name.' ativou a autenticação em dois fatores e entrou no painel'
+                : $user->name.' entrou no painel',
             200,
+            filled($data['recovery_code'] ?? null) && $recoveryCodes === null ? ['recovery_code' => true] : [],
         );
 
         return response()->json([
             'status' => 'authenticated',
             'user' => $this->payload($request, $user),
+            'recovery_codes' => $recoveryCodes,
         ]);
     }
 
@@ -204,6 +301,7 @@ class AuthController extends Controller
             'role' => $user->cmsRole(),
             'abilities' => $user->cmsAbilities(),
             'tour_progress' => $user->tour_progress ?? [],
+            'recovery_codes_left' => count($user->app_authentication_recovery_codes ?? []),
             'impersonating' => $impersonator !== null,
             'impersonator' => $impersonator ? [
                 'id' => $impersonator->id,

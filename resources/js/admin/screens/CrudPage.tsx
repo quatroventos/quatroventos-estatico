@@ -41,7 +41,7 @@ export function CrudPage<T extends { id: number }>({
   canCreate?: boolean;
   canDelete?: boolean;
   canDeleteRow?: (row: T) => boolean;
-  rowActions?: (row: T) => ReactNode;
+  rowActions?: (row: T, reload: () => Promise<void>) => ReactNode;
 }) {
   const { registerActions } = useTour();
   const [rows, setRows] = useState<T[]>([]);
@@ -181,7 +181,7 @@ export function CrudPage<T extends { id: number }>({
                         </button>
                       ) : (
                         <>
-                          {rowActions?.(row)}
+                          {rowActions?.(row, () => load())}
                           <button
                             className="icon-btn"
                             type="button"

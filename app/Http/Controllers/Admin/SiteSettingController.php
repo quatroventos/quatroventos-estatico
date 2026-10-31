@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
 use App\Services\MailSettings;
+use App\Services\WhatsApp\ContactWhatsApp;
+use App\Services\WhatsApp\EvolutionClient;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use RuntimeException;
 
 class SiteSettingController extends Controller
 {
@@ -15,7 +19,43 @@ class SiteSettingController extends Controller
         $settings = SiteSetting::current();
         $this->authorize('view', $settings);
 
-        return response()->json(['data' => $settings]);
+        return response()->json([
+            'data' => $settings,
+            'whatsapp_defaults' => [
+                'admin_template' => ContactWhatsApp::DEFAULT_ADMIN_TEMPLATE,
+                'visitor_template' => ContactWhatsApp::DEFAULT_VISITOR_TEMPLATE,
+                'variables' => ContactWhatsApp::VARIABLES,
+            ],
+        ]);
+    }
+
+    public function testWhatsApp(): JsonResponse
+    {
+        $settings = SiteSetting::query()->firstOrFail();
+        $this->authorize('update', $settings);
+
+        $client = EvolutionClient::fromSettings($settings);
+        $number = ContactWhatsApp::normalizeNumber($settings->whatsapp_notify_number);
+
+        if (! $client->configured() || $number === null) {
+            throw ValidationException::withMessages([
+                'evolution_url' => 'Salve a URL, a apikey, a instância e o número que recebe os avisos antes de testar.',
+            ]);
+        }
+
+        try {
+            $state = $client->connectionState();
+
+            if ($state !== 'open') {
+                throw new RuntimeException('A instância "'.$settings->evolution_instance.'" não está conectada (estado: '.$state.').');
+            }
+
+            $client->sendText($number, 'Teste do site '.($settings->name ?: config('app.name')).': os avisos de formulário por WhatsApp estão funcionando.');
+        } catch (RuntimeException $e) {
+            throw ValidationException::withMessages(['evolution_url' => $e->getMessage()]);
+        }
+
+        return response()->json(['status' => 'sent', 'state' => $state]);
     }
 
     public function update(Request $request, MailSettings $mailSettings): JsonResponse
@@ -48,10 +88,19 @@ class SiteSettingController extends Controller
             'smtp_encryption' => ['nullable', 'in:tls,ssl'],
             'smtp_from_address' => ['nullable', 'email', 'max:255'],
             'smtp_from_name' => ['nullable', 'string', 'max:255'],
+            'whatsapp_enabled' => ['sometimes', 'boolean'],
+            'evolution_url' => ['nullable', 'url', 'max:255'],
+            'evolution_api_key' => ['nullable', 'string', 'max:255'],
+            'evolution_instance' => ['nullable', 'string', 'max:120'],
+            'whatsapp_notify_number' => ['nullable', 'string', 'max:32', 'regex:/^[\d\s()+.-]{10,}$/'],
+            'whatsapp_admin_template' => ['nullable', 'string', 'max:2000'],
+            'whatsapp_visitor_template' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        if (! array_key_exists('smtp_password', $data) || $data['smtp_password'] === null || $data['smtp_password'] === '') {
-            unset($data['smtp_password']);
+        foreach (['smtp_password', 'evolution_api_key'] as $secret) {
+            if (! array_key_exists($secret, $data) || $data[$secret] === null || $data[$secret] === '') {
+                unset($data[$secret]);
+            }
         }
 
         if (($data['smtp_encryption'] ?? null) === '') {

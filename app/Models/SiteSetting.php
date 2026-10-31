@@ -15,10 +15,12 @@ class SiteSetting extends Model
 
     protected $hidden = [
         'smtp_password',
+        'evolution_api_key',
     ];
 
     protected $appends = [
         'smtp_password_set',
+        'evolution_api_key_set',
     ];
 
     protected function casts(): array
@@ -32,6 +34,8 @@ class SiteSetting extends Model
             'smtp_enabled' => 'boolean',
             'smtp_port' => 'integer',
             'smtp_password' => 'encrypted',
+            'whatsapp_enabled' => 'boolean',
+            'evolution_api_key' => 'encrypted',
         ];
     }
 
@@ -40,11 +44,16 @@ class SiteSetting extends Model
         return filled($this->attributes['smtp_password'] ?? null);
     }
 
+    public function getEvolutionApiKeySetAttribute(): bool
+    {
+        return filled($this->attributes['evolution_api_key'] ?? null);
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
             ->logAll()
-            ->logExcept(['smtp_password'])
+            ->logExcept(['smtp_password', 'evolution_api_key'])
             ->logOnlyDirty();
     }
 

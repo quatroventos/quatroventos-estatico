@@ -30,6 +30,7 @@ export type CmsUser = {
   role: string;
   abilities: Abilities;
   tour_progress?: TourProgress;
+  recovery_codes_left?: number;
   impersonating?: boolean;
   impersonator?: {
     id: number;

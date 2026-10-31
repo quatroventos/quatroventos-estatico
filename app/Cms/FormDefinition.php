@@ -6,6 +6,7 @@ use App\Models\FormOption;
 use App\Services\SystemOptions;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Validation\ValidationException;
 
 class FormDefinition
@@ -131,11 +132,17 @@ class FormDefinition
         }
 
         $system = self::systemNames($key);
+        $alwaysRequired = self::alwaysRequired($key);
 
         foreach ($form['sections'] as $sectionIndex => $section) {
             foreach ($section['fields'] ?? [] as $fieldIndex => $field) {
                 $name = $field['name'] ?? '';
                 $form['sections'][$sectionIndex]['fields'][$fieldIndex]['system'] = in_array($name, $system, true);
+
+                if (in_array($name, $system, true) && in_array($name, $alwaysRequired, true)) {
+                    $form['sections'][$sectionIndex]['fields'][$fieldIndex]['required'] = true;
+                }
+
                 $form['sections'][$sectionIndex]['fields'][$fieldIndex]['options_field'] = ($field['type'] ?? '') === 'select';
             }
         }
@@ -242,7 +249,7 @@ class FormDefinition
         return $rules;
     }
 
-    private static function selectRule(string $form, string $field): ?\Illuminate\Validation\Rules\In
+    private static function selectRule(string $form, string $field): ?In
     {
         $values = FormOption::query()
             ->where('form', $form)
@@ -334,7 +341,7 @@ class FormDefinition
                     $locked = $system[$incomingName];
                     $name = $locked['name'];
                     $type = $locked['type'];
-                    $required = in_array($name, ['lgpd', 'curriculo', 'email', 'nome'], true)
+                    $required = in_array($name, self::alwaysRequired($key), true)
                         ? true
                         : (bool) ($field['required'] ?? $locked['required'] ?? false);
                     $hint = $type === 'file'
@@ -423,6 +430,22 @@ class FormDefinition
             ],
             'options' => $options,
         ];
+    }
+
+    /**
+     * Campos de sistema que o editor não pode tornar opcionais.
+     *
+     * @return list<string>
+     */
+    public static function alwaysRequired(string $key): array
+    {
+        $names = ['lgpd', 'curriculo', 'email', 'nome'];
+
+        if ($key === 'contact') {
+            $names[] = 'telefone';
+        }
+
+        return $names;
     }
 
     public static function isWide(array $field): bool

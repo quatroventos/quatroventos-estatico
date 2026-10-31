@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { UserRoundSearch } from 'lucide-react';
+import { ShieldOff, UserRoundSearch } from 'lucide-react';
 import { useAuth } from '../auth';
 import { api, firstError } from '../api';
 import { CrudPage } from './CrudPage';
@@ -59,32 +59,58 @@ export function UsersScreen() {
     }
   }
 
+  async function resetTwoFactor(row: { id: number; name: string }, reload: () => Promise<void>) {
+    if (!confirm(`Zerar o 2FA de ${row.name}? A sessão atual dessa pessoa cai e ela configura um novo autenticador no próximo login.`)) {
+      return;
+    }
+    try {
+      await api(`/users/${row.id}/two-factor/reset`, { method: 'POST' });
+      await reload();
+    } catch (err) {
+      alert(firstError(err));
+    }
+  }
+
   return (
-    <CrudPage<{ id: number; name: string; email: string; role: string }>
+    <CrudPage<{ id: number; name: string; email: string; role: string; two_factor: boolean }>
       eyebrow="Sistema"
       title="Usuários"
       description="Acesso ao CMS."
       endpoint="/users"
       createLabel="Adicionar usuário"
       canDeleteRow={(row) => row.id !== user?.id}
-      rowActions={(row) => (
+      rowActions={(row, reload) => (
         user?.abilities.impersonate && row.id !== user?.id ? (
-          <button
-            className="icon-btn"
-            type="button"
-            title="Acessar como"
-            aria-label={`Acessar como ${row.name}`}
-            data-tour="users-impersonate"
-            onClick={() => void impersonate(row)}
-          >
-            <UserRoundSearch size={14} />
-          </button>
+          <>
+            <button
+              className="icon-btn"
+              type="button"
+              title="Acessar como"
+              aria-label={`Acessar como ${row.name}`}
+              data-tour="users-impersonate"
+              onClick={() => void impersonate(row)}
+            >
+              <UserRoundSearch size={14} />
+            </button>
+            {row.two_factor ? (
+              <button
+                className="icon-btn"
+                type="button"
+                title="Zerar 2FA"
+                aria-label={`Zerar 2FA de ${row.name}`}
+                onClick={() => void resetTwoFactor(row, reload)}
+              >
+                <ShieldOff size={14} />
+              </button>
+            ) : null}
+          </>
         ) : null
       )}
       columns={[
         { key: 'name', label: 'Nome' },
         { key: 'email', label: 'E-mail' },
         { key: 'role', label: 'Papel', render: (row) => (row.role === 'root' ? 'Root' : 'Usuário') },
+        { key: 'two_factor', label: '2FA', render: (row) => (row.two_factor ? 'Ativo' : 'Pendente') },
       ]}
       fields={[
         { name: 'name', label: 'Nome' },

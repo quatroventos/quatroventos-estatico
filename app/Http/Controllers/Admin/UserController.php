@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Admin\Concerns\RestoresSoftDeletedModels;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\AuditLogger;
+use App\Services\TwoFactorService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -129,6 +131,56 @@ class UserController extends Controller
         return response()->json(['data' => $this->payload($user->fresh('roles'))]);
     }
 
+    public function regenerateRecoveryCodes(Request $request, TwoFactorService $twoFactor): JsonResponse
+    {
+        /** @var User $user */
+        $user = $request->user();
+
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+
+        $codes = $twoFactor->generateRecoveryCodes();
+        $user->forceFill(['app_authentication_recovery_codes' => $twoFactor->hashRecoveryCodes($codes)])->save();
+
+        app(AuditLogger::class)->record(
+            $request,
+            $user,
+            'two_factor.recovery_codes',
+            $user->name.' gerou novos códigos de recuperação',
+            200,
+        );
+
+        return response()->json(['recovery_codes' => $codes]);
+    }
+
+    public function resetTwoFactor(Request $request, User $user): JsonResponse
+    {
+        $this->authorize('resetTwoFactor', $user);
+
+        $user->forceFill([
+            'app_authentication_secret' => null,
+            'app_authentication_recovery_codes' => null,
+        ])->save();
+
+        /** @var User $actor */
+        $actor = $request->user();
+
+        app(AuditLogger::class)->record(
+            $request,
+            $actor,
+            'two_factor.reset',
+            $actor->name.' zerou a autenticação em dois fatores de '.$user->name,
+            200,
+            [
+                'target_id' => $user->id,
+                'target_email' => $user->email,
+            ],
+        );
+
+        return response()->json(['data' => $this->payload($user->fresh('roles'))]);
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -141,6 +193,7 @@ class UserController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->cmsRole(),
+            'two_factor' => $user->hasCompletedTwoFactor(),
         ];
     }
 }

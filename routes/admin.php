@@ -42,6 +42,7 @@ if ($admin === '') {
 Route::prefix($admin)->group(function () {
     Route::prefix('api')->group(function () {
         Route::post('login', [AuthController::class, 'login'])->middleware('throttle:8,1');
+        Route::post('login/two-factor', [AuthController::class, 'twoFactor'])->middleware('throttle:8,1');
 
         Route::middleware('cms')->group(function () {
             Route::post('logout', [AuthController::class, 'logout']);
@@ -118,6 +119,7 @@ Route::prefix($admin)->group(function () {
 
             Route::get('site', [SiteSettingController::class, 'show']);
             Route::put('site', [SiteSettingController::class, 'update']);
+            Route::post('site/whatsapp/test', [SiteSettingController::class, 'testWhatsApp'])->middleware('throttle:6,1');
             Route::get('tags', [SiteSettingController::class, 'tags']);
             Route::put('tags', [SiteSettingController::class, 'updateTags']);
             Route::get('seo', [SeoController::class, 'show']);
@@ -158,10 +160,12 @@ Route::prefix($admin)->group(function () {
 
             Route::get('profile', [UserController::class, 'profile']);
             Route::put('profile', [UserController::class, 'updateProfile']);
+            Route::post('profile/recovery-codes', [UserController::class, 'regenerateRecoveryCodes'])->middleware('throttle:6,1');
 
             Route::apiResource('users', UserController::class)->except(['show']);
             Route::post('users/{user}/restore', [UserController::class, 'restore'])->whereNumber('user');
             Route::post('users/{user}/impersonate', [AuthController::class, 'impersonate']);
+            Route::post('users/{user}/two-factor/reset', [UserController::class, 'resetTwoFactor']);
             Route::get('audit', [AuditController::class, 'index']);
         });
     });

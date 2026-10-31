@@ -8,6 +8,7 @@ use App\Models\ContactSubmission;
 use App\Models\FormOption;
 use App\Models\SiteSetting;
 use App\Services\MailSettings;
+use App\Services\WhatsApp\ContactWhatsApp;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,7 +17,7 @@ use Illuminate\Validation\ValidationException;
 
 class SiteFormController extends Controller
 {
-    public function contact(Request $request, MailSettings $mailSettings): RedirectResponse|JsonResponse
+    public function contact(Request $request, MailSettings $mailSettings, ContactWhatsApp $whatsApp): RedirectResponse|JsonResponse
     {
         $json = $request->expectsJson();
 
@@ -39,6 +40,8 @@ class SiteFormController extends Controller
         $submission = ContactSubmission::query()->create(
             FormDefinition::submissionAttributes('contact', $data)
         );
+
+        $this->notifyWhatsApp($whatsApp, $submission);
 
         $recipient = $this->contactRecipient((string) ($data['destino'] ?? ''));
 
@@ -66,7 +69,7 @@ class SiteFormController extends Controller
         return $this->contactResult('enviado', $json);
     }
 
-    public function lead(Request $request, MailSettings $mailSettings): JsonResponse
+    public function lead(Request $request, MailSettings $mailSettings, ContactWhatsApp $whatsApp): JsonResponse
     {
         if (filled($request->input('empresa_site'))) {
             return response()->json(['status' => 'enviado']);
@@ -89,6 +92,8 @@ class SiteFormController extends Controller
             'message' => $page !== '' ? "Tenho interesse (formulário rápido em {$page})." : 'Tenho interesse (formulário rápido).',
             'extra' => $page !== '' ? ['pagina' => ['label' => 'Página', 'value' => $page]] : null,
         ]);
+
+        $this->notifyWhatsApp($whatsApp, $submission, $page);
 
         $recipient = $this->contactRecipient('');
 
@@ -118,6 +123,22 @@ class SiteFormController extends Controller
         }
 
         return response()->json(['status' => 'enviado']);
+    }
+
+    private function notifyWhatsApp(ContactWhatsApp $whatsApp, ContactSubmission $submission, string $page = ''): void
+    {
+        try {
+            $whatsApp->notify([
+                'nome' => $submission->name,
+                'email' => $submission->email,
+                'telefone' => $submission->phone,
+                'destino' => $submission->destination,
+                'mensagem' => $submission->message,
+                'pagina' => $page,
+            ]);
+        } catch (\Throwable $e) {
+            report($e);
+        }
     }
 
     private function contactResult(string $status, bool $json, int $code = 200): RedirectResponse|JsonResponse

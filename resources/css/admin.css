@@ -2065,6 +2065,71 @@ td.person span {
   justify-content: center;
 }
 
+.btn-link {
+  display: block;
+  margin: 14px auto 0;
+  padding: 4px 6px;
+  border: 0;
+  background: none;
+  font-size: 12px;
+  color: var(--ink-muted);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.btn-link:hover {
+  color: var(--ink);
+}
+
+.two-factor-qr {
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.two-factor-secret {
+  margin: 0 0 18px;
+  font-size: 12px;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.two-factor-secret code,
+.recovery-codes code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--ink);
+  letter-spacing: 0.04em;
+}
+
+.recovery-codes {
+  margin-bottom: 18px;
+}
+
+.profile-two-factor {
+  margin-top: 16px;
+}
+
+.profile-two-factor .recovery-codes {
+  margin-top: 12px;
+}
+
+.recovery-codes ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 14px;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fafbfc;
+  font-size: 13px;
+}
+
 .editor-frame {
   height: 100dvh;
   display: flex;

@@ -5,17 +5,43 @@ import { api, firstError } from '../api';
 
 type SiteForm = Record<string, string | number | boolean | null | undefined>;
 
+type WhatsAppDefaults = {
+  admin_template: string;
+  visitor_template: string;
+  variables: string[];
+};
+
 export function SiteScreen() {
   const [form, setForm] = useState<SiteForm>({});
   const [error, setError] = useState('');
   const [ok, setOk] = useState(false);
+  const [whatsAppDefaults, setWhatsAppDefaults] = useState<WhatsAppDefaults | null>(null);
+  const [whatsAppTest, setWhatsAppTest] = useState<{ ok: boolean; message: string } | null>(null);
+  const [testing, setTesting] = useState(false);
 
   useEffect(() => {
-    void api<{ data: SiteForm }>('/site').then((payload) => setForm({
-      ...payload.data,
-      smtp_password: '',
-    }));
+    void api<{ data: SiteForm; whatsapp_defaults: WhatsAppDefaults }>('/site').then((payload) => {
+      setForm({
+        ...payload.data,
+        smtp_password: '',
+        evolution_api_key: '',
+      });
+      setWhatsAppDefaults(payload.whatsapp_defaults);
+    });
   }, []);
+
+  async function testWhatsApp() {
+    setWhatsAppTest(null);
+    setTesting(true);
+    try {
+      await api('/site/whatsapp/test', { method: 'POST' });
+      setWhatsAppTest({ ok: true, message: 'Mensagem de teste enviada para o número de avisos.' });
+    } catch (err) {
+      setWhatsAppTest({ ok: false, message: firstError(err) });
+    } finally {
+      setTesting(false);
+    }
+  }
 
   async function save(event: FormEvent) {
     event.preventDefault();
@@ -32,6 +58,10 @@ export function SiteScreen() {
         smtp_password: typeof form.smtp_password === 'string' && form.smtp_password.trim() !== ''
           ? form.smtp_password
           : null,
+        whatsapp_enabled: Boolean(form.whatsapp_enabled),
+        evolution_api_key: typeof form.evolution_api_key === 'string' && form.evolution_api_key.trim() !== ''
+          ? form.evolution_api_key
+          : null,
       };
       const payload = await api<{ data: SiteForm }>('/site', {
         method: 'PUT',
@@ -40,6 +70,7 @@ export function SiteScreen() {
       setForm({
         ...payload.data,
         smtp_password: '',
+        evolution_api_key: '',
       });
       setOk(true);
     } catch (err) {
@@ -131,6 +162,61 @@ export function SiteScreen() {
             </div>
             {field('smtp_from_address', 'Remetente (e-mail)', 'email')}
             {field('smtp_from_name', 'Remetente (nome)')}
+          </div>
+          <div className="settings-block">
+            <h3 className="settings-block__title">WhatsApp (Evolution API)</h3>
+            <p className="desc">
+              A cada envio dos formulários de contato e de lead, avisa o seu número e manda uma confirmação para o WhatsApp do visitante. O e-mail continua sendo enviado normalmente.
+            </p>
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={Boolean(form.whatsapp_enabled)}
+                onChange={(event) => setForm({ ...form, whatsapp_enabled: event.target.checked })}
+              />
+              Enviar avisos por WhatsApp
+            </label>
+            {field('evolution_url', 'URL da Evolution API', 'url')}
+            <div className="field">
+              <label>Apikey{form.evolution_api_key_set ? ' (deixe em branco para manter)' : ''}</label>
+              <input
+                type="password"
+                autoComplete="new-password"
+                value={text('evolution_api_key')}
+                placeholder={form.evolution_api_key_set ? '••••••••' : ''}
+                onChange={(event) => setForm({ ...form, evolution_api_key: event.target.value })}
+              />
+            </div>
+            {field('evolution_instance', 'Nome da instância')}
+            {field('whatsapp_notify_number', 'Número que recebe os avisos (com DDD)', 'tel')}
+            <div className="field">
+              <label>Mensagem para você</label>
+              <textarea
+                rows={6}
+                value={text('whatsapp_admin_template')}
+                placeholder={whatsAppDefaults?.admin_template}
+                onChange={(event) => setForm({ ...form, whatsapp_admin_template: event.target.value })}
+              />
+            </div>
+            <div className="field">
+              <label>Mensagem para o visitante</label>
+              <textarea
+                rows={3}
+                value={text('whatsapp_visitor_template')}
+                placeholder={whatsAppDefaults?.visitor_template}
+                onChange={(event) => setForm({ ...form, whatsapp_visitor_template: event.target.value })}
+              />
+            </div>
+            <p className="desc">
+              Em branco, vale o texto padrão mostrado no campo. Variáveis: {whatsAppDefaults?.variables.map((name) => `{${name}}`).join(' ')}
+            </p>
+            {whatsAppTest ? (
+              <div className={whatsAppTest.ok ? 'form-success' : 'form-error'}>{whatsAppTest.message}</div>
+            ) : null}
+            <button className="btn btn-secondary" type="button" disabled={testing} onClick={() => void testWhatsApp()}>
+              {testing ? 'Testando…' : 'Testar conexão'}
+            </button>
+            <p className="desc">O teste usa os dados já salvos: salve antes de testar.</p>
           </div>
           <div className="form-actions" data-tour="site-save">
             <button className="btn btn-primary" type="submit">Salvar</button>

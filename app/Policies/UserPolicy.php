@@ -35,4 +35,9 @@ class UserPolicy
     {
         return $user->isRoot() && $user->isNot($model);
     }
+
+    public function resetTwoFactor(User $user, User $model): bool
+    {
+        return $user->isRoot() && $user->isNot($model);
+    }
 }

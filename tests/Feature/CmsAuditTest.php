@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\CmsAction;
 use App\Models\Page;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PragmaRX\Google2FA\Google2FA;
 use Tests\TestCase;
 
 class CmsAuditTest extends TestCase
@@ -21,6 +22,10 @@ class CmsAuditTest extends TestCase
         $this->postJson('/gestao/api/login', [
             'email' => 'root@example.com',
             'password' => 'password',
+        ])->assertOk();
+
+        $this->postJson('/gestao/api/login/two-factor', [
+            'code' => app(Google2FA::class)->getCurrentOtp('JBSWY3DPEHPK3PXP'),
         ])->assertOk();
 
         $this->assertDatabaseHas('cms_actions', [

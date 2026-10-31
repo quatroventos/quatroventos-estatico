@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PragmaRX\Google2FA\Google2FA;
 use Tests\TestCase;
 
 class CmsAuthTest extends TestCase
@@ -16,9 +17,15 @@ class CmsAuthTest extends TestCase
             'password' => 'password',
         ]);
 
-        $response = $this->postJson('/gestao/api/login', [
+        $this->postJson('/gestao/api/login', [
             'email' => 'admin@example.com',
             'password' => 'password',
+        ])->assertOk()->assertJsonPath('status', 'two_factor_challenge');
+
+        $this->assertGuest();
+
+        $response = $this->postJson('/gestao/api/login/two-factor', [
+            'code' => app(Google2FA::class)->getCurrentOtp('JBSWY3DPEHPK3PXP'),
         ]);
 
         $response->assertOk()
