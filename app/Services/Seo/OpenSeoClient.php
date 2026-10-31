@@ -48,9 +48,11 @@ class OpenSeoClient
 
         $this->initialize();
 
+        $arguments = $scoped ? ['projectId' => (string) config('services.openseo.project'), ...$arguments] : $arguments;
+
         $result = $this->request('tools/call', [
             'name' => $tool,
-            'arguments' => $scoped ? ['projectId' => (string) config('services.openseo.project'), ...$arguments] : $arguments,
+            'arguments' => $arguments === [] ? new stdClass : $arguments,
         ]);
 
         $text = collect((array) ($result['content'] ?? []))

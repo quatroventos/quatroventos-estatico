@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\SiteSetting;
+use App\Services\Seo\OpenSeoClient;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -191,6 +192,16 @@ class OpenSeoDashboardTest extends TestCase
 
         $this->assertSame(0, $this->toolCalls('research_keywords'));
         $this->assertSame(0, $this->toolCalls('get_domain_overview'));
+    }
+
+    public function test_tool_without_arguments_sends_an_empty_object(): void
+    {
+        $this->fakeOpenSeo(['list_projects' => ['projects' => []]]);
+
+        app(OpenSeoClient::class)->call('list_projects', [], false);
+
+        Http::assertSent(fn (Request $request) => ($request['method'] ?? null) === 'tools/call'
+            && str_contains($request->body(), '"arguments":{}'));
     }
 
     public function test_without_project_the_screen_reports_setup_and_never_calls_openseo(): void
