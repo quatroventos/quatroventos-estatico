@@ -26,6 +26,7 @@ class SiteSettingController extends Controller
                 'visitor_template' => ContactWhatsApp::DEFAULT_VISITOR_TEMPLATE,
                 'variables' => ContactWhatsApp::VARIABLES,
             ],
+            'hosting_plans' => config('cms.hosting_plans'),
         ]);
     }
 
@@ -95,7 +96,17 @@ class SiteSettingController extends Controller
             'whatsapp_notify_number' => ['nullable', 'string', 'max:32', 'regex:/^[\d\s()+.-]{10,}$/'],
             'whatsapp_admin_template' => ['nullable', 'string', 'max:2000'],
             'whatsapp_visitor_template' => ['nullable', 'string', 'max:2000'],
+            'plan_links' => ['nullable', 'array'],
+            'plan_links.*' => ['nullable', 'url:http,https', 'max:500'],
         ]);
+
+        if (array_key_exists('plan_links', $data)) {
+            $data['plan_links'] = collect($data['plan_links'] ?? [])
+                ->only(array_keys((array) config('cms.hosting_plans')))
+                ->map(fn ($url) => trim((string) $url))
+                ->filter()
+                ->all();
+        }
 
         foreach (['smtp_password', 'evolution_api_key'] as $secret) {
             if (! array_key_exists($secret, $data) || $data[$secret] === null || $data[$secret] === '') {

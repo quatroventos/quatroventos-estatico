@@ -14,7 +14,7 @@ const WHATSAPP = 'https://wa.me/554130399593?text=Gostaria%20de%20contratar%20um
 const FIREFLY = 'https://fireflyhost.com.br/';
 const STORE = 'https://financeiro.fireflyhost.com.br/index.php?rp=/store/';
 
-type HostPlan = Plan & { checkout: string };
+type HostPlan = Plan & { id: string; checkout: string };
 type Category = { id: string; tab: string; title: string; text: string; common: string[]; plans: HostPlan[] };
 
 const ALL_PLANS = ['SSL grátis, com renovação automática', 'Migração gratuita, feita pela equipe', 'Suporte 100% humano', 'Uptime de 99,9%'];
@@ -28,6 +28,7 @@ const CATEGORIES: Category[] = [
     common: ['Subdomínios ilimitados', 'Firewall'],
     plans: [
       {
+        id: 'sites-basic',
         name: 'Basic',
         monthly: 45,
         annual: 550,
@@ -35,6 +36,7 @@ const CATEGORIES: Category[] = [
         adds: ['Até 5.000 acessos mensais', 'Até 30 acessos simultâneos', '10 GB de armazenamento NVMe', '10 contas de e-mail'],
       },
       {
+        id: 'sites-pro',
         name: 'Pro',
         monthly: 75,
         annual: 750,
@@ -43,6 +45,7 @@ const CATEGORIES: Category[] = [
         adds: ['Até 15.000 acessos mensais', 'Até 150 acessos simultâneos', '20 GB de armazenamento NVMe', '20 contas de e-mail', 'Backups diários'],
       },
       {
+        id: 'sites-ultra',
         name: 'Ultra',
         monthly: 95,
         annual: 950,
@@ -59,6 +62,7 @@ const CATEGORIES: Category[] = [
     common: ['Instalador de WordPress em 1 clique', 'Instalação feita pela equipe, sem custo', 'Acelerador de WordPress', 'Anti-malware'],
     plans: [
       {
+        id: 'wp-basic',
         name: 'WP Basic',
         monthly: 75,
         annual: 740,
@@ -66,6 +70,7 @@ const CATEGORIES: Category[] = [
         adds: ['Até 10.000 acessos mensais', 'Até 100 acessos simultâneos', '10 GB de armazenamento NVMe', 'Backups semanais'],
       },
       {
+        id: 'wp-pro',
         name: 'WP Pro',
         monthly: 95,
         annual: 950,
@@ -74,6 +79,7 @@ const CATEGORIES: Category[] = [
         adds: ['Até 20.000 acessos mensais', 'Até 200 acessos simultâneos', '20 GB de armazenamento NVMe', 'Backups diários'],
       },
       {
+        id: 'wp-ultra',
         name: 'WP Ultra',
         monthly: 120,
         annual: 1200,
@@ -90,6 +96,7 @@ const CATEGORIES: Category[] = [
     common: ['Instalador de WooCommerce em 1 clique', 'Instalação feita pela equipe, sem custo', 'Acelerador de WordPress', 'Anti-malware', 'Licença Elementor Pro', 'Backups diários'],
     plans: [
       {
+        id: 'woo-basic',
         name: 'Woo Basic',
         monthly: 95,
         annual: 950,
@@ -97,6 +104,7 @@ const CATEGORIES: Category[] = [
         adds: ['Até 10.000 clientes por mês', 'Até 100 clientes simultâneos', '10 GB de armazenamento NVMe'],
       },
       {
+        id: 'woo-pro',
         name: 'Woo Pro',
         monthly: 125,
         annual: 1250,
@@ -105,6 +113,7 @@ const CATEGORIES: Category[] = [
         adds: ['Até 20.000 clientes por mês', 'Até 200 clientes simultâneos', '20 GB de armazenamento NVMe'],
       },
       {
+        id: 'woo-ultra',
         name: 'Woo Ultra',
         monthly: 175,
         annual: 1750,
@@ -148,7 +157,7 @@ function planWhatsApp(plan: Plan) {
   return `https://wa.me/554130399593?text=${encodeURIComponent(`Gostaria de contratar o plano ${plan.name} da Firefly Host.`)}`;
 }
 
-export default function PageHospedagemDeSites(_props: StaticPageProps) {
+export default function PageHospedagemDeSites({ planLinks }: StaticPageProps) {
   return (
     <>
       {/* seção: hero */}
@@ -185,7 +194,7 @@ export default function PageHospedagemDeSites(_props: StaticPageProps) {
                 </div>
                 <div className="plan-tiers">
                   {category.plans.map((plan) => (
-                    <PlanCard key={plan.name} plan={plan} href={plan.checkout} altHref={planWhatsApp(plan)} heading="h4" />
+                    <PlanCard key={plan.name} plan={plan} href={planLinks?.[plan.id] || plan.checkout} altHref={planWhatsApp(plan)} heading="h4" />
                   ))}
                 </div>
                 <PlanBase

@@ -194,7 +194,7 @@ export function App() {
         ) : null}
         {!missing && synced && page && !page.case && StaticPage ? (
           <Suspense fallback={null}>
-            <StaticPage form={site?.form ?? null} sections={page.sections} />
+            <StaticPage form={site?.form ?? null} sections={page.sections} planLinks={site?.plan_links} />
           </Suspense>
         ) : null}
         {!missing && synced && page && !page.case && !StaticPage ? <Sections sections={page.sections} form={site?.form ?? null} /> : null}

@@ -105,6 +105,7 @@ export type SitePayload = {
   seo: Record<string, unknown>;
   form: SiteForm | null;
   cases?: Record<string, CaseCard>;
+  plan_links?: Record<string, string>;
 };
 
 declare global {

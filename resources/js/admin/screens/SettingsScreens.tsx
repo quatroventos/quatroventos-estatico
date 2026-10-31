@@ -18,15 +18,24 @@ export function SiteScreen() {
   const [whatsAppDefaults, setWhatsAppDefaults] = useState<WhatsAppDefaults | null>(null);
   const [whatsAppTest, setWhatsAppTest] = useState<{ ok: boolean; message: string } | null>(null);
   const [testing, setTesting] = useState(false);
+  const [hostingPlans, setHostingPlans] = useState<Record<string, string>>({});
+  const [planLinks, setPlanLinks] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    void api<{ data: SiteForm; whatsapp_defaults: WhatsAppDefaults }>('/site').then((payload) => {
+    void api<{
+      data: SiteForm & { plan_links?: Record<string, string> | null };
+      whatsapp_defaults: WhatsAppDefaults;
+      hosting_plans: Record<string, string>;
+    }>('/site').then((payload) => {
+      const { plan_links: links, ...data } = payload.data;
       setForm({
-        ...payload.data,
+        ...data,
         smtp_password: '',
         evolution_api_key: '',
       });
+      setPlanLinks(links ?? {});
       setWhatsAppDefaults(payload.whatsapp_defaults);
+      setHostingPlans(payload.hosting_plans ?? {});
     });
   }, []);
 
@@ -62,16 +71,19 @@ export function SiteScreen() {
         evolution_api_key: typeof form.evolution_api_key === 'string' && form.evolution_api_key.trim() !== ''
           ? form.evolution_api_key
           : null,
+        plan_links: planLinks,
       };
-      const payload = await api<{ data: SiteForm }>('/site', {
+      const payload = await api<{ data: SiteForm & { plan_links?: Record<string, string> | null } }>('/site', {
         method: 'PUT',
         body: JSON.stringify(body),
       });
+      const { plan_links: links, ...data } = payload.data;
       setForm({
-        ...payload.data,
+        ...data,
         smtp_password: '',
         evolution_api_key: '',
       });
+      setPlanLinks(links ?? {});
       setOk(true);
     } catch (err) {
       setError(firstError(err));
@@ -162,6 +174,23 @@ export function SiteScreen() {
             </div>
             {field('smtp_from_address', 'Remetente (e-mail)', 'email')}
             {field('smtp_from_name', 'Remetente (nome)')}
+          </div>
+          <div className="settings-block">
+            <h3 className="settings-block__title">Links de compra dos planos de hospedagem</h3>
+            <p className="desc">
+              Botão "Contratar" de cada plano em /hospedagem-de-sites. Em branco, vale o checkout padrão da Firefly Host.
+            </p>
+            {Object.entries(hostingPlans).map(([id, label]) => (
+              <div className="field" key={id}>
+                <label>{label}</label>
+                <input
+                  type="url"
+                  value={planLinks[id] ?? ''}
+                  placeholder="https://"
+                  onChange={(event) => setPlanLinks({ ...planLinks, [id]: event.target.value })}
+                />
+              </div>
+            ))}
           </div>
           <div className="settings-block">
             <h3 className="settings-block__title">WhatsApp (Evolution API)</h3>

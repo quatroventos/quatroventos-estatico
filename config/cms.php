@@ -13,6 +13,21 @@ return [
         'email' => env('ADMIN_EMAIL'),
         'password' => env('ADMIN_PASSWORD'),
     ],
+    /*
+     * Planos de /hospedagem-de-sites com link de compra editável no CMS.
+     * As chaves batem com o "id" de cada plano em resources/js/site/static/pages/hospedagem-de-sites.tsx.
+     */
+    'hosting_plans' => [
+        'sites-basic' => 'Sites · Basic',
+        'sites-pro' => 'Sites · Pro',
+        'sites-ultra' => 'Sites · Ultra',
+        'wp-basic' => 'WordPress · WP Basic',
+        'wp-pro' => 'WordPress · WP Pro',
+        'wp-ultra' => 'WordPress · WP Ultra',
+        'woo-basic' => 'WooCommerce · Woo Basic',
+        'woo-pro' => 'WooCommerce · Woo Pro',
+        'woo-ultra' => 'WooCommerce · Woo Ultra',
+    ],
     'backup' => [
         'hour' => (int) env('BACKUP_HOUR', 3),
         'retention_days' => (int) env('BACKUP_RETENTION_DAYS', 7),

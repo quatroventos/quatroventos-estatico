@@ -71,6 +71,9 @@ class PublicContent
             ],
             'seo' => [...Seo::defaults($site), 'og_locale' => Locales::ogLocale($locale)],
             'form' => $this->form($site, $locale),
+            'plan_links' => (object) collect(is_array($site?->plan_links) ? $site->plan_links : [])
+                ->filter(fn ($url) => is_string($url) && preg_match('#^https?://#i', $url) === 1)
+                ->all(),
             'cases' => (object) $this->casesBySourceSlug($locale)
                 ->map(fn (CaseStudy $case) => $this->caseCard($case, 0, $locale))
                 ->all(),

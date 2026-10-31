@@ -5,7 +5,7 @@ import type { Section, SiteForm } from '../types';
 // true: o front renderiza as páginas de ./pages; false: renderiza as seções vindas do CMS.
 export const STATIC_MODE = true;
 
-export type StaticPageProps = { form: SiteForm | null; sections?: Section[] };
+export type StaticPageProps = { form: SiteForm | null; sections?: Section[]; planLinks?: Record<string, string> };
 
 export const STATIC_PAGES: Record<string, () => Promise<{ default: ComponentType<StaticPageProps> }>> = {
   "agentes-de-ia": () => import('./pages/agentes-de-ia'),

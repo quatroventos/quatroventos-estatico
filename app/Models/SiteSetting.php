@@ -36,6 +36,7 @@ class SiteSetting extends Model
             'smtp_password' => 'encrypted',
             'whatsapp_enabled' => 'boolean',
             'evolution_api_key' => 'encrypted',
+            'plan_links' => 'array',
         ];
     }
 
