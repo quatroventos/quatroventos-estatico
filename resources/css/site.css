@@ -2662,7 +2662,7 @@ h3 {
 
 .rot > span {
   grid-area: 1 / 1;
-  transform: translateY(105%);
+  transform: translateY(130%);
 }
 
 .rot > span.is-active,
@@ -2675,7 +2675,7 @@ h3 {
 }
 
 .rot > span.is-past {
-  transform: translateY(-105%);
+  transform: translateY(-130%);
 }
 
 .hero-foot {
