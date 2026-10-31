@@ -71,16 +71,16 @@ class CmsCacheTest extends TestCase
 
     public function test_public_page_reads_cached_site_options(): void
     {
-        $settings = $this->makeSettings(['name' => 'RBA']);
+        $settings = $this->makeSettings(['name' => 'Quatro Ventos']);
         $this->makePage();
 
         $this->get('/')->assertOk();
         $this->assertTrue(Cache::has(SystemOptions::PREFIX.'site'));
-        $this->assertSame('RBA', app(SystemOptions::class)->site()?->name);
+        $this->assertSame('Quatro Ventos', app(SystemOptions::class)->site()?->name);
 
         SiteSetting::withoutEvents(fn () => $settings->update(['name' => 'Outro']));
 
-        $this->assertSame('RBA', app(SystemOptions::class)->site()?->name);
+        $this->assertSame('Quatro Ventos', app(SystemOptions::class)->site()?->name);
 
         $settings->update(['name' => 'Novo Nome']);
 
@@ -94,8 +94,8 @@ class CmsCacheTest extends TestCase
     private function makeSettings(array $overrides = []): SiteSetting
     {
         return SiteSetting::query()->create(array_merge([
-            'name' => 'RBA',
-            'og_site_name' => 'RBA',
+            'name' => 'Quatro Ventos',
+            'og_site_name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
         ], $overrides));

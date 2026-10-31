@@ -17,7 +17,7 @@ class SiteFaviconTest extends TestCase
 
         $this->actingAs($this->makeAdmin())
             ->putJson('/gestao/api/site', [
-                'name' => 'RBA',
+                'name' => 'Quatro Ventos',
                 'favicon_path' => '/storage/assets/favicon.png',
             ])
             ->assertOk()
@@ -71,10 +71,10 @@ class SiteFaviconTest extends TestCase
     private function makeSettings(array $overrides = []): SiteSetting
     {
         return SiteSetting::query()->create(array_merge([
-            'name' => 'RBA',
+            'name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
-            'email' => 'adv@ramosbenedetti.adv.br',
+            'email' => 'adv@quatroventos.com.br',
         ], $overrides));
     }
 }

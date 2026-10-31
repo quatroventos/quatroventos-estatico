@@ -30,7 +30,7 @@ class SiteAnalyticsTest extends TestCase
             'sid' => '11111111-1111-4111-8111-111111111111',
             'vid' => '22222222-2222-4222-8222-222222222222',
             'path' => '/quem-somos',
-            'ref' => 'https://www.google.com/search?q=rba',
+            'ref' => 'https://www.google.com/search?q=quatroventos',
             'lt' => 842,
         ], [
             'CF-IPCountry' => 'BR',
@@ -163,8 +163,8 @@ class SiteAnalyticsTest extends TestCase
     private function makeSettings(array $overrides = []): SiteSetting
     {
         return SiteSetting::query()->create(array_merge([
-            'name' => 'RBA',
-            'og_site_name' => 'RBA',
+            'name' => 'Quatro Ventos',
+            'og_site_name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
         ], $overrides));

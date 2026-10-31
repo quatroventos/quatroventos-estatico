@@ -15,7 +15,7 @@
     $ctaBits = preg_split('/\.\s*/', trim($cta['highlight'] ?? ''), -1, PREG_SPLIT_NO_EMPTY) ?: [];
   @endphp
 
-  <section class="hero" data-cms-section="hero" aria-label="{{ $site->name ?? 'Ramos Benedetti Advogados' }}">
+  <section class="hero" data-cms-section="hero" aria-label="{{ $site->name ?? 'Quatro Ventos' }}">
     <div class="hero__word-cloud" aria-hidden="true">
       @foreach($hero['word_cloud'] ?? [] as $i => $word)
         @php

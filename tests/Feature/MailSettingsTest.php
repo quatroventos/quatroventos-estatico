@@ -18,7 +18,7 @@ class MailSettingsTest extends TestCase
 
         $this->actingAs($this->makeAdmin())
             ->putJson('/gestao/api/site', [
-                'name' => 'RBA',
+                'name' => 'Quatro Ventos',
                 'smtp_enabled' => true,
                 'smtp_host' => 'smtp.example.com',
                 'smtp_port' => 587,
@@ -26,7 +26,7 @@ class MailSettingsTest extends TestCase
                 'smtp_password' => 'secret-pass',
                 'smtp_encryption' => 'tls',
                 'smtp_from_address' => 'noreply@example.com',
-                'smtp_from_name' => 'RBA Site',
+                'smtp_from_name' => 'Quatro Ventos Site',
             ])
             ->assertOk()
             ->assertJsonMissingPath('data.smtp_password')
@@ -70,7 +70,7 @@ class MailSettingsTest extends TestCase
 
         $this->actingAs($this->makeAdmin())
             ->putJson('/gestao/api/site', [
-                'name' => 'RBA',
+                'name' => 'Quatro Ventos',
                 'smtp_enabled' => true,
                 'smtp_host' => 'smtp.example.com',
                 'smtp_password' => '',
@@ -86,10 +86,10 @@ class MailSettingsTest extends TestCase
     private function makeSettings(array $overrides = []): SiteSetting
     {
         return SiteSetting::query()->create(array_merge([
-            'name' => 'RBA',
+            'name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
-            'email' => 'adv@ramosbenedetti.adv.br',
+            'email' => 'adv@quatroventos.com.br',
         ], $overrides));
     }
 }

@@ -20,7 +20,7 @@ class InitialContentSeeder extends Seeder
         Role::findOrCreate('user', 'web');
 
         $user = User::query()->updateOrCreate(
-            ['email' => env('ADMIN_EMAIL', 'adv@ramosbenedetti.adv.br')],
+            ['email' => env('ADMIN_EMAIL', 'gabriel@quatroventos.com.br')],
             [
                 'name' => env('ADMIN_NAME', 'Administrador'),
                 'password' => env('ADMIN_PASSWORD', 'RbaAdmin2026!'),

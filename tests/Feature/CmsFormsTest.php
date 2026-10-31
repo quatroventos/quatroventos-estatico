@@ -111,7 +111,7 @@ class CmsFormsTest extends TestCase
             'telefone' => '16999999999',
             'destino' => 'Comercial',
             'mensagem' => 'Olá',
-            'empresa' => 'RBA',
+            'empresa' => 'Quatro Ventos',
             'lgpd' => '1',
         ])->assertRedirect();
 
@@ -120,7 +120,7 @@ class CmsFormsTest extends TestCase
         $this->assertNotNull($submission);
         $this->assertSame('Ana', $submission->name);
         $this->assertSame('Empresa', $submission->extra['empresa']['label']);
-        $this->assertSame('RBA', $submission->extra['empresa']['value']);
+        $this->assertSame('Quatro Ventos', $submission->extra['empresa']['value']);
     }
 
     public function test_unknown_form_is_not_found(): void
@@ -169,7 +169,7 @@ class CmsFormsTest extends TestCase
     private function makeSettings(): SiteSetting
     {
         return SiteSetting::query()->create([
-            'name' => 'RBA',
+            'name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
         ]);

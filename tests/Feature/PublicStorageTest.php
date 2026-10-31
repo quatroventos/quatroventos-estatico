@@ -10,12 +10,12 @@ class PublicStorageTest extends TestCase
     public function test_returns_file_stored_on_the_public_disk(): void
     {
         Storage::fake('public');
-        Storage::disk('public')->put('assets/logo.txt', 'marca-rba');
+        Storage::disk('public')->put('assets/logo.txt', 'marca-quatroventos');
 
         $response = $this->get('/storage/assets/logo.txt');
 
         $response->assertOk();
-        $this->assertSame('marca-rba', $response->streamedContent());
+        $this->assertSame('marca-quatroventos', $response->streamedContent());
     }
 
     public function test_returns_404_when_public_file_is_missing(): void

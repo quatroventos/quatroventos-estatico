@@ -1,6 +1,6 @@
 # Kit de marca: Quatro Ventos
 
-Documento portátil do sistema visual do site público. Serve para montar propostas, apresentações e peças em Canva, Google Slides, Figma, Keynote e ferramentas de geração. Os valores abaixo são os do site em produção (`site rba/resources/css/site.css` e `DESIGN.md`).
+Documento portátil do sistema visual do site público. Serve para montar propostas, apresentações e peças em Canva, Google Slides, Figma, Keynote e ferramentas de geração. Os valores abaixo são os do site em produção (`resources/css/site.css` e `DESIGN.md`).
 
 O `DESIGN.md` na raiz continua sendo o spec de implementação do site. Este arquivo é o kit para reutilizar a marca fora do código.
 
@@ -10,8 +10,8 @@ O `DESIGN.md` na raiz continua sendo o spec de implementação do site. Este arq
 
 1. Marca → Kit de marca → criar kit **Quatro Ventos**.
 2. Cores, nesta ordem: Noite, Tinta, Papel, Branco, Limão, Oliva, Texto suave (escuro), Texto mudo (escuro), Texto suave (claro), Texto mudo (claro), WhatsApp, Erro. Hex na tabela de cores.
-3. Fontes: **Host Grotesk** (títulos, corpo, botões) e **Martian Mono** (números e nomes técnicos). As duas estão no Google Fonts. Se o Canva não listar, baixar o TTF em [Host Grotesk](https://fonts.google.com/specimen/Host+Grotesk) e [Martian Mono](https://fonts.google.com/specimen/Martian+Mono) e enviar no kit. Os arquivos do site (`site rba/resources/fonts/*.woff2`) são variable font para web; o Canva pede TTF/OTF.
-4. Logotipo: enviar `site rba/public/assets/logo-quatroventos.svg`. O arquivo é branco. Duplicar e recolorir para `#0b0b0f` quando o fundo for Papel ou Branco.
+3. Fontes: **Host Grotesk** (títulos, corpo, botões) e **Martian Mono** (números e nomes técnicos). As duas estão no Google Fonts. Se o Canva não listar, baixar o TTF em [Host Grotesk](https://fonts.google.com/specimen/Host+Grotesk) e [Martian Mono](https://fonts.google.com/specimen/Martian+Mono) e enviar no kit. Os arquivos do site (`resources/fonts/*.woff2`) são variable font para web; o Canva pede TTF/OTF.
+4. Logotipo: enviar `public/assets/logo-quatroventos.svg`. O arquivo é branco. Duplicar e recolorir para `#0b0b0f` quando o fundo for Papel ou Branco.
 5. Em cada página nova: fundo Noite, Papel ou Branco. Um único trecho do título em Limão. Botões em pílula. Cards com canto de 22 px, sem sombra.
 
 ### Prompt curto (colar na geração)
@@ -34,7 +34,7 @@ Densidade baixa. Escala tipográfica alta. Imagem só quando for material real (
 
 ## Logo
 
-Arquivo oficial: `site rba/public/assets/logo-quatroventos.svg`.
+Arquivo oficial: `public/assets/logo-quatroventos.svg`.
 
 | Versão | Fundo | Preenchimento |
 |---|---|---|
@@ -321,8 +321,8 @@ Bloco para importar em ferramenta que aceite token simples. Componentes apontam 
 
 Arquivos de origem no repositório:
 
-- Tokens e componentes do site: `site rba/resources/css/site.css`
+- Tokens e componentes do site: `resources/css/site.css`
 - Spec de implementação: `DESIGN.md`
 - Produto, voz e fatos publicáveis: `PRODUCT.md`
-- Logo: `site rba/public/assets/logo-quatroventos.svg`
-- Fontes web: `site rba/resources/fonts/host-grotesk.woff2`, `site rba/resources/fonts/martian-mono.woff2`
+- Logo: `public/assets/logo-quatroventos.svg`
+- Fontes web: `resources/fonts/host-grotesk.woff2`, `resources/fonts/martian-mono.woff2`

@@ -18,9 +18,9 @@ class ContactFormTest extends TestCase
     public function test_contact_form_sends_to_destination_email(): void
     {
         Mail::fake();
-        $this->makeSettings(['email' => 'site@ramosbenedetti.adv.br']);
+        $this->makeSettings(['email' => 'site@quatroventos.com.br']);
         $this->makeContactPage();
-        $this->makeDestination('Comercial', 'comercial@ramosbenedetti.adv.br');
+        $this->makeDestination('Comercial', 'comercial@quatroventos.com.br');
 
         $this->post('/contato', $this->payload('Comercial'))
             ->assertRedirect('/contato?status=enviado#contact-form-title');
@@ -31,7 +31,7 @@ class ContactFormTest extends TestCase
         ]);
 
         Mail::assertSent(ContactMessageMail::class, function (ContactMessageMail $mail) {
-            return $mail->hasTo('comercial@ramosbenedetti.adv.br')
+            return $mail->hasTo('comercial@quatroventos.com.br')
                 && $mail->destination === 'Comercial'
                 && $mail->senderEmail === 'ana@example.com';
         });
@@ -40,7 +40,7 @@ class ContactFormTest extends TestCase
     public function test_contact_form_falls_back_to_site_email(): void
     {
         Mail::fake();
-        $this->makeSettings(['email' => 'site@ramosbenedetti.adv.br']);
+        $this->makeSettings(['email' => 'site@quatroventos.com.br']);
         $this->makeContactPage();
         $this->makeDestination('Jurídico', null);
 
@@ -48,7 +48,7 @@ class ContactFormTest extends TestCase
             ->assertRedirect('/contato?status=enviado#contact-form-title');
 
         Mail::assertSent(ContactMessageMail::class, function (ContactMessageMail $mail) {
-            return $mail->hasTo('site@ramosbenedetti.adv.br');
+            return $mail->hasTo('site@quatroventos.com.br');
         });
     }
 
@@ -106,10 +106,10 @@ class ContactFormTest extends TestCase
     private function makeSettings(array $overrides = []): SiteSetting
     {
         return SiteSetting::query()->create(array_merge([
-            'name' => 'RBA',
+            'name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
-            'email' => 'adv@ramosbenedetti.adv.br',
+            'email' => 'adv@quatroventos.com.br',
         ], $overrides));
     }
 

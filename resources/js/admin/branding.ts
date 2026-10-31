@@ -7,7 +7,7 @@ export function branding(): AdminBranding {
   const data = window.__ADMIN__?.branding;
 
   return {
-    name: data?.name?.trim() || 'RBA',
+    name: data?.name?.trim() || 'Quatro Ventos',
     logo: data?.logo?.trim() || null,
   };
 }

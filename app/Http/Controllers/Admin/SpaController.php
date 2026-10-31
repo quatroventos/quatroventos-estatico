@@ -11,7 +11,7 @@ class SpaController extends Controller
 {
     public function __invoke(SystemOptions $options): View
     {
-        $name = 'RBA';
+        $name = 'Quatro Ventos';
         $logo = null;
         $favicon = null;
 

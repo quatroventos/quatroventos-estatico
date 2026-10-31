@@ -344,7 +344,7 @@
         {
           "kind": "logos de clientes",
           "origin": "assets/img/clientes/*.png (site anterior)",
-          "destination": "site rba/public/assets/clientes/",
+          "destination": "public/assets/clientes/",
           "files": [
             "aliancafrancesa.png",
             "cycloar.png",

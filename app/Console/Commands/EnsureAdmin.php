@@ -33,8 +33,8 @@ class EnsureAdmin extends Command
             return self::SUCCESS;
         }
 
-        if (mb_strlen($password) < 12) {
-            $this->error('ADMIN_PASSWORD precisa de pelo menos 12 caracteres.');
+        if (mb_strlen($password) < 8) {
+            $this->error('ADMIN_PASSWORD precisa de pelo menos 8 caracteres.');
 
             return self::FAILURE;
         }

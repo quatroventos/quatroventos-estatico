@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-CMS Laravel em `site rba` (API pública `/api/site`, `/api/pages/{slug}`, `/api/contato`; painel React em `/gestao`). Front público em React, montado no shell Laravel que entrega o SEO no primeiro HTML. Só o CMS fica; front, seções e conteúdo são refeitos do zero.
+CMS Laravel na raiz do repositório (API pública `/api/site`, `/api/pages/{slug}`, `/api/contato`; painel React em `/gestao`). Front público em React, montado no shell Laravel que entrega o SEO no primeiro HTML. Só o CMS fica; front, seções e conteúdo são refeitos do zero.
 
 ## Users
 

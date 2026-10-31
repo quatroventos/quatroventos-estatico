@@ -129,7 +129,7 @@ class CmsAclTest extends TestCase
     public function test_editor_can_update_page_slug(): void
     {
         SiteSetting::query()->create([
-            'name' => 'RBA',
+            'name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
         ]);
@@ -257,7 +257,7 @@ class CmsAclTest extends TestCase
     private function makeSettings(): void
     {
         SiteSetting::query()->create([
-            'name' => 'RBA',
+            'name' => 'Quatro Ventos',
             'og_locale' => 'pt_BR',
             'twitter_card' => 'summary_large_image',
         ]);

@@ -20,7 +20,7 @@ class CmsLighthouseTest extends TestCase
 
     public function test_refresh_reads_pagespeed_for_mobile_and_desktop(): void
     {
-        config(['cms.lighthouse_url' => 'https://ramosbenedetti.adv.br']);
+        config(['cms.lighthouse_url' => 'https://quatroventos.com.br']);
         Cache::forget(LighthouseService::CACHE_KEY);
 
         Http::fake(function (Request $request) {

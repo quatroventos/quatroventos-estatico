@@ -1,4 +1,4 @@
-# Ramos Benedetti Advogados
+# Quatro Ventos
 
 Um container Laravel. O visitante vê um site estático (Blade + CSS/JS). O CMS é um SPA React no path secreto. Não existe API pública.
 
@@ -43,7 +43,7 @@ Login do CMS: `http://localhost:8000/gestao/login`
 
 Mailpit: `http://localhost:8025`.
 
-MySQL e Redis ficam só na rede Docker (sem publicar 3306/6379 no host). Para inspecionar o banco: `docker compose exec mysql mysql -urba -prba rba`.
+MySQL e Redis ficam só na rede Docker (sem publicar 3306/6379 no host). Para inspecionar o banco: `docker compose exec mysql mysql -uquatroventos -pquatroventos quatroventos`.
 
 Para parar: `docker compose down`. Os dados do MySQL ficam no volume `mysql_data`.
 
@@ -120,10 +120,10 @@ Na sua máquina, na raiz do projeto:
 bash package-cpanel.sh
 ```
 
-Isso gera `rba-cpanel.zip` com `vendor` (`--no-dev`) e o build do CMS (`public/build`). O `.env` não vai no zip.
+Isso gera `quatroventos-cpanel.zip` com `vendor` (`--no-dev`) e o build do CMS (`public/build`). O `.env` não vai no zip.
 
-1. Extraia o zip fora do público, por exemplo `/home/USER/rba`.
-2. No cPanel, no domínio, aponte o document root para `/home/USER/rba/public`. Se o painel não deixar mudar o document root, extraia dentro de `public_html`: o `.htaccess` da raiz manda o tráfego para `public/` e bloqueia `.env`, `vendor`, `app` e o resto.
+1. Extraia o zip fora do público, por exemplo `/home/USER/quatroventos`.
+2. No cPanel, no domínio, aponte o document root para `/home/USER/quatroventos/public`. Se o painel não deixar mudar o document root, extraia dentro de `public_html`: o `.htaccess` da raiz manda o tráfego para `public/` e bloqueia `.env`, `vendor`, `app` e o resto.
 3. MySQL Databases: crie o banco e o usuário, com ALL PRIVILEGES. No phpMyAdmin, importe o dump. Host no `.env` é `localhost`.
 4. Copie `.env.cpanel.example` para `.env` e preencha `APP_URL`, `ADMIN_PATH`, `DB_*`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` e o SMTP da conta de e-mail do cPanel (`MAIL_HOST=localhost`, porta 587).
 5. No Terminal do cPanel, na pasta do projeto:
@@ -150,7 +150,7 @@ Para recarregar só o conteúdo, sem tocar nos usuários: `php artisan db:seed -
 Cache, sessão e fila ficam no MySQL. Não há worker. O cron do cPanel (PHP 8.3, todo minuto) cobre backup e Lighthouse:
 
 ```bash
-/usr/local/bin/ea-php83 /home/USER/rba/artisan schedule:run >> /dev/null 2>&1
+/usr/local/bin/ea-php83 /home/USER/quatroventos/artisan schedule:run >> /dev/null 2>&1
 ```
 
 Troque o binário pelo que o seletor de PHP mostrar, se não for `ea-php83`.

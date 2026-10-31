@@ -1,4 +1,4 @@
-Desenvolvimento de um site institucional moderno e seguro para o escritório Ramos Benedetti Advogados, utilizando Laravel como único runtime.
+Desenvolvimento de um site institucional moderno e seguro para a Quatro Ventos, utilizando Laravel como único runtime.
 
 O projeto prioriza segurança, performance e escalabilidade, com proteções avançadas via Cloudflare. O visitante vê um site estático (HTML/CSS/JS). O CMS é um SPA React no mesmo Laravel, em path secreto. Não há API pública em `/api`.
 

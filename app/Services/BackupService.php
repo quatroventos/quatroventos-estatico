@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\PrerenderSiteJob;
 use App\Models\Backup;
 use App\Models\SiteSetting;
 use App\Models\User;
@@ -110,7 +111,7 @@ class BackupService
         }
 
         try {
-            $filename = self::DIRECTORY.'/rba-'.now()->format('Ymd-His').'-'.$backup->id.'.zip';
+            $filename = self::DIRECTORY.'/quatroventos-'.now()->format('Ymd-His').'-'.$backup->id.'.zip';
             $this->writeArchive($temp);
             Storage::disk(self::DISK)->put($filename, (string) file_get_contents($temp));
 
@@ -161,7 +162,7 @@ class BackupService
             'user_id' => $user?->id,
         ]);
 
-        $filename = Storage::disk(self::DISK)->putFileAs(self::DIRECTORY, $file, 'rba-import-'.now()->format('Ymd-His').'-'.$backup->id.'.zip');
+        $filename = Storage::disk(self::DISK)->putFileAs(self::DIRECTORY, $file, 'quatroventos-import-'.now()->format('Ymd-His').'-'.$backup->id.'.zip');
 
         if ($filename === false) {
             $backup->update(['error' => 'Não foi possível gravar o arquivo enviado.']);
@@ -227,6 +228,7 @@ class BackupService
             $this->restoreTables($tables);
             $this->restoreFiles($extract.'/files');
             app(SystemOptions::class)->flush();
+            PrerenderSiteJob::schedule();
         } finally {
             if (is_file($temp)) {
                 unlink($temp);

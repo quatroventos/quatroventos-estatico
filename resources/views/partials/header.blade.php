@@ -3,7 +3,7 @@
 @endphp
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="site-header__brand" href="{{ url('/') }}" aria-label="{{ $site->name ?? 'Ramos Benedetti Advogados' }}">
+    <a class="site-header__brand" href="{{ url('/') }}" aria-label="{{ $site->name ?? 'Quatro Ventos' }}">
       @if(!empty($site?->logo_path))
         <img src="{{ media($site->logo_path) }}" alt="{{ $site->name }}" />
       @endif

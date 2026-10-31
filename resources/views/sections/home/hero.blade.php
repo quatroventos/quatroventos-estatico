@@ -2,7 +2,7 @@
   $hero = $c['hero'] ?? [];
 @endphp
 
-<section class="hero" data-cms-section="hero" aria-label="{{ $site->name ?? 'Ramos Benedetti Advogados' }}">
+<section class="hero" data-cms-section="hero" aria-label="{{ $site->name ?? 'Quatro Ventos' }}">
   <div class="hero__word-cloud" aria-hidden="true">
     @foreach($hero['word_cloud'] ?? [] as $i => $word)
       @php

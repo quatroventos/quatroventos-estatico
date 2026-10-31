@@ -2,7 +2,7 @@
   "schemaVersion": 3,
   "stage": "components",
   "id": "components",
-  "title": "Plan and asset review · site rba/resources/js/site/App.tsx",
+  "title": "Plan and asset review · resources/js/site/App.tsx",
   "comp": {
     "path": ".impeccable/mocks/decision/assigned.webp",
     "width": 1280,
