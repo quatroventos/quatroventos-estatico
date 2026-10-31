@@ -25,6 +25,10 @@ chmod -R ug+rwx storage bootstrap/cache || true
 
 ln -sfn ../storage/app/public public/storage
 
+if [ "$#" -gt 0 ]; then
+  exec "$@"
+fi
+
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   php artisan migrate --force
   php artisan cms:ensure-admin || true

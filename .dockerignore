@@ -4,6 +4,7 @@
 htmls
 .env
 .env.*
+.env-*
 !.env.example
 /vendor
 /node_modules

@@ -3,6 +3,10 @@
 .env
 .env.backup
 .env.production
+.env-*
+.env.*
+!.env.example
+!.env.cpanel.example
 .phpactor.json
 .phpunit.result.cache
 /.codex
