@@ -163,9 +163,8 @@ function activateTracking() {
 
 function forgetTracking() {
   try {
-    localStorage.removeItem('rba_vid');
-    sessionStorage.removeItem('rba_sid');
-    sessionStorage.removeItem('rba_sid_at');
+    ['qv_vid', 'rba_vid'].forEach((key) => localStorage.removeItem(key));
+    ['qv_sid', 'qv_sid_at', 'rba_sid', 'rba_sid_at'].forEach((key) => sessionStorage.removeItem(key));
   } catch {
     // Armazenamento bloqueado pelo navegador: nada a limpar.
   }

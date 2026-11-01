@@ -41,8 +41,8 @@ Tabelas: `page_sessions` e `page_views` (`database/migrations/2026_09_17_200000_
 
 | Chave | Onde fica | O que representa |
 | --- | --- | --- |
-| `vid` | `localStorage` (`rba_vid`) | Visitante. Persiste no navegador. |
-| `sid` | `sessionStorage` (`rba_sid`) | Sessão. Nova sessão se não existir ou se a última atividade tiver mais de 30 minutos. |
+| `vid` | `localStorage` (`qv_vid`) | Visitante. Persiste no navegador. |
+| `sid` | `sessionStorage` (`qv_sid`) | Sessão. Nova sessão se não existir ou se a última atividade tiver mais de 30 minutos. |
 
 UUID via `crypto.randomUUID`, com fallback. O servidor não decide a sessão: usa o `sid` que o cliente manda. `vid` é gravado em `visitor_key` e não entra em nenhum agregado do dashboard.
 
@@ -265,7 +265,7 @@ O prefixo `/gestao` é `ADMIN_PATH`.
 
 - Visita no card do mês e no gráfico é **sessão** (`page_sessions`), não page view e não `visitor_key`.
 - Page view só nasce no evento `view`. Recarregar a página gera outro view e soma em `page_count` se o `sid` for o mesmo.
-- Sessão nova no cliente após 30 minutos sem atividade (`rba_sid_at`). Aba fechada zera `sessionStorage`, então a próxima abertura é outra sessão mesmo antes dos 30 minutos.
+- Sessão nova no cliente após 30 minutos sem atividade (`qv_sid_at`). Aba fechada zera `sessionStorage`, então a próxima abertura é outra sessão mesmo antes dos 30 minutos.
 - Online agora usa 3 minutos de `last_seen_at`, não o filtro de período.
 - Duração e profundidade são médias das sessões **iniciadas** na janela, inclusive sessões ainda abertas com duração parcial.
 - Tempo de carga é média dos views com `load_time_ms` > 0 na janela.

@@ -14,21 +14,30 @@
     });
   }
 
-  var visitorKey = localStorage.getItem('rba_vid');
+  // Nomes antigos (rba_*): o visitante mantém o mesmo identificador e as chaves velhas somem.
+  var legacyVisitor = localStorage.getItem('rba_vid');
+  if (legacyVisitor && !localStorage.getItem('qv_vid')) {
+    localStorage.setItem('qv_vid', legacyVisitor);
+  }
+  localStorage.removeItem('rba_vid');
+  sessionStorage.removeItem('rba_sid');
+  sessionStorage.removeItem('rba_sid_at');
+
+  var visitorKey = localStorage.getItem('qv_vid');
   if (!visitorKey) {
     visitorKey = uuid();
-    localStorage.setItem('rba_vid', visitorKey);
+    localStorage.setItem('qv_vid', visitorKey);
   }
 
-  var sessionKey = sessionStorage.getItem('rba_sid');
-  var sessionAt = Number(sessionStorage.getItem('rba_sid_at') || 0);
+  var sessionKey = sessionStorage.getItem('qv_sid');
+  var sessionAt = Number(sessionStorage.getItem('qv_sid_at') || 0);
   if (!sessionKey || Date.now() - sessionAt > 30 * 60 * 1000) {
     sessionKey = uuid();
-    sessionStorage.setItem('rba_sid', sessionKey);
+    sessionStorage.setItem('qv_sid', sessionKey);
   }
 
   function touchSession() {
-    sessionStorage.setItem('rba_sid_at', String(Date.now()));
+    sessionStorage.setItem('qv_sid_at', String(Date.now()));
   }
 
   touchSession();
