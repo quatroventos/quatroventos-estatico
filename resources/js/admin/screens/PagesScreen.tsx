@@ -1,13 +1,14 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Pencil, Plus, Trash2 } from 'lucide-react';
+import { Languages, Pencil, Plus, Trash2 } from 'lucide-react';
 import { AppShell } from '../components/AppShell';
+import { BatchRunner } from '../components/BatchRunner';
 import { Modal } from '../components/Modal';
 import { api, firstError } from '../api';
 import { formatDate } from '../lib';
 import { useTour } from '../tour/TourProvider';
 import { LangDots } from '../components/LangDots';
-import type { TranslationState } from '../components/TranslationBar';
+import { useTranslationConfig, type TranslationState } from '../components/TranslationBar';
 
 type PageRow = {
   id: number;
@@ -43,6 +44,9 @@ export function PagesScreen() {
   const [saving, setSaving] = useState(false);
   const [deleteSlug, setDeleteSlug] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+  const [translateOpen, setTranslateOpen] = useState(false);
+  const [retranslate, setRetranslate] = useState(false);
+  const translation = useTranslationConfig();
 
   function openCreate() {
     setError('');
@@ -122,15 +126,23 @@ export function PagesScreen() {
       eyebrow="Conteúdo"
       title="Páginas"
       actions={(
-        <button
-          className="btn btn-primary"
-          type="button"
-          data-tour="pages-add"
-          onClick={() => openCreate()}
-        >
-          <Plus size={14} />
-          Nova página
-        </button>
+        <>
+          {translation?.translated.length ? (
+            <button className="btn btn-secondary" type="button" onClick={() => setTranslateOpen(true)}>
+              <Languages size={14} />
+              Traduzir site
+            </button>
+          ) : null}
+          <button
+            className="btn btn-primary"
+            type="button"
+            data-tour="pages-add"
+            onClick={() => openCreate()}
+          >
+            <Plus size={14} />
+            Nova página
+          </button>
+        </>
       )}
     >
       <div className="toolbar">
@@ -247,6 +259,37 @@ export function PagesScreen() {
               </div>
             </div>
           </form>
+        </Modal>
+      ) : null}
+
+      {translateOpen ? (
+        <Modal
+          title="Traduzir site inteiro"
+          eyebrow="Tradução"
+          onClose={() => setTranslateOpen(false)}
+          footer={<button className="btn btn-secondary" type="button" onClick={() => setTranslateOpen(false)}>Fechar</button>}
+        >
+          {translation && !translation.configured ? (
+            <div className="form-error">Defina a chave da OpenAI em SEO &gt; Integrações para traduzir com IA.</div>
+          ) : (
+            <BatchRunner
+              endpoint="/translations/all"
+              startLabel="Traduzir e publicar"
+              unit="itens"
+              body={() => ({ force: retranslate })}
+              onDone={() => void load()}
+            >
+              <p className="desc">
+                Traduz com IA todas as páginas e cases publicados, menus e textos do site para{' '}
+                {translation?.locales.filter((locale) => translation.translated.includes(locale.code)).map((locale) => locale.name).join(' e ')}
+                , e publica as traduções. Cada página traduzida ganha a própria OG image no idioma.
+              </p>
+              <label className="check">
+                <input type="checkbox" checked={retranslate} onChange={(event) => setRetranslate(event.target.checked)} />
+                Retraduzir também o que já está traduzido e em dia
+              </label>
+            </BatchRunner>
+          )}
         </Modal>
       ) : null}
 

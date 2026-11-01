@@ -8,6 +8,7 @@ use App\Models\CaseStudy;
 use App\Models\MenuItem;
 use App\Models\Page;
 use App\Services\Translation\TextTranslator;
+use App\Support\BatchProgress;
 use App\Support\Locales;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,6 +16,8 @@ use Illuminate\Validation\Rule;
 
 class TranslationController extends Controller
 {
+    private const BATCH = 'translations';
+
     public function config(TextTranslator $translator): JsonResponse
     {
         return response()->json([
@@ -55,6 +58,62 @@ class TranslationController extends Controller
         TranslateContentJob::queue('menus', null, $locale, $request->user()?->id);
 
         return $this->status('menus', null, $locale);
+    }
+
+    /**
+     * Enfileira a tradução de todas as páginas e cases publicados e dos menus, em todos os idiomas, publicando o resultado.
+     * Sem "force", pula o que já está traduzido e em dia com o pt-BR.
+     */
+    public function all(Request $request, TextTranslator $translator): JsonResponse
+    {
+        $this->authorize('create', MenuItem::class);
+        abort_unless($translator->configured(), 422, 'Defina a chave da OpenAI em SEO > Integrações para traduzir com IA.');
+
+        $force = $request->boolean('force');
+
+        if (! BatchProgress::running(self::BATCH)) {
+            $userId = $request->user()?->id;
+            $pages = Page::query()->originals()->published()->with('translations')->orderBy('slug')->get();
+            $cases = CaseStudy::query()->originals()->published()->with('translations')->orderBy('slug')->get();
+            $jobs = [];
+
+            foreach (Locales::translated() as $locale) {
+                $jobs[] = new TranslateContentJob('menus', null, $locale, $userId, true);
+
+                foreach ($pages as $page) {
+                    if ($force || $this->needsTranslation($page, $locale)) {
+                        $jobs[] = new TranslateContentJob('page', $page->id, $locale, $userId, true);
+                    }
+                }
+
+                foreach ($cases as $case) {
+                    if ($force || $this->needsTranslation($case, $locale)) {
+                        $jobs[] = new TranslateContentJob('case', $case->id, $locale, $userId, true);
+                    }
+                }
+            }
+
+            $connection = config('services.openai.queue_connection');
+            BatchProgress::start(self::BATCH, 'Traduzir site', $jobs, is_string($connection) && $connection !== 'sync' ? $connection : null);
+        }
+
+        return response()->json(BatchProgress::status(self::BATCH));
+    }
+
+    public function allStatus(): JsonResponse
+    {
+        $this->authorize('viewAny', MenuItem::class);
+
+        return response()->json(BatchProgress::status(self::BATCH));
+    }
+
+    public function cancelAll(): JsonResponse
+    {
+        $this->authorize('create', MenuItem::class);
+
+        BatchProgress::cancel(self::BATCH);
+
+        return response()->json(BatchProgress::status(self::BATCH));
     }
 
     public function show(Request $request): JsonResponse
@@ -98,6 +157,14 @@ class TranslationController extends Controller
                 'translated_at' => $row->translated_at?->toIso8601String(),
             ] : null,
         ]);
+    }
+
+    private function needsTranslation(Page|CaseStudy $source, string $locale): bool
+    {
+        $row = $source->translations->firstWhere('locale', $locale);
+        $row?->setRelation('original', $source);
+
+        return $row === null || $row->status !== 'published' || $row->isTranslationStale();
     }
 
     private function guard(string $locale, TextTranslator $translator): void

@@ -7,6 +7,7 @@ use App\Models\Page;
 use App\Services\Translation\CaseStudyTranslator;
 use App\Services\Translation\PageTranslator;
 use App\Services\Translation\SiteTranslator;
+use Illuminate\Bus\Batchable;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,6 +18,7 @@ use Throwable;
 
 class TranslateContentJob implements ShouldQueue
 {
+    use Batchable;
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
@@ -34,6 +36,7 @@ class TranslateContentJob implements ShouldQueue
         public ?int $id,
         public string $locale,
         public ?int $userId = null,
+        public bool $publish = false,
     ) {}
 
     public static function statusKey(string $kind, ?int $id, string $locale): string
@@ -69,19 +72,31 @@ class TranslateContentJob implements ShouldQueue
 
     public function handle(PageTranslator $pages, CaseStudyTranslator $cases, SiteTranslator $site): void
     {
+        if ($this->batch()?->cancelled()) {
+            return;
+        }
+
         $key = self::statusKey($this->kind, $this->id, $this->locale);
 
         try {
-            match ($this->kind) {
+            $row = match ($this->kind) {
                 'page' => $pages->translate(Page::query()->findOrFail($this->id), $this->locale, $this->userId),
                 'case' => $cases->translate(CaseStudy::query()->findOrFail($this->id), $this->locale),
                 'menus' => [$site->menus($this->locale), $site->settings($this->locale)],
                 default => null,
             };
 
+            if ($this->publish && ($row instanceof Page || $row instanceof CaseStudy) && $row->status !== 'published') {
+                $row->forceFill(['status' => 'published', 'published_at' => $row->published_at ?? now()])->save();
+            }
+
             Cache::put($key, ['state' => 'done', 'at' => now()->toIso8601String()], now()->addHour());
         } catch (Throwable $e) {
             Cache::put($key, ['state' => 'failed', 'message' => mb_substr($e->getMessage(), 0, 300), 'at' => now()->toIso8601String()], now()->addHour());
+
+            if ($this->batchId !== null) {
+                throw $e;
+            }
 
             report($e);
         }

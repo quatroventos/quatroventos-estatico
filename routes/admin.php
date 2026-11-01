@@ -68,6 +68,9 @@ Route::prefix($admin)->group(function () {
 
             Route::get('translations/config', [TranslationController::class, 'config']);
             Route::get('translations/status', [TranslationController::class, 'show']);
+            Route::get('translations/all', [TranslationController::class, 'allStatus']);
+            Route::post('translations/all', [TranslationController::class, 'all'])->middleware('throttle:5,1');
+            Route::delete('translations/all', [TranslationController::class, 'cancelAll']);
             Route::post('pages/{page}/translations/{locale}', [TranslationController::class, 'page'])->middleware('throttle:20,1');
             Route::post('cases/{caseStudy}/translations/{locale}', [TranslationController::class, 'caseStudy'])->whereNumber('caseStudy')->middleware('throttle:20,1');
             Route::post('menu-items/translations/{locale}', [TranslationController::class, 'menus'])->middleware('throttle:10,1');

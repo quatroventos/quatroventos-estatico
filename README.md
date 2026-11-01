@@ -188,6 +188,19 @@ Campos cobertos: páginas (conteúdo, canonical, imagem OG), cases (textos, gale
 
 O comando não altera o `.env`: ajuste `APP_URL` e as URLs do site em `OPENSEO_*` no ambiente novo.
 
+## OG images e tradução em lote
+
+OG image é um card 1200x630 (logo, fundo do hero da página ou capa do case, título com destaque e endereço) gerado pelo Chrome do servidor. Cards gerados são refeitos sozinhos, pela fila, quando o título ou o conteúdo da página muda; imagens enviadas à mão não são tocadas nesse caso.
+
+- CMS: SEO > Padrão das páginas > "Gerar todas as OG images" (sobrescreve todas, inclusive as enviadas à mão). No editor de página e de case, "Gerar card de OG" usa o conteúdo ainda não salvo.
+- Terminal: `php artisan site:og-images` (opções `--pages`, `--cases`, `--locale=en`, `--slug=agentes-de-ia`, `--only-missing`).
+- `OG_CAPTURE_URL`: endereço interno da aplicação visto pelo Chrome do worker. Nos compose já vem configurado (`http://quatroventos:8000` em dev, `http://quatroventos-app:8000` em prod). Não use o host `app`: o Chrome força HTTPS no TLD `.app`.
+- `OG_DOMAIN`: domínio exibido no card (padrão: host do `APP_URL`, sem www).
+
+Tradução: Páginas > "Traduzir site" enfileira páginas e cases publicados, menus e textos do site em todos os idiomas e publica o resultado. Sem marcar "Retraduzir", pula o que já está traduzido e em dia. Pelo terminal continua valendo `php artisan site:translate --publish`.
+
+Os dois lotes rodam no worker da fila (`queue:work`); sem worker, nada anda.
+
 ## Checklist
 
 - `GET /` não envia `Set-Cookie`.
