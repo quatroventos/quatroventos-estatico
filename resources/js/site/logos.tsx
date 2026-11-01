@@ -12,17 +12,9 @@ function pad(value: number): string {
   return String(value).padStart(2, '0');
 }
 
-function PagerArrow({ back = false }: { back?: boolean }) {
-  return (
-    <svg className="icon-arrow" viewBox="0 0 16 16" aria-hidden="true" style={back ? { transform: 'scaleX(-1)' } : undefined}>
-      <path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 function PlayPause({ playing }: { playing: boolean }) {
   return (
-    <svg className="icon-arrow" viewBox="0 0 16 16" aria-hidden="true">
+    <svg viewBox="0 0 16 16" aria-hidden="true">
       {playing
         ? <path d="M5.5 3.5v9M10.5 3.5v9" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
         : <path d="M5 3.5v9l7-4.5z" fill="currentColor" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />}
@@ -136,6 +128,13 @@ export function LogoWall({ data }: { data: Data }) {
       role={count > 1 ? 'region' : undefined}
       aria-roledescription={count > 1 ? t('logos.carousel') : undefined}
       aria-label={count > 1 ? t('logos.pager') : undefined}
+      onKeyDown={(event) => {
+        if (count < 2 || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
+          return;
+        }
+        event.preventDefault();
+        go(current + (event.key === 'ArrowRight' ? 1 : -1));
+      }}
       onMouseEnter={() => setHeld(true)}
       onMouseLeave={() => setHeld(false)}
       onFocus={() => setHeld(true)}
@@ -186,23 +185,29 @@ export function LogoWall({ data }: { data: Data }) {
 
       {count > 1 ? (
         <div className="logo-pager">
-          <span className="logo-progress" aria-hidden="true">
-            <span key={`${current}-${tick}`} className={playing ? 'is-running' : undefined} style={{ animationDuration: `${INTERVAL}ms` }} />
-          </span>
-          <span className="logo-pager-count mono" aria-live={playing ? 'off' : 'polite'}>
-            {pad(current + 1)} <span aria-hidden="true">/</span><span className="sr-only">{t('logos.of')}</span> {pad(count)}
-          </span>
-          <button type="button" className="logo-pager-btn" onClick={() => go(current - 1)} aria-label={t('logos.prev')}>
-            <PagerArrow back />
-          </button>
+          <div className="logo-dots">
+            {pages.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`logo-dot${index === current ? ' is-current' : ''}`}
+                aria-label={`${pad(index + 1)} ${t('logos.of')} ${pad(count)}`}
+                aria-current={index === current ? 'true' : undefined}
+                onClick={() => go(index)}
+              >
+                <span>
+                  {index === current ? (
+                    <span key={tick} className={playing ? 'is-running' : 'is-full'} style={{ animationDuration: `${INTERVAL}ms` }} />
+                  ) : null}
+                </span>
+              </button>
+            ))}
+          </div>
           {!reduced ? (
-            <button type="button" className="logo-pager-btn" onClick={() => setPaused((value) => !value)} aria-label={paused ? t('logos.play') : t('logos.pause')} aria-pressed={paused}>
+            <button type="button" className="logo-pause" onClick={() => setPaused((value) => !value)} aria-label={paused ? t('logos.play') : t('logos.pause')} aria-pressed={paused}>
               <PlayPause playing={!paused} />
             </button>
           ) : null}
-          <button type="button" className="logo-pager-btn" onClick={() => go(current + 1)} aria-label={t('logos.next')}>
-            <PagerArrow />
-          </button>
         </div>
       ) : null}
     </div>

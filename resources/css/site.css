@@ -5952,26 +5952,54 @@ a.card:hover .go {
   gap: 10px;
 }
 
-.logo-progress {
+.logo-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Segmento fino de 2px com área de toque de 24px; o atual alonga e enche com o tempo do slide. */
+.logo-dot {
+  display: grid;
+  align-items: center;
+  width: 20px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo-dot > span {
   position: relative;
-  flex: 0 1 120px;
+  display: block;
   height: 2px;
-  margin-right: 6px;
   border-radius: 999px;
   background: var(--line-light);
   overflow: hidden;
+  transition: background-color 0.25s var(--ease);
 }
 
-.logo-progress > span {
+.logo-dot:hover > span {
+  background: var(--on-light-mute);
+}
+
+.logo-dot.is-current {
+  width: 44px;
+  cursor: default;
+}
+
+.logo-dot > span > span {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background: var(--ink);
   transform-origin: left center;
-  scale: 0 1;
 }
 
-.logo-progress > span.is-running {
+.logo-dot > span > .is-running {
+  scale: 0 1;
   animation: logo-progress linear forwards;
 }
 
@@ -5981,87 +6009,64 @@ a.card:hover .go {
   }
 }
 
-.logo-pager-count {
-  min-width: 7ch;
-  margin-right: 4px;
-  font-size: 12px;
-  color: var(--on-light-mute);
-  text-align: center;
-  font-variant-numeric: tabular-nums;
+.logo-dot:focus-visible,
+.logo-pause:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-.on-dark .logo-progress {
+.logo-pause {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  color: var(--on-light-mute);
+  background: transparent;
+  cursor: pointer;
+  transition: color 0.25s var(--ease);
+}
+
+.logo-pause svg {
+  width: 12px;
+  height: 12px;
+}
+
+.logo-pause:hover {
+  color: var(--ink);
+}
+
+.on-dark .logo-dot > span {
   background: var(--line-dark);
 }
 
-.on-dark .logo-progress > span {
+.on-dark .logo-dot:hover > span {
+  background: var(--on-dark-mute);
+}
+
+.on-dark .logo-dot > span > span {
   background: var(--lime);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .logo-track {
-    transition: none;
-  }
-
-  .logo-progress {
-    display: none;
-  }
-}
-
-.logo-pager-btn {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  padding: 0;
-  border: 0;
-  border-radius: 999px;
-  color: var(--ink);
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--line-light);
-  cursor: pointer;
-  transition: background-color 0.25s var(--ease), color 0.25s var(--ease), box-shadow 0.25s var(--ease), translate 0.25s var(--ease);
-}
-
-.logo-pager-btn .icon-arrow {
-  width: 16px;
-  height: 16px;
-}
-
-.logo-pager-btn:hover:not(:disabled) {
-  color: var(--white);
-  background: var(--ink);
-  box-shadow: inset 0 0 0 1px var(--ink);
-  translate: 0 -2px;
-}
-
-.logo-pager-btn:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 3px;
-}
-
-.logo-pager-btn:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.on-dark .logo-pager-btn {
-  color: var(--white);
-  box-shadow: inset 0 0 0 1px var(--line-dark);
-}
-
-.on-dark .logo-pager-btn:hover:not(:disabled) {
-  color: var(--ink);
-  background: var(--white);
-}
-
-.on-dark .logo-pager-count {
+.on-dark .logo-pause {
   color: var(--on-dark-mute);
 }
 
+.on-dark .logo-pause:hover {
+  color: var(--white);
+}
+
+.on-dark .logo-dot:focus-visible,
+.on-dark .logo-pause:focus-visible {
+  outline-color: var(--white);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .logo-pager-btn:hover:not(:disabled) {
-    translate: none;
+  .logo-track,
+  .logo-dot {
+    transition: none;
   }
 }
 
