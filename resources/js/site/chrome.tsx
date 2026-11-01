@@ -286,7 +286,6 @@ export function Footer({ site, locale, alternates }: { site: SitePayload | null;
               {site?.whatsapp_url ? <LinkTo href={site.whatsapp_url}>WhatsApp {site.phone ?? ''}</LinkTo> : null}
               {site?.email ? <a href={`mailto:${site.email}`}>{site.email}</a> : null}
               {site?.address ? <span>{site.address.split('\n')[0]}</span> : null}
-              <LangSwitch site={site} locale={locale} alternates={alternates} variant="full" />
             </div>
           </div>
           <div className="footer-cols">
