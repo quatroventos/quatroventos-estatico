@@ -2,6 +2,7 @@ import { type ReactNode } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import { getPath, setPath } from '../lib';
 import { CasesPicker } from './CasesPicker';
+import { LogosField } from './LogosField';
 import { MediaField } from './MediaField';
 import { RichText } from './RichText';
 import { acceptsAi, FieldAi, type FieldAiContext } from './SectionCopy';
@@ -88,6 +89,10 @@ function FieldControl({
         onChange={onChange}
       />
     );
+  }
+
+  if (field.type === 'logos') {
+    return <LogosField label={field.label} value={value} onChange={onChange} />;
   }
 
   if (field.type === 'select') {

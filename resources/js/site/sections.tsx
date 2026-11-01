@@ -203,7 +203,7 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
           {rows(data).map((item, index) => (
             <li key={`${text(item, 'name')}-${index}`}>
               {text(item, 'image')
-                ? <img src={text(item, 'image')} alt={text(item, 'image_alt') || text(item, 'name')} loading="lazy" />
+                ? <img src={text(item, 'image')} alt={text(item, 'image_alt') || text(item, 'name') || 'Logo de cliente'} loading="lazy" />
                 : <span className="logo-name">{text(item, 'name')}</span>}
             </li>
           ))}

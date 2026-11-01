@@ -148,17 +148,7 @@ class SiteSectionDefinition
                     ['type' => 'rich', 'name' => 'intro', 'label' => 'Introdução'],
                     ['type' => 'toggle', 'name' => 'clients', 'label' => 'Layout de clientes (título ao lado)'],
                     ['type' => 'toggle', 'name' => 'mono', 'label' => 'Logos monocromáticos'],
-                    [
-                        'type' => 'repeater',
-                        'name' => 'items',
-                        'label' => 'Logos',
-                        'simple' => false,
-                        'fields' => [
-                            ['type' => 'text', 'name' => 'name', 'label' => 'Nome'],
-                            ['type' => 'media', 'name' => 'image', 'label' => 'Logo', 'kind' => 'image'],
-                            ['type' => 'text', 'name' => 'image_alt', 'label' => 'Alt'],
-                        ],
-                    ],
+                    ['type' => 'logos', 'name' => 'items', 'label' => 'Logos'],
                 ]),
             ],
             [
