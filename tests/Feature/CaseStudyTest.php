@@ -345,7 +345,8 @@ class CaseStudyTest extends TestCase
     {
         $this->seed(CaseStudySeeder::class);
 
-        $this->get('/cases/seucommerce')->assertOk()->assertSee('seucommerce.com.br', false);
+        $this->get('/cases/seucommerce')->assertOk();
+        $this->getJson('/api/cases/seucommerce')->assertOk()->assertSee('seucommerce.com.br', false);
         $this->get('/cases/tripfy')->assertNotFound();
 
         CaseStudy::query()->where('slug', 'seucommerce')->update(['title' => 'Editado no painel']);
