@@ -4768,12 +4768,19 @@ td.person span {
 
 .rich-toolbar {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 4px;
   padding: 6px;
   border-bottom: 1px solid var(--line);
 }
 
 .rich-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  padding: 0;
   border: 0;
   background: none;
   color: #8d98a7;
@@ -4783,45 +4790,14 @@ td.person span {
   cursor: pointer;
 }
 
+.rich-toolbar button svg {
+  display: block;
+}
+
 .rich-toolbar button.is-active,
 .rich-toolbar button:hover {
   background: #f5f7fa;
   color: var(--ink);
-}
-
-.rich-color {
-  position: relative;
-  width: 28px;
-  height: 28px;
-  border-radius: 7px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.rich-color.is-active,
-.rich-color:hover {
-  background: #f5f7fa;
-}
-
-.rich-color input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-  border: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.rich-color-swatch {
-  display: block;
-  width: 14px;
-  height: 14px;
-  border-radius: 4px;
-  border: 1px solid var(--line);
 }
 
 .rich-wrap .tiptap {
@@ -4829,6 +4805,11 @@ td.person span {
   padding: 10px 11px;
   font-size: 11px;
   outline: none;
+}
+
+.rich-wrap .tiptap mark {
+  color: inherit;
+  background: linear-gradient(transparent 35%, #c8f25a 35%);
 }
 
 .spinner {

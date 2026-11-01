@@ -187,7 +187,8 @@ h3 {
 }
 
 /* Faixa limitada a 0.9em: com line-height < 1 o fundo do inline invadiria a linha anterior */
-.mark {
+.mark,
+.rich mark {
   font-style: normal;
   color: var(--ink);
   padding: 0 0.1em;
@@ -222,7 +223,9 @@ h3 {
 }
 
 .on-dark .mark,
-.hero .mark {
+.hero .mark,
+.on-dark .rich mark,
+.hero .rich mark {
   background: none;
   color: var(--lime);
   padding: 0;
@@ -240,15 +243,17 @@ h3 {
 }
 
 .rich a {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
 }
 
 :is(.on-light, .on-white) .rich a {
   color: var(--ink);
-  text-decoration-color: var(--olive);
-  text-decoration-thickness: 1.5px;
+}
+
+:is(.on-light, .on-white) .rich a:hover {
+  color: var(--on-light-soft);
 }
 
 .on-dark .rich a {
@@ -2766,12 +2771,6 @@ h3 {
   transition: color 0.25s var(--ease);
 }
 
-.sec-head .h2 a:hover {
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.14em;
-}
-
 .head-go {
   display: inline-grid;
   place-items: center;
@@ -3802,15 +3801,12 @@ a.card:hover .go {
   font-size: 15.5px;
   font-weight: 500;
   color: var(--on-light);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 5px;
-  text-decoration-color: var(--line-light);
-  transition: text-decoration-color 0.2s var(--ease);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
 }
 
 .ex-more-link:hover {
-  text-decoration-color: var(--olive);
+  color: var(--on-light-soft);
 }
 
 .ex-more-link:focus-visible {
@@ -3973,15 +3969,12 @@ a.card:hover .go {
 }
 
 .def-rows dt a {
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 5px;
-  text-decoration-color: var(--line-light);
-  transition: color 0.2s var(--ease), text-decoration-color 0.2s var(--ease);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
 }
 
 .def-rows dt a:hover {
-  text-decoration-color: var(--olive);
+  color: var(--on-light-soft);
 }
 
 .def-rows dd .rich {
@@ -4684,15 +4677,12 @@ a.card:hover .go {
   font-size: 15px;
   font-weight: 600;
   color: var(--on-light-soft);
-  text-decoration: underline;
-  text-decoration-color: var(--olive);
-  text-underline-offset: 4px;
-  transition: color 0.25s var(--ease), text-decoration-color 0.25s var(--ease);
+  text-decoration: none;
+  transition: color 0.25s var(--ease);
 }
 
 .plan-alt:hover {
   color: var(--ink);
-  text-decoration-color: currentColor;
 }
 
 .plan-alt:focus-visible,
@@ -4709,10 +4699,9 @@ a.card:hover .go {
 
 .plan-note a {
   border-radius: 4px;
+  font-weight: 600;
   color: var(--ink);
-  text-decoration: underline;
-  text-decoration-color: var(--olive);
-  text-underline-offset: 4px;
+  text-decoration: none;
 }
 
 .firefly-panel {
@@ -6458,15 +6447,6 @@ a.card:hover .go {
   outline-offset: -1px;
 }
 
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .on-light .cases-grid.is-open .case-card.is-tilt:hover h3,
-  .on-white .cases-grid.is-open .case-card.is-tilt:hover h3 {
-    text-decoration: underline;
-    text-decoration-color: var(--olive);
-    text-decoration-thickness: 1.5px;
-    text-underline-offset: 5px;
-  }
-}
 
 @media (max-width: 1100px) {
   .cases-grid.is-3 {
@@ -6683,10 +6663,7 @@ a.card:hover .go {
   margin-top: 6px;
   font-weight: 600;
   color: var(--ink);
-  text-decoration: underline;
-  text-decoration-color: var(--olive);
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 4px;
+  text-decoration: none;
 }
 
 .case-prints {

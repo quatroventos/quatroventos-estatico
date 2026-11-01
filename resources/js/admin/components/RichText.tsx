@@ -1,13 +1,20 @@
-import { useEditor, EditorContent } from '@tiptap/react';
+import { Mark, useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
-import { TextStyle } from '@tiptap/extension-text-style';
-import { Color } from '@tiptap/extension-color';
-import { Bold, Italic, Link as LinkIcon, List, ListOrdered, Strikethrough, Underline as UnderlineIcon } from 'lucide-react';
+import { Bold, Highlighter, Italic, Link as LinkIcon, List, ListOrdered, Strikethrough, Underline as UnderlineIcon } from 'lucide-react';
 import { useEffect } from 'react';
 
-const ACCENT = '#f45a20';
+// O site pinta <mark> com o destaque da marca: faixa lima no claro, texto lima no escuro.
+const Highlight = Mark.create({
+  name: 'highlight',
+  parseHTML() {
+    return [{ tag: 'mark' }];
+  },
+  renderHTML() {
+    return ['mark', 0];
+  },
+});
 
 export function RichText({
   value,
@@ -20,8 +27,7 @@ export function RichText({
     extensions: [
       StarterKit.configure({ heading: false }),
       Underline,
-      TextStyle,
-      Color,
+      Highlight,
       Link.configure({ openOnClick: false }),
     ],
     content: value || '',
@@ -45,8 +51,6 @@ export function RichText({
     return null;
   }
 
-  const accentOn = editor.isActive('textStyle', { color: ACCENT });
-
   return (
     <div className="rich-wrap">
       <div className="rich-toolbar">
@@ -68,27 +72,13 @@ export function RichText({
         >
           <LinkIcon size={14} />
         </button>
-        <label className={`rich-color${accentOn ? ' is-active' : ''}`} title="Cor do texto">
-          <span className="rich-color-swatch" style={{ background: editor.getAttributes('textStyle').color || '#14253d' }} />
-          <input
-            type="color"
-            value={editor.getAttributes('textStyle').color || ACCENT}
-            onChange={(event) => editor.chain().focus().setColor(event.target.value).run()}
-          />
-        </label>
         <button
           type="button"
-          className={accentOn ? 'is-active' : ''}
-          title="Laranja da marca"
-          onClick={() => {
-            if (accentOn) {
-              editor.chain().focus().unsetColor().run();
-            } else {
-              editor.chain().focus().setColor(ACCENT).run();
-            }
-          }}
+          className={editor.isActive('highlight') ? 'is-active' : ''}
+          title="Destaque da marca"
+          onClick={() => editor.chain().focus().toggleMark('highlight').run()}
         >
-          <span className="rich-color-swatch" style={{ background: ACCENT }} />
+          <Highlighter size={14} />
         </button>
       </div>
       <EditorContent editor={editor} />
