@@ -235,4 +235,54 @@ class SectionCopyTest extends TestCase
             'sections' => [['type' => 'site.prose', 'data' => ['title' => 'Oi']]],
         ])->assertUnauthorized();
     }
+
+    private function fakeProofread(string $value): void
+    {
+        Http::fake([
+            'openai.test/*' => Http::response(['output' => [['type' => 'message', 'content' => [['type' => 'output_text', 'text' => json_encode(['value' => $value])]]]]]),
+        ]);
+    }
+
+    public function test_proofread_returns_the_corrected_text_keeping_markup(): void
+    {
+        $this->fakeProofread('<p>Agentes de IA que <strong>atendem</strong> os clientes e *executam* tarefas.</p>');
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/sections/proofread', ['text' => '<p>Agentes de IA qeu <strong>atendem</strong> os cliente e *executam* tarefas.</p>'])
+            ->assertOk()
+            ->assertJsonPath('changed', true)
+            ->assertJsonPath('value', '<p>Agentes de IA que <strong>atendem</strong> os clientes e *executam* tarefas.</p>');
+
+        Http::assertSent(fn (Request $request) => str_contains((string) json_encode($request->data()), 'qeu'));
+    }
+
+    public function test_proofread_reports_no_change_when_text_is_correct(): void
+    {
+        $this->fakeProofread('Agentes de IA para empresas.');
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/sections/proofread', ['text' => 'Agentes de IA para empresas.'])
+            ->assertOk()
+            ->assertJsonPath('changed', false);
+    }
+
+    public function test_proofread_rejects_changes_to_markup(): void
+    {
+        $this->fakeProofread('<p>Agentes de IA que atendem clientes.</p>');
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/sections/proofread', ['text' => '<p>Agentes de IA que <strong>atendem</strong> clientes.</p>'])
+            ->assertStatus(422)
+            ->assertJsonPath('message', 'A correção alterou a formatação do texto; nada foi aplicado.');
+    }
+
+    public function test_proofread_rejects_rewrites(): void
+    {
+        $this->fakeProofread('Soluções inteligentes que transformam o atendimento da sua empresa com automação.');
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/sections/proofread', ['text' => 'Agentes de IA que atendem clientes.'])
+            ->assertStatus(422)
+            ->assertJsonPath('message', 'A IA mudou o texto além de uma correção; nada foi aplicado.');
+    }
 }

@@ -83,4 +83,25 @@ class SectionCopyController extends Controller
             'value' => filled($data['field'] ?? null) ? data_get($result, $data['field']) : null,
         ]);
     }
+
+    public function proofread(Request $request, SectionCopyWriter $writer): JsonResponse
+    {
+        $this->authorize('viewAny', Page::class);
+
+        $data = $request->validate([
+            'text' => ['required', 'string', 'max:20000'],
+        ]);
+
+        if (! $writer->configured()) {
+            return response()->json(['message' => 'Defina a chave da OpenAI em SEO > Integrações para usar a IA.'], 422);
+        }
+
+        try {
+            $value = $writer->proofread($data['text']);
+        } catch (RuntimeException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        return response()->json(['value' => $value, 'changed' => $value !== $data['text']]);
+    }
 }

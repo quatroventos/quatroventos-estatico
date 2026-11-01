@@ -89,6 +89,7 @@ export function FieldAi({
   const [instruction, setInstruction] = useState('');
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [previous, setPrevious] = useState<string | null>(null);
   const [popStyle, setPopStyle] = useState<CSSProperties>({});
   const root = useRef<HTMLDivElement>(null);
@@ -113,16 +114,40 @@ export function FieldAi({
     if (open && root.current && pop.current) {
       setPopStyle(popoverPosition(root.current, pop.current));
     }
-  }, [open, error, running]);
+  }, [open, error, notice, running]);
 
   function close() {
     setOpen(false);
     trigger.current?.focus();
   }
 
+  async function proofread() {
+    setRunning(true);
+    setError(null);
+    setNotice(null);
+    try {
+      const result = await api<{ value: string; changed: boolean }>('/sections/proofread', {
+        method: 'POST',
+        body: JSON.stringify({ text: value }),
+      });
+      if (!result.changed || result.value === value) {
+        setNotice('Nenhum erro encontrado.');
+        return;
+      }
+      setPrevious(typeof value === 'string' ? value : '');
+      onApply(result.value);
+      close();
+    } catch (err) {
+      setError(firstError(err));
+    } finally {
+      setRunning(false);
+    }
+  }
+
   async function generate(mode: Mode) {
     setRunning(true);
     setError(null);
+    setNotice(null);
     try {
       const result = await api<{ value: unknown }>('/sections/copy', {
         method: 'POST',
@@ -201,13 +226,21 @@ export function FieldAi({
           <div className="field-ai-modes">
             {empty ? (
               <button type="button" disabled={running} onClick={() => void generate('melhorar')}>{running ? 'Gerando...' : 'Escrever'}</button>
-            ) : MODES.map((mode) => (
-              <button key={mode.value} type="button" disabled={running} onClick={() => void generate(mode.value)}>
-                {mode.label}
-              </button>
-            ))}
+            ) : (
+              <>
+                <button type="button" disabled={running} title="Corrige gramática, ortografia e digitação sem reescrever" onClick={() => void proofread()}>
+                  Corrigir
+                </button>
+                {MODES.map((mode) => (
+                  <button key={mode.value} type="button" disabled={running} onClick={() => void generate(mode.value)}>
+                    {mode.label}
+                  </button>
+                ))}
+              </>
+            )}
           </div>
           {running ? <p className="field-ai-note">Gerando...</p> : null}
+          {notice && !running ? <p className="field-ai-note">{notice}</p> : null}
           {error ? <p className="field-ai-error">{error}</p> : null}
         </div>
       ) : null}

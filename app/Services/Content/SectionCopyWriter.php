@@ -424,6 +424,63 @@ PROMPT;
         ];
     }
 
+    /**
+     * Corrige só gramática, ortografia, pontuação e digitação, sem reescrever. A resposta é descartada se mexer na
+     * marcação (tags HTML, *destaques*) ou mudar o texto além de uma correção.
+     */
+    public function proofread(string $text): string
+    {
+        if (trim(strip_tags($text)) === '') {
+            throw new RuntimeException('O campo está vazio.');
+        }
+
+        $result = $this->client->json(
+            <<<'PROMPT'
+Você é revisor de texto. Corrija apenas erros de ortografia, acentuação, digitação, concordância, regência, crase e pontuação, no idioma em que o texto está escrito.
+Não reescreva: não troque palavras por sinônimos, não mude a ordem, o tom, o estilo, o tamanho nem a estrutura das frases.
+Mantenha nomes próprios, marcas, termos técnicos, estrangeirismos, números, links e emojis.
+Mantenha todas as tags HTML com os mesmos atributos e na mesma posição, e os trechos entre *asteriscos* com os asteriscos.
+Se não houver erro, devolva o texto idêntico.
+PROMPT,
+            "Texto:\n".$text,
+            'proofread',
+            [
+                'type' => 'object',
+                'additionalProperties' => false,
+                'required' => ['value'],
+                'properties' => ['value' => ['type' => 'string']],
+            ],
+        );
+
+        $value = (string) ($result['value'] ?? '');
+
+        if (trim($value) === '') {
+            throw new RuntimeException('A IA não devolveu o texto corrigido.');
+        }
+
+        if ($this->markup($value) !== $this->markup($text)) {
+            throw new RuntimeException('A correção alterou a formatação do texto; nada foi aplicado.');
+        }
+
+        similar_text($this->plain($text), $this->plain($value), $percent);
+
+        if ($percent < 85) {
+            throw new RuntimeException('A IA mudou o texto além de uma correção; nada foi aplicado.');
+        }
+
+        return $value === $text ? $text : trim($value);
+    }
+
+    /**
+     * @return array{tags: list<string>, marks: int}
+     */
+    private function markup(string $value): array
+    {
+        preg_match_all('/<[^>]+>/', $value, $tags);
+
+        return ['tags' => $tags[0], 'marks' => substr_count(strip_tags($value), '*')];
+    }
+
     private function plain(string $value): string
     {
         return trim((string) preg_replace('/\s+/', ' ', html_entity_decode(strip_tags(str_replace(['</p>', '<br>', '</li>'], ' ', $value)))));
