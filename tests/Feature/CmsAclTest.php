@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\CareerSubmission;
+use App\Models\MenuItem;
 use App\Models\Page;
 use App\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -124,6 +125,35 @@ class CmsAclTest extends TestCase
             ->assertJsonPath('data.status', 'published');
 
         $this->assertNotNull($page->fresh()->published_at);
+    }
+
+    public function test_slug_change_updates_menu_links_to_the_page(): void
+    {
+        $page = Page::query()->create([
+            'slug' => 'sobre',
+            'template' => 'about',
+            'status' => 'published',
+            'seo_title' => 'Sobre',
+            'content' => [],
+            'published_at' => now(),
+        ]);
+
+        $linked = MenuItem::query()->create(['group' => 'header', 'label' => 'Sobre', 'href' => '/sobre', 'page_id' => $page->id, 'sort' => 1, 'is_active' => true]);
+        $loose = MenuItem::query()->create(['group' => 'footer', 'label' => 'Empresa', 'href' => '/sobre#equipe', 'sort' => 2, 'is_active' => true]);
+        $other = MenuItem::query()->create(['group' => 'footer', 'label' => 'Contato', 'href' => '/contato', 'sort' => 3, 'is_active' => true]);
+
+        $this->actingAs($this->makeEditor())
+            ->putJson('/gestao/api/pages/sobre', [
+                'slug' => 'sobre-a-quatro-ventos',
+                'seo_title' => 'Sobre',
+                'content' => ['sections' => [['id' => 's1', 'type' => 'site.hero', 'data' => ['title' => 'Sobre']]]],
+            ])
+            ->assertOk();
+
+        $this->assertSame('/sobre-a-quatro-ventos', $linked->fresh()->href);
+        $this->assertSame('/sobre-a-quatro-ventos#equipe', $loose->fresh()->href);
+        $this->assertSame($page->id, $loose->fresh()->page_id);
+        $this->assertSame('/contato', $other->fresh()->href);
     }
 
     public function test_editor_can_update_page_slug(): void

@@ -200,7 +200,13 @@ class PageController extends Controller
             ]);
         }
 
+        $previousPath = $page->publicPath();
+
         $page->update($data);
+
+        if ($page->wasChanged('slug')) {
+            $this->syncMenuLinks($page, $previousPath);
+        }
 
         $fresh = $page->fresh();
         $normalized = PageContentMigrator::normalize($fresh?->content, $fresh?->template);
@@ -209,6 +215,26 @@ class PageController extends Controller
             'data' => $this->detail($fresh, $normalized),
             'schema' => SectionCatalog::schemaForSections($normalized['sections']),
         ]);
+    }
+
+    /**
+     * Itens de menu apontam para a página pelo href; ao trocar o slug, quem está vinculado
+     * pelo page_id ou ainda usa o endereço antigo passa para o novo, mantendo query e âncora.
+     */
+    private function syncMenuLinks(Page $page, string $previousPath): void
+    {
+        $newPath = $page->publicPath();
+        $pathOf = fn (string $href): string => '/'.trim((string) (parse_url($href, PHP_URL_PATH) ?? ''), '/');
+
+        MenuItem::query()
+            ->where('locale', $page->localeCode())
+            ->where(fn ($query) => $query->where('page_id', $page->id)->orWhereNull('page_id'))
+            ->get()
+            ->filter(fn (MenuItem $item) => preg_match('#^https?://#i', $item->href) !== 1 && $pathOf($item->href) === $previousPath)
+            ->each(function (MenuItem $item) use ($newPath, $page): void {
+                $suffix = (string) preg_replace('#^[^?\#]*#', '', $item->href);
+                $item->update(['href' => $newPath.$suffix, 'page_id' => $page->id]);
+            });
     }
 
     public function destroy(Page $page): JsonResponse
