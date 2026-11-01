@@ -13,10 +13,39 @@ function Brand() {
   );
 }
 
-export function LangSwitch({ site, locale, alternates, variant = 'compact' }: { site: SitePayload | null; locale: string; alternates: Alternates; variant?: 'compact' | 'full' }) {
+export function LangSwitch({ site, locale, alternates, variant = 'compact' }: { site: SitePayload | null; locale: string; alternates: Alternates; variant?: 'compact' | 'full' | 'menu' }) {
   const locales = (site?.locales?.length ? site.locales : LOCALES).filter((item) => alternates?.[item.code]);
   if (locales.length < 2 || !alternates) {
     return null;
+  }
+
+  if (variant === 'menu') {
+    const current = locales.find((item) => item.code === locale) ?? locales[0];
+
+    return (
+      <details className="lang-menu">
+        <summary aria-label={`${t('lang.label')}: ${current.name}`}>
+          <span>{current.short}</span>
+          <Caret />
+        </summary>
+        <ul>
+          {locales.map((item) => (
+            <li key={item.code}>
+              <a
+                href={alternates[item.code]}
+                hrefLang={item.hreflang}
+                lang={item.hreflang}
+                aria-current={item.code === locale ? 'true' : undefined}
+                onClick={() => rememberLocale(item.code, site?.cookie)}
+              >
+                <span className="mono">{item.short}</span>
+                {item.name}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </details>
+    );
   }
 
   const index = Math.max(0, locales.findIndex((item) => item.code === locale));
@@ -186,7 +215,7 @@ export function Header({ site, pathname, locale, alternates }: { site: SitePaylo
               })}
             </ul>
           </nav>
-          <LangSwitch site={site} locale={locale} alternates={alternates} />
+          <LangSwitch site={site} locale={locale} alternates={alternates} variant="menu" />
           {whatsapp ? <LinkTo className="pill solid small header-cta" href={whatsapp}>{t('nav.cta')}</LinkTo> : null}
           <button className="nav-toggle" type="button" aria-expanded={open} aria-controls="menu-mobile" aria-label={open ? t('nav.close') : t('nav.open')} onClick={() => setOpen((value) => !value)}>
             <span />

@@ -95,9 +95,21 @@ function header() {
     });
   });
 
+  const langMenu = document.querySelector('.site-header .lang-menu');
+
+  document.addEventListener('click', (event) => {
+    if (langMenu?.open && !langMenu.contains(event.target)) {
+      langMenu.open = false;
+    }
+  });
+
   document.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape') {
       return;
+    }
+    if (langMenu?.open) {
+      langMenu.open = false;
+      langMenu.querySelector('summary')?.focus();
     }
     openMega(null);
     setMobile(false);
