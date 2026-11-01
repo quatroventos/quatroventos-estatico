@@ -41,27 +41,15 @@ class SiteFormController extends Controller
             FormDefinition::submissionAttributes('contact', $data)
         );
 
-        $this->notifyWhatsApp($whatsApp, $submission);
+        $mailed = $this->mail($mailSettings, $this->contactRecipient((string) ($data['destino'] ?? '')), new ContactMessageMail(
+            $submission->name,
+            $submission->email,
+            $submission->destination,
+            $this->mailFields($data),
+        ));
 
-        $recipient = $this->contactRecipient((string) ($data['destino'] ?? ''));
-
-        if ($recipient === null) {
-            report(new \RuntimeException('Contato sem destinatário configurado.'));
-
-            return $this->contactResult('enviado', $json);
-        }
-
-        $mailSettings->apply();
-
-        try {
-            Mail::to($recipient)->send(new ContactMessageMail(
-                $submission->name,
-                $submission->email,
-                $submission->destination,
-                $this->mailFields($data),
-            ));
-        } catch (\Throwable $e) {
-            report($e);
+        if (! $this->notifyWhatsApp($whatsApp, $submission, confirm: ! $mailed) && ! $mailed) {
+            return $this->contactResult('erro', $json, 503);
         }
 
         return $this->contactResult('enviado', $json);
@@ -91,49 +79,63 @@ class SiteFormController extends Controller
             'extra' => $page !== '' ? ['pagina' => ['label' => 'Página', 'value' => $page]] : null,
         ]);
 
-        $this->notifyWhatsApp($whatsApp, $submission, $page);
+        $mailed = $this->mail($mailSettings, $this->contactRecipient(''), new ContactMessageMail(
+            $submission->name,
+            $submission->email,
+            $destination,
+            [
+                'Nome' => $submission->name,
+                'WhatsApp' => $submission->phone,
+                'Página' => $page,
+            ],
+        ));
 
-        $recipient = $this->contactRecipient('');
-
-        if ($recipient === null) {
-            report(new \RuntimeException('Lead sem destinatário configurado.'));
-
-            return response()->json(['status' => 'enviado']);
-        }
-
-        $mailSettings->apply();
-
-        try {
-            Mail::to($recipient)->send(new ContactMessageMail(
-                $submission->name,
-                $submission->email,
-                $destination,
-                [
-                    'Nome' => $submission->name,
-                    'WhatsApp' => $submission->phone,
-                    'Página' => $page,
-                ],
-            ));
-        } catch (\Throwable $e) {
-            report($e);
+        if (! $this->notifyWhatsApp($whatsApp, $submission, $page, ! $mailed) && ! $mailed) {
+            return response()->json(['status' => 'erro'], 503);
         }
 
         return response()->json(['status' => 'enviado']);
     }
 
-    private function notifyWhatsApp(ContactWhatsApp $whatsApp, ContactSubmission $submission, string $page = ''): void
+    private function mail(MailSettings $mailSettings, ?string $recipient, ContactMessageMail $mail): bool
+    {
+        if ($recipient === null) {
+            report(new \RuntimeException('Formulário sem destinatário de e-mail configurado.'));
+
+            return false;
+        }
+
+        $mailSettings->apply();
+
+        try {
+            Mail::to($recipient)->send($mail);
+
+            return true;
+        } catch (\Throwable $e) {
+            report($e);
+
+            return false;
+        }
+    }
+
+    /**
+     * Com $confirm o aviso do escritório sai na hora; sem, vai para a fila.
+     */
+    private function notifyWhatsApp(ContactWhatsApp $whatsApp, ContactSubmission $submission, string $page = '', bool $confirm = false): bool
     {
         try {
-            $whatsApp->notify([
+            return $whatsApp->notify([
                 'nome' => $submission->name,
                 'email' => $submission->email,
                 'telefone' => $submission->phone,
                 'destino' => $submission->destination,
                 'mensagem' => $submission->message,
                 'pagina' => $page,
-            ]);
+            ], $confirm);
         } catch (\Throwable $e) {
             report($e);
+
+            return false;
         }
     }
 

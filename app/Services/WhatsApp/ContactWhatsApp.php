@@ -8,7 +8,8 @@ use App\Models\SiteSetting;
 /**
  * Avisos de WhatsApp para envios de formulário: um para o número do escritório e uma
  * confirmação para o visitante. Cada mensagem vira um job próprio, para que a falha de
- * uma não reenvie a outra.
+ * uma não reenvie a outra. Com $confirm, o aviso do escritório sai na hora, para saber
+ * se chegou quando o e-mail falhou.
  */
 class ContactWhatsApp
 {
@@ -20,24 +21,37 @@ class ContactWhatsApp
 
     /**
      * @param  array<string, string|null>  $variables
+     * @return bool se o aviso do escritório foi enviado (ou enfileirado, sem $confirm)
      */
-    public function notify(array $variables): void
+    public function notify(array $variables, bool $confirm = false): bool
     {
         $settings = SiteSetting::query()->first();
+        $client = $settings !== null ? EvolutionClient::fromSettings($settings) : null;
 
-        if ($settings === null || ! $settings->whatsapp_enabled || ! EvolutionClient::fromSettings($settings)->configured()) {
-            return;
+        if ($settings === null || ! $settings->whatsapp_enabled || ! $client->configured()) {
+            return false;
         }
 
         $variables['site'] = (string) ($settings->name ?: config('app.name'));
 
         $adminNumber = self::normalizeNumber($settings->whatsapp_notify_number);
 
+        $notified = false;
+
         if ($adminNumber !== null) {
-            SendWhatsAppMessageJob::dispatch($adminNumber, self::render(
-                $settings->whatsapp_admin_template ?: self::DEFAULT_ADMIN_TEMPLATE,
-                $variables,
-            ));
+            $text = self::render($settings->whatsapp_admin_template ?: self::DEFAULT_ADMIN_TEMPLATE, $variables);
+
+            if ($confirm) {
+                try {
+                    $client->sendText($adminNumber, $text);
+                    $notified = true;
+                } catch (\Throwable $e) {
+                    report($e);
+                }
+            } else {
+                SendWhatsAppMessageJob::dispatch($adminNumber, $text);
+                $notified = true;
+            }
         }
 
         $visitorNumber = self::normalizeNumber($variables['telefone'] ?? null);
@@ -48,6 +62,8 @@ class ContactWhatsApp
                 $variables,
             ));
         }
+
+        return $notified;
     }
 
     /**

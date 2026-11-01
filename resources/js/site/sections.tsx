@@ -473,12 +473,14 @@ export function ContactForm({ form }: { form: SiteForm | null }) {
   const [status, setStatus] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string[]>>({});
   const [busy, setBusy] = useState(false);
+  const [chatHref, setChatHref] = useState('');
 
   async function submit(event: FormEvent) {
     event.preventDefault();
     setBusy(true);
     setStatus(null);
     setErrors({});
+    setChatHref(document.querySelector<HTMLAnchorElement>('a.wa-float')?.href ?? '');
 
     try {
       const response = await fetch('/api/contato', {
@@ -507,7 +509,7 @@ export function ContactForm({ form }: { form: SiteForm | null }) {
   }
 
   return (
-    <form className="site-form" data-endpoint="/api/contato" data-sent={t('form.sent')} data-error={t('form.error')} data-invalid={t('form.invalid')} onSubmit={(event) => void submit(event)}>
+    <form className="site-form" data-endpoint="/api/contato" data-sent={t('form.sent')} data-error={t('form.error')} data-invalid={t('form.invalid')} data-wa-label={t('lead.whatsapp_now')} onSubmit={(event) => void submit(event)}>
       <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" className="hp" aria-hidden="true" />
       {fields.map((field) => (
         <Field
@@ -521,7 +523,7 @@ export function ContactForm({ form }: { form: SiteForm | null }) {
       ))}
       <div className="form-status-slot" aria-live="polite">
         {status === 'enviado' ? <p className="form-status is-ok">{t('form.sent')}</p> : null}
-        {status === 'erro' ? <p className="form-status is-error">{t('form.error')}</p> : null}
+        {status === 'erro' ? <p className="form-status is-error">{t('form.error')}{chatHref ? <> <a href={chatHref} target="_blank" rel="noreferrer">{t('lead.whatsapp_now')}</a></> : null}</p> : null}
         {status === 'invalido' ? <p className="form-status is-error">{t('form.invalid')}</p> : null}
       </div>
       <button className="pill solid" type="submit" disabled={busy}>{busy ? t('form.sending') : form?.submit_label || t('form.submit')}</button>
@@ -601,7 +603,7 @@ export function LeadForm({ whatsappHref, title, className, id }: { whatsappHref:
     <div className={['lead-card', sent ? 'is-sent' : '', className ?? ''].filter(Boolean).join(' ')} id={id} data-whatsapp={whatsappHref}>
       <div className="lead-flip">
         <div className="lead-face lead-front" inert={sent ? true : undefined}>
-          <form className="lead-form" data-phone-invalid={t('lead.phone_invalid')} data-error={t('form.error')} data-invalid={t('form.invalid')} data-sending={t('form.sending')} onSubmit={(event) => void submit(event)}>
+          <form className="lead-form" data-phone-invalid={t('lead.phone_invalid')} data-error={t('form.error')} data-invalid={t('form.invalid')} data-wa-label={t('lead.whatsapp_now')} data-sending={t('form.sending')} onSubmit={(event) => void submit(event)}>
             <h2 className="lead-form-title">{title || t('lead.title')}</h2>
             <p className="lead-form-text">{t('lead.text')}</p>
             <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" className="hp" aria-hidden="true" />
@@ -636,7 +638,7 @@ export function LeadForm({ whatsappHref, title, className, id }: { whatsappHref:
               {errors.whatsapp?.[0] ? <span className="field-error">{errors.whatsapp[0]}</span> : null}
             </div>
             <div className="form-status-slot" aria-live="polite">
-              {status === 'erro' ? <p className="form-status is-error">{t('form.error')}</p> : null}
+              {status === 'erro' ? <p className="form-status is-error">{t('form.error')}{whatsappHref ? <> <a href={whatsappHref} target="_blank" rel="noreferrer">{t('lead.whatsapp_now')}</a></> : null}</p> : null}
               {status === 'invalido' ? <p className="form-status is-error">{t('form.invalid')}</p> : null}
             </div>
             <button className="pill solid" type="submit" disabled={busy}>{busy ? t('form.sending') : t('lead.submit')}</button>

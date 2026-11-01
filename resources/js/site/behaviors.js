@@ -514,7 +514,7 @@ function leadForms() {
       const label = button.textContent;
       button.textContent = form.dataset.sending || 'Enviando';
 
-      const showStatus = (kind, text) => {
+      const showStatus = (kind, text, withWhatsApp = false) => {
         if (!statusSlot) {
           return;
         }
@@ -522,10 +522,7 @@ function leadForms() {
         if (!text) {
           return;
         }
-        const paragraph = document.createElement('p');
-        paragraph.className = `form-status is-${kind}`;
-        paragraph.textContent = text;
-        statusSlot.append(paragraph);
+        statusSlot.append(formStatus(form, kind, text, withWhatsApp));
       };
 
       try {
@@ -544,7 +541,8 @@ function leadForms() {
           const errors = payload.errors || {};
           fieldError(name, errors.nome?.[0] || '');
           fieldError(tel, errors.whatsapp?.[0] || '');
-          showStatus('error', payload.status === 'invalido' ? (form.dataset.invalid || 'Revise os campos destacados.') : (form.dataset.error || 'Não foi possível enviar agora. Tente o WhatsApp.'));
+          const invalid = response.status === 422 && payload.status !== 'erro';
+          showStatus('error', invalid ? (form.dataset.invalid || 'Revise os campos destacados.') : (form.dataset.error || 'Não foi possível enviar agora. Tente o WhatsApp.'), !invalid);
           return;
         }
 
@@ -573,13 +571,33 @@ function leadForms() {
         showStatus('', '');
         form.reset();
       } catch {
-        showStatus('error', form.dataset.error || 'Não foi possível enviar agora. Tente o WhatsApp.');
+        showStatus('error', form.dataset.error || 'Não foi possível enviar agora. Tente o WhatsApp.', true);
       } finally {
         button.disabled = false;
         button.textContent = label;
       }
     });
   });
+}
+
+function whatsappHref(form) {
+  return form.closest('[data-whatsapp]')?.dataset.whatsapp || form.dataset.whatsapp || document.querySelector('a.wa-float')?.href || '';
+}
+
+function formStatus(form, kind, text, withWhatsApp) {
+  const paragraph = document.createElement('p');
+  paragraph.className = `form-status is-${kind}`;
+  paragraph.textContent = text;
+  const href = withWhatsApp ? whatsappHref(form) : '';
+  if (href) {
+    const link = document.createElement('a');
+    link.href = href;
+    link.target = '_blank';
+    link.rel = 'noreferrer';
+    link.textContent = form.dataset.waLabel || 'Falar pelo WhatsApp agora';
+    paragraph.append(' ', link);
+  }
+  return paragraph;
 }
 
 function contactForms() {
@@ -592,15 +610,12 @@ function contactForms() {
       if (button) {
         button.disabled = true;
       }
-      const show = (kind, text) => {
+      const show = (kind, text, withWhatsApp = false) => {
         if (!slot) {
           return;
         }
         slot.innerHTML = '';
-        const paragraph = document.createElement('p');
-        paragraph.className = `form-status is-${kind}`;
-        paragraph.textContent = text;
-        slot.append(paragraph);
+        slot.append(formStatus(form, kind, text, withWhatsApp));
       };
       try {
         const response = await fetch(form.dataset.endpoint || '/api/contato', {
@@ -610,7 +625,11 @@ function contactForms() {
         });
         const payload = await response.json();
         if (!response.ok) {
-          show('error', form.dataset.invalid || 'Revise os campos destacados.');
+          if (response.status === 422 && payload.status !== 'erro') {
+            show('error', form.dataset.invalid || 'Revise os campos destacados.');
+          } else {
+            show('error', form.dataset.error || 'Não foi possível enviar agora. Tente o WhatsApp.', true);
+          }
           return;
         }
         show('ok', form.dataset.sent || 'Mensagem enviada. Retornamos em breve.');
@@ -618,7 +637,7 @@ function contactForms() {
           form.reset();
         }
       } catch {
-        show('error', form.dataset.error || 'Não foi possível enviar agora. Tente o WhatsApp.');
+        show('error', form.dataset.error || 'Não foi possível enviar agora. Tente o WhatsApp.', true);
       } finally {
         if (button) {
           button.disabled = false;

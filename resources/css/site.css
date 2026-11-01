@@ -6472,6 +6472,13 @@ a.card:hover .go {
   display: contents;
 }
 
+.form-status a {
+  color: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .form-status {
   padding: 14px 18px;
   border-radius: 14px;
