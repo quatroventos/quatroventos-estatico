@@ -41,7 +41,7 @@
           },
           {
             "title": "MVPs",
-            "text": "Uma primeira versão com o essencial, para testar com usuários reais antes do produto completo."
+            "text": "Uma primeira versão com o mínimo que resolve, para testar com usuários reais antes do produto inteiro."
           }
         ],
         "mark_draw": true
@@ -183,7 +183,7 @@
           },
           {
             "question": "Dá para começar com uma versão menor?",
-            "answer": "<p>Sim. Um MVP com o essencial permite validar o sistema com usuários reais e definir as próximas etapas a partir do uso.</p>"
+            "answer": "<p>Sim. Um MVP com o mínimo que resolve permite validar o sistema com usuários reais e definir as próximas etapas a partir do uso.</p>"
           },
           {
             "question": "Quem faz o frontend e quem faz o backend?",
