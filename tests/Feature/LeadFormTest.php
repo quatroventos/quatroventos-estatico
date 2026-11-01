@@ -32,6 +32,19 @@ class LeadFormTest extends TestCase
         Mail::assertSent(ContactMessageMail::class, fn (ContactMessageMail $mail) => $mail->hasTo('contato@quatroventos.com.br'));
     }
 
+    public function test_mail_failure_still_confirms_the_stored_lead(): void
+    {
+        SiteSetting::query()->create(['name' => 'Quatro Ventos', 'email' => 'contato@quatroventos.com.br']);
+        Mail::shouldReceive('to')->andThrow(new \RuntimeException('SMTP fora do ar'));
+
+        $this->postJson('/api/contato/lead', [
+            'nome' => 'Ana',
+            'whatsapp' => '(41) 99999-0000',
+        ])->assertOk()->assertJsonPath('status', 'enviado');
+
+        $this->assertSame(1, ContactSubmission::query()->count());
+    }
+
     public function test_lead_requires_name_and_whatsapp(): void
     {
         $this->postJson('/api/contato/lead', ['nome' => '', 'whatsapp' => 'abc'])

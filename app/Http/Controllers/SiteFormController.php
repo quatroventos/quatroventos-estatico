@@ -48,7 +48,7 @@ class SiteFormController extends Controller
         if ($recipient === null) {
             report(new \RuntimeException('Contato sem destinatário configurado.'));
 
-            return $this->contactResult('erro', $json, 422);
+            return $this->contactResult('enviado', $json);
         }
 
         $mailSettings->apply();
@@ -62,8 +62,6 @@ class SiteFormController extends Controller
             ));
         } catch (\Throwable $e) {
             report($e);
-
-            return $this->contactResult('erro', $json, 500);
         }
 
         return $this->contactResult('enviado', $json);
@@ -100,7 +98,7 @@ class SiteFormController extends Controller
         if ($recipient === null) {
             report(new \RuntimeException('Lead sem destinatário configurado.'));
 
-            return response()->json(['status' => 'erro'], 422);
+            return response()->json(['status' => 'enviado']);
         }
 
         $mailSettings->apply();
@@ -118,8 +116,6 @@ class SiteFormController extends Controller
             ));
         } catch (\Throwable $e) {
             report($e);
-
-            return response()->json(['status' => 'erro'], 500);
         }
 
         return response()->json(['status' => 'enviado']);
