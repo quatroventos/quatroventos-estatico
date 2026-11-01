@@ -16,6 +16,22 @@ const Highlight = Mark.create({
   },
 });
 
+// Links internos abrem na mesma aba e passam autoridade: sem target/rel (o padrão do TipTap põe nofollow em tudo).
+const SiteLink = Link.extend({
+  renderHTML(props) {
+    const rendered = this.parent?.(props) as [string, Record<string, unknown>, 0];
+    const href = String(rendered[1].href ?? '');
+
+    if (href.startsWith('/') || href.startsWith('#')) {
+      const { target: _target, rel: _rel, ...attributes } = rendered[1];
+
+      return [rendered[0], attributes, 0];
+    }
+
+    return rendered;
+  },
+});
+
 export function RichText({
   value,
   onChange,
@@ -28,7 +44,7 @@ export function RichText({
       StarterKit.configure({ heading: false }),
       Underline,
       Highlight,
-      Link.configure({ openOnClick: false }),
+      SiteLink.configure({ openOnClick: false }),
     ],
     content: value || '',
     onUpdate: ({ editor: current }) => {
