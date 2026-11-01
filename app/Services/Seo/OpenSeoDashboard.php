@@ -267,7 +267,7 @@ class OpenSeoDashboard
     public function runAudit(int $maxPages, bool $lighthouse): void
     {
         $this->write('run_site_audit', [
-            'url' => $this->siteUrl().'/',
+            'url' => $this->auditUrl().'/',
             'maxPages' => max(10, min(500, $maxPages)),
             'runLighthouse' => $lighthouse,
         ]);
@@ -498,6 +498,15 @@ class OpenSeoDashboard
     public function siteUrl(): string
     {
         return rtrim((string) config('services.openseo.site_url'), '/');
+    }
+
+    /**
+     * Endereço rastreado pela auditoria. Antes da publicação aponta para um túnel (ngrok) do ambiente
+     * local, enquanto pesquisa de domínio e palavras-chave continuam no domínio de produção.
+     */
+    public function auditUrl(): string
+    {
+        return rtrim((string) (config('services.openseo.audit_url') ?: $this->siteUrl()), '/');
     }
 
     public function domain(): string

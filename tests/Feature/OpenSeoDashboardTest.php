@@ -60,6 +60,23 @@ class OpenSeoDashboardTest extends TestCase
         return Http::recorded(fn (Request $request) => ($request['method'] ?? null) === 'tools/call' && $request['params']['name'] === $tool)->count();
     }
 
+    public function test_audit_crawls_the_audit_url_when_set(): void
+    {
+        config(['services.openseo.audit_url' => 'https://qv-local.ngrok-free.app/']);
+        $this->fakeOpenSeo([
+            'run_site_audit' => ['status' => 'ok'],
+            'get_audit_status' => ['status' => null, 'meta' => ['url' => 'http://127.0.0.1:3002/p/proj_1/audit']],
+        ]);
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/seo/openseo/audit', ['max_pages' => 50])
+            ->assertOk()
+            ->assertJsonPath('site_url', 'https://quatroventos.com.br');
+
+        Http::assertSent(fn (Request $request) => ($request['params']['name'] ?? null) === 'run_site_audit'
+            && $request['params']['arguments']['url'] === 'https://qv-local.ngrok-free.app/');
+    }
+
     public function test_audit_is_summarized_in_portuguese_and_served_from_cache_until_refresh(): void
     {
         $this->fakeOpenSeo([

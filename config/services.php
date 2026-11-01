@@ -57,6 +57,7 @@ return [
         'location_code' => env('OPENSEO_LOCATION_CODE') ? (int) env('OPENSEO_LOCATION_CODE') : null,
         'language_code' => env('OPENSEO_LANGUAGE_CODE'),
         'site_url' => trim((string) env('OPENSEO_SITE_URL', env('APP_URL', '')), '/'),
+        'audit_url' => trim((string) env('OPENSEO_AUDIT_URL', ''), '/'),
         'timeout' => (int) env('OPENSEO_TIMEOUT', 90),
         'paid' => (bool) env('OPENSEO_PAID_ENABLED', false),
     ],
