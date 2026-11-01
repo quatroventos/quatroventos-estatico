@@ -65,6 +65,32 @@ class SiteContentSeeder extends Seeder
                 'seo_robots' => 'index, follow, max-image-preview:large',
             ]
         );
+
+        $settings = SiteSetting::query()->find(1);
+        if ($settings !== null && empty($settings->client_logos)) {
+            $settings->update(['client_logos' => $this->defaultClientLogos()]);
+        }
+    }
+
+    /**
+     * Biblioteca inicial de logos de clientes: a lista da seção Logos da home.
+     *
+     * @return list<array{name: string, image: string, image_alt: string}>
+     */
+    private function defaultClientLogos(): array
+    {
+        $home = json_decode((string) File::get(database_path('data/pages/home.json')), true);
+        $section = collect($home['sections'] ?? [])->firstWhere('type', 'site.logos');
+
+        return collect($section['data']['items'] ?? [])
+            ->filter(fn ($item) => is_array($item) && is_string($item['image'] ?? null))
+            ->map(fn (array $item) => [
+                'name' => (string) ($item['name'] ?? ''),
+                'image' => $item['image'],
+                'image_alt' => (string) ($item['image_alt'] ?? ''),
+            ])
+            ->values()
+            ->all();
     }
 
     private function formOptions(): void

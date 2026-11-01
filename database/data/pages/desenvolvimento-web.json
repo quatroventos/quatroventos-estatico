@@ -140,6 +140,7 @@
       "data": {
         "title": "Clientes",
         "mono": false,
+        "own_logos": true,
         "items": [
           {
             "name": "Santa Plural",

@@ -20,6 +20,7 @@ export type Field = {
   max?: number;
   all?: boolean;
   hint?: string;
+  showIf?: string;
 };
 
 export type SchemaContext = {
@@ -311,7 +312,7 @@ export function SchemaForm({
 }) {
   return (
     <>
-      {fields.map((field) => (
+      {fields.filter((field) => !field.showIf || Boolean(getPath(content, field.showIf))).map((field) => (
         <FieldControl
           key={field.name}
           field={field}

@@ -98,7 +98,22 @@ class SiteSettingController extends Controller
             'whatsapp_visitor_template' => ['nullable', 'string', 'max:2000'],
             'plan_links' => ['nullable', 'array'],
             'plan_links.*' => ['nullable', 'url:http,https', 'max:500'],
+            'client_logos' => ['nullable', 'array', 'max:200'],
+            'client_logos.*.name' => ['nullable', 'string', 'max:120'],
+            'client_logos.*.image' => ['required', 'string', 'max:500'],
+            'client_logos.*.image_alt' => ['nullable', 'string', 'max:255'],
         ]);
+
+        if (array_key_exists('client_logos', $data)) {
+            $data['client_logos'] = collect($data['client_logos'] ?? [])
+                ->map(fn (array $logo) => [
+                    'name' => trim((string) ($logo['name'] ?? '')),
+                    'image' => trim((string) $logo['image']),
+                    'image_alt' => trim((string) ($logo['image_alt'] ?? '')),
+                ])
+                ->values()
+                ->all();
+        }
 
         if (array_key_exists('plan_links', $data)) {
             $data['plan_links'] = collect($data['plan_links'] ?? [])

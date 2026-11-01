@@ -1,9 +1,14 @@
 import { type FormEvent, useEffect, useState } from 'react';
 import { AppShell } from '../components/AppShell';
+import { LogosField } from '../components/LogosField';
 import { MediaField } from '../components/MediaField';
 import { api, firstError } from '../api';
 
 type SiteForm = Record<string, string | number | boolean | null | undefined>;
+
+type ClientLogo = { name?: string; image?: string; image_alt?: string };
+
+type SitePayload = SiteForm & { plan_links?: Record<string, string> | null; client_logos?: ClientLogo[] | null };
 
 type WhatsAppDefaults = {
   admin_template: string;
@@ -20,20 +25,22 @@ export function SiteScreen() {
   const [testing, setTesting] = useState(false);
   const [hostingPlans, setHostingPlans] = useState<Record<string, string>>({});
   const [planLinks, setPlanLinks] = useState<Record<string, string>>({});
+  const [clientLogos, setClientLogos] = useState<ClientLogo[]>([]);
 
   useEffect(() => {
     void api<{
-      data: SiteForm & { plan_links?: Record<string, string> | null };
+      data: SitePayload;
       whatsapp_defaults: WhatsAppDefaults;
       hosting_plans: Record<string, string>;
     }>('/site').then((payload) => {
-      const { plan_links: links, ...data } = payload.data;
+      const { plan_links: links, client_logos: logos, ...data } = payload.data;
       setForm({
         ...data,
         smtp_password: '',
         evolution_api_key: '',
       });
       setPlanLinks(links ?? {});
+      setClientLogos(logos ?? []);
       setWhatsAppDefaults(payload.whatsapp_defaults);
       setHostingPlans(payload.hosting_plans ?? {});
     });
@@ -72,18 +79,20 @@ export function SiteScreen() {
           ? form.evolution_api_key
           : null,
         plan_links: planLinks,
+        client_logos: clientLogos.filter((logo) => logo.image),
       };
-      const payload = await api<{ data: SiteForm & { plan_links?: Record<string, string> | null } }>('/site', {
+      const payload = await api<{ data: SitePayload }>('/site', {
         method: 'PUT',
         body: JSON.stringify(body),
       });
-      const { plan_links: links, ...data } = payload.data;
+      const { plan_links: links, client_logos: logos, ...data } = payload.data;
       setForm({
         ...data,
         smtp_password: '',
         evolution_api_key: '',
       });
       setPlanLinks(links ?? {});
+      setClientLogos(logos ?? []);
       setOk(true);
     } catch (err) {
       setError(firstError(err));
@@ -174,6 +183,13 @@ export function SiteScreen() {
             </div>
             {field('smtp_from_address', 'Remetente (e-mail)', 'email')}
             {field('smtp_from_name', 'Remetente (nome)')}
+          </div>
+          <div className="settings-block">
+            <h3 className="settings-block__title">Logos de clientes</h3>
+            <p className="desc">
+              Aparecem em todas as seções Logos do site, exceto nas que estiverem com "Usar logos próprios nesta seção" ligado.
+            </p>
+            <LogosField label="Logos" value={clientLogos} onChange={setClientLogos} />
           </div>
           <div className="settings-block">
             <h3 className="settings-block__title">Links de compra dos planos de hospedagem</h3>

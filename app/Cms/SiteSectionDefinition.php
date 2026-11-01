@@ -148,7 +148,8 @@ class SiteSectionDefinition
                     ['type' => 'rich', 'name' => 'intro', 'label' => 'Introdução'],
                     ['type' => 'toggle', 'name' => 'clients', 'label' => 'Layout de clientes (título ao lado)'],
                     ['type' => 'toggle', 'name' => 'mono', 'label' => 'Logos monocromáticos'],
-                    ['type' => 'logos', 'name' => 'items', 'label' => 'Logos'],
+                    ['type' => 'toggle', 'name' => 'own_logos', 'label' => 'Usar logos próprios nesta seção', 'hint' => 'Desligado, a seção mostra os logos de clientes cadastrados em Configuração > Identidade do site.'],
+                    ['type' => 'logos', 'name' => 'items', 'label' => 'Logos', 'showIf' => 'own_logos'],
                 ]),
             ],
             [

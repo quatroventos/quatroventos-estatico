@@ -22,7 +22,7 @@ class LogoRatioTest extends TestCase
             'seo_title' => 'Clientes',
             'published_at' => now(),
             'content' => ['sections' => [
-                ['id' => 'logos-1', 'type' => 'site.logos', 'data' => ['mono' => true, 'items' => [
+                ['id' => 'logos-1', 'type' => 'site.logos', 'data' => ['mono' => true, 'own_logos' => true, 'items' => [
                     ['name' => 'Produtive', 'image' => '/assets/clientes/lampa/produtive.svg'],
                     ['name' => 'Costi', 'image' => '/assets/clientes/lampa/costi.png'],
                     ['name' => 'Sumiu', 'image' => '/assets/clientes/nao-existe.png'],

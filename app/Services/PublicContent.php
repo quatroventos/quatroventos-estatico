@@ -462,6 +462,11 @@ class PublicContent
                 $data = $this->resolvePlanLinks($data);
             }
 
+            if ($type === 'site.logos' && empty($data['own_logos'])) {
+                $global = $this->options->site()?->client_logos;
+                $data['items'] = is_array($global) ? array_values($global) : [];
+            }
+
             if ($type === 'site.logos' && is_array($data['items'] ?? null)) {
                 $data['items'] = array_map(
                     fn ($item) => is_array($item) && is_string($item['image'] ?? null)

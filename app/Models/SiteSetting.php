@@ -37,6 +37,7 @@ class SiteSetting extends Model
             'whatsapp_enabled' => 'boolean',
             'evolution_api_key' => 'encrypted',
             'plan_links' => 'array',
+            'client_logos' => 'array',
         ];
     }
 
