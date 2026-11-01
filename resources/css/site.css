@@ -5952,6 +5952,11 @@ a.card:hover .go {
   gap: 10px;
 }
 
+.logo-pager[hidden],
+.logo-pause[hidden] {
+  display: none;
+}
+
 .logo-dots {
   display: flex;
   align-items: center;

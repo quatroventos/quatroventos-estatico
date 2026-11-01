@@ -716,6 +716,200 @@ function orbit() {
   observer.observe(root);
 }
 
+const PAUSE_ICON = '<path d="M5.5 3.5v9M10.5 3.5v9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />';
+const PLAY_ICON = '<path d="M5 3.5v9l7-4.5z" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />';
+
+/* Carrossel de logos do HTML pré-renderizado (mesmo comportamento do LogoWall em logos.tsx):
+   repagina pelas colunas reais da grade, roda sozinho só quando visível e sem hover/foco,
+   e respeita prefers-reduced-motion. */
+function logos() {
+  document.querySelectorAll('.logo-wall.is-carousel').forEach((root) => {
+    const viewport = root.querySelector('.logo-viewport');
+    const track = root.querySelector('.logo-track');
+    const pager = root.querySelector('.logo-pager');
+    const dots = root.querySelector('.logo-dots');
+    const pause = root.querySelector('.logo-pause');
+    const firstPage = track?.querySelector('.logo-page');
+    if (!viewport || !track || !pager || !dots || !firstPage) {
+      return;
+    }
+
+    const rows = 2;
+    const interval = Number(root.dataset.interval) || 3200;
+    const listClass = firstPage.className.replace(/\s*is-entering/, '');
+    const items = [...track.querySelectorAll('.logo-page > li')];
+    const of = dots.dataset.of || '/';
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const pad = (value) => String(value).padStart(2, '0');
+    const columns = (list) => Math.max(1, getComputedStyle(list).gridTemplateColumns.split(' ').filter(Boolean).length);
+
+    let pages = [];
+    let perPage = 0;
+    let current = 0;
+    let paused = false;
+    let held = false;
+    let visible = false;
+    let timer = 0;
+    let swipe = null;
+
+    const playing = () => pages.length > 1 && !paused && !held && visible && !motion.matches;
+
+    function schedule() {
+      window.clearTimeout(timer);
+      if (playing()) {
+        timer = window.setTimeout(() => go(current + 1), interval);
+      }
+    }
+
+    function render(animate) {
+      track.style.transform = `translateX(${-current * 100}%)`;
+      pages.forEach((page, index) => {
+        const active = index === current;
+        page.setAttribute('aria-label', `${pad(index + 1)} / ${pad(pages.length)}`);
+        page.toggleAttribute('inert', !active);
+        if (active) {
+          page.removeAttribute('aria-hidden');
+        } else {
+          page.setAttribute('aria-hidden', 'true');
+        }
+        page.classList.remove('is-entering');
+        if (active && animate) {
+          void page.offsetWidth;
+          page.classList.add('is-entering');
+        }
+      });
+      [...dots.children].forEach((dot, index) => {
+        const active = index === current;
+        dot.classList.toggle('is-current', active);
+        if (active) {
+          dot.setAttribute('aria-current', 'true');
+        } else {
+          dot.removeAttribute('aria-current');
+        }
+        const bar = dot.firstElementChild;
+        bar?.replaceChildren();
+        if (active && bar) {
+          const fill = document.createElement('span');
+          fill.className = playing() ? 'is-running' : 'is-full';
+          fill.style.animationDuration = `${interval}ms`;
+          bar.append(fill);
+        }
+      });
+      if (pause) {
+        pause.hidden = motion.matches;
+      }
+      schedule();
+    }
+
+    function go(next) {
+      if (pages.length < 2) {
+        return;
+      }
+      current = ((next % pages.length) + pages.length) % pages.length;
+      render(true);
+    }
+
+    function build(size) {
+      const firstItem = current * perPage;
+      perPage = size;
+      pages = [];
+      track.replaceChildren();
+      for (let start = 0; start < items.length; start += size) {
+        const list = document.createElement('ul');
+        list.className = listClass;
+        items.slice(start, start + size).forEach((item, index) => {
+          item.style.setProperty('--i', String(index));
+          list.append(item);
+        });
+        track.append(list);
+        pages.push(list);
+      }
+      dots.replaceChildren(...pages.map((_, index) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'logo-dot';
+        dot.setAttribute('aria-label', `${pad(index + 1)} ${of} ${pad(pages.length)}`);
+        dot.append(document.createElement('span'));
+        dot.addEventListener('click', () => go(index));
+        return dot;
+      }));
+      pager.hidden = pages.length < 2;
+      current = Math.min(Math.floor(firstItem / size), pages.length - 1);
+      render(false);
+    }
+
+    const setHeld = (value) => {
+      if (held !== value) {
+        held = value;
+        render(false);
+      }
+    };
+    const setVisible = (value) => {
+      if (visible !== value) {
+        visible = value;
+        render(false);
+      }
+    };
+
+    root.addEventListener('mouseenter', () => setHeld(true));
+    root.addEventListener('mouseleave', () => setHeld(root.contains(document.activeElement)));
+    root.addEventListener('focusin', () => setHeld(true));
+    root.addEventListener('focusout', (event) => {
+      if (!root.contains(event.relatedTarget)) {
+        setHeld(root.matches(':hover'));
+      }
+    });
+    root.addEventListener('keydown', (event) => {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') {
+        return;
+      }
+      event.preventDefault();
+      go(current + (event.key === 'ArrowRight' ? 1 : -1));
+    });
+
+    viewport.addEventListener('pointerdown', (event) => {
+      swipe = event.pointerType === 'mouse' ? null : { x: event.clientX, y: event.clientY };
+    });
+    viewport.addEventListener('pointerup', (event) => {
+      const start = swipe;
+      swipe = null;
+      if (!start) {
+        return;
+      }
+      const dx = event.clientX - start.x;
+      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(event.clientY - start.y)) {
+        go(current + (dx < 0 ? 1 : -1));
+      }
+    });
+    viewport.addEventListener('pointercancel', () => {
+      swipe = null;
+    });
+
+    pause?.addEventListener('click', () => {
+      paused = !paused;
+      pause.setAttribute('aria-pressed', String(paused));
+      pause.setAttribute('aria-label', (paused ? pause.dataset.labelPlay : pause.dataset.labelPause) || '');
+      const icon = pause.querySelector('svg');
+      if (icon) {
+        icon.innerHTML = paused ? PLAY_ICON : PAUSE_ICON;
+      }
+      render(false);
+    });
+
+    new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting && document.visibilityState === 'visible'), { threshold: 0.35 }).observe(root);
+    document.addEventListener('visibilitychange', () => setVisible(document.visibilityState === 'visible' && root.getBoundingClientRect().top < window.innerHeight));
+    motion.addEventListener('change', () => render(false));
+
+    build(columns(firstPage) * rows);
+    new ResizeObserver(() => {
+      const size = columns(pages[0]) * rows;
+      if (size !== perPage) {
+        build(size);
+      }
+    }).observe(viewport);
+  });
+}
+
 reveal();
 header();
 lens();
@@ -728,3 +922,4 @@ leadForms();
 contactForms();
 years();
 orbit();
+logos();

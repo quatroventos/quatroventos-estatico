@@ -128,6 +128,7 @@ export function LogoWall({ data }: { data: Data }) {
       role={count > 1 ? 'region' : undefined}
       aria-roledescription={count > 1 ? t('logos.carousel') : undefined}
       aria-label={count > 1 ? t('logos.pager') : undefined}
+      data-interval={INTERVAL}
       onKeyDown={(event) => {
         if (count < 2 || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) {
           return;
@@ -185,7 +186,7 @@ export function LogoWall({ data }: { data: Data }) {
 
       {count > 1 ? (
         <div className="logo-pager">
-          <div className="logo-dots">
+          <div className="logo-dots" data-of={t('logos.of')}>
             {pages.map((_, index) => (
               <button
                 key={index}
@@ -204,7 +205,7 @@ export function LogoWall({ data }: { data: Data }) {
             ))}
           </div>
           {!reduced ? (
-            <button type="button" className="logo-pause" onClick={() => setPaused((value) => !value)} aria-label={paused ? t('logos.play') : t('logos.pause')} aria-pressed={paused}>
+            <button type="button" className="logo-pause" onClick={() => setPaused((value) => !value)} aria-label={paused ? t('logos.play') : t('logos.pause')} aria-pressed={paused} data-label-play={t('logos.play')} data-label-pause={t('logos.pause')}>
               <PlayPause playing={!paused} />
             </button>
           ) : null}
