@@ -4681,6 +4681,37 @@ td.person span {
   margin-bottom: 0;
 }
 
+.repeater-actions {
+  display: flex;
+  flex: 1 1 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.repeater-actions .repeater-handle {
+  margin-right: auto;
+}
+
+.repeater-handle {
+  flex: none;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sortable-list.is-sorting .repeater-handle {
+  cursor: grabbing;
+}
+
+.repeater-handle:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.sortable-row.is-dragging .repeater-item {
+  box-shadow: var(--shadow-md);
+}
+
 .repeater-item > .icon-btn {
   margin-left: auto;
 }

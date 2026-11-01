@@ -5309,6 +5309,10 @@ a.card:hover .go {
   letter-spacing: -0.035em;
 }
 
+.yc-list .rich {
+  max-width: 36ch;
+}
+
 .yc-list p {
   max-width: 36ch;
   font-size: 17px;

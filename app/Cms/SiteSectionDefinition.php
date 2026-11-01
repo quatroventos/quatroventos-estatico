@@ -494,7 +494,7 @@ class SiteSectionDefinition
                         'fields' => [
                             ['type' => 'text', 'name' => 'year', 'label' => 'Ano'],
                             ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
-                            ['type' => 'text', 'name' => 'text', 'label' => 'Texto'],
+                            ['type' => 'rich', 'name' => 'text', 'label' => 'Texto'],
                         ],
                     ],
                 ]),

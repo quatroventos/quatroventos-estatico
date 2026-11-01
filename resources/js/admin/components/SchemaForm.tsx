@@ -1,10 +1,11 @@
-import { type ReactNode } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { type PointerEvent, type ReactNode } from 'react';
+import { GripVertical, Plus, Trash2 } from 'lucide-react';
 import { getPath, setPath } from '../lib';
 import { CasesPicker } from './CasesPicker';
 import { LogosField } from './LogosField';
 import { MediaField } from './MediaField';
 import { RichText } from './RichText';
+import { SortableList } from './SortableList';
 import { acceptsAi, FieldAi, type FieldAiContext } from './SectionCopy';
 
 export type Field = {
@@ -162,12 +163,58 @@ function FieldControl({
   if (field.type === 'repeater') {
     const items = Array.isArray(value) ? value : [];
     const simple = Boolean(field.simple);
+    const sortable = items.length > 1;
+
+    const move = (from: number, to: number) => {
+      if (to < 0 || to >= items.length || to === from) {
+        return;
+      }
+      const copy = [...items];
+      const [moved] = copy.splice(from, 1);
+      copy.splice(to, 0, moved);
+      onChange(copy);
+    };
+
+    const handle = (index: number, onPointerDown: (event: PointerEvent) => void) => (sortable ? (
+      <button
+        className="icon-btn repeater-handle"
+        type="button"
+        aria-label={`Mover item ${index + 1}. Arraste ou use as setas.`}
+        onPointerDown={onPointerDown}
+        onKeyDown={(event) => {
+          if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            move(index, index - 1);
+          } else if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            move(index, index + 1);
+          }
+        }}
+      >
+        <GripVertical size={14} />
+      </button>
+    ) : null);
+
+    const remove = (index: number) => (
+      <button
+        className="icon-btn danger"
+        type="button"
+        aria-label={`Remover item ${index + 1}`}
+        onClick={() => onChange(items.filter((_, i) => i !== index))}
+      >
+        <Trash2 size={14} />
+      </button>
+    );
 
     return (
       <div className="field">
         <label>{field.label}</label>
-        {items.map((item, index) => (
-          <div className="repeater-item" key={index}>
+        <SortableList
+          items={items.map((item, index) => ({ id: index, item }))}
+          onReorder={(from, to) => move(from, to)}
+          renderItem={({ item }, index, drag) => (
+          <div className="repeater-item">
+            {simple ? handle(index, drag.onPointerDown) : null}
             {simple ? (
               <AiSlot
                 type={field.itemType ?? 'text'}
@@ -218,15 +265,15 @@ function FieldControl({
                 />
               ))
             )}
-            <button
-              className="icon-btn danger"
-              type="button"
-              onClick={() => onChange(items.filter((_, i) => i !== index))}
-            >
-              <Trash2 size={14} />
-            </button>
+            {simple ? remove(index) : (
+              <div className="repeater-actions">
+                {handle(index, drag.onPointerDown)}
+                {remove(index)}
+              </div>
+            )}
           </div>
-        ))}
+          )}
+        />
         <button
           className="btn btn-secondary"
           type="button"

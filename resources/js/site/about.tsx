@@ -1,6 +1,6 @@
 // Blocos interativos de /sobre: linha do tempo com o ano preso no centro da tela e a órbita do Método.
 import { Fragment, useEffect, useRef, type CSSProperties } from 'react';
-import { revealOnView } from './ui';
+import { revealOnView, Rich } from './ui';
 
 export type HistoryItem = { year: string; title: string; text: string };
 
@@ -71,7 +71,7 @@ export function HistoryTimeline({ items }: { items: HistoryItem[] }) {
           <li key={item.year}>
             <span className="mono">{item.year}</span>
             <h3 className="yc-title">{item.title}</h3>
-            <p>{item.text}</p>
+            <Rich value={item.text} />
           </li>
         ))}
       </ol>
