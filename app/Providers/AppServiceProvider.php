@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\ThrottleRequestsPerRoute;
 use App\Models\CaseStudy;
 use App\Models\Certification;
 use App\Models\FormOption;
@@ -15,6 +16,7 @@ use App\Policies\FormOptionPolicy;
 use App\Services\MailSettings;
 use App\Services\Seo\SeoIntegrations;
 use App\Services\SystemOptions;
+use Illuminate\Routing\Middleware\ThrottleRequests;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\URL;
@@ -26,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(SeoIntegrations::class);
+        $this->app->bind(ThrottleRequests::class, ThrottleRequestsPerRoute::class);
     }
 
     public function boot(): void

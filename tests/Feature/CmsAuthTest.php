@@ -64,4 +64,18 @@ class CmsAuthTest extends TestCase
             'password' => 'wrong',
         ])->assertStatus(429);
     }
+
+    public function test_throttle_counts_each_route_separately(): void
+    {
+        $this->makeAdmin();
+
+        for ($i = 0; $i < 9; $i++) {
+            $this->postJson('/gestao/api/login', [
+                'email' => 'nobody@example.com',
+                'password' => 'wrong',
+            ]);
+        }
+
+        $this->assertNotSame(429, $this->postJson('/gestao/api/login/two-factor', ['code' => '000000'])->status());
+    }
 }
