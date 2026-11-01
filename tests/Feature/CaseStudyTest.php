@@ -267,6 +267,22 @@ class CaseStudyTest extends TestCase
             ->assertJsonPath('sections.1.data.cases.0.slug', 'dialogos');
     }
 
+    public function test_showcase_cases_expose_only_http_external_url(): void
+    {
+        $this->makeCase(['url' => 'https://digio.example.com/']);
+        $this->makeCase(['slug' => 'dialogos', 'client' => 'Diálogos de Carreira', 'url' => 'javascript:alert(1)']);
+
+        $this->servicePage('desenvolvimento-de-saas', [
+            ['id' => 'a', 'type' => 'site.showcase', 'data' => ['items' => ['digio', 'dialogos'], 'link_to' => 'url', 'cta_label' => 'Ver o produto']],
+        ]);
+
+        $this->getJson('/api/pages/desenvolvimento-de-saas')
+            ->assertOk()
+            ->assertJsonPath('sections.0.data.cases.0.url', 'https://digio.example.com/')
+            ->assertJsonPath('sections.0.data.cases.1.url', null)
+            ->assertJsonPath('sections.0.data.link_to', 'url');
+    }
+
     public function test_cases_browser_assigns_first_matching_category(): void
     {
         $this->makeCase(['services' => ['agentes-de-ia', 'software-sob-medida']]);

@@ -2,8 +2,8 @@
   "slug": "recuperacao-de-site-wordpress",
   "template": "custom",
   "status": "published",
-  "seo_title": "Recuperação de site WordPress invadido | Quatro Ventos",
-  "seo_description": "Recuperação de sites WordPress invadidos, limpeza de malware e restauração do site no ar.",
+  "seo_title": "Site WordPress invadido? Recuperação | Quatro Ventos",
+  "seo_description": "Recuperamos sites WordPress invadidos: limpeza de malware, correção de brechas e site de volta ao ar. Atendimento humano.",
   "canonical": "https://www.quatroventos.com.br/recuperacao-de-site-wordpress",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
@@ -14,8 +14,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Recuperação de site *WordPress.*",
-        "subtitle": "<p>Recuperação de sites WordPress invadidos, limpeza de malware e restauração segura do site no ar.</p>",
+        "title": "Recuperação de site *WordPress invadido.*",
+        "subtitle": "<p>Recuperação de site WordPress invadido é o trabalho de remover o malware, fechar a brecha usada na invasão e devolver o site ao ar com segurança. Fazemos a limpeza, corrigimos o que estava vulnerável e testamos antes de publicar, com atendimento humano desde o primeiro contato pelo WhatsApp.</p>",
         "visual": "recover",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Meu%20site%20WordPress%20foi%20invadido%20ou%20est%C3%A1%20fora%20do%20ar."
@@ -167,6 +167,14 @@
           {
             "question": "Como evitar uma nova invasão?",
             "answer": "<p>Com WordPress, plugins e tema atualizados, backups e monitoramento. É o que cobre o plano de manutenção. <a href=\"/manutencao-de-sites\">Manutenção de sites</a></p>"
+          },
+          {
+            "question": "Meu WordPress foi invadido. O que fazer nos primeiros minutos?",
+            "answer": "<p>Troque as senhas do painel, da hospedagem e do FTP; não apague arquivos nem restaure backups por conta própria, porque isso pode esconder a origem da invasão; anote o que mudou e desde quando; e chame o suporte. Quanto antes a análise começa, menor o dano no Google e nas vendas.</p>"
+          },
+          {
+            "question": "Quanto custa a recuperação?",
+            "answer": "<p>Depende do tamanho do site e da extensão da invasão, avaliados na primeira análise. [PREENCHER: preço a partir de da recuperação] Depois de recuperado, o site pode entrar num plano de <a href=\"/manutencao-de-sites\">manutenção de sites</a>.</p>"
           }
         ]
       }

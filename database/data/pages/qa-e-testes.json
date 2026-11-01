@@ -3,7 +3,7 @@
   "template": "custom",
   "status": "published",
   "seo_title": "QA e testes de software | Quatro Ventos",
-  "seo_description": "Testes manuais e automatizados, regressão e homologação para software e sites.",
+  "seo_description": "Testes manuais e automatizados, regressão e homologação para software e sites. Veja tipos de teste e como entram no seu ciclo.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/qa-e-testes.jpg",
@@ -14,7 +14,7 @@
       "type": "site.hero",
       "data": {
         "title": "QA e testes *de software.*",
-        "subtitle": "<p>Bug em produção interrompe o processo e custa mais caro. Funcionalidades, integrações, navegadores e dispositivos testados antes de chegar ao usuário.</p>",
+        "subtitle": "<p>Testes de software verificam se um sistema faz o que deveria antes de chegar ao usuário. Fazemos QA com testes manuais e automatizados, regressão e homologação para sistemas e sites, cobrindo funcionalidades, integrações, navegadores e dispositivos, porque um bug em produção custa mais e interrompe o processo.</p>",
         "visual": "qa",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20uma%20rodada%20de%20testes%20no%20meu%20sistema."
@@ -169,6 +169,14 @@
           {
             "question": "Os testes valem para integrações?",
             "answer": "<p>Sim. Testes de integração e de API conferem a troca de dados com sistemas externos, onde um erro costuma passar despercebido até a produção.</p>"
+          },
+          {
+            "question": "Quais tipos de teste existem e quando usar cada um?",
+            "answer": "<p>O teste funcional confere cada recurso contra o que foi pedido; o de regressão garante que a versão nova não quebrou o que funcionava; o de integração verifica a troca de dados com outros sistemas; o de performance mede o comportamento sob carga; e a homologação é a aprovação final por quem vai usar. Cada versão recebe a combinação que o risco pede.</p>"
+          },
+          {
+            "question": "Quanto custa?",
+            "answer": "<p>Depende do tamanho do sistema e da frequência de versões; testes automatizados custam mais no início e menos a cada rodada. [PREENCHER: formato de contratação e faixa de valores] QA também faz parte da <a href=\"/sustentacao-de-software\">sustentação de software</a> e da <a href=\"/modernizacao-de-sistemas\">modernização de sistemas</a>.</p>"
           }
         ]
       }

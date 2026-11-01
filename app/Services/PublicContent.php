@@ -231,6 +231,7 @@ class PublicContent
         return [
             'slug' => $case->slug,
             'path' => $case->publicPath(),
+            'url' => filled($case->url) && preg_match('#^https?://#i', (string) $case->url) === 1 ? (string) $case->url : null,
             'client' => $case->client,
             'title' => $case->title,
             'summary' => (string) $case->summary,
@@ -388,6 +389,37 @@ class PublicContent
     }
 
     /**
+     * Link de compra definido em Configurações substitui o href do plano com a mesma chave.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private function resolvePlanLinks(array $data): array
+    {
+        $links = collect(is_array($this->options->site()?->plan_links) ? $this->options->site()->plan_links : [])
+            ->filter(fn ($url) => is_string($url) && preg_match('#^https?://#i', $url) === 1);
+
+        if ($links->isEmpty() || ! is_array($data['categories'] ?? null)) {
+            return $data;
+        }
+
+        foreach ($data['categories'] as $index => $category) {
+            if (! is_array($category) || ! is_array($category['plans'] ?? null)) {
+                continue;
+            }
+
+            foreach ($category['plans'] as $planIndex => $plan) {
+                $key = is_array($plan) && is_string($plan['link_key'] ?? null) ? $plan['link_key'] : '';
+                if ($key !== '' && $links->has($key)) {
+                    $data['categories'][$index]['plans'][$planIndex]['href'] = $links->get($key);
+                }
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * @return list<array{id: string, type: string, data: array<string, mixed>}>
      */
     private function sections(Page $page): array
@@ -424,6 +456,10 @@ class PublicContent
 
             if (in_array($type, self::CASE_SECTIONS, true)) {
                 $data = $this->resolveCases($type, $data, $locale, $serviceSlug);
+            }
+
+            if ($type === 'site.pricing') {
+                $data = $this->resolvePlanLinks($data);
             }
 
             $data = $this->links->data($data, $locale);

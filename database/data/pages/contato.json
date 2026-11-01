@@ -2,8 +2,8 @@
   "slug": "contato",
   "template": "custom",
   "status": "published",
-  "seo_title": "Contato | Quatro Ventos",
-  "seo_description": "Projetos de IA, automação, software e web. WhatsApp e telefone (41) 3039-9593, e-mail ou formulário.",
+  "seo_title": "Contato: WhatsApp (41) 3039-9593 | Quatro Ventos",
+  "seo_description": "Fale com a Quatro Ventos pelo WhatsApp (41) 3039-9593, e-mail contato@quatroventos.com.br ou formulário. Curitiba-PR.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/contato.jpg",
@@ -13,14 +13,14 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Vamos conversar sobre",
+        "title": "Fale com a Quatro Ventos sobre",
         "rotating": [
           "o seu projeto.",
           "inteligência artificial.",
           "automação de processos.",
           "sistemas sob medida."
         ],
-        "subtitle": "<p>Descreva o processo ou o projeto. Retornamos com o próximo passo.</p>",
+        "subtitle": "<p>Fale com a Quatro Ventos pelo WhatsApp ou telefone (41) 3039-9593, pelo e-mail contato@quatroventos.com.br ou pelo formulário abaixo. Somos uma empresa de tecnologia de Curitiba-PR; descreva o processo ou o projeto e retornamos com o próximo passo.</p>",
         "primary_label": "Chamar no WhatsApp",
         "primary_href": "https://wa.me/554130399593?text=Gostaria%20de%20um%20or%C3%A7amento.",
         "secondary_label": "Enviar uma mensagem",

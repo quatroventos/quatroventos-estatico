@@ -3,7 +3,7 @@
   "template": "custom",
   "status": "published",
   "seo_title": "Automação de processos com IA e n8n | Quatro Ventos",
-  "seo_description": "Automação de processos com IA, n8n e integrações. Workflows que eliminam etapas manuais e conectam os sistemas da operação.",
+  "seo_description": "Automatize processos entre WhatsApp, planilhas, e-mail e ERP com IA e n8n. Mapeamos, implantamos e mantemos os fluxos em produção. Veja exemplos e prazos.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/automacao-com-ia.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Automação de processos *com IA.*",
-        "subtitle": "<p>Copiar dados entre sistemas, ler e-mails para abrir pedidos, montar o mesmo relatório toda semana. Transformamos esse trabalho em fluxos automáticos, com IA nas etapas que exigem interpretar texto, documento ou decisão.</p>",
+        "title": "Automação de processos *com IA e n8n.*",
+        "subtitle": "<p>Automação de processos é fazer o trabalho repetido entre sistemas rodar sozinho: copiar dados, abrir pedidos a partir de e-mails, montar o relatório da semana. Implantamos esses fluxos com n8n ou código, com IA nas etapas que pedem ler um documento ou decidir, e mantemos tudo monitorado em produção.</p>",
         "visual": "n8n",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20automa%C3%A7%C3%A3o%20de%20processos%20com%20IA."
@@ -190,6 +190,18 @@
           {
             "question": "E se a automação falhar?",
             "answer": "<p>Cada execução fica registrada, e as falhas geram alerta para quem acompanha o fluxo. Antes de substituir o processo atual, a automação roda em paralelo para validar os resultados.</p>"
+          },
+          {
+            "question": "n8n, Zapier ou Make: qual escolher?",
+            "answer": "<p>Zapier e Make são serviços prontos, cobrados pelo volume de execuções, e funcionam bem para fluxos simples. O n8n pode rodar em servidor próprio, o que mantém os dados sob controle e deixa o custo estável quando o volume cresce; por isso é a nossa escolha padrão, hospedado em <a href=\"/vps-e-infraestrutura\">VPS gerenciada</a>. Código entra quando o fluxo exige performance ou regra complexa.</p>"
+          },
+          {
+            "question": "Quanto custa automatizar um processo?",
+            "answer": "<p>O projeto depende do número de etapas e de sistemas no fluxo. Depois vêm o servidor, o uso do modelo quando há IA e a manutenção mensal dos fluxos. [PREENCHER: faixa de investimento e de manutenção mensal] Um exemplo em produção é o <a href=\"/cases/fiscal-hub\">Fiscal Hub</a>.</p>"
+          },
+          {
+            "question": "Quanto tempo leva?",
+            "answer": "<p>O fluxo novo roda em paralelo ao processo manual até entregar o mesmo resultado, e só então assume. [PREENCHER: prazo típico de uma automação]</p>"
           }
         ]
       }

@@ -2,8 +2,8 @@
   "slug": "home",
   "template": "home",
   "status": "published",
-  "seo_title": "Quatro Ventos | Soluções criativas com inteligência artificial",
-  "seo_description": "Melhoramos processos com soluções criativas de IA: agentes, automações e sistemas sob medida, integrados à operação. Web, infraestrutura e sustentação no mesmo time.",
+  "seo_title": "Quatro Ventos: IA, automação e software em Curitiba",
+  "seo_description": "Empresa de Curitiba, desde 2005, que cria agentes de IA, automações e sistemas sob medida integrados ao seu ERP e WhatsApp. Um só time constrói, hospeda e mantém.",
   "canonical": "https://www.quatroventos.com.br/",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
@@ -21,7 +21,7 @@
           "automação de processos.",
           "sistemas sob medida."
         ],
-        "subtitle": "<p>Ajudamos empresas a melhorar processos com soluções criativas de IA. Agentes, automações e sistemas desenhados para a operação de cada negócio, do diagnóstico à produção.</p>",
+        "subtitle": "<p>A Quatro Ventos é uma empresa de tecnologia de Curitiba, fundada em 2005, que cria agentes de IA, automações e sistemas sob medida ligados ao que a empresa já usa, como WhatsApp, ERP e planilhas. O mesmo time desenha, desenvolve, hospeda e mantém, com custo previsível e uma pessoa revisando o que a IA decide.</p>",
         "primary_label": "Iniciar um projeto",
         "primary_href": "https://wa.me/554130399593?text=Gostaria%20de%20um%20or%C3%A7amento.",
         "secondary_label": "Conhecer os serviços",
@@ -33,7 +33,7 @@
       "type": "site.cards",
       "data": {
         "title": "O que podemos fazer por *sua empresa?*",
-        "intro": "<p>Da arquitetura à infraestrutura, desenvolvemos seu projeto sob demanda: soluções de inteligência artificial, software sob medida, sites e e-commerce, com suporte contínuo para manter tudo funcionando.</p>",
+        "intro": "<p>Da arquitetura à infraestrutura: <a href=\"/agentes-de-ia\">agentes de IA</a>, <a href=\"/automacao-com-ia\">automação de processos</a>, software sob medida, <a href=\"/desenvolvimento-de-sites\">criação de sites em Curitiba</a> e lojas virtuais, com suporte contínuo depois da entrega.</p>",
         "items": [
           {
             "title": "Inteligência artificial",

@@ -106,17 +106,7 @@ try {
   let count = 0;
 
   for (const item of payloads) {
-    let Page = null;
-    if (!item.page.case && item.page.slug && !item.page.slug.includes('/')) {
-      try {
-        const mod = await vite.ssrLoadModule(`/resources/js/site/static/pages/${item.page.slug}.tsx`);
-        Page = mod.default ?? null;
-      } catch {
-        Page = null;
-      }
-    }
-
-    const body = renderSite(item.page, item.site, Page);
+    const body = renderSite(item.page, item.site);
     const file = fileFor(item.page);
     const markup = `${body}${jsonLd(body)}`;
     await mkdir(dirname(file), { recursive: true });

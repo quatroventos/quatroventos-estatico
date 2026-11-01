@@ -2,8 +2,8 @@
   "slug": "ia-com-dados-da-empresa",
   "template": "custom",
   "status": "published",
-  "seo_title": "IA com os dados da empresa: RAG e base de conhecimento | Quatro Ventos",
-  "seo_description": "Busca e respostas com IA sobre documentos, sistemas e bases internas, com RAG e controle de acesso.",
+  "seo_title": "IA com os dados da empresa (RAG) | Quatro Ventos",
+  "seo_description": "Respostas com IA sobre seus documentos, sistemas e bases internas, com controle de acesso e LGPD. Entenda o que é RAG e como implantamos.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/ia-com-dados-da-empresa.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "O conhecimento da empresa, *respondendo em segundos.*",
-        "subtitle": "<p>Manuais, contratos, políticas, chamados antigos, planilhas. Construímos assistentes que respondem com base nos documentos e sistemas internos, citam a fonte e respeitam quem pode ver o quê.</p>",
+        "title": "IA com os dados da sua empresa: *RAG e base de conhecimento.*",
+        "subtitle": "<p>RAG é a técnica que faz a IA buscar a resposta nos documentos da empresa antes de responder, citando a fonte. Com ela montamos uma base de conhecimento com IA sobre manuais, contratos, chamados e sistemas internos, em que cada pessoa só consulta o que tem permissão para ver, de acordo com a LGPD.</p>",
         "visual": "rag",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20IA%20com%20os%20dados%20da%20empresa."
@@ -188,6 +188,18 @@
           {
             "question": "Quais formatos de documento entram?",
             "answer": "<p>PDFs, documentos de texto, planilhas, páginas internas, chamados e dados de sistemas. Formatos menos comuns são avaliados caso a caso.</p>"
+          },
+          {
+            "question": "O que é RAG, em português simples?",
+            "answer": "<p>É dar à IA uma biblioteca antes da pergunta. A pessoa pergunta, o sistema busca os trechos certos nos documentos da empresa e o modelo responde usando esses trechos, com o link para a fonte. Sem RAG, o modelo responde com o que aprendeu na internet, que não inclui o manual interno nem o contrato do cliente.</p>"
+          },
+          {
+            "question": "Dá para usar dentro de um sistema que já existe?",
+            "answer": "<p>Sim. A busca pode entrar no sistema atual por meio de uma <a href=\"/integracao-de-llm\">integração de LLM</a> ou fazer parte de um <a href=\"/sistemas-com-ia\">sistema com IA</a> construído para isso.</p>"
+          },
+          {
+            "question": "Quanto custa e quanto tempo leva?",
+            "answer": "<p>Depende da quantidade e do formato dos documentos, dos sistemas consultados e de quantas pessoas vão usar. A proposta traz o custo do projeto e a estimativa mensal de uso. [PREENCHER: faixa de investimento e prazo típico]</p>"
           }
         ]
       }

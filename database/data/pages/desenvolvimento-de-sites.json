@@ -2,8 +2,8 @@
   "slug": "desenvolvimento-de-sites",
   "template": "custom",
   "status": "published",
-  "seo_title": "Desenvolvimento de sites sob medida | Quatro Ventos",
-  "seo_description": "Sites sob medida, responsivos e gerenciáveis, com arquitetura, protótipo, desenvolvimento, homologação e entrega.",
+  "seo_title": "Criação de sites em Curitiba sob medida | Quatro Ventos",
+  "seo_description": "Criação de sites sob medida em Curitiba desde 2005: responsivos, rápidos e gerenciáveis, com SEO e garantia de 30 dias. Peça um orçamento.",
   "canonical": "https://www.quatroventos.com.br/desenvolvimento-de-sites",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
@@ -14,8 +14,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Desenvolvimento de sites *sob medida.*",
-        "subtitle": "<p>Sites institucionais e corporativos pensados para o público, programados do zero e entregues com painel de gestão de conteúdo.</p>",
+        "title": "Criação de sites *sob medida em Curitiba.*",
+        "subtitle": "<p>Criação de sites em Curitiba, desde 2005: sites institucionais e corporativos desenhados para o seu público, programados do zero e entregues com painel para o time editar o conteúdo. Cada site sai responsivo, rápido e preparado para o Google, com 30 dias de garantia para ajustes depois da entrega.</p>",
         "visual": "sites",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20um%20or%C3%A7amento%20de%20site%20sob%20medida."
@@ -207,6 +207,18 @@
           {
             "question": "E após a publicação?",
             "answer": "<p>30 dias de garantia e planos de manutenção em <a href=\"/manutencao-de-sites\">Manutenção de sites e WordPress</a>.</p>"
+          },
+          {
+            "question": "Quanto custa um site em Curitiba?",
+            "answer": "<p>Depende do número de páginas, das funcionalidades e das integrações, como CRM, agente de IA ou área restrita. [PREENCHER: faixa real de preço de site institucional]</p>"
+          },
+          {
+            "question": "Quanto tempo leva para criar um site?",
+            "answer": "<p>O prazo segue as etapas de arquitetura, protótipo, desenvolvimento e homologação, e é fechado no orçamento. [PREENCHER: prazo típico]</p>"
+          },
+          {
+            "question": "Vocês atendem fora de Curitiba?",
+            "answer": "<p>Sim. O time trabalha em home office desde 2014, então o atendimento é o mesmo para qualquer cidade. Alguns sites no ar: <a href=\"/cases/ramos-benedetti\">Ramos Benedetti Advogados</a> e <a href=\"/cases/produtive\">Produtive</a>.</p>"
           }
         ]
       }

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useRef, useState, type MouseEvent } from 'react';
+import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CmsCases } from './case-showcase';
 import { CasePage } from './cases';
@@ -7,7 +7,6 @@ import { AgentLog } from './hero';
 import { DEFAULT_LOCALE, LOCALES, localePath, setLocale, splitLocalePath, t } from './i18n';
 import { applySeo } from './seo';
 import { Sections } from './sections';
-import { STATIC_MODE, STATIC_PAGES } from './static';
 import type { PagePayload, SitePayload } from './types';
 import { Cta } from './ui';
 
@@ -178,8 +177,6 @@ export function App() {
 
   const route = slugFromPath(path);
   const synced = page != null && (preview || (page.slug === route && (page.locale ?? DEFAULT_LOCALE) === locale));
-  const staticLoader = STATIC_MODE && !(typeof window !== 'undefined' && window.__SITE__?.preview) && locale === DEFAULT_LOCALE ? STATIC_PAGES[route] : undefined;
-  const StaticPage = useMemo(() => (staticLoader ? lazy(staticLoader) : null), [staticLoader]);
 
   return (
     <CmsCases.Provider value={site?.cases ?? null}>
@@ -192,12 +189,7 @@ export function App() {
             <Sections sections={page.sections} form={site?.form ?? null} variant="case" />
           </CasePage>
         ) : null}
-        {!missing && synced && page && !page.case && StaticPage ? (
-          <Suspense fallback={null}>
-            <StaticPage form={site?.form ?? null} sections={page.sections} planLinks={site?.plan_links} />
-          </Suspense>
-        ) : null}
-        {!missing && synced && page && !page.case && !StaticPage ? <Sections sections={page.sections} form={site?.form ?? null} /> : null}
+        {!missing && synced && page && !page.case ? <Sections sections={page.sections} form={site?.form ?? null} /> : null}
       </main>
       <Footer site={site} locale={locale} alternates={synced ? page?.alternates : undefined} />
       <WhatsAppFloat href={site?.whatsapp_url} />

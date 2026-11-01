@@ -2,8 +2,8 @@
   "slug": "landing-pages",
   "template": "custom",
   "status": "published",
-  "seo_title": "Desenvolvimento de landing pages | Quatro Ventos",
-  "seo_description": "Landing pages sob medida, focadas em conversão, integradas a WhatsApp, formulários e ferramentas de marketing.",
+  "seo_title": "Criação de landing page que converte | Quatro Ventos",
+  "seo_description": "Landing pages sob medida focadas em conversão, integradas a WhatsApp, formulários e anúncios. Preço publicado e entrega rápida.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/landing-pages.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Cliques convertidos *em clientes.*",
-        "subtitle": "<p>Landing pages sob medida, desenhadas para conversão e otimizadas para busca, integradas ao processo de atendimento e vendas. Prontas em até 24 horas, a partir de R$ 350,00 com um ano de hospedagem.</p>",
+        "title": "Criação de landing pages que convertem *cliques em clientes.*",
+        "subtitle": "<p>Uma landing page é uma página com um único objetivo: levar quem chega de um anúncio ou campanha a entrar em contato ou comprar. Fazemos landing pages sob medida, integradas ao WhatsApp, a formulários e às ferramentas de anúncio, prontas em até 24 horas, a partir de R$ 350,00 com um ano de hospedagem.</p>",
         "visual": "landing",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20um%20or%C3%A7amento%20de%20landing%20page."
@@ -218,6 +218,14 @@
           {
             "question": "A Quatro Ventos gerencia anúncios?",
             "answer": "<p>Não. O foco é a página, entregue pronta para divulgação.</p>"
+          },
+          {
+            "question": "Qual a diferença entre landing page e site?",
+            "answer": "<p>O site apresenta a empresa inteira, com várias páginas e caminhos. A landing page tira o que distrai e leva a uma única ação, o que favorece a conversão do tráfego pago; muitas empresas usam os dois, o site institucional e uma landing page por campanha.</p>"
+          },
+          {
+            "question": "Dá para criar landing pages com IA?",
+            "answer": "<p>Sim. O <a href=\"/cases/firefly-webmaker\">Firefly Webmaker</a>, que construímos, cria e publica landing pages com agentes de IA a partir de uma descrição do negócio. A hospedagem pode ficar na <a href=\"/hospedagem-de-sites\">Firefly Host</a>.</p>"
           }
         ]
       }

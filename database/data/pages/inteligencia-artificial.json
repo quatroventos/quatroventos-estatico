@@ -2,8 +2,8 @@
   "slug": "inteligencia-artificial",
   "template": "custom",
   "status": "published",
-  "seo_title": "Inteligência artificial para melhorar processos | Quatro Ventos",
-  "seo_description": "Soluções criativas de IA para melhorar processos: agentes, automação, IA sobre dados proprietários, integração de LLMs e consultoria de adoção.",
+  "seo_title": "Inteligência artificial para empresas | Quatro Ventos",
+  "seo_description": "Agentes, automações e IA com os dados da sua empresa, em produção e com custo previsível. Diagnóstico de IA, LGPD e humano no circuito. Curitiba, desde 2005.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/inteligencia-artificial.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Inteligência artificial aplicada a *processos reais.*",
-        "subtitle": "<p>Transformação com IA não é comprar uma ferramenta. É redesenhar processos para que a inteligência artificial assuma o trabalho repetitivo, acelere decisões e use o conhecimento que já existe na operação. Projetamos, integramos e mantemos essas soluções em produção.</p>",
+        "title": "Inteligência artificial para empresas, aplicada a *processos reais.*",
+        "subtitle": "<p>Inteligência artificial para empresas, do jeito que fazemos, é IA que sai do piloto e entra na operação: agentes, automações e assistentes ligados aos sistemas que a empresa já usa, com dados protegidos pela LGPD e uma pessoa no circuito. Começamos pelo diagnóstico do processo; a ferramenta vem depois.</p>",
         "visual": "flow-agent",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20IA%20aplicada%20aos%20processos%20da%20empresa."
@@ -62,7 +62,7 @@
       "type": "site.panel",
       "data": {
         "title": "Do piloto *à produção.*",
-        "body": "<p>Uma demonstração com IA leva uma tarde. Melhorar um processo de verdade exige mais: integração com os sistemas, custo previsível, dados protegidos e responsabilidade quando o cenário muda. É nesse trabalho que a Quatro Ventos atua.</p>",
+        "body": "<p>Uma demonstração com IA leva uma tarde. Melhorar um processo exige integração com os sistemas, custo previsível, dados protegidos e alguém responsável quando a operação muda; é desse trabalho que a Quatro Ventos cuida.</p>",
         "variant": "light",
         "cta_label": "Fazer um diagnóstico de IA",
         "cta_href": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20IA%20aplicada%20aos%20processos%20da%20empresa.",
@@ -155,6 +155,18 @@
           {
             "question": "Quem mantém a solução depois?",
             "answer": "<p>A Quatro Ventos. Sustentação e evolução fazem parte da oferta.</p>"
+          },
+          {
+            "question": "Qual solução de IA serve para qual problema?",
+            "answer": "<p>Atendimento e vendas por mensagem pedem um <a href=\"/agentes-de-ia\">agente de IA</a>. Tarefas repetidas entre sistemas pedem <a href=\"/automacao-com-ia\">automação com IA e n8n</a>. Quando a resposta está em manuais e contratos, o caminho é a <a href=\"/ia-com-dados-da-empresa\">IA com os dados da empresa (RAG)</a>; para colocar um modelo dentro de um sistema existente, a <a href=\"/integracao-de-llm\">integração de LLM</a>; e para um produto novo com IA no centro, os <a href=\"/sistemas-com-ia\">sistemas com IA</a>.</p>"
+          },
+          {
+            "question": "IA substitui o atendente?",
+            "answer": "<p>Não da forma como costuma ser vendida. O agente responde o que se repete e passa a conversa para uma pessoa quando ela pede julgamento, negociação ou exceção; o time sai da fila e fica com os casos que precisam dele.</p>"
+          },
+          {
+            "question": "Quanto tempo leva para implantar IA?",
+            "answer": "<p>O caso de uso roda primeiro em teste, com dados reais, e só depois é integrado aos sistemas. O prazo de cada etapa sai do diagnóstico. [PREENCHER: prazo típico de um primeiro projeto de IA]</p>"
           }
         ]
       }

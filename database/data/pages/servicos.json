@@ -3,7 +3,7 @@
   "template": "custom",
   "status": "published",
   "seo_title": "Serviços de IA, software, web e infraestrutura | Quatro Ventos",
-  "seo_description": "Inteligência artificial, engenharia de software, desenvolvimento web, suporte e infraestrutura para melhorar processos, do diagnóstico à operação.",
+  "seo_description": "Todos os serviços da Quatro Ventos: inteligência artificial, engenharia de software, desenvolvimento web, suporte e infraestrutura.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/servicos.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "*Serviços*",
-        "subtitle": "<p>Da estratégia de IA à infraestrutura. Um único time para melhorar processos com tecnologia: projetar, construir, integrar e operar.</p>",
+        "title": "Serviços de *IA, software, web e infraestrutura.*",
+        "subtitle": "<p>A Quatro Ventos oferece serviços de inteligência artificial, engenharia de software, desenvolvimento web, suporte e infraestrutura para empresas que querem melhorar processos com tecnologia. Um único time projeta, constrói, integra e opera, do diagnóstico à sustentação, em Curitiba desde 2005.</p>",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20saber%20qual%20servi%C3%A7o%20atende%20meu%20processo."
       }

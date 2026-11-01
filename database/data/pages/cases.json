@@ -2,8 +2,8 @@
   "slug": "cases",
   "template": "custom",
   "status": "published",
-  "seo_title": "Cases e projetos | Quatro Ventos",
-  "seo_description": "Cases de IA, software e web da Quatro Ventos para Digio, Hemera, Facilitapay, Multiversidade PUCPR e outras marcas.",
+  "seo_title": "Cases de IA, software e sites | Quatro Ventos",
+  "seo_description": "Cases de inteligência artificial, software e web da Quatro Ventos: B.I.A, Fiscal Hub, Webmaker, Moltec e outros, com o problema e a solução.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/cases.jpg",
@@ -13,13 +13,13 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Projetos de",
+        "title": "Cases de",
         "rotating": [
           "inteligência artificial.",
           "software sob medida.",
           "sites e webapps."
         ],
-        "subtitle": "<p>Processos melhorados com IA, software e web em finanças, educação, indústria, varejo e serviços.</p>",
+        "subtitle": "<p>Cases da Quatro Ventos em inteligência artificial, software e web, com o problema de cada cliente e a solução publicada. Entre eles, a B.I.A, SDR com IA da Hive Hub, o Fiscal Hub, o Firefly Webmaker e as calculadoras industriais da Moltec e da Cyclolux, em finanças, indústria, varejo e serviços.</p>",
         "primary_label": "Iniciar um projeto",
         "primary_href": "https://wa.me/554130399593?text=Vi%20os%20cases%20e%20gostaria%20de%20conversar%20sobre%20um%20projeto.",
         "secondary_label": "Ver os projetos",

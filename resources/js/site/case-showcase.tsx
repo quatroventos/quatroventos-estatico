@@ -1,4 +1,4 @@
-import { createContext, useContext, type ReactNode } from 'react';
+import { createContext, useContext } from 'react';
 import type { CaseCard } from './types';
 import { Arrow, resetTilt, trackTilt } from './ui';
 
@@ -101,23 +101,5 @@ export function CaseFeatures({ items }: { items: ShowcaseCase[] }) {
     <div className="cases-grid is-single is-open">
       {resolved.map((item) => <CaseFeature key={item.slug} item={item} />)}
     </div>
-  );
-}
-
-export function CaseShowcase({ title, intro, items, tone = 'dark' }: { title: ReactNode; intro?: ReactNode; items: ShowcaseCase[]; tone?: 'dark' | 'light' | 'white' }) {
-  if (useCmsShowcase(items).length === 0) {
-    return null;
-  }
-
-  return (
-    <section className={`section on-${tone}`}>
-      <div className="wrap">
-        <header className={intro ? 'sec-head' : 'sec-head is-solo'}>
-          <h2 className="h2">{title}</h2>
-          {intro ? <div className="rich intro"><p>{intro}</p></div> : null}
-        </header>
-        <CaseFeatures items={items} />
-      </div>
-    </section>
   );
 }

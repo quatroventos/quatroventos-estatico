@@ -2,8 +2,8 @@
   "slug": "sites-wordpress",
   "template": "custom",
   "status": "published",
-  "seo_title": "Sites em WordPress | Quatro Ventos",
-  "seo_description": "Sites em WordPress sob medida, com tema próprio e painel simples de gerenciar.",
+  "seo_title": "Criação de site WordPress sob medida | Quatro Ventos",
+  "seo_description": "Sites em WordPress com tema próprio, rápidos e fáceis de gerenciar, com hospedagem e manutenção do mesmo time. Garantia de 30 dias após a entrega.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/sites-wordpress.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Sites em *WordPress.*",
-        "subtitle": "<p>Sites sob medida em WordPress, com tema próprio e simples de gerenciar pelo próprio time.</p>",
+        "title": "Criação de sites *em WordPress.*",
+        "subtitle": "<p>Criação de site WordPress com tema próprio, sem template comprado: o layout é desenhado para a empresa e o painel fica simples para o time atualizar páginas, notícias e produtos. Hospedagem e manutenção ficam com o mesmo time, e cada site tem 30 dias de garantia para ajustes depois da entrega.</p>",
         "visual": "wp",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20um%20or%C3%A7amento%20de%20site%20em%20WordPress."
@@ -198,6 +198,14 @@
           {
             "question": "O site inclui manutenção?",
             "answer": "<p>30 dias de garantia. Depois, os planos de manutenção cobrem atualizações, backups e segurança. <a href=\"/manutencao-de-sites\">Manutenção de sites e WordPress</a></p>"
+          },
+          {
+            "question": "WordPress é seguro?",
+            "answer": "<p>É, quando mantido. Invasões em WordPress costumam explorar plugin ou tema desatualizado, e uma rotina de atualização, backup e monitoramento fecha essa porta. Por isso oferecemos <a href=\"/manutencao-de-sites\">manutenção de sites</a> e, se o pior acontecer, a <a href=\"/recuperacao-de-site-wordpress\">recuperação de WordPress invadido</a>.</p>"
+          },
+          {
+            "question": "Quanto custa e quanto tempo leva?",
+            "answer": "<p>Depende do número de páginas e das funcionalidades. [PREENCHER: faixa de investimento e prazo típico] Um exemplo é o site da <a href=\"/cases/produtive\">Produtive</a>, em WordPress e em três idiomas.</p>"
           }
         ]
       }

@@ -2,8 +2,8 @@
   "slug": "agentes-de-ia",
   "template": "custom",
   "status": "published",
-  "seo_title": "Agentes de IA para atendimento, vendas e operação | Quatro Ventos",
-  "seo_description": "Agentes e assistentes de IA que atendem clientes, qualificam leads e executam tarefas internas, integrados aos sistemas da operação.",
+  "seo_title": "Agentes de IA para empresas: atendimento e vendas | Quatro Ventos",
+  "seo_description": "O que é um agente de IA, o que ele faz na sua operação e quanto custa. Criamos agentes integrados ao WhatsApp, CRM e ERP, com passagem para humano.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/agentes-de-ia.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Agentes de IA que *atendem, qualificam e executam.*",
-        "subtitle": "<p>Agentes que conversam com clientes, consultam sistemas e resolvem tarefas de ponta a ponta. No WhatsApp, no site ou dentro da operação, liberando o time para o trabalho que exige pessoas.</p>",
+        "title": "Agentes de IA para empresas: *atendem, qualificam e executam.*",
+        "subtitle": "<p>Um agente de IA é um programa que conversa, consulta sistemas e executa tarefas sozinho, dentro de regras definidas pela empresa. Criamos agentes de IA para atendimento, vendas e operação, integrados ao WhatsApp, ao CRM e ao ERP, que passam a conversa para uma pessoa quando o caso exige.</p>",
         "visual": "flow-agent",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20um%20agente%20de%20IA."
@@ -187,6 +187,18 @@
           {
             "question": "Qual modelo de IA é usado?",
             "answer": "<p>O que oferecer o melhor equilíbrio entre custo e qualidade para o caso: OpenAI, Claude, Gemini ou modelos abertos.</p>"
+          },
+          {
+            "question": "Qual a diferença entre agente de IA, chatbot e automação?",
+            "answer": "<p>O chatbot segue um roteiro de perguntas e respostas e trava quando a conversa sai dele. A automação repete os mesmos passos entre sistemas, sem conversar. O agente de IA entende o pedido em linguagem natural, consulta os sistemas e decide qual ação tomar dentro dos limites definidos, o que permite resolver o caso em vez de só responder.</p>"
+          },
+          {
+            "question": "Quanto custa um agente de IA?",
+            "answer": "<p>São dois custos: o projeto, que depende de quantos sistemas o agente acessa e de quantos fluxos ele cobre, e o uso mensal do modelo, que acompanha o volume de conversas. Os dois aparecem na proposta depois do diagnóstico. [PREENCHER: faixa de investimento de um agente típico]</p>"
+          },
+          {
+            "question": "Quanto tempo leva para colocar um agente no ar?",
+            "answer": "<p>O agente só entra em produção depois de responder casos reais em teste e ser aprovado pelo time. [PREENCHER: prazo típico do diagnóstico à produção] Em operação, veja a <a href=\"/cases/bia\">B.I.A, SDR com IA da Hive Hub</a>, e o <a href=\"/cases/fiscal-hub\">Fiscal Hub</a>, com cobrança no WhatsApp oficial; para colocar um modelo dentro do seu sistema, há a <a href=\"/integracao-de-llm\">integração de LLM</a>.</p>"
           }
         ]
       }

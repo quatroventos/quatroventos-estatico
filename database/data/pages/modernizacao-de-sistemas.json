@@ -2,8 +2,8 @@
   "slug": "modernizacao-de-sistemas",
   "template": "custom",
   "status": "published",
-  "seo_title": "Modernização de sistemas legados e auditoria técnica | Quatro Ventos",
-  "seo_description": "Auditoria técnica e modernização de sistemas legados: refatoração, migração de stack e plano priorizado.",
+  "seo_title": "Sistema legado: modernizar ou reescrever? | Quatro Ventos",
+  "seo_description": "Auditoria técnica e modernização de sistemas legados: refatoração, migração de stack e plano de transição sem parar a operação.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/modernizacao-de-sistemas.jpg",
@@ -14,7 +14,7 @@
       "type": "site.hero",
       "data": {
         "title": "Modernização de *sistemas legados.*",
-        "subtitle": "<p>Sistema lento, difícil de alterar, preso a uma versão antiga ou dependente de uma única pessoa trava o processo inteiro. Auditamos o código, priorizamos o que importa e modernizamos sem parar a operação.</p>",
+        "subtitle": "<p>Sistema legado é o software que ainda sustenta a operação, mas ficou lento, difícil de alterar ou preso a uma tecnologia antiga. Fazemos a auditoria técnica, decidimos com você entre refatorar, migrar ou reescrever e modernizamos em etapas, com o sistema atendendo durante toda a transição.</p>",
         "visual": "modernize",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20pedir%20uma%20auditoria%20de%20sistema%20legado."
@@ -143,6 +143,8 @@
       "data": {
         "title": "Sistemas antigos, renovados.",
         "intro": "<p>Calculadoras técnicas reconstruídas na web a partir dos sistemas antigos dos clientes.</p>",
+        "link_to": "url",
+        "cta_label": "Ver a calculadora",
         "items": [
           "moltec",
           "cyclolux"
@@ -170,6 +172,18 @@
           {
             "question": "O que recebo ao final da auditoria?",
             "answer": "<p>Um relatório com correções rápidas e um plano de modernização priorizado.</p>"
+          },
+          {
+            "question": "Quais os sinais de que o sistema legado precisa de modernização?",
+            "answer": "<p>Cinco aparecem com frequência: cada alteração demora e quebra outra parte; a linguagem ou o framework saiu de suporte; só uma pessoa sabe mexer no código; o sistema não se integra ao que a empresa passou a usar; e a lentidão já atrapalha quem opera. Com dois ou mais, vale uma auditoria.</p>"
+          },
+          {
+            "question": "Quanto custa e quanto tempo leva a modernização?",
+            "answer": "<p>A auditoria vem primeiro e define o plano, com prazos por etapa. O custo depende do tamanho do código e do caminho escolhido. [PREENCHER: faixa de investimento da auditoria]</p>"
+          },
+          {
+            "question": "Como evitar que o sistema volte a envelhecer?",
+            "answer": "<p>Com testes automatizados e uma rotina de atualização. Depois da modernização, o sistema pode seguir em <a href=\"/sustentacao-de-software\">sustentação</a>, com <a href=\"/qa-e-testes\">QA e testes</a> a cada versão. Um exemplo de reconstrução é a <a href=\"/cases/moltec\">calculadora da Moltec</a>.</p>"
           }
         ]
       }

@@ -3,7 +3,7 @@
   "template": "custom",
   "status": "published",
   "seo_title": "UI/UX design e discovery de produto | Quatro Ventos",
-  "seo_description": "Discovery, arquitetura de informação, protótipo e design de interface para produtos digitais.",
+  "seo_description": "Discovery, arquitetura de informação, protótipo e UI design para produtos digitais, com design que vira código no mesmo time.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/ui-ux-design.jpg",
@@ -14,7 +14,7 @@
       "type": "site.hero",
       "data": {
         "title": "UI/UX design e *discovery de produto.*",
-        "subtitle": "<p>Antes de programar, entender. O problema é pesquisado, o fluxo desenhado e as telas validadas com quem vai usar.</p>",
+        "subtitle": "<p>UI/UX design é o trabalho de entender quem usa um produto e desenhar telas que levam essa pessoa ao resultado sem esforço. Fazemos discovery, arquitetura de informação, protótipo e design de interface, e o mesmo time transforma o protótipo aprovado em código, sem perder nada no repasse.</p>",
         "visual": "ux",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20UI%2FUX%20design."
@@ -158,6 +158,8 @@
       "data": {
         "title": "Do design recebido ao site no ar.",
         "intro": "<p>Layouts entregues pelos clientes, implementados fiéis ao design, com o CMS e a stack que cada projeto pedia.</p>",
+        "link_to": "url",
+        "cta_label": "Ver o site",
         "items": [
           "ramos-benedetti",
           "produtive"
@@ -189,6 +191,14 @@
           {
             "question": "Vocês desenvolvem a partir de um design que já temos?",
             "answer": "<p>Sim. Recebemos o layout pronto, em Figma ou outra ferramenta, e implementamos o site ou sistema fiel a ele, em Laravel, WordPress ou na stack que o projeto pedir.</p>"
+          },
+          {
+            "question": "Qual a diferença entre UI e UX?",
+            "answer": "<p>UX é a experiência inteira: o caminho que a pessoa faz, o que ela entende e onde trava. UI é a camada visual dessa experiência, com telas, botões, tipografia e cores. Um visual bonito não salva um fluxo confuso, por isso o UX vem primeiro.</p>"
+          },
+          {
+            "question": "Quanto custa e quanto tempo leva?",
+            "answer": "<p>Depende do número de fluxos e telas e de quanto discovery o produto precisa. [PREENCHER: faixa de investimento e prazo típico] O design aprovado segue direto para <a href=\"/software-sob-medida\">software sob medida</a> ou para a <a href=\"/desenvolvimento-de-sites\">criação de sites</a>.</p>"
           }
         ]
       }

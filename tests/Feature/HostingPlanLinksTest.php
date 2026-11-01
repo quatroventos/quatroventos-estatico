@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Page;
 use App\Models\SiteSetting;
 use App\Services\PublicContent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -51,5 +52,36 @@ class HostingPlanLinksTest extends TestCase
         $site = app(PublicContent::class)->site();
 
         $this->assertSame(['woo-pro' => 'https://loja.example.com/woo-pro'], (array) $site['plan_links']);
+    }
+
+    public function test_pricing_plan_href_uses_settings_link_with_same_key(): void
+    {
+        SiteSetting::query()->create([
+            'name' => 'Quatro Ventos',
+            'plan_links' => ['sites-basic' => 'https://loja.example.com/basic'],
+        ]);
+
+        Page::query()->create([
+            'slug' => 'hospedagem-de-sites',
+            'template' => 'custom',
+            'status' => 'published',
+            'seo_title' => 'Hospedagem de sites | Quatro Ventos',
+            'published_at' => now(),
+            'content' => ['sections' => [
+                ['id' => 'pricing-1', 'type' => 'site.pricing', 'data' => ['categories' => [
+                    ['id' => 'sites', 'plans' => [
+                        ['name' => 'Basic', 'href' => 'https://antigo.example.com/basic', 'link_key' => 'sites-basic'],
+                        ['name' => 'Pro', 'href' => 'https://antigo.example.com/pro', 'link_key' => 'sites-pro'],
+                        ['name' => 'Ultra', 'href' => 'https://antigo.example.com/ultra'],
+                    ]],
+                ]]],
+            ]],
+        ]);
+
+        $this->getJson('/api/pages/hospedagem-de-sites')
+            ->assertOk()
+            ->assertJsonPath('sections.0.data.categories.0.plans.0.href', 'https://loja.example.com/basic')
+            ->assertJsonPath('sections.0.data.categories.0.plans.1.href', 'https://antigo.example.com/pro')
+            ->assertJsonPath('sections.0.data.categories.0.plans.2.href', 'https://antigo.example.com/ultra');
     }
 }

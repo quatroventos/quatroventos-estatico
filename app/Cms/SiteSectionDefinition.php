@@ -252,6 +252,7 @@ class SiteSectionDefinition
                                     ['type' => 'text', 'name' => 'from', 'label' => 'Linha de abertura (ex.: Tudo do Basic, com)'],
                                     ['type' => 'repeater', 'name' => 'adds', 'label' => 'Itens do plano', 'simple' => true, 'itemType' => 'text'],
                                     ['type' => 'text', 'name' => 'href', 'label' => 'Link de contratação'],
+                                    ['type' => 'select', 'name' => 'link_key', 'label' => 'Link de compra das Configurações', 'options' => self::options(config('cms.hosting_plans', [])), 'hint' => 'Quando preenchido em Configurações, substitui o link de contratação.'],
                                     ['type' => 'text', 'name' => 'alt_href', 'label' => 'Link "Falar com a equipe"'],
                                 ],
                             ],
@@ -316,6 +317,11 @@ class SiteSectionDefinition
                     ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
                     ['type' => 'rich', 'name' => 'intro', 'label' => 'Introdução'],
                     ['type' => 'cases', 'name' => 'items', 'label' => 'Cases', 'max' => 6, 'all' => true, 'hint' => 'Só os cases publicados aparecem no site.'],
+                    ['type' => 'select', 'name' => 'link_to', 'label' => 'Link dos cases', 'options' => [
+                        ['value' => 'case', 'label' => 'Página do case'],
+                        ['value' => 'url', 'label' => 'Site do case (URL do cadastro)'],
+                    ], 'hint' => 'Case sem URL cadastrada continua apontando para a página do case.'],
+                    ['type' => 'text', 'name' => 'cta_label', 'label' => 'Texto do link', 'hint' => 'Padrão: Ver case.'],
                     [
                         'type' => 'repeater',
                         'name' => 'placeholders',

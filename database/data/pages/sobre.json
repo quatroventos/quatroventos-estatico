@@ -2,8 +2,8 @@
   "slug": "sobre",
   "template": "custom",
   "status": "published",
-  "seo_title": "Sobre a Quatro Ventos | Tecnologia para melhorar processos desde 2005",
-  "seo_description": "Desde 2005 em Curitiba, a Quatro Ventos ajuda empresas a melhorar processos com tecnologia. Hoje, com soluções criativas de inteligência artificial.",
+  "seo_title": "Sobre a Quatro Ventos: tecnologia em Curitiba desde 2005",
+  "seo_description": "Desde 2005 em Curitiba, a Quatro Ventos ajuda empresas a melhorar processos com IA, software e web. Conheça a história, o time e o método.",
   "canonical": "https://www.quatroventos.com.br/sobre",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
@@ -14,11 +14,11 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Design, Code, Test,",
+        "title": "Quatro Ventos: Design, Code, Test,",
         "rotating": [
           "Repeat."
         ],
-        "subtitle": "<p>O lema existe desde 2005. Vem do algoritmo do shampoo, a piada de TI sobre a instrução \"lave, enxágue, repita\", que nunca termina. Para a Quatro Ventos, o loop é a disciplina de melhorar processos continuamente: entender, construir, medir e repetir.</p>"
+        "subtitle": "<p>A Quatro Ventos é uma empresa de tecnologia de Curitiba, fundada em 2005, que ajuda empresas a melhorar processos com IA, software e web. O lema vem do algoritmo do shampoo, a piada de TI sobre \"lave, enxágue, repita\": para nós, o loop é entender, construir, medir e repetir.</p>"
       }
     },
     {

@@ -2,8 +2,8 @@
   "slug": "vps-e-infraestrutura",
   "template": "custom",
   "status": "published",
-  "seo_title": "VPS e infraestrutura gerenciada | Quatro Ventos",
-  "seo_description": "VPS e infraestrutura própria gerenciada para sistemas, automações, aplicações de IA e sites.",
+  "seo_title": "VPS gerenciado para n8n e IA | Quatro Ventos",
+  "seo_description": "Cloud VPS gerenciado com infraestrutura própria para sistemas, n8n, aplicações de IA e sites. Planos, recursos e suporte humano.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/vps-e-infraestrutura.jpg",
@@ -14,7 +14,7 @@
       "type": "site.hero",
       "data": {
         "title": "VPS e infraestrutura *gerenciada.*",
-        "subtitle": "<p>Servidores configurados e mantidos por quem desenvolve. Para aplicações, APIs, n8n, bancos de dados e modelos de IA que precisam rodar em ambiente controlado.</p>",
+        "subtitle": "<p>VPS gerenciado é um servidor virtual configurado e mantido por quem desenvolve as aplicações que rodam nele. Oferecemos Cloud VPS em infraestrutura própria, operada pela Firefly Host, para sistemas, APIs, bancos de dados, n8n e aplicações de IA, com monitoramento, backup e suporte humano.</p>",
         "visual": "vps",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20um%20VPS%20gerenciado."
@@ -234,6 +234,10 @@
           {
             "question": "Quem cuida do servidor depois da entrega?",
             "answer": "<p>A Quatro Ventos. Atualizações de segurança, backups e monitoramento seguem com o mesmo time, que conhece a aplicação.</p>"
+          },
+          {
+            "question": "Qual plano escolher para rodar n8n?",
+            "answer": "<p>Depende do número de fluxos e de execuções por dia. [PREENCHER: plano indicado para n8n] O n8n é a base das nossas <a href=\"/automacao-com-ia\">automações com IA</a>, e o servidor pode ficar em <a href=\"/sustentacao-de-software\">sustentação</a> junto com a aplicação.</p>"
           }
         ]
       }

@@ -2,8 +2,8 @@
   "slug": "erp-e-crm",
   "template": "custom",
   "status": "published",
-  "seo_title": "Implantação e integração de ERP e CRM | Quatro Ventos",
-  "seo_description": "ERP e CRM sob medida ou em plataforma (Odoo, Salesforce), integrados aos sistemas da operação.",
+  "seo_title": "ERP e CRM: implantação e integração | Quatro Ventos",
+  "seo_description": "Implantação e integração de ERP e CRM (Odoo, Salesforce ou sob medida) com WhatsApp, e-commerce e financeiro, no mesmo dado.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/erp-e-crm.jpg",
@@ -14,7 +14,7 @@
       "type": "site.hero",
       "data": {
         "title": "ERP e CRM integrados *ao restante da operação.*",
-        "subtitle": "<p>Implantação, customização e integração de ERP e CRM, em plataformas como Odoo e Salesforce ou sob medida, para que vendas, financeiro e operação trabalhem com o mesmo dado.</p>",
+        "subtitle": "<p>ERP e CRM são os sistemas que organizam a operação e o relacionamento com clientes. Implantamos e integramos ERP e CRM, em Odoo, Salesforce ou sob medida, ao WhatsApp, ao e-commerce e ao financeiro, para que vendas, financeiro e operação trabalhem com o mesmo dado, sem digitar nada duas vezes.</p>",
         "visual": "pipeline",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20ERP%20e%20CRM."
@@ -170,6 +170,18 @@
           {
             "question": "Onde a IA entra no ERP e no CRM?",
             "answer": "<p>Em rotinas repetitivas, como ler documentos de entrada, classificar solicitações e preencher lançamentos, sempre dentro das regras configuradas.</p>"
+          },
+          {
+            "question": "Qual a diferença entre ERP e CRM?",
+            "answer": "<p>O ERP cuida do que acontece dentro da empresa: estoque, compras, faturamento, fiscal e financeiro. O CRM cuida do cliente antes e depois da venda, com contatos, oportunidades, funil e atendimento. Quando os dois conversam, o pedido fechado no CRM vira faturamento no ERP sem redigitação.</p>"
+          },
+          {
+            "question": "Quais sistemas vocês integram?",
+            "answer": "<p>Odoo, Salesforce e sistemas sob medida, além de WhatsApp, lojas virtuais, meios de pagamento e emissão fiscal, por API ou, quando não há API, por <a href=\"/automacao-com-ia\">automação</a>. [VERIFICAR: lista nominal de ERPs e CRMs já integrados] Para lojas, veja <a href=\"/desenvolvimento-de-ecommerce\">criação de loja virtual</a>.</p>"
+          },
+          {
+            "question": "Quanto custa a implantação?",
+            "answer": "<p>Depende da plataforma, do número de usuários e das integrações. [PREENCHER: faixa de investimento de implantação]</p>"
           }
         ]
       }

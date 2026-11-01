@@ -35,6 +35,7 @@ export type CaseImage = {
 export type CaseCard = {
   slug: string;
   path: string;
+  url?: string | null;
   client: string;
   title: string;
   summary: string;

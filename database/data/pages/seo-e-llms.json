@@ -2,8 +2,8 @@
   "slug": "seo-e-llms",
   "template": "custom",
   "status": "published",
-  "seo_title": "SEO e otimização para LLMs | Quatro Ventos",
-  "seo_description": "Otimização de sites para mecanismos de busca e para respostas de IA como ChatGPT, Gemini e Perplexity: SEO técnico, conteúdo, dados estruturados e autoridade.",
+  "seo_title": "SEO e GEO: otimização para Google e IAs | Quatro Ventos",
+  "seo_description": "SEO técnico e de conteúdo para o Google e GEO para aparecer em respostas do ChatGPT, Gemini e Perplexity. Diagnóstico e plano por página.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/seo-e-llms.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "SEO para o Google e para as *respostas de IA.*",
-        "subtitle": "<p>Otimização para mecanismos de busca e para LLMs. O site aparece quando o cliente pesquisa no Google e quando pergunta ao ChatGPT, ao Gemini ou ao Perplexity.</p>",
+        "title": "SEO para o Google e GEO *para as respostas de IA.*",
+        "subtitle": "<p>GEO, ou otimização para mecanismos generativos, é preparar o site para ser citado nas respostas do ChatGPT, do Gemini e do Perplexity, assim como o SEO prepara para o Google. Fazemos os dois: SEO técnico e de conteúdo, dados estruturados e um plano por página, a partir de um diagnóstico do site.</p>",
         "visual": "seo",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20um%20diagn%C3%B3stico%20de%20SEO%20e%20presen%C3%A7a%20em%20IA."
@@ -195,6 +195,14 @@
           {
             "question": "Dá para começar por um diagnóstico?",
             "answer": "<p>Sim. O diagnóstico gratuito avalia SEO on-page, velocidade e segurança do site. <a href=\"/diagnostico-de-site\">Por que o site não vende?</a></p>"
+          },
+          {
+            "question": "O que é GEO?",
+            "answer": "<p>É a sigla em inglês para otimização para mecanismos generativos. O SEO trabalha para a página aparecer entre os links do Google; o GEO, para que o conteúdo seja usado e citado quando alguém pergunta a uma IA.</p>"
+          },
+          {
+            "question": "Quanto custa?",
+            "answer": "<p>O trabalho começa por um diagnóstico e segue com acompanhamento mensal. [PREENCHER: valor do diagnóstico e do acompanhamento] Para começar, peça o <a href=\"/diagnostico-de-site\">diagnóstico gratuito de site</a>.</p>"
           }
         ]
       }

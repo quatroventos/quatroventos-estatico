@@ -52,8 +52,9 @@ function cases(data: Data, key: string): CaseCard[] {
   return Array.isArray(value) ? value.filter((item): item is CaseCard => Boolean(item) && typeof item === 'object' && 'slug' in item) : [];
 }
 
-export function toShowcase(item: CaseCard): ShowcaseCase {
+export function toShowcase(item: CaseCard, data: Data = {}): ShowcaseCase {
   const ratio = item.cover_ratio === '16x9' || item.cover_ratio === '16x10' ? item.cover_ratio : undefined;
+  const external = text(data, 'link_to') === 'url' && Boolean(item.url);
 
   return {
     slug: item.slug,
@@ -62,8 +63,9 @@ export function toShowcase(item: CaseCard): ShowcaseCase {
     ratio,
     tags: item.tags ?? [],
     text: item.summary,
-    href: item.path,
-    cta: t('cases.view'),
+    href: external ? item.url ?? '' : item.path,
+    external: external || undefined,
+    cta: text(data, 'cta_label') || t('cases.view'),
   };
 }
 
@@ -289,7 +291,7 @@ export function FiguresBlock({ data }: { data: Data }) {
 }
 
 export function ShowcaseBlock({ data }: { data: Data }) {
-  const items = [...cases(data, 'cases').map(toShowcase), ...placeholders(data)];
+  const items = [...cases(data, 'cases').map((item) => toShowcase(item, data)), ...placeholders(data)];
 
   return (
     <>
@@ -300,7 +302,7 @@ export function ShowcaseBlock({ data }: { data: Data }) {
 }
 
 export function CaseGridBlock({ data }: { data: Data }) {
-  const featured = cases(data, 'featured_cases').map(toShowcase);
+  const featured = cases(data, 'featured_cases').map((item) => toShowcase(item));
   const grid = cases(data, 'cases');
 
   return (

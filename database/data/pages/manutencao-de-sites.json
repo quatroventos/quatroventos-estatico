@@ -2,8 +2,8 @@
   "slug": "manutencao-de-sites",
   "template": "custom",
   "status": "published",
-  "seo_title": "Manutenção de sites e WordPress: planos a partir de R$ 350 | Quatro Ventos",
-  "seo_description": "Planos de manutenção de sites e WordPress: atualizações, backups, monitoramento e suporte. Basic R$ 350, Standard R$ 520, Pro R$ 990 por mês.",
+  "seo_title": "Manutenção de sites e WordPress a partir de R$ 350 | Quatro Ventos",
+  "seo_description": "Planos de manutenção de sites e WordPress: atualizações, backups, monitoramento e suporte humano. A partir de R$ 350 por mês.",
   "canonical": "https://www.quatroventos.com.br/manutencao-de-sites",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
@@ -14,8 +14,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Seu site está com problemas? *Podemos resolver!*",
-        "subtitle": "<p>Recuperação de sites, restauração de backups, migrações, ajustes e muito mais.</p>",
+        "title": "Manutenção de sites *e WordPress.*",
+        "subtitle": "<p>Manutenção de sites é a rotina que mantém o site atualizado, com backup e monitorado antes que um problema chegue ao visitante. Os planos de manutenção de sites e WordPress incluem atualizações, cópias de segurança, monitoramento e suporte humano do time que desenvolve, a partir de R$ 350 por mês.</p>",
         "visual": "maintain",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20um%20plano%20de%20manuten%C3%A7%C3%A3o%20para%20o%20meu%20site."
@@ -226,6 +226,10 @@
           {
             "question": "Meu site foi invadido. A manutenção resolve?",
             "answer": "<p>A limpeza de malware e a restauração do site são feitas na recuperação. Depois dela, o plano de manutenção evita a reincidência. <a href=\"/recuperacao-de-site-wordpress\">Recuperação de site WordPress</a></p>"
+          },
+          {
+            "question": "Manutenção ou hospedagem: preciso dos dois?",
+            "answer": "<p>São coisas diferentes. A <a href=\"/hospedagem-de-sites\">hospedagem</a> é o servidor onde o site fica; a manutenção cuida do site em si, com atualização, backup e correções. Quem já foi invadido começa pela <a href=\"/recuperacao-de-site-wordpress\">recuperação de WordPress</a> e depois entra num plano.</p>"
           }
         ]
       }

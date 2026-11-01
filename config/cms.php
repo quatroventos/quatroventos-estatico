@@ -15,7 +15,7 @@ return [
     ],
     /*
      * Planos de /hospedagem-de-sites com link de compra editável no CMS.
-     * As chaves batem com o "id" de cada plano em resources/js/site/static/pages/hospedagem-de-sites.tsx.
+     * As chaves batem com o campo "link_key" de cada plano na seção de planos da página.
      */
     'hosting_plans' => [
         'sites-basic' => 'Sites · Basic',

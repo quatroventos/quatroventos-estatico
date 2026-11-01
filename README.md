@@ -145,7 +145,9 @@ php artisan db:seed --force
 
 O seed cria o admin, as configurações, o menu, as páginas (`database/data/pages/*.json`) e os cases. Não use `migrate:fresh`.
 
-Para recarregar só o conteúdo, sem tocar nos usuários: `php artisan db:seed --class=SiteContentSeeder --force`. Antes de sobrescrever uma página, o seeder salva uma revisão dela. Os JSONs são gerados a partir das páginas estáticas com `node scripts/static-to-cms.mjs` (`--check` compara a renderização do CMS com a estática).
+Para recarregar só o conteúdo, sem tocar nos usuários: `php artisan db:seed --class=SiteContentSeeder --force`. Antes de sobrescrever uma página, o seeder salva uma revisão dela.
+
+Para completar páginas já editadas no CMS com campos ou seções novas dos JSONs, sem sobrescrever conteúdo: `php artisan cms:backfill-sections --dry-run` (lista as mudanças) e, depois, `php artisan cms:backfill-sections`. Cada página alterada ganha uma revisão antes de salvar.
 
 Cache, sessão e fila ficam no MySQL. Não há worker. O cron do cPanel (PHP 8.3, todo minuto) cobre backup e Lighthouse:
 

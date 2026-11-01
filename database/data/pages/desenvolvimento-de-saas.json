@@ -2,8 +2,8 @@
   "slug": "desenvolvimento-de-saas",
   "template": "custom",
   "status": "published",
-  "seo_title": "Desenvolvimento de SaaS | Quatro Ventos",
-  "seo_description": "Desenvolvimento de produtos SaaS: arquitetura multi-tenant, cobrança, painel e evolução contínua.",
+  "seo_title": "Desenvolvimento de SaaS: como criar o seu | Quatro Ventos",
+  "seo_description": "Do MVP ao SaaS em produção: arquitetura multi-tenant, cobrança recorrente, painel e evolução contínua. Veja etapas, prazos e exemplos.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/desenvolvimento-de-saas.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Desenvolvimento *de SaaS.*",
-        "subtitle": "<p>Do MVP ao produto com clientes pagantes. Arquitetura multi-tenant, autenticação, planos e cobrança, painel administrativo e IA embarcada quando o produto pede.</p>",
+        "title": "Desenvolvimento de SaaS, *da ideia ao produto em uso.*",
+        "subtitle": "<p>Criar um SaaS é transformar uma solução que serve a muitas empresas em um produto cobrado por assinatura. Desenvolvemos do MVP ao produto em produção, com arquitetura multi-tenant, cobrança recorrente, painel administrativo e evolução contínua, como fizemos na SeuCommerce e no Firefly Webmaker.</p>",
         "visual": "saas",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20o%20desenvolvimento%20de%20um%20SaaS."
@@ -155,6 +155,8 @@
       "data": {
         "title": "SaaS em produção.",
         "intro": "<p>Produtos por assinatura que construímos e que estão no ar.</p>",
+        "link_to": "url",
+        "cta_label": "Ver o produto",
         "items": [
           "bia",
           "firefly-webmaker",
@@ -187,6 +189,18 @@
           {
             "question": "Dá para colocar IA no produto?",
             "answer": "<p>Sim, quando o produto pede. Funcionalidades de IA entram como parte do escopo, com o modelo escolhido pelo equilíbrio entre custo e qualidade.</p>"
+          },
+          {
+            "question": "Como criar um SaaS, passo a passo?",
+            "answer": "<p>Em seis etapas: validar o problema com quem vai pagar; definir o MVP, com o mínimo que já resolve; desenhar a arquitetura multi-tenant, as permissões e a cobrança; desenvolver e testar; lançar para os primeiros clientes; e evoluir a partir do uso. O produto roda em <a href=\"/vps-e-infraestrutura\">infraestrutura gerenciada</a> desde o lançamento.</p>"
+          },
+          {
+            "question": "Quanto custa um MVP de SaaS?",
+            "answer": "<p>Depende das funcionalidades do MVP, das integrações e do modelo de cobrança. [PREENCHER: faixa de investimento e prazo de um MVP]</p>"
+          },
+          {
+            "question": "Que SaaS vocês já construíram?",
+            "answer": "<p>A <a href=\"/cases/seucommerce\">SeuCommerce</a>, plataforma em que o lojista cria e gerencia a própria loja por assinatura, e o <a href=\"/cases/firefly-webmaker\">Firefly Webmaker</a>, que cria e publica landing pages com agentes de IA.</p>"
           }
         ]
       }

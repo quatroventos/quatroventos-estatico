@@ -2,8 +2,8 @@
   "slug": "desenvolvimento-web",
   "template": "custom",
   "status": "published",
-  "seo_title": "Desenvolvimento web: sites, landing pages e e-commerce | Quatro Ventos",
-  "seo_description": "Sites institucionais, landing pages, e-commerce e WordPress integrados ao processo comercial, rápidos, gerenciáveis e preparados para o Google.",
+  "seo_title": "Desenvolvimento web: sites e e-commerce | Quatro Ventos",
+  "seo_description": "Sites institucionais, landing pages, e-commerce e WordPress integrados ao processo comercial, rápidos e preparados para o Google e IAs.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/desenvolvimento-web.jpg",
@@ -13,8 +13,8 @@
       "id": "hero-1",
       "type": "site.hero",
       "data": {
-        "title": "Sites que trabalham pelo *processo comercial.*",
-        "subtitle": "<p>Sites, landing pages e lojas virtuais sob medida. Rápidos, gerenciáveis, preparados para o Google e conectados a atendimento, CRM, automações e IA.</p>",
+        "title": "Desenvolvimento web que trabalha pelo *processo comercial.*",
+        "subtitle": "<p>Desenvolvimento web é a criação de sites, landing pages e lojas virtuais. Fazemos sites institucionais, landing pages, e-commerce e WordPress sob medida, rápidos, editáveis pelo seu time e preparados para o Google e para as respostas de IA, ligados ao atendimento, ao CRM e às automações que a empresa usa.</p>",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20um%20or%C3%A7amento%20de%20desenvolvimento%20web."
       }
@@ -122,6 +122,14 @@
           {
             "question": "E após a publicação?",
             "answer": "<p>30 dias de garantia e planos de manutenção em <a href=\"/manutencao-de-sites\">Manutenção de sites e WordPress</a>.</p>"
+          },
+          {
+            "question": "Quanto custa um site?",
+            "answer": "<p>Landing pages partem de R$ 350,00, com um ano de hospedagem. Sites institucionais, lojas virtuais e projetos em WordPress dependem do número de páginas e das integrações. [PREENCHER: preço a partir de para site institucional e e-commerce]</p>"
+          },
+          {
+            "question": "Quanto tempo leva?",
+            "answer": "<p>Landing pages ficam prontas em até 24 horas; nos demais projetos, o prazo sai do escopo. [PREENCHER: prazo típico de site institucional] Veja cada serviço: <a href=\"/desenvolvimento-de-sites\">criação de sites</a>, <a href=\"/landing-pages\">landing pages</a>, <a href=\"/desenvolvimento-de-ecommerce\">e-commerce</a>, <a href=\"/sites-wordpress\">WordPress</a> e <a href=\"/seo-e-llms\">SEO e GEO</a>.</p>"
           }
         ]
       }

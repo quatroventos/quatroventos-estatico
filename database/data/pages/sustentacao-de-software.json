@@ -3,7 +3,7 @@
   "template": "custom",
   "status": "published",
   "seo_title": "Sustentação e suporte de software | Quatro Ventos",
-  "seo_description": "Suporte contínuo a sistemas em produção: monitoramento, correções, atualizações e evolução.",
+  "seo_description": "Monitoramento, correções, atualizações e evolução de sistemas em produção, inclusive de terceiros. Pacotes de horas com SLA.",
   "robots": "index, follow, max-image-preview:large",
   "twitter_card": "summary_large_image",
   "og_image": "/assets/og/sustentacao-de-software.jpg",
@@ -14,7 +14,7 @@
       "type": "site.hero",
       "data": {
         "title": "Sustentação *de software.*",
-        "subtitle": "<p>Sistemas em produção monitorados, atualizados e acompanhados por um time que conhece o código. Correção, atualização e evolução, inclusive de sistemas desenvolvidos por terceiros.</p>",
+        "subtitle": "<p>Suporte de software é o acompanhamento do sistema depois da publicação. Na sustentação, monitoramos, corrigimos, atualizamos e evoluímos sistemas em produção, inclusive os desenvolvidos por outras empresas, com um time que conhece o código e registra o que sabe, para que o conhecimento fique com a empresa.</p>",
         "visual": "sustain",
         "lead_form": true,
         "lead_whatsapp": "https://wa.me/554130399593?text=Gostaria%20de%20conversar%20sobre%20sustenta%C3%A7%C3%A3o%20de%20software."
@@ -194,6 +194,14 @@
           {
             "question": "O conhecimento sobre o sistema fica com a empresa?",
             "answer": "<p>Sim. Documentação e passagem de conhecimento fazem parte do escopo, para que o sistema não dependa de uma única pessoa.</p>"
+          },
+          {
+            "question": "Como funcionam os pacotes de horas e o SLA?",
+            "answer": "<p>A sustentação é contratada em pacotes mensais de horas, com prazo de atendimento definido pela gravidade do problema. [PREENCHER: pacotes, horas incluídas, SLA e valores de cada um]</p>"
+          },
+          {
+            "question": "Em quanto tempo vocês assumem um sistema?",
+            "answer": "<p>Depois da auditoria técnica de código, infraestrutura e riscos. [PREENCHER: prazo típico da auditoria] Sistemas antigos podem precisar antes de <a href=\"/modernizacao-de-sistemas\">modernização</a>, e o servidor pode ficar em uma <a href=\"/vps-e-infraestrutura\">VPS gerenciada</a> pelo mesmo time.</p>"
           }
         ]
       }
