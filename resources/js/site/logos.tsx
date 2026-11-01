@@ -5,7 +5,7 @@ import { t } from './i18n';
 import { type Data, rows, text } from './ui';
 
 const ROWS = 2;
-const INTERVAL = 4500;
+const INTERVAL = 3200;
 const SWIPE = 40;
 
 function pad(value: number): string {
