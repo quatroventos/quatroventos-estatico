@@ -95,7 +95,7 @@ function header() {
     });
   });
 
-  const langMenu = document.querySelector('.site-header .lang-menu');
+  const langMenu = document.querySelector('.lang-float .lang-menu');
 
   document.addEventListener('click', (event) => {
     if (langMenu?.open && !langMenu.contains(event.target)) {
@@ -113,6 +113,95 @@ function header() {
     }
     openMega(null);
     setMobile(false);
+  });
+}
+
+const CONSENT_COOKIE = 'qv_consent';
+let trackingActive = false;
+
+function readConsent() {
+  const match = document.cookie.match(new RegExp(`(?:^|; )${CONSENT_COOKIE}=([^;]+)`));
+
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+function writeConsent(value) {
+  const secure = location.protocol === 'https:' ? '; secure' : '';
+  document.cookie = `${CONSENT_COOKIE}=${value}; path=/; max-age=${60 * 60 * 24 * 180}; samesite=lax${secure}`;
+}
+
+// Scripts inseridos via template/innerHTML não executam: cada <script> é recriado.
+function revive(script) {
+  const fresh = document.createElement('script');
+  for (const attribute of script.attributes) {
+    if (attribute.name === 'type' && attribute.value === 'text/plain') {
+      continue;
+    }
+    if (attribute.name === 'data-consent') {
+      continue;
+    }
+    fresh.setAttribute(attribute.name === 'data-src' ? 'src' : attribute.name, attribute.value);
+  }
+  fresh.text = script.text;
+
+  return fresh;
+}
+
+function activateTracking() {
+  if (trackingActive) {
+    return;
+  }
+  trackingActive = true;
+
+  document.querySelectorAll('script[type="text/plain"][data-consent]').forEach((script) => script.replaceWith(revive(script)));
+  document.querySelectorAll('template[data-consent]').forEach((template) => {
+    const fragment = template.content.cloneNode(true);
+    fragment.querySelectorAll('script').forEach((script) => script.replaceWith(revive(script)));
+    template.replaceWith(fragment);
+  });
+}
+
+function forgetTracking() {
+  try {
+    localStorage.removeItem('rba_vid');
+    sessionStorage.removeItem('rba_sid');
+    sessionStorage.removeItem('rba_sid_at');
+  } catch {
+    // Armazenamento bloqueado pelo navegador: nada a limpar.
+  }
+}
+
+function consent() {
+  const notice = document.querySelector('[data-cookie-notice]');
+  const current = readConsent();
+
+  if (current === 'all') {
+    activateTracking();
+  } else if (current === null && notice) {
+    notice.hidden = false;
+  }
+
+  notice?.querySelectorAll('[data-cookie-choice]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const choice = button.dataset.cookieChoice === 'all' ? 'all' : 'essential';
+      writeConsent(choice);
+      notice.hidden = true;
+      if (choice === 'all') {
+        activateTracking();
+      } else {
+        forgetTracking();
+      }
+    });
+  });
+
+  document.querySelectorAll('[data-cookie-prefs]').forEach((button) => {
+    button.addEventListener('click', () => {
+      if (!notice) {
+        return;
+      }
+      notice.hidden = false;
+      notice.querySelector('[data-cookie-choice]')?.focus();
+    });
   });
 }
 
@@ -924,6 +1013,7 @@ function logos() {
 
 reveal();
 header();
+consent();
 lens();
 tilt();
 rotating();

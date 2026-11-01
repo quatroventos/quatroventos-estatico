@@ -46,14 +46,10 @@
         }
       </style>
     @endif
-    @if(!empty($site?->tag_header))
-      {!! $site->tag_header !!}
-    @endif
+    {!! consent_tags($site?->tag_header) !!}
   </head>
   <body>
-    @if(!empty($site?->tag_body))
-      {!! $site->tag_body !!}
-    @endif
+    {!! consent_tags($site?->tag_body) !!}
     @include('partials.header')
     <main>
       @yield('content')
@@ -65,10 +61,8 @@
     @endforeach
     <script src="{{ asset('js/reveal.js') }}"></script>
     @if(empty($cmsPreview) && !request()->boolean('cms_preview'))
-      <script src="{{ asset('js/t.js') }}"></script>
+      <script type="text/plain" data-consent="analytics" data-src="{{ asset('js/t.js') }}"></script>
     @endif
-    @if(!empty($site?->tag_footer))
-      {!! $site->tag_footer !!}
-    @endif
+    {!! consent_tags($site?->tag_footer) !!}
   </body>
 </html>

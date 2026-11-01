@@ -107,6 +107,7 @@ export type SitePayload = {
   form: SiteForm | null;
   cases?: Record<string, CaseCard>;
   plan_links?: Record<string, string>;
+  legal?: { privacy?: string; cookies?: string };
 };
 
 declare global {

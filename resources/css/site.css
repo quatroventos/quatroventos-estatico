@@ -655,23 +655,36 @@ h3 {
   }
 }
 
-/* Seletor de idioma do header: dropdown discreto, abre com <details> sem depender de JS */
+/* Seletor de idioma flutuante: canto inferior direito, ao lado do WhatsApp; abre com <details> sem depender de JS */
+.lang-float {
+  position: fixed;
+  right: 24px;
+  bottom: 36px;
+  z-index: 25;
+}
+
+.lang-float.is-beside-wa {
+  right: 96px;
+}
+
 .lang-menu {
   position: relative;
-  flex: none;
 }
 
 .lang-menu summary {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 34px;
-  padding: 0 10px;
+  height: 36px;
+  padding: 0 12px 0 14px;
   border-radius: 999px;
   font-family: var(--mono);
   font-size: 11.5px;
   letter-spacing: 0.06em;
   color: var(--on-dark-soft);
+  background: rgb(18 18 22 / 0.86);
+  box-shadow: inset 0 0 0 1px var(--line-dark), 0 10px 30px rgb(0 0 0 / 0.3);
+  backdrop-filter: blur(10px);
   list-style: none;
   cursor: pointer;
   transition: color 0.2s var(--ease);
@@ -695,18 +708,18 @@ h3 {
   width: 8px;
   height: 8px;
   opacity: 0.7;
+  transform: rotate(180deg);
   transition: transform 0.2s var(--ease);
 }
 
 .lang-menu[open] .caret {
-  transform: rotate(180deg);
+  transform: none;
 }
 
 .lang-menu ul {
   position: absolute;
-  top: calc(100% + 10px);
   right: 0;
-  z-index: 20;
+  bottom: calc(100% + 10px);
   display: grid;
   min-width: 168px;
   padding: 6px;
@@ -746,9 +759,74 @@ h3 {
   color: var(--lime);
 }
 
+@media (max-width: 640px) {
+  .lang-float {
+    right: 16px;
+    bottom: 26px;
+  }
+
+  .lang-float.is-beside-wa {
+    right: 84px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .lang-menu .caret {
     transition: none;
+  }
+}
+
+/* Aviso de cookies: cartão no canto inferior esquerdo, fora do caminho do WhatsApp e do idioma */
+.cookie-notice {
+  position: fixed;
+  left: 24px;
+  bottom: 24px;
+  z-index: 30;
+  display: grid;
+  gap: 16px;
+  width: min(420px, calc(100vw - 48px));
+  padding: 20px 22px;
+  border-radius: 18px;
+  background: var(--panel);
+  box-shadow: inset 0 0 0 1px var(--line-dark), 0 24px 48px rgb(0 0 0 / 0.45);
+  color: var(--on-dark-soft);
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.cookie-notice[hidden] {
+  display: none;
+}
+
+.cookie-notice a {
+  color: var(--white);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.cookie-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.cookie-notice .pill.small {
+  min-height: 40px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .cookie-notice {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+    width: auto;
+  }
+
+  .cookie-notice-actions .pill {
+    flex: 1;
   }
 }
 
@@ -809,7 +887,6 @@ h3 {
   .main-nav,
   .header-cta,
   .header-bar > .lang-switch,
-  .header-bar > .lang-menu,
   .mega {
     display: none;
   }
@@ -7491,8 +7568,18 @@ a.card:hover .go {
   gap: 20px;
 }
 
-.footer-bottom a:hover {
+.footer-bottom a:hover,
+.footer-bottom .footer-link:hover {
   color: var(--white);
+}
+
+.footer-bottom .footer-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
 }
 
 .footer-motto {

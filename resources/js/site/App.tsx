@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type MouseEvent } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CmsCases } from './case-showcase';
 import { CasePage } from './cases';
-import { Footer, Header, WhatsAppFloat } from './chrome';
+import { Footer, Header, LangFloat, WhatsAppFloat } from './chrome';
 import { AgentLog } from './hero';
 import { DEFAULT_LOCALE, LOCALES, localePath, setLocale, splitLocalePath, t } from './i18n';
 import { applySeo } from './seo';
@@ -193,6 +193,7 @@ export function App() {
       </main>
       <Footer site={site} locale={locale} alternates={synced ? page?.alternates : undefined} />
       <WhatsAppFloat href={site?.whatsapp_url} />
+      <LangFloat site={site} locale={locale} alternates={synced ? page?.alternates : undefined} />
     </div>
     </CmsCases.Provider>
   );

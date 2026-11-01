@@ -42,14 +42,10 @@
     @else
       @vite(['resources/css/site.css', 'resources/js/site/behaviors.js'])
     @endif
-    @if(!empty($site?->tag_header))
-      {!! $site->tag_header !!}
-    @endif
+    {!! consent_tags($site?->tag_header) !!}
   </head>
   <body>
-    @if(!empty($site?->tag_body))
-      {!! $site->tag_body !!}
-    @endif
+    {!! consent_tags($site?->tag_body) !!}
     @if(!empty($cmsPreview))
       <div id="site-root"></div>
       <script>
@@ -60,10 +56,8 @@
       {!! $fragment ?? '' !!}
     @endif
     @if(empty($cmsPreview))
-      <script src="{{ asset('js/t.js') }}"></script>
+      <script type="text/plain" data-consent="analytics" data-src="{{ asset('js/t.js') }}"></script>
     @endif
-    @if(!empty($site?->tag_footer))
-      {!! $site->tag_footer !!}
-    @endif
+    {!! consent_tags($site?->tag_footer) !!}
   </body>
 </html>

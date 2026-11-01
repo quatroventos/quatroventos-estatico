@@ -193,3 +193,24 @@ if (! function_exists('cms_admin_path')) {
         return $path !== '' ? $path : 'gestao';
     }
 }
+
+if (! function_exists('consent_tags')) {
+    /**
+     * Tags personalizadas do CMS. Meta e link (verificação de buscadores) saem direto; o resto
+     * fica num <template data-consent> que o behaviors.js ativa só depois do aceite de cookies.
+     */
+    function consent_tags(?string $html): string
+    {
+        $html = trim((string) $html);
+
+        if ($html === '') {
+            return '';
+        }
+
+        preg_match_all('#<(?:meta|link)\b[^>]*>#i', $html, $matches);
+        $direct = implode("\n", $matches[0]);
+        $gated = trim((string) preg_replace('#<(?:meta|link)\b[^>]*>#i', '', $html));
+
+        return $direct.($gated !== '' ? "\n<template data-consent=\"analytics\">".$gated.'</template>' : '');
+    }
+}

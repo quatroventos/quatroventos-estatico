@@ -2,7 +2,7 @@ import { createElement, type ReactNode } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { CmsCases } from './case-showcase';
 import { CasePage } from './cases';
-import { Footer, Header, WhatsAppFloat } from './chrome';
+import { CookieNotice, Footer, Header, LangFloat, WhatsAppFloat } from './chrome';
 import { DEFAULT_LOCALE, setLocale } from './i18n';
 import { Sections } from './sections';
 import type { PagePayload, SitePayload } from './types';
@@ -17,6 +17,8 @@ function Shell({ page, site, body }: { page: PagePayload; site: SitePayload; bod
     createElement('main', { id: 'conteudo', tabIndex: -1 }, body),
     createElement(Footer, { site, locale, alternates: page.alternates }),
     createElement(WhatsAppFloat, { href: site.whatsapp_url }),
+    createElement(LangFloat, { site, locale, alternates: page.alternates }),
+    createElement(CookieNotice, { site }),
   );
 }
 

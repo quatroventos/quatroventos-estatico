@@ -132,12 +132,27 @@ class SiteAnalyticsTest extends TestCase
         $this->makeSettings();
         $this->makePage('home', 'Home');
 
-        $this->get('/')->assertOk()->assertSee('js/t.js', false);
+        $this->get('/')->assertOk()
+            ->assertSee('type="text/plain" data-consent="analytics" data-src="'.asset('js/t.js').'"', false)
+            ->assertDontSee('<script src="'.asset('js/t.js').'"', false);
 
         $this->actingAs($this->makeEditor())
             ->get('/gestao/preview/home')
             ->assertOk()
             ->assertDontSee('js/t.js', false);
+    }
+
+    public function test_custom_tags_wait_for_cookie_consent_but_verification_meta_does_not(): void
+    {
+        $this->makeSettings([
+            'tag_header' => '<meta name="google-site-verification" content="abc"><script>window.gtagLoaded = true;</script>',
+        ]);
+        $this->makePage('home', 'Home');
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        $this->assertStringContainsString('<meta name="google-site-verification" content="abc">', $html);
+        $this->assertStringContainsString('<template data-consent="analytics"><script>window.gtagLoaded = true;</script></template>', $html);
     }
 
     public function test_public_api_remains_hidden(): void

@@ -25,6 +25,8 @@ class PublicContent
 
     private const HOME_LABEL = ['pt-BR' => 'Início', 'en' => 'Home', 'es' => 'Inicio'];
 
+    public const LEGAL_PAGES = ['privacy' => 'politica-de-privacidade', 'cookies' => 'politica-de-cookies'];
+
     /** @var array<string, array<string, array{label: string, path: string}>> */
     private array $serviceTitles = [];
 
@@ -77,7 +79,30 @@ class PublicContent
             'cases' => (object) $this->casesBySourceSlug($locale)
                 ->map(fn (CaseStudy $case) => $this->caseCard($case, 0, $locale))
                 ->all(),
+            'legal' => (object) $this->legalLinks($locale),
         ];
+    }
+
+    /**
+     * Links das políticas no idioma, só das páginas publicadas.
+     *
+     * @return array<string, string>
+     */
+    private function legalLinks(string $locale): array
+    {
+        $published = Page::query()->originals()->published()
+            ->whereIn('slug', array_values(self::LEGAL_PAGES))
+            ->pluck('slug')
+            ->all();
+
+        $links = [];
+        foreach (self::LEGAL_PAGES as $key => $slug) {
+            if (in_array($slug, $published, true)) {
+                $links[$key] = $this->links->href('/'.$slug, $locale);
+            }
+        }
+
+        return $links;
     }
 
     /**

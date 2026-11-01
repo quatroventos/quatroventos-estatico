@@ -215,7 +215,6 @@ export function Header({ site, pathname, locale, alternates }: { site: SitePaylo
               })}
             </ul>
           </nav>
-          <LangSwitch site={site} locale={locale} alternates={alternates} variant="menu" />
           {whatsapp ? <LinkTo className="pill solid small header-cta" href={whatsapp}>{t('nav.cta')}</LinkTo> : null}
           <button className="nav-toggle" type="button" aria-expanded={open} aria-controls="menu-mobile" aria-label={open ? t('nav.close') : t('nav.open')} onClick={() => setOpen((value) => !value)}>
             <span />
@@ -238,7 +237,6 @@ export function Header({ site, pathname, locale, alternates }: { site: SitePaylo
           ))}
         </ul>
         {whatsapp ? <LinkTo className="pill solid" href={whatsapp}>{t('nav.cta')}</LinkTo> : null}
-        <LangSwitch site={site} locale={locale} alternates={alternates} variant="full" />
       </div>
     </>
   );
@@ -314,6 +312,13 @@ export function Footer({ site, locale, alternates }: { site: SitePayload | null;
         <div className="footer-bottom">
           <span>© {year} {site?.name || 'Quatro Ventos'}. {t('footer.since')}</span>
           <span className="footer-motto">Design, Code, Test, Repeat.</span>
+          {site?.legal?.privacy || site?.legal?.cookies ? (
+            <nav aria-label={t('footer.legal')}>
+              {site.legal.privacy ? <a href={site.legal.privacy}>{t('footer.privacy')}</a> : null}
+              {site.legal.cookies ? <a href={site.legal.cookies}>{t('footer.cookies')}</a> : null}
+              <button type="button" className="footer-link" data-cookie-prefs>{t('cookies.prefs')}</button>
+            </nav>
+          ) : null}
           {social.length ? (
             <nav aria-label={t('footer.social')}>
               {social.map((item) => <LinkTo key={item.label} href={item.href}>{item.label}</LinkTo>)}
@@ -334,5 +339,33 @@ export function WhatsAppFloat({ href }: { href: string | null | undefined }) {
     <LinkTo className="wa-float" href={href} label={t('whatsapp.float')}>
       <WhatsAppIcon />
     </LinkTo>
+  );
+}
+
+export function LangFloat({ site, locale, alternates }: { site: SitePayload | null; locale: string; alternates: Alternates }) {
+  const hasWhatsApp = Boolean(site?.whatsapp_url);
+
+  return (
+    <div className={hasWhatsApp ? 'lang-float is-beside-wa' : 'lang-float'}>
+      <LangSwitch site={site} locale={locale} alternates={alternates} variant="menu" />
+    </div>
+  );
+}
+
+// Fica oculto no HTML; behaviors.js mostra enquanto não houver escolha gravada e libera as métricas após o aceite.
+export function CookieNotice({ site }: { site: SitePayload | null }) {
+  const policy = site?.legal?.cookies ?? site?.legal?.privacy;
+
+  return (
+    <section className="cookie-notice" role="region" aria-label={t('cookies.label')} hidden data-cookie-notice>
+      <p>
+        {t('cookies.text')}
+        {policy ? <> <a href={policy}>{t('cookies.policy')}</a>.</> : null}
+      </p>
+      <div className="cookie-notice-actions">
+        <button type="button" className="pill line small" data-cookie-choice="essential">{t('cookies.reject')}</button>
+        <button type="button" className="pill solid small" data-cookie-choice="all">{t('cookies.accept')}</button>
+      </div>
+    </section>
   );
 }

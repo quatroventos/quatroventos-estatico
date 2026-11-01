@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Page;
+use App\Services\PublicContent;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
 use Tests\TestCase;
@@ -70,6 +71,29 @@ class PublicContentTest extends TestCase
                 File::put($file, $backup);
             }
         }
+    }
+
+    public function test_site_payload_links_only_published_policies(): void
+    {
+        Page::query()->create([
+            'slug' => 'politica-de-privacidade',
+            'template' => 'custom',
+            'status' => 'published',
+            'published_at' => now(),
+            'seo_title' => 'Política de privacidade',
+            'content' => ['sections' => []],
+        ]);
+        Page::query()->create([
+            'slug' => 'politica-de-cookies',
+            'template' => 'custom',
+            'status' => 'draft',
+            'seo_title' => 'Política de cookies',
+            'content' => ['sections' => []],
+        ]);
+
+        $legal = (array) app(PublicContent::class)->site('pt-BR')['legal'];
+
+        $this->assertSame(['privacy' => '/politica-de-privacidade'], $legal);
     }
 
     public function test_robots_allows_ai_crawlers(): void
