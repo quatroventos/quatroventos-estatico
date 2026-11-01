@@ -462,6 +462,15 @@ class PublicContent
                 $data = $this->resolvePlanLinks($data);
             }
 
+            if ($type === 'site.logos' && is_array($data['items'] ?? null)) {
+                $data['items'] = array_map(
+                    fn ($item) => is_array($item) && is_string($item['image'] ?? null)
+                        ? [...$item, 'ratio' => $this->imageRatio($item['image'])]
+                        : $item,
+                    $data['items'],
+                );
+            }
+
             $data = $this->links->data($data, $locale);
 
             $sections[] = [
@@ -474,6 +483,43 @@ class PublicContent
         }
 
         return $sections;
+    }
+
+    /**
+     * Largura dividida pela altura do arquivo local (raster pelo cabeçalho, SVG pelo viewBox
+     * ou width/height). O front usa para dar a cada logo a mesma área visual.
+     */
+    private function imageRatio(string $src): ?float
+    {
+        $path = (string) parse_url($src, PHP_URL_PATH);
+
+        $absolute = match (true) {
+            str_starts_with($path, '/storage/') => storage_path('app/public/'.substr($path, strlen('/storage/'))),
+            str_starts_with($path, '/') => public_path(ltrim($path, '/')),
+            default => null,
+        };
+
+        if ($absolute === null || str_contains($path, '..') || ! is_file($absolute)) {
+            return null;
+        }
+
+        if (str_ends_with(strtolower($path), '.svg')) {
+            $head = (string) file_get_contents($absolute, length: 4096);
+
+            if (preg_match('/viewBox\s*=\s*["\']\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)/i', $head, $box) && (float) $box[2] > 0) {
+                return round((float) $box[1] / (float) $box[2], 3);
+            }
+
+            if (preg_match('/<svg[^>]*\bwidth\s*=\s*["\']([\d.]+)/i', $head, $width) && preg_match('/<svg[^>]*\bheight\s*=\s*["\']([\d.]+)/i', $head, $height) && (float) $height[1] > 0) {
+                return round((float) $width[1] / (float) $height[1], 3);
+            }
+
+            return null;
+        }
+
+        $size = @getimagesize($absolute);
+
+        return $size && $size[1] > 0 ? round($size[0] / $size[1], 3) : null;
     }
 
     /**

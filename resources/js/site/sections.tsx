@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { CaseResults, CasesList, CasesPair, Gallery } from './cases';
 import { Hero } from './hero';
+import { LogoWall } from './logos';
 import type { FormField, Section, SiteForm } from './types';
 import { AdhocBlock, CaseGridBlock, CasesBrowserBlock, ChecklistBlock, ExamplesBlock, FiguresBlock, GlyphsBlock, Head, HistoryBlock, MethodBlock, PanelBlock, PricingBlock, ShowcaseBlock, StackBlock, UsesBlock, hasStackLayers, hasCases, placeholders } from './blocks';
 import { Arrow, Cta, LinkTo, Marked, Rich, pad, plain, rows, strings, text, type Data } from './ui';
@@ -198,17 +199,7 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
         );
       }
 
-      const list = (
-        <ul className={data.mono ? 'logos is-mono' : 'logos'}>
-          {rows(data).map((item, index) => (
-            <li key={`${text(item, 'name')}-${index}`}>
-              {text(item, 'image')
-                ? <img src={text(item, 'image')} alt={text(item, 'image_alt') || text(item, 'name') || 'Logo de cliente'} loading="lazy" />
-                : <span className="logo-name">{text(item, 'name')}</span>}
-            </li>
-          ))}
-        </ul>
-      );
+      const list = <LogoWall data={data} />;
 
       return (
         <Shell {...shell} wrapClass={clients ? 'clients' : undefined}>

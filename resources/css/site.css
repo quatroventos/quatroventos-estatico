@@ -5804,7 +5804,7 @@ a.card:hover .go {
   inset: 0;
   z-index: -1;
   height: auto;
-  background: var(--ink);
+  background: var(--on-light-mute);
   scale: 1;
   clip-path: circle(0 at calc(100% - 28px) 28px);
   transition: clip-path 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -5819,11 +5819,13 @@ a.card:hover .go {
   clip-path: circle(150% at calc(100% - 28px) 28px);
 }
 
-/* Logos do lampa: brancos sobre transparente; no claro viram silhueta tinta */
+/* Logos do lampa: brancos sobre transparente; no claro viram silhueta tinta.
+   Altura = base / raiz da proporção: todo logo ocupa a mesma área, seja largo ou compacto. */
 .logos.is-mono img {
   width: auto;
-  max-width: 78%;
-  height: 32px;
+  max-width: 82%;
+  height: 36px;
+  height: clamp(26px, calc(clamp(64px, 6vw, 80px) / sqrt(var(--r, 4.5))), 60px);
   aspect-ratio: auto;
   object-fit: contain;
   mix-blend-mode: normal;
@@ -5899,6 +5901,167 @@ a.card:hover .go {
         --c: 1;
       }
     }
+  }
+}
+
+.logo-wall {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.logo-viewport {
+  min-width: 0;
+  overflow-x: clip;
+  overflow-y: visible;
+  touch-action: pan-y;
+}
+
+.logo-track {
+  display: flex;
+  transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.logo-page {
+  flex: 0 0 100%;
+  min-width: 0;
+  align-content: start;
+}
+
+/* Cada troca de slide: os logos da página que chega entram em cascata (só backwards para
+   não travar opacity/filter do hover depois que a animação termina). */
+@keyframes logo-in {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+    scale: 0.94;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .logo-page.is-entering li {
+    animation: logo-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: calc(0.12s + var(--i, 0) * 0.06s);
+  }
+}
+
+.logo-pager {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.logo-progress {
+  position: relative;
+  flex: 0 1 120px;
+  height: 2px;
+  margin-right: 6px;
+  border-radius: 999px;
+  background: var(--line-light);
+  overflow: hidden;
+}
+
+.logo-progress > span {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--ink);
+  transform-origin: left center;
+  scale: 0 1;
+}
+
+.logo-progress > span.is-running {
+  animation: logo-progress linear forwards;
+}
+
+@keyframes logo-progress {
+  to {
+    scale: 1 1;
+  }
+}
+
+.logo-pager-count {
+  min-width: 7ch;
+  margin-right: 4px;
+  font-size: 12px;
+  color: var(--on-light-mute);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.on-dark .logo-progress {
+  background: var(--line-dark);
+}
+
+.on-dark .logo-progress > span {
+  background: var(--lime);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-track {
+    transition: none;
+  }
+
+  .logo-progress {
+    display: none;
+  }
+}
+
+.logo-pager-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  color: var(--ink);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-light);
+  cursor: pointer;
+  transition: background-color 0.25s var(--ease), color 0.25s var(--ease), box-shadow 0.25s var(--ease), translate 0.25s var(--ease);
+}
+
+.logo-pager-btn .icon-arrow {
+  width: 16px;
+  height: 16px;
+}
+
+.logo-pager-btn:hover:not(:disabled) {
+  color: var(--white);
+  background: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+  translate: 0 -2px;
+}
+
+.logo-pager-btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.logo-pager-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.on-dark .logo-pager-btn {
+  color: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line-dark);
+}
+
+.on-dark .logo-pager-btn:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--white);
+}
+
+.on-dark .logo-pager-count {
+  color: var(--on-dark-mute);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logo-pager-btn:hover:not(:disabled) {
+    translate: none;
   }
 }
 
