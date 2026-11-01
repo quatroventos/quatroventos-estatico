@@ -35,19 +35,21 @@ class SeoAnalyzer
 
     /**
      * @param  array{kind: string, id?: int|null, keyword?: string|null, seo_title?: string|null, seo_description?: string|null, slug?: string|null, home?: bool, title?: string|null, summary?: string|null, client?: string|null, cover_alt?: string|null, og_image_alt?: string|null, sections: list<array{type: string, data: array<string, mixed>}>}  $input
-     * @return array{score: int|null, keyword: string, words: int, checks: list<Check>}
+     * @return array{score: int|null, keyword: string, words: int, rendered: bool, checks: list<Check>}
      */
-    public function analyze(array $input): array
+    public function analyze(array $input, ?PageDocument $document = null): array
     {
         $keyword = trim((string) ($input['keyword'] ?? ''));
-        $document = PageDocument::make($input['kind'], $input['sections'], $input);
+        $document ??= PageDocument::make($input['kind'], $input['sections'], $input);
         $words = $document->wordCount();
+        $rendered = $document->structure !== null;
 
         if ($keyword === '') {
             return [
                 'score' => null,
                 'keyword' => '',
                 'words' => $words,
+                'rendered' => $rendered,
                 'checks' => [$this->check('keyword', 'Palavra-chave', 'bad', 'Defina a palavra-chave principal para calcular a nota.', 0)],
             ];
         }
@@ -112,7 +114,7 @@ class SeoAnalyzer
             $withKeyword = array_filter($document->headings, fn (array $heading) => Keyword::contains($heading['text'], $keyword) || Keyword::partial($heading['text'], $keyword));
             $checks[] = $withKeyword !== []
                 ? $this->check('subheading_keyword', 'Palavra-chave nos subtítulos', 'good', count($withKeyword).' de '.count($document->headings).' subtítulos tratam do tema.', 2)
-                : $this->check('subheading_keyword', 'Palavra-chave nos subtítulos', 'bad', 'Nenhum subtítulo (H2) usa a palavra-chave ou variação.', 2, $document->headings[0]['target']);
+                : $this->check('subheading_keyword', 'Palavra-chave nos subtítulos', 'bad', 'Nenhum subtítulo (H2) usa a palavra-chave ou variação.', 2, $this->firstTarget($document->headings));
         }
 
         $occurrences = Keyword::count($document->fullText(), $keyword);
@@ -134,7 +136,11 @@ class SeoAnalyzer
         if ($document->alts !== []) {
             $checks[] = array_filter($document->alts, fn (array $alt) => Keyword::contains($alt['text'], $keyword) || Keyword::partial($alt['text'], $keyword)) !== []
                 ? $this->check('image_alt', 'Palavra-chave no alt das imagens', 'good', 'Pelo menos uma imagem descreve o tema.', 1)
-                : $this->check('image_alt', 'Palavra-chave no alt das imagens', 'ok', 'Nenhum alt usa a palavra-chave. Use quando descrever a imagem com honestidade.', 1, $document->alts[0]['target']);
+                : $this->check('image_alt', 'Palavra-chave no alt das imagens', 'ok', 'Nenhum alt usa a palavra-chave. Use quando descrever a imagem com honestidade.', 1, $this->firstTarget($document->alts));
+        }
+
+        if ($document->structure !== null) {
+            array_push($checks, ...$this->structureChecks($document->structure));
         }
 
         $duplicates = $this->duplicates($input['kind'], (int) ($input['id'] ?? 0), $keyword);
@@ -152,8 +158,37 @@ class SeoAnalyzer
             'score' => $this->score($checks),
             'keyword' => $keyword,
             'words' => $words,
+            'rendered' => $rendered,
             'checks' => $checks,
         ];
+    }
+
+    /**
+     * Checks que só o HTML renderizado responde: quantos H1 existem, saltos de nível e imagens sem alt.
+     *
+     * @param  array{h1_count: int, skips: list<string>, images: int, missing_alts: int}  $structure
+     * @return list<Check>
+     */
+    private function structureChecks(array $structure): array
+    {
+        $checks = [];
+        $h1 = $structure['h1_count'];
+        $skips = $structure['skips'];
+
+        $checks[] = match (true) {
+            $h1 === 0 => $this->check('heading_structure', 'Hierarquia dos títulos', 'bad', 'A página renderizada não tem H1.', 2),
+            $h1 > 1 => $this->check('heading_structure', 'Hierarquia dos títulos', 'bad', 'A página renderizada tem '.$h1.' H1. Deixe um só e passe os outros para H2.', 2),
+            $skips !== [] => $this->check('heading_structure', 'Hierarquia dos títulos', 'ok', 'Salto de nível: '.implode('; ', array_slice($skips, 0, 3)).'.', 2),
+            default => $this->check('heading_structure', 'Hierarquia dos títulos', 'good', 'Um H1 e subtítulos em sequência, sem saltos.', 2),
+        };
+
+        if ($structure['images'] > 0) {
+            $checks[] = $structure['missing_alts'] === 0
+                ? $this->check('image_alt_missing', 'Imagens com alt', 'good', 'Todas as '.$structure['images'].' imagens têm alt.', 1)
+                : $this->check('image_alt_missing', 'Imagens com alt', 'bad', $structure['missing_alts'].' de '.$structure['images'].' imagens sem alt.', 1);
+        }
+
+        return $checks;
     }
 
     /**
@@ -237,11 +272,26 @@ class SeoAnalyzer
     }
 
     /**
+     * @param  list<array<string, mixed>>  $chunks
+     * @return array<string, mixed>|null
+     */
+    private function firstTarget(array $chunks): ?array
+    {
+        foreach ($chunks as $chunk) {
+            if (! empty($chunk['target'])) {
+                return $chunk['target'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return array<string, mixed>|null
      */
     private function longestBlock(PageDocument $document): ?array
     {
-        $blocks = $document->blocks;
+        $blocks = array_values(array_filter($document->blocks, fn (array $block) => ! empty($block['target'])));
         usort($blocks, fn (array $a, array $b) => mb_strlen($b['text']) <=> mb_strlen($a['text']));
 
         return $blocks[0] ?? null;
@@ -252,7 +302,7 @@ class SeoAnalyzer
      */
     private function densityTarget(PageDocument $document, string $keyword): ?array
     {
-        $blocks = $document->blocks;
+        $blocks = array_values(array_filter($document->blocks, fn (array $block) => ! empty($block['target'])));
         usort($blocks, fn (array $a, array $b) => Keyword::count($b['text'], $keyword) <=> Keyword::count($a['text'], $keyword));
 
         return $blocks[0]['target'] ?? null;

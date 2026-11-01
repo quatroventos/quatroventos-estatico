@@ -11,6 +11,7 @@ use App\Services\LighthouseService;
 use App\Services\Seo\Keyword;
 use App\Services\Seo\MarketInsights;
 use App\Services\Seo\PageDocument;
+use App\Services\Seo\PageRenderer;
 use App\Services\Seo\SeoAnalyzer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,6 +36,31 @@ class SeoInsightsController extends Controller
         $input = $this->input($request);
 
         return response()->json($analyzer->analyze($input));
+    }
+
+    /**
+     * Renderiza o rascunho com os componentes do site e analisa o HTML final: hierarquia real dos títulos,
+     * primeiro parágrafo depois do H1, texto do <main> e imagens.
+     */
+    public function analyzeRendered(Request $request, SeoAnalyzer $analyzer, PageRenderer $renderer): JsonResponse
+    {
+        $input = $this->input($request);
+
+        if ($input['kind'] === 'case' && $input['id'] === null) {
+            return response()->json(['message' => 'Salve o case para analisar a página renderizada.'], 422);
+        }
+
+        try {
+            $html = $input['kind'] === 'page'
+                ? $renderer->page(Page::query()->findOrFail($input['id']), $input['sections'], $input['seo_title'] ?? null, $input['seo_description'] ?? null)
+                : $renderer->caseStudy(CaseStudy::query()->findOrFail($input['id']), $input['sections'], $input);
+        } catch (RuntimeException $exception) {
+            return response()->json(['message' => $exception->getMessage()], 422);
+        }
+
+        $document = PageDocument::fromHtml($html, PageDocument::make($input['kind'], $input['sections'], $input));
+
+        return response()->json([...$analyzer->analyze($input, $document), 'rendered_at' => now()->toIso8601String()]);
     }
 
     /**
@@ -67,7 +93,16 @@ class SeoInsightsController extends Controller
 
     public function fix(Request $request, SeoAnalyzer $analyzer, SectionCopyWriter $writer, MarketInsights $market): JsonResponse
     {
-        $request->validate(['check' => ['required', 'string', 'max:80']]);
+        $request->validate([
+            'check' => ['required', 'string', 'max:80'],
+            'target' => ['sometimes', 'nullable', 'array'],
+            'target.type' => ['required_with:target', Rule::in(['seo_title', 'seo_description', 'section', 'field'])],
+            'target.index' => ['sometimes', 'integer', 'min:0'],
+            'target.path' => ['sometimes', 'string', 'max:200'],
+            'target.name' => ['sometimes', 'string', 'max:60'],
+            'status' => ['sometimes', Rule::in(['ok', 'bad'])],
+            'message' => ['sometimes', 'nullable', 'string', 'max:500'],
+        ]);
         $input = $this->input($request);
         $checkId = (string) $request->input('check');
 
@@ -83,6 +118,8 @@ class SeoInsightsController extends Controller
 
         if (isset(self::LIGHTHOUSE_FIXES[$checkId])) {
             $check = ['id' => $checkId, 'status' => 'bad', 'fix' => ['type' => self::LIGHTHOUSE_FIXES[$checkId]]];
+        } elseif (is_array($request->input('target'))) {
+            $check = $this->renderedCheck($request, $input, $checkId);
         } else {
             $check = collect($analyzer->analyze($input)['checks'])->firstWhere('id', $checkId);
         }
@@ -150,6 +187,27 @@ class SeoInsightsController extends Controller
         }
 
         return response()->json($lighthouse->startPage($model->publicPath()));
+    }
+
+    /**
+     * Check vindo da análise renderizada: o alvo vem do cliente e só vale se existir no rascunho.
+     *
+     * @param  array<string, mixed>  $input
+     * @return array{id: string, status: string, message: string, fix: array<string, mixed>}|null
+     */
+    private function renderedCheck(Request $request, array $input, string $checkId): ?array
+    {
+        $target = collect((array) $request->input('target'))->only(['type', 'index', 'path', 'name'])->all();
+
+        if (isset($target['index'])) {
+            $target['index'] = (int) $target['index'];
+        }
+
+        if (! in_array($target['type'], SectionCopyWriter::SEO_FIELDS, true) && PageDocument::make($input['kind'], $input['sections'], $input)->find($target) === null) {
+            return null;
+        }
+
+        return ['id' => $checkId, 'status' => (string) $request->input('status', 'bad'), 'message' => (string) $request->input('message', ''), 'fix' => $target];
     }
 
     private function target(string $kind, int $id): Page|CaseStudy

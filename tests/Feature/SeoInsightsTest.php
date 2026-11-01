@@ -6,6 +6,7 @@ use App\Jobs\MeasurePageLighthouseJob;
 use App\Models\CaseStudy;
 use App\Models\Page;
 use App\Services\LighthouseService;
+use App\Services\Seo\PageRenderer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -109,6 +110,65 @@ class SeoInsightsTest extends TestCase
         $unique = collect($response->json('checks'))->firstWhere('id', 'unique_keyword');
         $this->assertSame('bad', $unique['status']);
         $this->assertStringContainsString('Outra página', $unique['message']);
+    }
+
+    public function test_rendered_analysis_reads_hierarchy_and_text_from_the_final_html(): void
+    {
+        $page = $this->page();
+        $this->mock(PageRenderer::class, fn ($mock) => $mock->shouldReceive('page')->once()->andReturn(
+            '<div><header><nav>Menu com muitas palavras de navegação</nav></header><main id="conteudo">'
+            .'<section><h1>Menos planilha no <em>seu dia</em></h1><p>Tiramos tarefas repetidas do time.</p></section>'
+            .'<section><h3>Como trabalhamos</h3><p>Mapeamos o processo e integramos os sistemas que você já usa.</p><img src="/a.png"></section>'
+            .'<div hidden><h2>Obrigado pelo contato</h2></div>'
+            .'</main><footer>Rodapé</footer></div>'
+        ));
+
+        $response = $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/seo/analyze/rendered', [
+                'kind' => 'page',
+                'id' => $page->id,
+                'keyword' => 'automação de processos',
+                'seo_title' => 'Automação de processos para empresas',
+                'slug' => 'automacao-de-processos',
+                'sections' => $this->sections(),
+            ])
+            ->assertOk()
+            ->assertJsonPath('rendered', true)
+            ->assertJsonPath('words', 23);
+
+        $checks = collect($response->json('checks'))->keyBy('id');
+
+        $this->assertSame('ok', $checks['heading_structure']['status']);
+        $this->assertStringContainsString('H1 para H3 em "Como trabalhamos"', $checks['heading_structure']['message']);
+        $this->assertSame('bad', $checks['image_alt_missing']['status']);
+        $this->assertSame(['type' => 'section', 'index' => 0, 'path' => 'title'], $checks['h1_keyword']['fix']);
+        $this->assertSame(['type' => 'section', 'index' => 1, 'path' => 'title'], $checks['subheading_keyword']['fix']);
+    }
+
+    public function test_fix_accepts_a_rendered_target_only_when_it_exists_in_the_draft(): void
+    {
+        $this->fakeAi('Como automatizamos processos');
+        $page = $this->page();
+        $payload = [
+            'kind' => 'page',
+            'id' => $page->id,
+            'check' => 'subheading_keyword',
+            'status' => 'bad',
+            'keyword' => 'automação de processos',
+            'seo_title' => 'Automação de processos',
+            'slug' => 'automacao-de-processos',
+            'sections' => $this->sections(),
+        ];
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/seo/fix', [...$payload, 'target' => ['type' => 'section', 'index' => 1, 'path' => 'title']])
+            ->assertOk()
+            ->assertJsonPath('target', ['type' => 'section', 'index' => 1, 'path' => 'title'])
+            ->assertJsonPath('value', 'Como automatizamos processos');
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/seo/fix', [...$payload, 'target' => ['type' => 'section', 'index' => 9, 'path' => 'title']])
+            ->assertStatus(422);
     }
 
     public function test_fix_rewrites_the_h1_with_the_whole_page_as_context(): void

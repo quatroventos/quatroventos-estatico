@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from 'react';
-import { ChevronDown, ChevronRight, ExternalLink, Gauge, Monitor, RefreshCw, Smartphone, Sparkles, TrendingUp, Undo2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, ExternalLink, Gauge, Monitor, RefreshCw, ScanSearch, Smartphone, Sparkles, TrendingUp, Undo2 } from 'lucide-react';
 import { api, firstError } from '../api';
 import { getPath } from '../lib';
 import { formatMs, ScoreRing, scoreTone } from './SiteHealth';
@@ -30,7 +30,7 @@ type Check = {
   fix: SeoTarget | null;
 };
 
-type Analysis = { score: number | null; keyword: string; words: number; checks: Check[] };
+type Analysis = { score: number | null; keyword: string; words: number; rendered?: boolean; rendered_at?: string; checks: Check[] };
 
 type Audit = { id: string; title: string; display: string | null; score: number; category: string };
 
@@ -188,6 +188,9 @@ export function SeoInsights({
   const [progress, setProgress] = useState<string | null>(null);
   const [fixError, setFixError] = useState<string | null>(null);
   const [history, setHistory] = useState<{ target: SeoTarget; previous: string; applied: string }[]>([]);
+  const [rendered, setRendered] = useState<{ analysis: Analysis; input: string } | null>(null);
+  const [rendering, setRendering] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
   const [showGood, setShowGood] = useState(false);
   const goodId = useId();
   const inputRef = useRef(input);
@@ -203,17 +206,37 @@ export function SeoInsights({
         .then((result) => {
           setAnalysis(result);
           setAnalysisError(null);
-          scoreRef.current?.(result.score);
         })
         .catch((error) => setAnalysisError(firstError(error)));
     }, 600);
     return () => window.clearTimeout(timer);
   }, [json, kind, id, marketVersion]);
 
-  async function runFix(checkId: string, working: SeoInput): Promise<SeoInput> {
+  const current = rendered && rendered.input === json ? rendered.analysis : analysis;
+  const stale = rendered !== null && rendered.input !== json;
+
+  useEffect(() => {
+    scoreRef.current?.(current?.score ?? null);
+  }, [current?.score]);
+
+  async function analyzeRendered(working: SeoInput = inputRef.current) {
+    setRendering(true);
+    setRenderError(null);
+    try {
+      const result = await api<Analysis>('/seo/analyze/rendered', { method: 'POST', body: JSON.stringify({ kind, id, ...working }) });
+      setRendered({ analysis: result, input: JSON.stringify(working) });
+    } catch (error) {
+      setRenderError(firstError(error));
+    } finally {
+      setRendering(false);
+    }
+  }
+
+  async function runFix(check: Check, working: SeoInput): Promise<SeoInput> {
+    const fromRendered = current?.rendered && check.fix ? { target: check.fix, status: check.status, message: check.message } : {};
     const result = await api<{ target: SeoTarget; value: string }>('/seo/fix', {
       method: 'POST',
-      body: JSON.stringify({ kind, id, check: checkId, ...working }),
+      body: JSON.stringify({ kind, id, check: check.id, ...fromRendered, ...working }),
     });
     const previous = readTarget(working, result.target);
     setHistory((items) => [...items, { target: result.target, previous, applied: result.value }]);
@@ -222,10 +245,15 @@ export function SeoInsights({
   }
 
   async function fixOne(checkId: string) {
+    const check = checks.find((item) => item.id === checkId) ?? { id: checkId, label: '', status: 'bad', message: '', weight: 0, fix: null };
+    const reanalyze = Boolean(current?.rendered);
     setFixing(checkId);
     setFixError(null);
     try {
-      await runFix(checkId, inputRef.current);
+      const working = await runFix(check, inputRef.current);
+      if (reanalyze) {
+        await analyzeRendered(working);
+      }
     } catch (error) {
       setFixError(firstError(error));
     } finally {
@@ -234,13 +262,18 @@ export function SeoInsights({
   }
 
   async function fixAll() {
+    const reanalyze = Boolean(current?.rendered);
     setFixing('all');
     setFixError(null);
     let working = inputRef.current;
     try {
       for (const [index, check] of queue.entries()) {
         setProgress(`${index + 1}/${queue.length} ${check.label}`);
-        working = await runFix(check.id, working);
+        working = await runFix(check, working);
+      }
+      if (reanalyze) {
+        setProgress('Analisando a página renderizada');
+        await analyzeRendered(working);
       }
     } catch (error) {
       setFixError(firstError(error));
@@ -262,19 +295,35 @@ export function SeoInsights({
     setHistory([]);
   }
 
-  const checks = [...(analysis?.checks ?? [])].sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status] || b.weight - a.weight);
+  const checks = [...(current?.checks ?? [])].sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status] || b.weight - a.weight);
   const open = checks.filter((check) => check.status !== 'good');
   const good = checks.filter((check) => check.status === 'good');
   const queue = fixQueue(checks);
-  const busy = fixing !== null;
+  const busy = fixing !== null || rendering;
+  const renderedAt = current?.rendered_at ? new Date(current.rendered_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
 
   return (
     <div className="seo-insights">
       <div className="seo-score">
-        <ScoreRing score={analysis?.score ?? null} label="Nota SEO" />
+        <ScoreRing score={current?.score ?? null} label="Nota SEO" />
         <div>
-          <strong>{analysis?.keyword ? `"${analysis.keyword}"` : 'Sem palavra-chave'}</strong>
-          <span>{analysis ? `${analysis.words} palavras na página` : 'Analisando...'}</span>
+          <strong>{current?.keyword ? `"${current.keyword}"` : 'Sem palavra-chave'}</strong>
+          <span>
+            {current
+              ? current.rendered
+                ? `${current.words} palavras · página renderizada às ${renderedAt}`
+                : `${current.words} palavras · prévia do editor`
+              : 'Analisando...'}
+          </span>
+          <button
+            className="btn btn-secondary seo-fix-all"
+            type="button"
+            disabled={busy}
+            title="Renderiza a página com o conteúdo atual do editor e avalia o HTML final"
+            onClick={() => void analyzeRendered()}
+          >
+            <ScanSearch size={13} /> {rendering ? 'Analisando...' : 'Analisar'}
+          </button>
           {queue.length > 0 ? (
             <button
               className="btn btn-secondary seo-fix-all"
@@ -297,6 +346,8 @@ export function SeoInsights({
       {progress ? <p className="seo-progress">Corrigindo {progress}</p> : null}
       {fixError ? <p className="field-ai-error">{fixError}</p> : null}
       {analysisError ? <p className="field-ai-error">{analysisError}</p> : null}
+      {renderError ? <p className="field-ai-error">{renderError}</p> : null}
+      {stale && !busy ? <p className="hint">O conteúdo mudou depois da última análise. A nota abaixo é a prévia do editor; clique em Analisar para conferir a página renderizada.</p> : null}
 
       <ul className="seo-checks">
         {open.map((check) => (

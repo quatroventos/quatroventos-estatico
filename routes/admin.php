@@ -76,6 +76,7 @@ Route::prefix($admin)->group(function () {
             Route::post('preview/cases/{caseStudy}', [LivePreviewController::class, 'caseStudy'])->whereNumber('caseStudy')->middleware('throttle:240,1');
             Route::post('og-image/pages/{page}', [OgImageController::class, 'page'])->middleware('throttle:10,1');
             Route::post('seo/analyze', [SeoInsightsController::class, 'analyze'])->middleware('throttle:240,1');
+            Route::post('seo/analyze/rendered', [SeoInsightsController::class, 'analyzeRendered'])->middleware('throttle:20,1');
             Route::post('seo/fix', [SeoInsightsController::class, 'fix'])->middleware('throttle:30,1');
             Route::get('seo/market', [SeoInsightsController::class, 'market'])->middleware('throttle:240,1');
             Route::post('seo/market', [SeoInsightsController::class, 'fetchMarket'])->middleware('throttle:10,1');

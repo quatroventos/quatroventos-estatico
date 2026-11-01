@@ -37,6 +37,112 @@ class PageDocument
     public array $alts = [];
 
     /**
+     * Só na leitura do HTML renderizado: texto do <main> e estrutura real de títulos e imagens.
+     *
+     * @var array{h1_count: int, skips: list<string>, images: int, missing_alts: int}|null
+     */
+    public ?array $structure = null;
+
+    private ?string $plainText = null;
+
+    /**
+     * Leitura da página renderizada. Cada trecho do HTML é ligado ao campo de origem no rascunho
+     * para a correção por IA continuar sabendo o que reescrever.
+     */
+    public static function fromHtml(string $html, self $source): self
+    {
+        $dom = new \DOMDocument;
+        $previous = libxml_use_internal_errors(true);
+        $dom->loadHTML('<?xml encoding="UTF-8"><div>'.$html.'</div>', LIBXML_NOERROR | LIBXML_NOWARNING);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+
+        $xpath = new \DOMXPath($dom);
+        $main = $xpath->query('//main')->item(0) ?? $dom->documentElement;
+        $document = new self;
+        $sources = array_values(array_filter([$source->h1, $source->intro, ...$source->headings, ...$source->blocks]));
+        $level = 0;
+        $skips = [];
+        $h1Count = 0;
+        $afterH1 = false;
+
+        foreach ($xpath->query('//h1') as $node) {
+            if (! self::hidden($node)) {
+                $h1Count++;
+            }
+        }
+
+        foreach ($xpath->query('.//h1|.//h2|.//h3|.//h4|.//h5|.//h6|.//p|.//li[not(.//p)]|.//summary|.//blockquote[not(.//p)]|.//td', $main) as $node) {
+            if (! $node instanceof \DOMElement || self::hidden($node)) {
+                continue;
+            }
+
+            $text = self::clean($node->textContent);
+
+            if ($text === '') {
+                continue;
+            }
+
+            $tag = strtolower($node->tagName);
+
+            if (preg_match('/^h([1-6])$/', $tag, $match) === 1) {
+                $current = (int) $match[1];
+
+                if ($level > 0 && $current > $level + 1) {
+                    $skips[] = 'H'.$level.' para H'.$current.' em "'.mb_strimwidth($text, 0, 60, '...').'"';
+                }
+
+                $level = $current;
+
+                if ($current === 1 && $document->h1 === null) {
+                    $document->h1 = self::linked($text, 'H1', $sources);
+                    $afterH1 = true;
+                } else {
+                    $document->headings[] = self::linked($text, 'H'.$current, $sources);
+                }
+
+                continue;
+            }
+
+            $chunk = self::linked($text, 'Texto', $sources);
+            $document->blocks[] = $chunk;
+
+            if ($afterH1 && $document->intro === null && count(Keyword::words($text)) >= 5) {
+                $document->intro = $chunk;
+            }
+        }
+
+        $images = 0;
+        $missing = 0;
+
+        foreach ($xpath->query('.//img', $main) as $image) {
+            if (! $image instanceof \DOMElement || self::hidden($image)) {
+                continue;
+            }
+
+            $images++;
+
+            if (! $image->hasAttribute('alt')) {
+                $missing++;
+
+                continue;
+            }
+
+            $alt = self::clean($image->getAttribute('alt'));
+
+            if ($alt !== '') {
+                $document->alts[] = self::linked($alt, 'Alt de imagem', $source->alts);
+            }
+        }
+
+        $document->intro ??= $document->blocks[0] ?? null;
+        $document->plainText = self::clean(implode(' ', array_map(fn (\DOMNode $node) => $node->textContent, iterator_to_array($xpath->query('.//text()[not(ancestor::script) and not(ancestor::style) and not(ancestor::*[@hidden]) and not(ancestor::*[@aria-hidden="true"])]', $main)))));
+        $document->structure = ['h1_count' => $h1Count, 'skips' => $skips, 'images' => $images, 'missing_alts' => $missing];
+
+        return $document;
+    }
+
+    /**
      * @param  list<array{type: string, data: array<string, mixed>}>  $sections
      * @param  array{title?: string|null, summary?: string|null, client?: string|null, cover_alt?: string|null, og_image_alt?: string|null}  $fields
      */
@@ -88,6 +194,10 @@ class PageDocument
 
     public function fullText(): string
     {
+        if ($this->plainText !== null) {
+            return $this->plainText;
+        }
+
         $parts = array_filter([
             $this->h1['text'] ?? null,
             $this->intro !== null && ! in_array($this->intro, $this->blocks, true) ? $this->intro['text'] : null,
@@ -196,6 +306,69 @@ class PageDocument
                 $this->blocks[] = self::chunk($value, $type === 'rich', $label, ['type' => 'section', 'index' => $index, 'path' => $prefix.$name]);
             }
         }
+    }
+
+    private static function hidden(\DOMNode $node): bool
+    {
+        for ($current = $node; $current instanceof \DOMElement; $current = $current->parentNode) {
+            if ($current->hasAttribute('hidden') || $current->getAttribute('aria-hidden') === 'true') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static function clean(string $text): string
+    {
+        return trim((string) preg_replace('/\s+/u', ' ', html_entity_decode($text)));
+    }
+
+    private static function comparable(string $text): string
+    {
+        return trim((string) preg_replace('/\s+/u', ' ', (string) preg_replace('/[^\p{L}\p{N}]+/u', ' ', mb_strtolower($text))));
+    }
+
+    /**
+     * Trecho renderizado com o alvo do campo de origem: texto igual, trecho de um campo maior
+     * (um parágrafo de um rich) ou campo contido no elemento (título com palavra rotativa).
+     *
+     * @param  list<Chunk>  $sources
+     * @return array{text: string, raw: string, rich: bool, label: string, target: Target|null}
+     */
+    private static function linked(string $text, string $label, array $sources): array
+    {
+        $needle = self::comparable($text);
+        $best = null;
+        $bestScore = 0.0;
+
+        foreach ($sources as $source) {
+            $candidate = self::comparable($source['text']);
+
+            if ($candidate === '' || $needle === '') {
+                continue;
+            }
+
+            $score = match (true) {
+                $candidate === $needle => 1.0,
+                str_contains($candidate, $needle) => mb_strlen($needle) / mb_strlen($candidate),
+                str_contains($needle, $candidate) && mb_strlen($candidate) >= mb_strlen($needle) * 0.5 => mb_strlen($candidate) / mb_strlen($needle),
+                default => 0.0,
+            };
+
+            if ($score > $bestScore) {
+                $best = $source;
+                $bestScore = $score;
+            }
+        }
+
+        return [
+            'text' => $text,
+            'raw' => $best['raw'] ?? $text,
+            'rich' => $best['rich'] ?? false,
+            'label' => $best['label'] ?? $label,
+            'target' => $best['target'] ?? null,
+        ];
     }
 
     /**
