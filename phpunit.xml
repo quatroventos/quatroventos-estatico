@@ -33,6 +33,7 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync" force="true"/>
         <env name="CMS_PRERENDER_ON_SAVE" value="false" force="true"/>
+        <env name="CMS_OG_ON_SAVE" value="false" force="true"/>
         <env name="SESSION_DRIVER" value="array" force="true"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>

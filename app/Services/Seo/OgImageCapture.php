@@ -9,7 +9,8 @@ use Illuminate\Support\Str;
 use RuntimeException;
 
 /**
- * Gera a OG image a partir do topo da página (header e hero), em 1200x630.
+ * Gera a OG image (1200x630) como card de marca: logo, fundo do hero da página (animação ou capa do case),
+ * título com destaque e URL.
  *
  * O payload (com o conteúdo ainda não salvo) fica num token de cache de vida curta; o Chrome do servidor abre a rota
  * interna /__og/{token} pelo endereço local da aplicação, sem depender de a página estar publicada.
@@ -21,25 +22,41 @@ class OgImageCapture extends HeadlessChrome
     public const HEIGHT = 630;
 
     /**
-     * A página é renderizada como um desktop comum (1440 px, mesma proporção 1,91:1) e reduzida para 1200x630.
+     * Caminho público das imagens geradas aqui. Fora dele, a OG foi enviada à mão.
      */
-    private const VIEWPORT_WIDTH = 1440;
+    public const PUBLIC_PREFIX = '/storage/media/og/';
 
-    private const VIEWPORT_HEIGHT = 756;
-
-    private const SCALE = 1.5;
+    private const SCALE = 2;
 
     private const DEADLINE_SECONDS = 45;
 
-    private const SETTLE_MS = 2500;
+    private const READY_SECONDS = 25;
+
+    private const SETTLE_MS = 800;
 
     private const TOKEN_TTL_SECONDS = 300;
 
-    private const HIDE_CSS = '.wa-float,.skip,.mobile-nav{display:none!important}*,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;transition:none!important;caret-color:transparent!important}';
+    private const HIDE_CSS = '*,*::before,*::after{animation-duration:0s!important;animation-delay:0s!important;transition:none!important;caret-color:transparent!important}';
 
     public static function tokenKey(string $token): string
     {
         return 'og-capture:'.$token;
+    }
+
+    public static function isGenerated(?string $path): bool
+    {
+        return is_string($path) && str_starts_with($path, self::PUBLIC_PREFIX);
+    }
+
+    /**
+     * Domínio exibido no rodapé do card (sem www).
+     */
+    public static function domain(): string
+    {
+        $configured = trim((string) config('cms.og_domain'));
+        $host = $configured !== '' ? $configured : (string) parse_url((string) config('app.url'), PHP_URL_HOST);
+
+        return (string) preg_replace('/^www\./i', '', $host);
     }
 
     /**
@@ -50,12 +67,19 @@ class OgImageCapture extends HeadlessChrome
     public function capture(array $payload, array $sitePayload, string $name): string
     {
         $token = Str::random(40);
-        Cache::put(self::tokenKey($token), ['payload' => $payload, 'site' => $sitePayload], self::TOKEN_TTL_SECONDS);
+        Cache::put(self::tokenKey($token), [
+            'payload' => $payload,
+            'site' => $sitePayload,
+            'og' => [
+                'domain' => self::domain(),
+                'origins' => array_values(array_unique(array_filter([rtrim((string) config('app.url'), '/'), rtrim(url('/'), '/')]))),
+            ],
+        ], self::TOKEN_TTL_SECONDS);
 
         try {
             $png = $this->withPage(
-                self::VIEWPORT_WIDTH,
-                self::VIEWPORT_HEIGHT,
+                self::WIDTH,
+                self::HEIGHT,
                 self::DEADLINE_SECONDS,
                 fn (string $session): string => $this->shoot($session, rtrim((string) config('cms.capture_url'), '/').'/__og/'.$token),
             );
@@ -66,12 +90,22 @@ class OgImageCapture extends HeadlessChrome
         return $this->store($png, $name);
     }
 
+    /**
+     * Apaga uma imagem gerada anteriormente; arquivos enviados à mão não são tocados.
+     */
+    public function discard(?string $path): void
+    {
+        if (self::isGenerated($path)) {
+            Storage::disk('public')->delete(Str::after((string) $path, '/storage/'));
+        }
+    }
+
     private function shoot(string $session, string $url): string
     {
         $this->send('Page.enable', [], $session);
         $this->send('Emulation.setDeviceMetricsOverride', [
-            'width' => self::VIEWPORT_WIDTH,
-            'height' => self::VIEWPORT_HEIGHT,
+            'width' => self::WIDTH,
+            'height' => self::HEIGHT,
             'deviceScaleFactor' => self::SCALE,
             'mobile' => false,
         ], $session);
@@ -82,34 +116,45 @@ class OgImageCapture extends HeadlessChrome
         $navigation = $this->send('Page.navigate', ['url' => $url], $session);
 
         if (! empty($navigation['errorText'])) {
-            throw new RuntimeException('Não consegui abrir a página para a print: '.$navigation['errorText'].'.');
+            throw new RuntimeException('Não consegui abrir o card para gerar a OG image: '.$navigation['errorText'].'.');
         }
 
         $this->waitFor('Page.loadEventFired', min($this->deadline - 10, microtime(true) + 20));
         $this->send('Runtime.evaluate', [
-            'expression' => 'document.head.insertAdjacentHTML("beforeend", '.json_encode('<style>'.$this->devFontsCss().self::HIDE_CSS.'</style>').'); window.scrollTo(0, 0);',
-        ], $session);
-        $this->pump(microtime(true) + self::SETTLE_MS / 1000);
-        $this->send('Runtime.evaluate', ['expression' => 'document.fonts.ready.then(() => true)', 'awaitPromise' => true], $session);
-
-        $ready = $this->send('Runtime.evaluate', [
-            'expression' => 'Boolean(document.querySelector("#site-root") && document.querySelector("#site-root").children.length)',
-            'returnByValue' => true,
+            'expression' => 'document.head.insertAdjacentHTML("beforeend", '.json_encode('<style>'.$this->devFontsCss().self::HIDE_CSS.'</style>').');'
+                .' Promise.all([document.fonts.load(\'650 80px "Host Grotesk"\'), document.fonts.load(\'500 22px "Host Grotesk"\'), document.fonts.load(\'400 18px "Martian Mono"\')])'
+                .'.catch(() => null).then(() => document.fonts.ready)'
+                .'.then(() => { document.documentElement.dataset.ogFonts = "1"; window.dispatchEvent(new Event("og:fonts")); return true; })',
+            'awaitPromise' => true,
         ], $session);
 
-        if (($ready['result']['value'] ?? false) !== true) {
-            throw new RuntimeException('A página não renderizou a tempo para a print.');
+        $until = min($this->deadline - 5, microtime(true) + self::READY_SECONDS);
+        $ready = false;
+
+        while (! $ready && microtime(true) < $until) {
+            $this->pump(microtime(true) + 0.25);
+            $check = $this->send('Runtime.evaluate', [
+                'expression' => 'Boolean(document.querySelector(".og-card[data-ready]")) && [...document.images].every((image) => image.complete)',
+                'returnByValue' => true,
+            ], $session);
+            $ready = ($check['result']['value'] ?? false) === true;
         }
+
+        if (! $ready) {
+            throw new RuntimeException('O card da OG image não renderizou a tempo.');
+        }
+
+        $this->pump(microtime(true) + self::SETTLE_MS / 1000);
 
         $shot = $this->send('Page.captureScreenshot', [
             'format' => 'png',
             'fromSurface' => true,
-            'clip' => ['x' => 0, 'y' => 0, 'width' => self::VIEWPORT_WIDTH, 'height' => self::VIEWPORT_HEIGHT, 'scale' => 1],
+            'clip' => ['x' => 0, 'y' => 0, 'width' => self::WIDTH, 'height' => self::HEIGHT, 'scale' => 1],
         ], $session);
         $bytes = base64_decode((string) ($shot['data'] ?? ''), true);
 
         if (! is_string($bytes) || ! str_starts_with($bytes, "\x89PNG")) {
-            throw new RuntimeException('O Chrome não devolveu a print.');
+            throw new RuntimeException('O Chrome não devolveu a imagem.');
         }
 
         return $bytes;
@@ -145,17 +190,17 @@ class OgImageCapture extends HeadlessChrome
         $source = imagecreatefromstring($png);
 
         if ($source === false) {
-            throw new RuntimeException('Não consegui processar a print.');
+            throw new RuntimeException('Não consegui processar a imagem.');
         }
 
         $canvas = imagecreatetruecolor(self::WIDTH, self::HEIGHT);
         imagecopyresampled($canvas, $source, 0, 0, 0, 0, self::WIDTH, self::HEIGHT, imagesx($source), imagesy($source));
 
         ob_start();
-        imagejpeg($canvas, null, 86);
+        imagejpeg($canvas, null, 88);
         $jpeg = (string) ob_get_clean();
 
-        $path = 'media/og/'.(Str::slug($name) ?: 'pagina').'-'.now()->format('YmdHis').'.jpg';
+        $path = 'media/og/'.(Str::slug($name) ?: 'pagina').'-'.now()->format('YmdHis').'-'.Str::lower(Str::random(4)).'.jpg';
         Storage::disk('public')->put($path, $jpeg);
 
         return '/storage/'.$path;
@@ -168,6 +213,6 @@ class OgImageCapture extends HeadlessChrome
 
     protected function timeoutMessage(): string
     {
-        return 'A página demorou demais para carregar na print.';
+        return 'O card da OG image demorou demais para carregar.';
     }
 }

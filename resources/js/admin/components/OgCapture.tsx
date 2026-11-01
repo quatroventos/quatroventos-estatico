@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Camera } from 'lucide-react';
+import { ImagePlus } from 'lucide-react';
 import { api, firstError } from '../api';
 
 /**
- * Gera a OG image (1200x630) a partir do topo da página com o conteúdo atual do editor, sem salvar.
+ * Gera o card de OG (1200x630: logo, fundo do hero, título e URL) com o conteúdo atual do editor, sem salvar.
  */
 export function OgCaptureButton({
   endpoint,
@@ -33,9 +33,13 @@ export function OgCaptureButton({
   return (
     <div className="og-capture">
       <button className="btn btn-secondary" type="button" disabled={running} onClick={() => void capture()}>
-        <Camera size={14} /> {running ? 'Gerando print...' : 'Gerar print do topo da página'}
+        <ImagePlus size={14} /> {running ? 'Gerando card...' : 'Gerar card de OG'}
       </button>
-      <p className="hint">{running ? 'Abrindo a página e capturando header e abertura em 1200×630.' : 'Captura header e abertura com o conteúdo atual, em 1200×630.'}</p>
+      <p className="hint">
+        {running
+          ? 'Montando o card com logo, fundo do hero, título e endereço em 1200×630.'
+          : 'Card com logo, fundo do hero, título (com destaque) e endereço da página. Cards gerados são refeitos sozinhos quando o título muda.'}
+      </p>
       {error ? <p className="field-ai-error">{error}</p> : null}
     </div>
   );

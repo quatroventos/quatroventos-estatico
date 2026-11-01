@@ -33,7 +33,7 @@ class OgImageTest extends TestCase
         $this->mock(OgImageCapture::class, function (MockInterface $mock): void {
             $mock->shouldReceive('capture')
                 ->once()
-                ->with(Mockery::on(fn (array $payload) => $payload['sections'][0]['data']['title'] === 'Rascunho'), Mockery::type('array'), 'agentes-de-ia')
+                ->with(Mockery::on(fn (array $payload) => $payload['sections'][0]['data']['title'] === 'Rascunho'), Mockery::type('array'), 'agentes-de-ia-pt-BR')
                 ->andReturn('/storage/media/og/agentes-de-ia-1.jpg');
         });
 

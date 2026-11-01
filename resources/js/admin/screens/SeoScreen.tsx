@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
 import { AppShell } from '../components/AppShell';
+import { BatchRunner } from '../components/BatchRunner';
 import { GooglePreview } from '../components/GooglePreview';
 import { MediaField } from '../components/MediaField';
 import { SeoLength } from '../components/SeoLength';
@@ -297,6 +298,12 @@ export function SeoScreen() {
                   onChange={(value) => setForm({ ...form, seo_og_image: value ?? '' })}
                 />
                 {field('seo_og_image_alt', 'Alt da OG image')}
+                <div className="field">
+                  <label>Cards de OG de todas as páginas e cases</label>
+                  <BatchRunner endpoint="/og-image/all" startLabel="Gerar todas as OG images" unit="imagens">
+                    <p className="hint">Gera o card (logo, fundo do hero, título e endereço) de cada página e case publicado, em todos os idiomas, e substitui a OG atual, inclusive as enviadas à mão. Depois disso, cada card é refeito sozinho quando o título da página muda.</p>
+                  </BatchRunner>
+                </div>
                 {field('seo_robots', 'Robots padrão')}
                 {field('og_locale', 'og:locale')}
                 <div className="field">

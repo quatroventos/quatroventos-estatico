@@ -7,6 +7,7 @@ import { LangDots } from '../components/LangDots';
 import { TranslationTabs, useTranslationConfig, useTranslationJob, type TranslationState } from '../components/TranslationBar';
 import { ConfirmDialog } from '../components/ConfirmDialog';
 import { MediaField } from '../components/MediaField';
+import { OgCaptureButton } from '../components/OgCapture';
 import { Modal } from '../components/Modal';
 import { PageOutline, type OutlineSection } from '../components/PageOutline';
 import { SchemaForm } from '../components/SchemaForm';
@@ -123,6 +124,7 @@ type CaseDetail = {
   seo_title: string;
   seo_description: string;
   seo_keyword: string;
+  og_image: string | null;
 };
 
 const empty: CaseDetail = {
@@ -145,6 +147,7 @@ const empty: CaseDetail = {
   seo_title: '',
   seo_description: '',
   seo_keyword: '',
+  og_image: null,
 };
 
 function slugify(value: string): string {
@@ -168,6 +171,7 @@ function normalize(raw: Partial<CaseDetail> & Record<string, unknown>): CaseDeta
     seo_title: (raw.seo_title as string) ?? '',
     seo_description: (raw.seo_description as string) ?? '',
     seo_keyword: (raw.seo_keyword as string) ?? '',
+    og_image: (raw.og_image as string) || null,
     services: Array.isArray(raw.services) ? raw.services : [],
     tags: Array.isArray(raw.tags) ? raw.tags : [],
     content: { sections: Array.isArray((raw.content as { sections?: unknown } | null)?.sections) ? (raw.content as { sections: CaseSection[] }).sections : [] },
@@ -1026,6 +1030,29 @@ export function CaseEditorScreen() {
               </FieldAiWrap>
               <SeoLength id="case-seo-description-length" kind="description" text={form.seo_description.trim() || form.summary} fallback={!form.seo_description.trim()} />
             </div>
+            <MediaField label="OG image" value={form.og_image} hint="Vazio usa a capa do case." onChange={(path) => patch({ og_image: path })} />
+            {!creating ? (
+              <OgCaptureButton
+                endpoint={`/og-image/cases/${id}`}
+                body={{
+                  content: form.content,
+                  client: form.client,
+                  title: form.title,
+                  summary: form.summary,
+                  sector: form.sector,
+                  year: form.year,
+                  url: form.url,
+                  tags: form.tags,
+                  services: form.services,
+                  cover_path: form.cover_path,
+                  cover_alt: form.cover_alt,
+                  cover_ratio: form.cover_ratio,
+                  seo_title: form.seo_title,
+                  seo_description: form.seo_description,
+                }}
+                onCaptured={(path) => patch({ og_image: path })}
+              />
+            ) : null}
           </Box>
 
           <Box title="Análise SEO e desempenho">

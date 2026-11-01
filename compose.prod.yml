@@ -31,8 +31,10 @@ services:
     volumes:
       - app_storage:/var/www/html/storage
     networks:
-      - default
-      - easypanel
+      default:
+        aliases:
+          - quatroventos-app
+      easypanel: {}
     depends_on:
       - redis
 
@@ -51,6 +53,7 @@ services:
       REDIS_HOST: quatroventos-redis
       QUEUE_CONNECTION: redis
       CACHE_STORE: redis
+      OG_CAPTURE_URL: "http://quatroventos-app:8000"
     volumes:
       - app_storage:/var/www/html/storage
     entrypoint: ["/bin/sh", "-c", "php artisan queue:work --sleep=1 --tries=3"]

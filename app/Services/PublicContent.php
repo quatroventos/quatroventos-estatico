@@ -165,7 +165,7 @@ class PublicContent
                 'description' => filled($case->seo_description) ? (string) $case->seo_description : ($case->summary ?: $defaults['seo_description']),
                 'robots' => $defaults['seo_robots'],
                 'canonical' => url($case->publicPath()),
-                'og_image' => $cover !== '' ? $cover : ($defaults['seo_og_image'] ? media($defaults['seo_og_image']) : null),
+                'og_image' => filled($case->og_image) ? media($case->og_image) : ($cover !== '' ? $cover : ($defaults['seo_og_image'] ? media($defaults['seo_og_image']) : null)),
                 'og_image_alt' => $case->cover_alt ?: $case->title,
                 'twitter_card' => $defaults['twitter_card'],
                 'og_site_name' => $defaults['og_site_name'],

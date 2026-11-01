@@ -121,6 +121,7 @@ class CaseStudyController extends Controller
             'seo_title' => ['nullable', 'string', 'max:255'],
             'seo_description' => ['nullable', 'string', 'max:500'],
             'seo_keyword' => ['nullable', 'string', 'max:120'],
+            'og_image' => ['nullable', 'string', 'max:500'],
         ], [
             'slug.required' => 'Informe o endereço do case.',
             'slug.regex' => 'Use apenas letras minúsculas, números e hífens.',

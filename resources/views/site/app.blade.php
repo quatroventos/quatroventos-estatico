@@ -53,7 +53,7 @@
     @if(!empty($cmsPreview))
       <div id="site-root"></div>
       <script>
-        @php($previewBoot = ['page' => $payload, 'site' => $sitePayload, 'preview' => true, 'draftUrl' => $previewDraftUrl ?? null])
+        @php($previewBoot = ['page' => $payload, 'site' => $sitePayload, 'preview' => true, 'draftUrl' => $previewDraftUrl ?? null, 'og' => $ogCard ?? null])
         window.__SITE__ = @json($previewBoot);
       </script>
     @else

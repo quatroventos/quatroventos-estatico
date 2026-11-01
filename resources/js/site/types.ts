@@ -116,6 +116,7 @@ declare global {
       site: SitePayload;
       preview?: boolean;
       draftUrl?: string | null;
+      og?: { domain: string; origins?: string[] } | null;
     };
   }
 }

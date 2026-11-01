@@ -6141,3 +6141,12 @@ td.person span {
 .form-warning + .form-error {
   margin-bottom: 14px;
 }
+
+.batch-runner {
+  display: grid;
+  gap: 10px;
+}
+
+.batch-runner .toolbar {
+  margin: 0;
+}

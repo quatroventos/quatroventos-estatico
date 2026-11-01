@@ -9,6 +9,7 @@ use App\Models\FormOption;
 use App\Models\MenuItem;
 use App\Models\Page;
 use App\Models\SiteSetting;
+use App\Observers\OgImageObserver;
 use App\Observers\SitePrerenderObserver;
 use App\Observers\SystemOptionsObserver;
 use App\Policies\AdminOnlyPolicy;
@@ -46,6 +47,9 @@ class AppServiceProvider extends ServiceProvider
         foreach ([Page::class, CaseStudy::class, SiteSetting::class, MenuItem::class, Certification::class, FormOption::class] as $model) {
             $model::observe(SitePrerenderObserver::class);
         }
+
+        Page::observe(OgImageObserver::class);
+        CaseStudy::observe(OgImageObserver::class);
 
         $appUrl = (string) config('app.url');
         if (str_starts_with($appUrl, 'https://')) {

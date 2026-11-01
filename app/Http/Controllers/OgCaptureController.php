@@ -31,6 +31,7 @@ class OgCaptureController extends Controller
                 'site' => app(SystemOptions::class)->site(),
                 'payload' => $entry['payload'],
                 'sitePayload' => $entry['site'],
+                'ogCard' => $entry['og'] ?? null,
                 'cmsPreview' => true,
             ])
             ->header('X-Robots-Tag', 'noindex, nofollow')
