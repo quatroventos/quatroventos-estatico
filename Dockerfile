@@ -14,6 +14,7 @@ FROM php:8.4.27-fpm-bookworm
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git unzip libzip-dev libpng-dev libjpeg62-turbo-dev libfreetype6-dev \
     libwebp-dev libicu-dev libonig-dev nginx \
+    chromium fonts-liberation fonts-noto-color-emoji \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) pdo_mysql mbstring exif pcntl bcmath gd zip intl opcache \
     && pecl install redis \
