@@ -10,6 +10,7 @@ import { BrandMark } from '../components/BrandMark';
 import { RecoveryCodes } from '../components/RecoveryCodes';
 
 type LoginResponse =
+  | { status: 'authenticated'; user: CmsUser }
   | { status: 'two_factor_challenge' }
   | { status: 'two_factor_setup'; secret: string; otpauth: string };
 
@@ -50,6 +51,11 @@ export function LoginScreen() {
         method: 'POST',
         body: JSON.stringify({ email, password }),
       });
+      if (payload.status === 'authenticated') {
+        setUser(payload.user);
+        navigate('/');
+        return;
+      }
       setCode('');
       setStep(payload.status === 'two_factor_setup'
         ? { kind: 'setup', secret: payload.secret, otpauth: payload.otpauth }

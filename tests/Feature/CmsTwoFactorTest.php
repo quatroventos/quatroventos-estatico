@@ -141,6 +141,23 @@ class CmsTwoFactorTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_local_environment_logs_in_without_two_factor(): void
+    {
+        $this->app['env'] = 'local';
+        $this->seedRoles();
+        $user = User::factory()->withoutTwoFactor()->create(['email' => 'local@example.com']);
+        $user->syncRoles(['root']);
+
+        $this->withSession(['_token' => 'csrf-local'])->postJson('/gestao/api/login', [
+            '_token' => 'csrf-local',
+            'email' => 'local@example.com',
+            'password' => 'password',
+        ])->assertOk()->assertJsonPath('status', 'authenticated');
+
+        $this->assertAuthenticatedAs($user);
+        $this->getJson('/gestao/api/me')->assertOk();
+    }
+
     public function test_root_can_impersonate_user_without_two_factor(): void
     {
         $root = $this->makeAdmin();

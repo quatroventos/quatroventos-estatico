@@ -21,6 +21,14 @@ class AuthController extends Controller
 
     private const TWO_FACTOR_MAX_ATTEMPTS = 5;
 
+    /**
+     * Ambiente local dispensa o 2FA no login e no middleware do painel.
+     */
+    public static function twoFactorBypassed(): bool
+    {
+        return app()->environment('local');
+    }
+
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -60,6 +68,20 @@ class AuthController extends Controller
         }
 
         $request->session()->forget([self::IMPERSONATOR_KEY, self::TWO_FACTOR_SETUP_KEY]);
+
+        if (self::twoFactorBypassed()) {
+            Auth::login($user);
+            $request->session()->regenerate();
+
+            app(AuditLogger::class)->record($request, $user, 'login', $user->name.' entrou no painel (ambiente local, sem 2FA)', 200);
+
+            return response()->json([
+                'status' => 'authenticated',
+                'user' => $this->payload($request, $user),
+                'recovery_codes' => null,
+            ]);
+        }
+
         $request->session()->put(self::TWO_FACTOR_PENDING_KEY, [
             'user_id' => $user->id,
             'expires_at' => now()->addMinutes(10)->getTimestamp(),

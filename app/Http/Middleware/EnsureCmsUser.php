@@ -19,7 +19,7 @@ class EnsureCmsUser
             return response()->json(['message' => 'Não autenticado.'], 401);
         }
 
-        if (! $user->hasCompletedTwoFactor() && ! $request->session()->has(AuthController::IMPERSONATOR_KEY)) {
+        if (! AuthController::twoFactorBypassed() && ! $user->hasCompletedTwoFactor() && ! $request->session()->has(AuthController::IMPERSONATOR_KEY)) {
             Auth::guard('web')->logout();
             $request->session()->invalidate();
             $request->session()->regenerateToken();
