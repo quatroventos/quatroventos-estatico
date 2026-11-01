@@ -8,8 +8,8 @@ use Throwable;
 
 /**
  * Dados de mercado para a palavra-chave de uma página: demanda, dificuldade, intenção e variações
- * (DataForSEO via OpenSEO, só com consultas pagas liberadas), top 10 do Google (OpenSEO pago ou
- * scraper do SerpBear) e buscas reais do Search Console. Só `fetch()` consulta; o resto lê o cache de 30 dias.
+ * (DataForSEO via OpenSEO, só com consultas pagas liberadas), top 10 do Google (OpenSEO pago) e
+ * buscas reais do Search Console. Só `fetch()` consulta; o resto lê o cache de 30 dias.
  *
  * @phpstan-type Metrics array{keyword: string, volume: int|null, difficulty: int|null, intent: string|null, intent_code: string|null, cpc: float|null}
  * @phpstan-type Report array{status: string, paid: bool, keyword: string, path: string|null, url: string|null, fetched_at: string, metrics: Metrics|null, related: list<Metrics>, serp: list<array{position: int, title: string, url: string, description: string}>, own_position: int|null, search_console: list<array{query: string, clicks: int, impressions: int, ctr: float|null, position: float|null}>|null, errors: array<string, string>}
@@ -26,14 +26,14 @@ class MarketInsights
 
     public const QUERIES_LIMIT = 10;
 
-    public function __construct(private OpenSeoClient $client, private SerpBearClient $serpBear) {}
+    public function __construct(private OpenSeoClient $client) {}
 
     /**
-     * Alguma fonte disponível: OpenSEO (Search Console e, se liberado, DataForSEO) ou o scraper do SerpBear.
+     * OpenSEO configurado: Search Console sempre e, se liberado, DataForSEO.
      */
     public function configured(): bool
     {
-        return $this->client->configured() || $this->serpBear->canManage();
+        return $this->client->configured();
     }
 
     public function paidEnabled(): bool
@@ -69,11 +69,11 @@ class MarketInsights
         }
 
         if (! $this->configured()) {
-            throw new RuntimeException('Nenhuma fonte de dados configurada. Configure o OpenSEO ou o SerpBear em SEO > Integrações.');
+            throw new RuntimeException('OpenSEO não configurado. Preencha em SEO > Integrações.');
         }
 
         $paid = $this->paidEnabled();
-        $url = $this->client->configured() ? $this->absoluteUrl($path) : null;
+        $url = $this->absoluteUrl($path);
         $errors = [];
         $metrics = null;
         $related = [];
@@ -94,9 +94,9 @@ class MarketInsights
             }
         }
 
-        if ($paid || $this->serpBear->canManage()) {
+        if ($paid) {
             try {
-                $serp = $paid ? $this->serp($keyword) : $this->freeSerp($keyword);
+                $serp = $this->serp($keyword);
             } catch (Throwable $exception) {
                 $errors['serp'] = $this->message($exception);
             }
@@ -111,7 +111,7 @@ class MarketInsights
         }
 
         if ($metrics === null && $related === [] && $serp === [] && $queries === null) {
-            throw new RuntimeException($errors !== [] ? reset($errors) : 'Nenhuma fonte devolveu dados. Com as consultas pagas desligadas, configure o login do SerpBear ou o Search Console no OpenSEO.');
+            throw new RuntimeException($errors !== [] ? reset($errors) : 'Nenhuma fonte devolveu dados. Com as consultas pagas desligadas, conecte o Search Console no OpenSEO.');
         }
 
         $report = [
@@ -229,22 +229,6 @@ class MarketInsights
                 'description' => trim((string) ($this->value($row, ['description', 'snippet']) ?? '')),
             ])
             ->filter(fn (array $row) => $row['title'] !== '' && $row['url'] !== '')
-            ->sortBy('position')
-            ->take(self::SERP_LIMIT)
-            ->values()
-            ->all();
-    }
-
-    /**
-     * Top 10 pelo scraper do SerpBear: sem custo por consulta, mas sem a description dos resultados.
-     *
-     * @return list<array{position: int, title: string, url: string, description: string}>
-     */
-    private function freeSerp(string $keyword): array
-    {
-        return collect($this->serpBear->searchResults($keyword, strtoupper((string) config('services.serpbear.country', 'BR'))))
-            ->filter(fn (array $row) => $row['title'] !== '')
-            ->map(fn (array $row) => [...$row, 'description' => ''])
             ->sortBy('position')
             ->take(self::SERP_LIMIT)
             ->values()

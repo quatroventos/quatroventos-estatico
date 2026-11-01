@@ -8,7 +8,6 @@ use App\Models\SiteSetting;
 use App\Services\Content\SectionCopyWriter;
 use App\Services\Seo\OpenSeoDashboard;
 use App\Services\Seo\SeoIntegrations;
-use App\Services\Seo\SerpBearClient;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,7 +17,7 @@ use Illuminate\Validation\Rule;
 use RuntimeException;
 
 /**
- * Aba "Integrações" da tela de SEO: OpenSEO, SerpBear, OpenAI e prompts da IA de SEO.
+ * Aba "Integrações" da tela de SEO: OpenSEO, OpenAI e prompts da IA de SEO.
  * Segredos são só de escrita: a tela recebe apenas se estão definidos (no CMS ou no .env).
  */
 class SeoIntegrationController extends Controller
@@ -46,11 +45,6 @@ class SeoIntegrationController extends Controller
             'openseo_location_code' => ['nullable', 'integer', 'min:1', 'max:99999999'],
             'openseo_language_code' => ['nullable', 'string', 'max:10'],
             'openseo_paid_enabled' => ['sometimes', 'boolean'],
-            'serpbear_url' => ['nullable', 'url:http,https', 'max:255'],
-            'serpbear_username' => ['nullable', 'string', 'max:255'],
-            'serpbear_domain' => ['nullable', 'string', 'max:255'],
-            'serpbear_country' => ['nullable', 'string', 'size:2', 'alpha'],
-            'serpbear_devices' => ['nullable', Rule::in(['desktop', 'mobile', 'both'])],
             'openai_model' => ['nullable', 'string', 'max:100'],
             'prompt_writer' => ['nullable', 'string', 'max:8000'],
             'prompt_seo_title' => ['nullable', 'string', 'max:2000'],
@@ -92,14 +86,13 @@ class SeoIntegrationController extends Controller
     /**
      * Testa a conexão com o que está salvo.
      */
-    public function test(string $service, OpenSeoDashboard $openSeo, SerpBearClient $serpBear): JsonResponse
+    public function test(string $service, OpenSeoDashboard $openSeo): JsonResponse
     {
         $this->authorize('update', SiteSetting::current());
 
         try {
             return response()->json(match ($service) {
                 'openseo' => $this->testOpenSeo($openSeo),
-                'serpbear' => $this->testSerpBear($serpBear),
                 'openai' => $this->testOpenAi(),
             });
         } catch (RuntimeException $exception) {
@@ -122,33 +115,6 @@ class SeoIntegrationController extends Controller
                 : ($projects === [] ? 'Conectado, mas a conta não tem projetos.' : 'Conectado. Escolha um dos projetos da conta.'),
             'projects' => $projects,
         ];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function testSerpBear(SerpBearClient $serpBear): array
-    {
-        $domains = collect($serpBear->domains())->map(fn (array $row) => ['domain' => (string) ($row['domain'] ?? ''), 'keywords' => (int) ($row['keywordCount'] ?? 0)])->filter(fn (array $row) => $row['domain'] !== '')->values();
-        $domain = $serpBear->domain();
-        $found = $domain !== '' && $domains->contains('domain', $domain);
-        $messages = [$found ? 'Chave de API ok, domínio '.$domain.' encontrado.' : ($domain === '' ? 'Chave de API ok. Defina o domínio.' : 'Chave de API ok, mas o domínio '.$domain.' não existe no SerpBear. Cadastre-o lá ou escolha um da lista.')];
-        $login = null;
-
-        if ($serpBear->canManage()) {
-            try {
-                $serpBear->checkLogin();
-                $login = true;
-                $messages[] = 'Login ok: dá para adicionar e remover palavras pelo CMS.';
-            } catch (RuntimeException $exception) {
-                $login = false;
-                $messages[] = $exception->getMessage();
-            }
-        } else {
-            $messages[] = 'Sem usuário e senha: o CMS só lê e atualiza posições.';
-        }
-
-        return ['ok' => $found && $login !== false, 'message' => implode(' ', $messages), 'domains' => $domains->all()];
     }
 
     /**

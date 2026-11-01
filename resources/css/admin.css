@@ -4013,10 +4013,6 @@ td.person span {
   padding-top: 20px;
 }
 
-.oseo-pos.is-empty {
-  color: var(--ink-faint);
-}
-
 .seo-int {
   display: grid;
   gap: 16px;
@@ -4279,34 +4275,6 @@ td.person span {
 
 .oseo-kd.is-bad {
   color: #c0392b;
-}
-
-.oseo-pos {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.oseo-delta {
-  display: inline-flex;
-  align-items: center;
-  gap: 1px;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-.oseo-delta.is-up {
-  color: var(--green);
-}
-
-.oseo-delta.is-down {
-  color: #c0392b;
-}
-
-.oseo-delta.is-flat {
-  color: var(--ink-faint);
 }
 
 .oseo-warn {

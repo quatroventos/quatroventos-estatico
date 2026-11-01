@@ -209,9 +209,9 @@ export function SeoScreen() {
       eyebrow="Configuração"
       title="SEO do site"
       subtitle={{
-        performance: 'Como o site vai no Google e nas IAs, com dados do OpenSEO e do SerpBear.',
+        performance: 'Como o site vai no Google e nas IAs, com dados do OpenSEO.',
         settings: 'Campos vazios nas páginas herdam este padrão. O título segue o template, salvo se a página já incluir o nome do site.',
-        integrations: 'Chaves, endereços e prompts do OpenSEO, do SerpBear e da IA. Campo vazio usa o valor do .env.',
+        integrations: 'Chaves, endereços e prompts do OpenSEO e da IA. Campo vazio usa o valor do .env.',
       }[tab]}
     >
       <div className="resource-tabs seo-tabs" data-tour="seo-tabs" role="tablist" aria-label="Seções de SEO">

@@ -498,7 +498,7 @@ function MarketPanel({
         <div className="seo-lh-empty">
           <p className="hint">{paid
             ? 'Volume, dificuldade, top 10 do Google e buscas do Search Console. Gasta créditos do DataForSEO e fica guardado por 30 dias.'
-            : 'Top 10 do Google (SerpBear) e buscas do Search Console, sem custo. Fica guardado por 30 dias.'}</p>
+            : 'Buscas do Search Console, sem custo. Fica guardado por 30 dias.'}</p>
           <button className="btn btn-secondary" type="button" disabled={loading} onClick={() => void fetchNow()}>
             <TrendingUp size={13} /> {loading ? 'Buscando...' : 'Buscar dados'}
           </button>

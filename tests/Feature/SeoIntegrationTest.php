@@ -29,39 +29,35 @@ class SeoIntegrationTest extends TestCase
 
         $response = $this->actingAs($editor)
             ->putJson('/gestao/api/seo/integrations', [
-                'serpbear_url' => 'http://serpbear.test/',
-                'serpbear_domain' => 'quatroventos.com.br',
-                'serpbear_country' => 'br',
-                'serpbear_devices' => 'both',
+                'openseo_url' => 'http://openseo.test/mcp/',
+                'openseo_project_id' => 'proj_1',
                 'openseo_paid_enabled' => false,
-                'secrets' => ['serpbear_api_key' => 'sb_secret', 'openai_api_key' => 'sk-secret'],
+                'secrets' => ['openseo_api_key' => 'oseo_secret', 'openai_api_key' => 'sk-secret'],
             ])
             ->assertOk()
-            ->assertJsonPath('data.secrets.serpbear_api_key.set', true)
-            ->assertJsonPath('data.secrets.serpbear_password.set', false)
-            ->assertJsonPath('data.values.serpbear_domain', 'quatroventos.com.br')
+            ->assertJsonPath('data.secrets.openseo_api_key.set', true)
+            ->assertJsonPath('data.values.openseo_project_id', 'proj_1')
             ->assertJsonPath('data.paid', false);
 
-        $this->assertStringNotContainsString('sb_secret', $response->getContent());
+        $this->assertStringNotContainsString('oseo_secret', $response->getContent());
         $this->assertStringNotContainsString('sk-secret', $response->getContent());
-        $this->assertNotSame('sb_secret', DB::table('seo_integrations')->value('serpbear_api_key'));
-        $this->assertSame('sb_secret', config('services.serpbear.key'));
-        $this->assertSame('http://serpbear.test', config('services.serpbear.url'));
-        $this->assertSame('BR', config('services.serpbear.country'));
+        $this->assertNotSame('oseo_secret', DB::table('seo_integrations')->value('openseo_api_key'));
+        $this->assertSame('oseo_secret', config('services.openseo.key'));
+        $this->assertSame('http://openseo.test/mcp', config('services.openseo.url'));
         $this->assertSame('sk-secret', config('services.openai.key'));
 
         $this->actingAs($editor)
-            ->putJson('/gestao/api/seo/integrations', ['serpbear_domain' => 'quatroventos.com.br', 'secrets' => ['serpbear_api_key' => '']])
+            ->putJson('/gestao/api/seo/integrations', ['openseo_project_id' => 'proj_1', 'secrets' => ['openseo_api_key' => '']])
             ->assertOk();
 
-        $this->assertSame('sb_secret', SeoIntegration::current()->serpbear_api_key);
+        $this->assertSame('oseo_secret', SeoIntegration::current()->openseo_api_key);
 
         $this->actingAs($editor)
-            ->putJson('/gestao/api/seo/integrations', ['clear' => ['serpbear_api_key']])
+            ->putJson('/gestao/api/seo/integrations', ['clear' => ['openseo_api_key']])
             ->assertOk()
-            ->assertJsonPath('data.secrets.serpbear_api_key.set', false);
+            ->assertJsonPath('data.secrets.openseo_api_key.set', false);
 
-        $this->assertNull(SeoIntegration::current()->serpbear_api_key);
+        $this->assertNull(SeoIntegration::current()->openseo_api_key);
     }
 
     public function test_custom_prompts_reach_the_ai_and_the_default_text_is_not_stored(): void
@@ -107,28 +103,6 @@ class SeoIntegrationTest extends TestCase
                 && ! str_contains($body, 'AI Slop')
                 && str_contains($body, 'Instruções do site para este campo: Cite Curitiba quando fizer sentido.');
         });
-    }
-
-    public function test_serpbear_connection_test_reports_missing_domain_and_login(): void
-    {
-        config([
-            'services.serpbear.url' => 'http://serpbear.test',
-            'services.serpbear.key' => 'sb_key',
-            'services.serpbear.domain' => 'quatroventos.com.br',
-            'services.serpbear.username' => 'admin',
-            'services.serpbear.password' => 'errada',
-        ]);
-        Http::fake([
-            'serpbear.test/api/domains' => Http::response(['domains' => [['domain' => 'outro.com.br', 'keywordCount' => 4]]]),
-            'serpbear.test/api/login' => Http::response(['success' => false, 'error' => 'Incorrect Password'], 401),
-        ]);
-
-        $this->actingAs($this->makeEditor())
-            ->postJson('/gestao/api/seo/integrations/test/serpbear')
-            ->assertOk()
-            ->assertJsonPath('ok', false)
-            ->assertJsonPath('domains.0.domain', 'outro.com.br')
-            ->assertJsonPath('message', 'Chave de API ok, mas o domínio quatroventos.com.br não existe no SerpBear. Cadastre-o lá ou escolha um da lista. O SerpBear recusou o login. Confira usuário e senha em SEO > Integrações.');
     }
 
     public function test_guest_cannot_read_integrations(): void

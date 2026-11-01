@@ -24,13 +24,6 @@ class SeoIntegrations
         'openseo_location_code' => 'services.openseo.location_code',
         'openseo_language_code' => 'services.openseo.language_code',
         'openseo_paid_enabled' => 'services.openseo.paid',
-        'serpbear_url' => 'services.serpbear.url',
-        'serpbear_api_key' => 'services.serpbear.key',
-        'serpbear_username' => 'services.serpbear.username',
-        'serpbear_password' => 'services.serpbear.password',
-        'serpbear_domain' => 'services.serpbear.domain',
-        'serpbear_country' => 'services.serpbear.country',
-        'serpbear_devices' => 'services.serpbear.devices',
         'openai_api_key' => 'services.openai.key',
         'openai_model' => 'services.openai.model',
         'prompt_writer' => 'services.openai.prompts.writer',
@@ -95,8 +88,7 @@ class SeoIntegrations
     private function normalize(string $column, mixed $value): mixed
     {
         return match ($column) {
-            'openseo_site_url', 'openseo_url', 'serpbear_url' => rtrim((string) $value, '/'),
-            'serpbear_country' => strtoupper((string) $value),
+            'openseo_site_url', 'openseo_url' => rtrim((string) $value, '/'),
             default => $value,
         };
     }

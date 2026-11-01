@@ -71,7 +71,7 @@ class SeoInsightsController extends Controller
         [$keyword, $path] = $this->marketTarget($request);
 
         if (! $market->configured()) {
-            return response()->json(['status' => 'unconfigured', 'keyword' => $keyword, 'message' => 'Dados de busca não configurados. Configure o OpenSEO ou o SerpBear em SEO > Integrações.']);
+            return response()->json(['status' => 'unconfigured', 'keyword' => $keyword, 'message' => 'Dados de busca não configurados. Configure o OpenSEO em SEO > Integrações.']);
         }
 
         return response()->json($market->cached($keyword, $path) ?? ['status' => 'idle', 'keyword' => $keyword, 'paid' => $market->paidEnabled()]);

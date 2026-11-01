@@ -62,17 +62,6 @@ return [
         'paid' => (bool) env('OPENSEO_PAID_ENABLED', false),
     ],
 
-    'serpbear' => [
-        'url' => env('SERPBEAR_URL'),
-        'key' => env('SERPBEAR_API_KEY'),
-        'username' => env('SERPBEAR_USERNAME'),
-        'password' => env('SERPBEAR_PASSWORD'),
-        'domain' => env('SERPBEAR_DOMAIN'),
-        'country' => env('SERPBEAR_COUNTRY', 'BR'),
-        'devices' => env('SERPBEAR_DEVICES', 'desktop'),
-        'timeout' => (int) env('SERPBEAR_TIMEOUT', 60),
-    ],
-
     'meta' => [
         'key' => env('META_API_KEY'),
         'base_url' => env('META_BASE_URL', 'https://api.meta.ai/v1'),

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\SiteSetting;
 use App\Services\Seo\OpenSeoDashboard;
 use App\Services\Seo\SeoIntegrations;
-use App\Services\Seo\SerpBearRanking;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -15,13 +14,13 @@ use RuntimeException;
 
 /**
  * Aba "Desempenho" da tela de SEO: Search Console, auditoria, palavras-chave, indexação,
- * domínio e visibilidade em IA, lidos do OpenSEO. O ranking vem do SerpBear (RankController).
+ * domínio e visibilidade em IA, lidos do OpenSEO.
  */
 class OpenSeoController extends Controller
 {
     public function __construct(private OpenSeoDashboard $dashboard) {}
 
-    public function show(Request $request, SerpBearRanking $ranking, SeoIntegrations $integrations): JsonResponse
+    public function show(Request $request, SeoIntegrations $integrations): JsonResponse
     {
         $this->authorize('view', SiteSetting::current());
 
@@ -43,7 +42,6 @@ class OpenSeoController extends Controller
             'message' => $message,
             'site_url' => $this->dashboard->siteUrl(),
             'paid' => $integrations->paidEnabled(),
-            'rank_configured' => $ranking->configured(),
         ]);
     }
 

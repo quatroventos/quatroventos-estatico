@@ -7,14 +7,14 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 /**
- * Credenciais e prompts das integrações de SEO (OpenSEO, SerpBear, OpenAI), editáveis no CMS.
+ * Credenciais e prompts das integrações de SEO (OpenSEO, OpenAI), editáveis no CMS.
  * Linha única; campo vazio cai no valor do .env.
  */
 class SeoIntegration extends Model
 {
     use LogsActivity;
 
-    public const SECRETS = ['openseo_api_key', 'serpbear_api_key', 'serpbear_password', 'openai_api_key'];
+    public const SECRETS = ['openseo_api_key', 'openai_api_key'];
 
     protected $guarded = [];
 
@@ -24,8 +24,6 @@ class SeoIntegration extends Model
     {
         return [
             'openseo_api_key' => 'encrypted',
-            'serpbear_api_key' => 'encrypted',
-            'serpbear_password' => 'encrypted',
             'openai_api_key' => 'encrypted',
             'openseo_location_code' => 'integer',
             'openseo_paid_enabled' => 'boolean',

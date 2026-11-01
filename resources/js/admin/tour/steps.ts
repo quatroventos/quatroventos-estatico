@@ -202,8 +202,8 @@ export function stepsFor(tourId: TourId, abilities?: Abilities): TourStep[] {
   if (tourId === 'seo') {
     const settings = { prepare: 'seo.showSettings' };
     return [
-      step('seo-tabs', 'Desempenho, configuração e integrações', 'Desempenho mostra os dados do OpenSEO e o ranking do SerpBear. Configuração guarda o sitemap e o padrão de títulos. Integrações reúne chaves, endereços e prompts da IA.', { prepare: 'seo.showPerformance' }),
-      step('seo-openseo-nav', 'Blocos de desempenho', 'Auditoria, Search Console, palavras-chave, ranking, indexação e IA. Consultas pagas só aparecem se liberadas em Integrações e sempre pedem confirmação com o custo.', { prepare: 'seo.showPerformance', optional: true }),
+      step('seo-tabs', 'Desempenho, configuração e integrações', 'Desempenho mostra os dados do OpenSEO. Configuração guarda o sitemap e o padrão de títulos. Integrações reúne chaves, endereços e prompts da IA.', { prepare: 'seo.showPerformance' }),
+      step('seo-openseo-nav', 'Blocos de desempenho', 'Auditoria, Search Console, palavras-chave, indexação e IA. Consultas pagas só aparecem se liberadas em Integrações e sempre pedem confirmação com o custo.', { prepare: 'seo.showPerformance', optional: true }),
       step('seo-sitemap', 'Mapa do site', 'Lista das páginas publicadas no sitemap.', settings),
       step('seo-copy', 'Copiar link', 'Copia o endereço para você colar no Search Console ou onde precisar.', settings),
       step('seo-generate', 'Atualizar lista', 'Atualiza a lista com as páginas publicadas e os endereços extras.', settings),

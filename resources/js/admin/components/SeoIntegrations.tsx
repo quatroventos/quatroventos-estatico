@@ -1,8 +1,8 @@
 import { type FormEvent, type ReactNode, useEffect, useState } from 'react';
-import { CheckCircle2, ExternalLink, RotateCcw, XCircle } from 'lucide-react';
+import { CheckCircle2, RotateCcw, XCircle } from 'lucide-react';
 import { api, firstError } from '../api';
 
-type Secret = 'openseo_api_key' | 'serpbear_api_key' | 'serpbear_password' | 'openai_api_key';
+type Secret = 'openseo_api_key' | 'openai_api_key';
 
 type Values = {
   openseo_url: string | null;
@@ -12,11 +12,6 @@ type Values = {
   openseo_location_code: number | null;
   openseo_language_code: string | null;
   openseo_paid_enabled: boolean | null;
-  serpbear_url: string | null;
-  serpbear_username: string | null;
-  serpbear_domain: string | null;
-  serpbear_country: string | null;
-  serpbear_devices: string | null;
   openai_model: string | null;
   prompt_writer: string | null;
   prompt_seo_title: string | null;
@@ -32,16 +27,15 @@ type Payload = {
   paid: boolean;
 };
 
-type Service = 'openseo' | 'serpbear' | 'openai';
+type Service = 'openseo' | 'openai';
 
 type TestResult = {
   ok: boolean;
   message: string;
   projects?: { id: string; name: string | null; domain: string | null }[];
-  domains?: { domain: string; keywords: number }[];
 };
 
-const emptySecrets: Record<Secret, string> = { openseo_api_key: '', serpbear_api_key: '', serpbear_password: '', openai_api_key: '' };
+const emptySecrets: Record<Secret, string> = { openseo_api_key: '', openai_api_key: '' };
 
 export function SeoIntegrations({ canEdit }: { canEdit: boolean }) {
   const [payload, setPayload] = useState<Payload | null>(null);
@@ -179,7 +173,6 @@ export function SeoIntegrations({ canEdit }: { canEdit: boolean }) {
   };
 
   const projects = tests.openseo?.projects ?? [];
-  const domains = tests.serpbear?.domains ?? [];
   const paid = Boolean(form.openseo_paid_enabled ?? payload.paid);
 
   return (
@@ -220,50 +213,9 @@ export function SeoIntegrations({ canEdit }: { canEdit: boolean }) {
           <p className="hint">
             {paid
               ? 'Pesquisa de ideias, volume e dificuldade no editor e visão do domínio ficam disponíveis e gastam créditos (sempre pedem confirmação).'
-              : 'Desligado: nada no CMS gasta créditos. Volume, dificuldade, pesquisa de ideias e visão do domínio somem; o top 10 do editor vem do SerpBear.'}
+              : 'Desligado: nada no CMS gasta créditos. Volume, dificuldade, pesquisa de ideias e visão do domínio somem.'}
           </p>
           {testBlock('openseo', 'OpenSEO')}
-        </div>
-      </div>
-
-      <div className="panel" data-tour="seo-int-serpbear">
-        <div className="panel-head">
-          <h3>SerpBear</h3>
-          <p>Posição no Google das palavras acompanhadas. Sem custo por consulta; usa a cota do scraper configurado no SerpBear.</p>
-        </div>
-        <div className="panel-body">
-          <div className="seo-int-grid">
-            {text('serpbear_url', 'URL', 'Ex.: http://serpbear:3000 (rede interna) ou https://serpbear.seudominio.com.br.')}
-            {secret('serpbear_api_key', 'Chave de API', 'Valor da variável APIKEY do SerpBear. Lê e atualiza posições.')}
-            {text('serpbear_username', 'Usuário', 'USER_NAME do SerpBear. Com usuário e senha o CMS adiciona e remove palavras e busca o top 10.')}
-            {secret('serpbear_password', 'Senha', 'PASSWORD do SerpBear.')}
-            <div className="field">
-              <label>Domínio</label>
-              {domains.length > 0 ? (
-                <select value={form.serpbear_domain ?? ''} disabled={!canEdit} onChange={(event) => set('serpbear_domain', event.target.value || null)}>
-                  <option value="">{fallback('serpbear_domain') || 'Escolha um domínio'}</option>
-                  {domains.map((row) => <option key={row.domain} value={row.domain}>{row.domain} ({row.keywords} palavras)</option>)}
-                </select>
-              ) : (
-                <input value={form.serpbear_domain ?? ''} disabled={!canEdit} placeholder={fallback('serpbear_domain') || 'quatroventos.com.br'} onChange={(event) => set('serpbear_domain', event.target.value || null)} />
-              )}
-              <p className="hint">Igual ao cadastrado no SerpBear, sem https://.</p>
-            </div>
-            {text('serpbear_country', 'País', 'Código de 2 letras para novas palavras e para o top 10. Ex.: BR.')}
-            <div className="field">
-              <label>Dispositivos das novas palavras</label>
-              <select value={form.serpbear_devices ?? ''} disabled={!canEdit} onChange={(event) => set('serpbear_devices', event.target.value || null)}>
-                <option value="">{fallback('serpbear_devices') ? `Padrão do .env (${String(payload.fallbacks.serpbear_devices)})` : 'Padrão'}</option>
-                <option value="desktop">Só desktop</option>
-                <option value="mobile">Só celular</option>
-                <option value="both">Desktop e celular (dobra o uso do scraper)</option>
-              </select>
-            </div>
-          </div>
-          {form.serpbear_url ? (
-            <a className="btn btn-secondary btn-sm" href={form.serpbear_url} target="_blank" rel="noreferrer">Abrir SerpBear <ExternalLink size={12} /></a>
-          ) : null}
-          {testBlock('serpbear', 'SerpBear')}
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, ExternalLink, Minus, RefreshCw, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, ExternalLink, RefreshCw, Trash2 } from 'lucide-react';
 import { api, firstError } from '../api';
 import { Modal } from './Modal';
 
@@ -11,7 +11,6 @@ type Overview = {
   message: string | null;
   site_url: string;
   paid: boolean;
-  rank_configured: boolean;
 };
 
 type Performance = { clicks: number; impressions: number; ctr: number | null; position: number | null };
@@ -52,22 +51,6 @@ type KeywordRow = { keyword: string; volume: number | null; difficulty: number |
 
 type SavedKeywords = Failure | { state: 'ready'; link: string | null; rows: (KeywordRow & { id: string; tags: string[] })[] };
 
-type RankDevice = { id: number; position: number | null; previous: number | null; best: number | null; url: string | null; updating: boolean; error: string | null };
-
-type RankDeviceKey = 'desktop' | 'mobile';
-
-type Rank = Failure | {
-  state: 'ready';
-  link: string | null;
-  domain: string;
-  country: string;
-  devices: RankDeviceKey[];
-  can_manage: boolean;
-  updating: boolean;
-  last_checked_at: string | null;
-  rows: { keyword: string; country: string; desktop: RankDevice | null; mobile: RankDevice | null; best: number | null; serp_url: string }[];
-};
-
 type Inspection = Failure | {
   state: 'ready';
   link: string | null;
@@ -98,13 +81,12 @@ type AiVisibility = Failure | { state: 'none'; link: string | null } | {
   runs: { created_at: string | null; mention_rate: number | null; citation_rate: number | null; expected: number; answered: number; failed: number }[];
 };
 
-type PanelKey = 'audit' | 'search' | 'keywords' | 'rank' | 'index' | 'domain' | 'ai';
+type PanelKey = 'audit' | 'search' | 'keywords' | 'index' | 'domain' | 'ai';
 
 const PANELS: { key: PanelKey; label: string; hint: string }[] = [
   { key: 'audit', label: 'Auditoria', hint: 'Problemas técnicos encontrados ao rastrear o site.' },
   { key: 'search', label: 'Search Console', hint: 'Cliques, impressões e buscas reais no Google.' },
   { key: 'keywords', label: 'Palavras-chave', hint: 'Termos salvos e pesquisa de novas ideias.' },
-  { key: 'rank', label: 'Ranking', hint: 'Posição no Google das palavras acompanhadas no SerpBear.' },
   { key: 'index', label: 'Indexação', hint: 'Se o Google indexou as páginas do sitemap.' },
   { key: 'domain', label: 'Domínio', hint: 'Tráfego orgânico estimado e backlinks.' },
   { key: 'ai', label: 'IA', hint: 'Menções da marca em respostas do ChatGPT e outras IAs.' },
@@ -153,7 +135,7 @@ function isFailure(value: { state?: string } | null): value is Failure {
 /**
  * Carrega um bloco da aba. `reload(true)` ignora o cache do servidor.
  */
-function useOpenSeo<T>(path: string, base = '/seo/openseo') {
+function useOpenSeo<T>(path: string) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -163,13 +145,13 @@ function useOpenSeo<T>(path: string, base = '/seo/openseo') {
     setError('');
     try {
       const separator = path.includes('?') ? '&' : '?';
-      setData(await api<T>(`${base}${path}${fresh ? `${separator}fresh=1` : ''}`));
+      setData(await api<T>(`/seo/openseo${path}${fresh ? `${separator}fresh=1` : ''}`));
     } catch (err) {
       setError(firstError(err));
     } finally {
       setLoading(false);
     }
-  }, [path, base]);
+  }, [path]);
 
   useEffect(() => {
     void reload();
@@ -244,21 +226,6 @@ function CostDialog({ title, message, busy, confirmLabel, onConfirm, onClose }: 
     >
       <div className="oseo-cost">{message}</div>
     </Modal>
-  );
-}
-
-function Delta({ current, previous }: { current: number | null; previous: number | null }) {
-  if (current === null || previous === null || current === previous) {
-    return <span className="oseo-delta is-flat"><Minus size={10} /></span>;
-  }
-
-  const better = current < previous;
-
-  return (
-    <span className={`oseo-delta ${better ? 'is-up' : 'is-down'}`} title={`Antes: ${previous}`}>
-      {better ? <ArrowUp size={10} /> : <ArrowDown size={10} />}
-      {Math.abs(previous - current)}
-    </span>
   );
 }
 
@@ -544,7 +511,7 @@ function KeywordMetrics({ row }: { row: KeywordRow }) {
   );
 }
 
-function KeywordsPanel({ canEdit, paid, canTrack, onTracked }: { canEdit: boolean; paid: boolean; canTrack: boolean; onTracked: () => void }) {
+function KeywordsPanel({ canEdit, paid }: { canEdit: boolean; paid: boolean }) {
   const { data, setData, loading, error, reload } = useOpenSeo<SavedKeywords>('/keywords');
   const [seed, setSeed] = useState('');
   const [results, setResults] = useState<KeywordRow[] | null>(null);
@@ -597,21 +564,6 @@ function KeywordsPanel({ canEdit, paid, canTrack, onTracked }: { canEdit: boolea
     }
   }
 
-  async function track(keyword: string) {
-    setBusy(true);
-    setActionError('');
-    setMessage('');
-    try {
-      await api('/seo/rank/keywords', { method: 'POST', body: JSON.stringify({ keywords: [keyword] }) });
-      setMessage(`"${keyword}" entrou no ranking do SerpBear. A primeira posição aparece depois da próxima raspagem.`);
-      onTracked();
-    } catch (err) {
-      setActionError(firstError(err));
-    } finally {
-      setBusy(false);
-    }
-  }
-
   const toggle = (keyword: string) => setSelected((current) => {
     const next = new Set(current);
     if (next.has(keyword)) {
@@ -624,7 +576,7 @@ function KeywordsPanel({ canEdit, paid, canTrack, onTracked }: { canEdit: boolea
 
   return (
     <section className="panel oseo-panel">
-      <PanelHead title="Palavras-chave" hint={paid ? 'Pesquise ideias a partir de um termo, salve as que interessam e acompanhe a posição delas no Google.' : 'Palavras salvas no projeto do OpenSEO. Acompanhar manda a palavra para o ranking do SerpBear, sem custo.'} link={data && 'link' in data ? data.link : null} loading={loading} onRefresh={() => void reload(true)} />
+      <PanelHead title="Palavras-chave" hint={paid ? 'Pesquise ideias a partir de um termo e salve as que interessam no projeto do OpenSEO.' : 'Palavras salvas no projeto do OpenSEO.'} link={data && 'link' in data ? data.link : null} loading={loading} onRefresh={() => void reload(true)} />
       <div className="panel-body">
         {error ? <div className="form-error">{error}</div> : null}
         {actionError ? <div className="form-error">{actionError}</div> : null}
@@ -697,7 +649,6 @@ function KeywordsPanel({ canEdit, paid, canTrack, onTracked }: { canEdit: boolea
                         <td>
                           {canEdit ? (
                             <div className="row-actions">
-                              {canTrack ? <button className="btn btn-secondary btn-sm" type="button" disabled={busy} onClick={() => void track(row.keyword)}>Acompanhar</button> : null}
                               <button className="icon-btn danger" type="button" title="Remover" aria-label={`Remover ${row.keyword}`} onClick={() => void remove(row.id)}><Trash2 size={13} /></button>
                             </div>
                           ) : null}
@@ -721,148 +672,6 @@ function KeywordsPanel({ canEdit, paid, canTrack, onTracked }: { canEdit: boolea
           message={<p>A pesquisa de "{seed.trim()}" consulta o DataForSEO e gasta cerca de 54 créditos. Salvar as ideias depois não custa nada.</p>}
         />
       ) : null}
-    </section>
-  );
-}
-
-function RankPosition({ device, updating }: { device: RankDevice | null; updating: boolean }) {
-  if (!device) {
-    return <span className="oseo-pos is-empty">{EMPTY}</span>;
-  }
-
-  return (
-    <span className="oseo-pos" title={device.error ? `Última raspagem falhou: ${device.error}` : device.best ? `Melhor posição: ${device.best}` : undefined}>
-      {device.updating || (updating && device.position === null) ? <RefreshCw size={11} className="is-spinning" /> : device.position ?? '100+'}
-      {device.error ? <span className="oseo-warn">!</span> : <Delta current={device.position} previous={device.previous} />}
-    </span>
-  );
-}
-
-function RankPanel({ canEdit, data, loading, error, reload, setData }: { canEdit: boolean; data: Rank | null; loading: boolean; error: string; reload: (fresh?: boolean) => Promise<void>; setData: (value: Rank) => void }) {
-  const [keyword, setKeyword] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [actionError, setActionError] = useState('');
-  const [message, setMessage] = useState('');
-
-  const ready = data?.state === 'ready' ? data : null;
-  const updating = Boolean(ready?.updating);
-
-  useEffect(() => {
-    if (!updating) {
-      return;
-    }
-    const timer = window.setInterval(() => void reload(true), 15000);
-    return () => window.clearInterval(timer);
-  }, [updating, reload]);
-
-  async function run(action: () => Promise<Rank>, success: string): Promise<boolean> {
-    setBusy(true);
-    setActionError('');
-    setMessage('');
-    try {
-      setData(await action());
-      setMessage(success);
-      return true;
-    } catch (err) {
-      setActionError(firstError(err));
-      return false;
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  const refresh = () => run(() => api<Rank>('/seo/rank/refresh', { method: 'POST' }), 'Palavras na fila do SerpBear. As posições atualizam sozinhas nesta tela.');
-
-  const add = (event: FormEvent) => {
-    event.preventDefault();
-    const list = keyword.split(',').map((item) => item.trim()).filter(Boolean);
-    if (list.length === 0) {
-      return;
-    }
-    void run(() => api<Rank>('/seo/rank/keywords', { method: 'POST', body: JSON.stringify({ keywords: list }) }), `${list.length} ${list.length === 1 ? 'palavra adicionada' : 'palavras adicionadas'}. A primeira posição sai na próxima raspagem.`)
-      .then((done) => {
-        if (done) {
-          setKeyword('');
-        }
-      });
-  };
-
-  const remove = (row: NonNullable<typeof ready>['rows'][number]) => {
-    const ids = [row.desktop?.id, row.mobile?.id].filter((id): id is number => Boolean(id));
-    void run(() => api<Rank>('/seo/rank/keywords', { method: 'DELETE', body: JSON.stringify({ ids }) }), `"${row.keyword}" saiu do ranking.`);
-  };
-
-  const devices = ready?.devices ?? [];
-  const inTop = (limit: number) => ready?.rows.filter((row) => row.best !== null && row.best <= limit).length ?? 0;
-
-  return (
-    <section className="panel oseo-panel">
-      <PanelHead
-        title="Ranking no Google"
-        hint="Posição do site para cada palavra acompanhada no SerpBear. A seta compara com a raspagem anterior; 100+ significa fora dos 100 primeiros."
-        link={ready?.link}
-        linkLabel="SerpBear"
-        loading={loading}
-        onRefresh={() => void reload(true)}
-      >
-        {canEdit && ready ? <button className="btn btn-primary btn-sm" type="button" disabled={busy || updating} onClick={() => void refresh()}>{updating ? 'Atualizando...' : 'Atualizar posições'}</button> : null}
-      </PanelHead>
-      <div className="panel-body">
-        {error ? <div className="form-error">{error}</div> : null}
-        {actionError ? <div className="form-error">{actionError}</div> : null}
-        {message ? <div className="form-success">{message}</div> : null}
-        {!data && loading ? <Loading /> : null}
-        {data && isFailure(data) ? <Unavailable failure={data} label="Abrir SerpBear" /> : null}
-        {ready ? (
-          <>
-            <div className="oseo-stats">
-              <Stat label="Palavras" value={number(ready.rows.length)} note={`${ready.domain}, ${ready.country}`} />
-              <Stat label="No top 3" value={number(inTop(3))} tone="good" />
-              <Stat label="No top 10" value={number(inTop(10))} tone="good" />
-              <Stat label="Última raspagem" value={<span className="oseo-small">{shortDate(ready.last_checked_at)}</span>} note={updating ? 'atualizando agora' : undefined} />
-            </div>
-            {canEdit && ready.can_manage ? (
-              <form className="oseo-search" onSubmit={add}>
-                <input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="Acompanhar nova palavra (separe várias por vírgula)" maxLength={500} aria-label="Nova palavra para acompanhar" />
-                <button className="btn btn-secondary" type="submit" disabled={busy || !keyword.trim()}>Adicionar</button>
-              </form>
-            ) : null}
-            {canEdit && !ready.can_manage ? <p className="hint">Para adicionar e remover palavras pelo CMS, preencha usuário e senha do SerpBear em Integrações. Até lá, gerencie as palavras no próprio SerpBear.</p> : null}
-            {ready.rows.length === 0 ? <p className="empty-inline">Nenhuma palavra acompanhada em {ready.domain}.</p> : (
-              <div className="table-panel">
-                <table className="oseo-table">
-                  <thead>
-                    <tr>
-                      <th>Palavra-chave</th>
-                      {devices.map((device) => <th key={device}>{device === 'desktop' ? 'Desktop' : 'Celular'}</th>)}
-                      <th>Página</th>
-                      <th aria-label="Ações" />
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ready.rows.map((row) => {
-                      const url = row.desktop?.url ?? row.mobile?.url ?? null;
-                      return (
-                        <tr key={`${row.keyword}-${row.country}`}>
-                          <td className="oseo-term">{row.keyword}</td>
-                          {devices.map((device) => <td key={device}><RankPosition device={row[device]} updating={updating} /></td>)}
-                          <td className="oseo-term">{url ? <a href={url} target="_blank" rel="noreferrer">{pathOf(url)}</a> : EMPTY}</td>
-                          <td>
-                            <div className="row-actions">
-                              <a className="icon-btn" href={row.serp_url} target="_blank" rel="noreferrer" title="Ver no Google" aria-label={`Ver "${row.keyword}" no Google`}><ExternalLink size={13} /></a>
-                              {canEdit && ready.can_manage ? <button className="icon-btn danger" type="button" disabled={busy} title="Parar de acompanhar" aria-label={`Parar de acompanhar ${row.keyword}`} onClick={() => remove(row)}><Trash2 size={13} /></button> : null}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </>
-        ) : null}
-      </div>
     </section>
   );
 }
@@ -1110,7 +919,6 @@ function AiPanel() {
 
 export function SeoPerformance({ sitemapPaths, canEdit, onOpenIntegrations }: { sitemapPaths: string[]; canEdit: boolean; onOpenIntegrations: () => void }) {
   const overview = useOpenSeo<Overview>('');
-  const rank = useOpenSeo<Rank>('', '/seo/rank');
   const [panel, setPanel] = useState<PanelKey>(() => {
     const stored = new URLSearchParams(window.location.search).get('painel');
     return PANELS.some((item) => item.key === stored) ? stored as PanelKey : 'audit';
@@ -1132,12 +940,12 @@ export function SeoPerformance({ sitemapPaths, canEdit, onOpenIntegrations }: { 
     return <Loading />;
   }
 
-  if (overview.error || !info || (!info.configured && !info.rank_configured)) {
+  if (overview.error || !info || !info.configured) {
     return (
       <div className="panel">
         <div className="panel-body oseo-setup">
           <h3>Integrações de SEO</h3>
-          <p>{overview.error || 'Nenhuma integração configurada. Preencha o OpenSEO (auditoria, Search Console, indexação) e o SerpBear (ranking) na aba Integrações.'}</p>
+          <p>{overview.error || 'OpenSEO não configurado. Preencha a URL do MCP e o ID do projeto na aba Integrações.'}</p>
           <div className="toolbar">
             <button className="btn btn-primary btn-sm" type="button" onClick={onOpenIntegrations}>Abrir Integrações</button>
             <button className="btn btn-secondary btn-sm" type="button" onClick={() => void overview.reload(true)}><RefreshCw size={12} /> Tentar de novo</button>
@@ -1148,7 +956,6 @@ export function SeoPerformance({ sitemapPaths, canEdit, onOpenIntegrations }: { 
   }
 
   const openSeoMissing = !info.configured || (info.project === null && info.message !== null);
-  const needsOpenSeo = current.key !== 'rank';
 
   return (
     <div className="oseo">
@@ -1166,7 +973,7 @@ export function SeoPerformance({ sitemapPaths, canEdit, onOpenIntegrations }: { 
         </nav>
       </div>
       <div key={current.key}>
-        {needsOpenSeo && openSeoMissing ? (
+        {openSeoMissing ? (
           <section className="panel oseo-panel">
             <div className="panel-body">
               <Unavailable failure={{ state: 'unconfigured', message: info.message ?? 'OpenSEO indisponível.' }} />
@@ -1177,8 +984,7 @@ export function SeoPerformance({ sitemapPaths, canEdit, onOpenIntegrations }: { 
           <>
             {current.key === 'audit' ? <AuditPanel canEdit={canEdit} /> : null}
             {current.key === 'search' ? <SearchConsolePanel /> : null}
-            {current.key === 'keywords' ? <KeywordsPanel canEdit={canEdit} paid={info.paid} canTrack={rank.data?.state === 'ready' && rank.data.can_manage} onTracked={() => void rank.reload(true)} /> : null}
-            {current.key === 'rank' ? <RankPanel canEdit={canEdit} data={rank.data} loading={rank.loading} error={rank.error} reload={rank.reload} setData={rank.setData} /> : null}
+            {current.key === 'keywords' ? <KeywordsPanel canEdit={canEdit} paid={info.paid} /> : null}
             {current.key === 'index' ? <IndexPanel key={siteUrl} urls={sitemapUrls} /> : null}
             {current.key === 'domain' ? <DomainPanel canEdit={canEdit} /> : null}
             {current.key === 'ai' ? <AiPanel /> : null}

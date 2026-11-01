@@ -24,7 +24,6 @@ class OpenSeoMarketTest extends TestCase
             'services.openseo.project' => 'proj_1',
             'services.openseo.site_url' => 'https://www.quatroventos.com.br',
             'services.openseo.paid' => true,
-            'services.serpbear.url' => null,
             'services.openai.key' => 'test-key',
             'services.openai.base_url' => 'https://openai.test/v1',
         ]);
@@ -134,22 +133,10 @@ class OpenSeoMarketTest extends TestCase
         Http::assertNothingSent();
     }
 
-    public function test_free_mode_takes_the_top_10_from_serpbear_and_skips_paid_tools(): void
+    public function test_free_mode_reads_only_search_console_and_skips_paid_tools(): void
     {
-        config([
-            'services.openseo.paid' => false,
-            'services.serpbear.url' => 'http://serpbear.test',
-            'services.serpbear.username' => 'admin',
-            'services.serpbear.password' => 'segredo',
-        ]);
+        config(['services.openseo.paid' => false]);
         $this->fakeOpenSeo();
-        Http::fake([
-            'serpbear.test/api/login' => Http::response(['success' => true], 200, ['Set-Cookie' => 'token=jwt_1; Path=/; HttpOnly']),
-            'serpbear.test/api/refresh*' => Http::response(['searchResult' => ['keyword' => self::KEYWORD, 'results' => [
-                ['position' => 1, 'title' => 'Concorrente', 'url' => 'https://concorrente.com.br/automacao'],
-                ['position' => 2, 'title' => 'Quatro Ventos', 'url' => 'https://quatroventos.com.br/automacao-de-processos'],
-            ]]]),
-        ]);
         $page = $this->page();
 
         $this->actingAs($this->makeEditor())
@@ -157,13 +144,10 @@ class OpenSeoMarketTest extends TestCase
             ->assertOk()
             ->assertJsonPath('paid', false)
             ->assertJsonPath('metrics', null)
-            ->assertJsonPath('serp.1.title', 'Quatro Ventos')
-            ->assertJsonPath('own_position', 2)
+            ->assertJsonPath('serp', [])
+            ->assertJsonPath('own_position', null)
             ->assertJsonPath('search_console.0.query', 'automatizar processos');
 
-        Http::assertSent(fn (Request $request) => str_contains($request->url(), 'serpbear.test/api/refresh')
-            && $request->hasHeader('Cookie', 'token=jwt_1')
-            && str_contains($request->url(), 'country=BR'));
         Http::assertNotSent(fn (Request $request) => in_array(data_get($request->data(), 'params.name'), ['get_keyword_metrics', 'research_keywords', 'get_serp_results'], true));
     }
 
