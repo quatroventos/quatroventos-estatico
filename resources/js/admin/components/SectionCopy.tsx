@@ -209,14 +209,15 @@ export function FieldAi({
             }
           }}
         >
-          <input
+          <textarea
             value={instruction}
+            rows={3}
             maxLength={1000}
-            placeholder="Instrução (opcional)"
+            placeholder="Instrução (opcional). Enter gera, Shift+Enter quebra linha."
             aria-label="Instrução para a IA (opcional)"
             onChange={(event) => setInstruction(event.target.value)}
             onKeyDown={(event) => {
-              if (event.key === 'Enter' && !running) {
+              if (event.key === 'Enter' && !event.shiftKey && !running) {
                 event.preventDefault();
                 void generate('melhorar');
               }
