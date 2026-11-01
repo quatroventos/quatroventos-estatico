@@ -1,7 +1,7 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type ReactNode } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
-import { api } from '../api';
 import { getPath, setPath } from '../lib';
+import { CasesPicker } from './CasesPicker';
 import { MediaField } from './MediaField';
 import { RichText } from './RichText';
 import { acceptsAi, FieldAi, type FieldAiContext } from './SectionCopy';
@@ -23,87 +23,6 @@ export type Field = {
 export type SchemaContext = {
   pageSlug?: string;
 };
-
-type CaseOption = {
-  id: number;
-  slug: string;
-  client: string;
-  title: string;
-  status: string;
-  services: string[];
-};
-
-let caseOptions: Promise<CaseOption[]> | null = null;
-
-function loadCaseOptions(): Promise<CaseOption[]> {
-  caseOptions ??= api<{ data: CaseOption[] }>('/cases')
-    .then((payload) => payload.data)
-    .catch(() => {
-      caseOptions = null;
-      return [];
-    });
-  return caseOptions;
-}
-
-function CasesPicker({
-  field,
-  value,
-  context,
-  onChange,
-}: {
-  field: Field;
-  value: unknown;
-  context?: SchemaContext;
-  onChange: (value: unknown) => void;
-}) {
-  const [cases, setCases] = useState<CaseOption[] | null>(null);
-  const selected = Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-  const max = field.max ?? 2;
-
-  useEffect(() => {
-    void loadCaseOptions().then(setCases);
-  }, []);
-
-  const linked = (cases ?? []).filter((item) => field.all || !context?.pageSlug || item.services.includes(context.pageSlug));
-
-  function toggle(slug: string) {
-    if (selected.includes(slug)) {
-      onChange(selected.filter((item) => item !== slug));
-      return;
-    }
-    if (selected.length >= max) {
-      return;
-    }
-    onChange([...selected, slug]);
-  }
-
-  return (
-    <div className="field">
-      <label>{field.label}</label>
-      {cases === null ? <p className="hint">Carregando cases...</p> : null}
-      {cases !== null && linked.length === 0 ? (
-        <p className="hint">Nenhum case vinculado a esta página. Vincule em Cases, no quadro Serviços.</p>
-      ) : null}
-      <div className="case-checks">
-        {linked.map((item) => (
-          <label key={item.slug}>
-            <input
-              type="checkbox"
-              checked={selected.includes(item.slug)}
-              disabled={!selected.includes(item.slug) && selected.length >= max}
-              onChange={() => toggle(item.slug)}
-            />
-            <span>
-              <strong>{item.client}</strong> {item.title}
-              {item.status !== 'published' ? ' (rascunho)' : ''}
-            </span>
-          </label>
-        ))}
-      </div>
-      <p className="hint">{field.hint ?? 'Sem seleção, entram automaticamente os cases publicados vinculados a esta página.'}</p>
-    </div>
-  );
-}
 
 export type Section = {
   id?: string;
@@ -158,7 +77,17 @@ function FieldControl({
   onChange: (value: unknown) => void;
 }) {
   if (field.type === 'cases') {
-    return <CasesPicker field={field} value={value} context={context} onChange={onChange} />;
+    return (
+      <CasesPicker
+        label={field.label}
+        value={value}
+        max={field.max ?? 2}
+        all={field.all}
+        pageSlug={context?.pageSlug}
+        hint={field.hint}
+        onChange={onChange}
+      />
+    );
   }
 
   if (field.type === 'select') {

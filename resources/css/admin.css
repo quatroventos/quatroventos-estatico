@@ -5335,6 +5335,251 @@ td.person span {
   margin-top: 2px;
 }
 
+.case-picker-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 7px;
+}
+
+.case-picker-count {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.case-picker-count.is-full {
+  color: var(--ink);
+}
+
+.case-picker .sortable-list {
+  margin: -3px 0 5px;
+}
+
+.case-picker > .case-pick {
+  margin-bottom: 8px;
+}
+
+.case-pick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 6px 6px 6px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.case-pick.is-missing {
+  border-style: dashed;
+  background: var(--surface-soft);
+}
+
+.case-pick-handle,
+.case-pick-remove {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.case-pick-handle {
+  width: 18px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sortable-list.is-sorting .case-pick-handle {
+  cursor: grabbing;
+}
+
+.case-pick-handle:hover,
+.case-pick-remove:hover {
+  color: var(--ink);
+  background: #f3f5f8;
+}
+
+.case-pick-remove:hover {
+  color: #c0453a;
+  background: #fff4f2;
+}
+
+.case-pick-handle:focus-visible,
+.case-pick-remove:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 1px;
+}
+
+.case-pick-index {
+  flex: none;
+  width: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.case-pick-thumb {
+  flex: none;
+  display: block;
+  width: 52px;
+  height: 33px;
+  border-radius: 5px;
+  object-fit: cover;
+  background: var(--line);
+}
+
+.case-pick-text {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+  line-height: 1.3;
+}
+
+.case-pick-text strong {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.case-pick-text span {
+  overflow: hidden;
+  font-size: 11px;
+  color: #5f6a79;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.case-pick-draft {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 7px;
+  border-radius: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #94631c;
+  background: var(--gold-soft);
+}
+
+.case-picker-search {
+  position: relative;
+}
+
+.case-picker-search svg {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  color: var(--ink-faint);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.field .case-picker-search input {
+  margin-top: 0;
+  padding-left: 32px;
+}
+
+.field .case-picker-search input:disabled {
+  cursor: not-allowed;
+  color: var(--ink-muted);
+  background: var(--surface-soft);
+}
+
+.case-picker-combo.is-open .case-picker-search input {
+  border-color: #c5cbd3;
+  border-radius: 8px 8px 0 0;
+  box-shadow: none;
+  background: #fff;
+}
+
+.case-picker-options {
+  max-height: 288px;
+  margin: 0;
+  padding: 4px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  border: 1px solid #c5cbd3;
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
+  background: #fff;
+}
+
+.case-picker-options [role='option'] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.case-picker-options [role='option'].is-active {
+  background: #f3f5f8;
+}
+
+.case-picker-options .case-pick-thumb {
+  width: 44px;
+  height: 28px;
+}
+
+.case-picker-none,
+.case-picker-empty {
+  margin: 0;
+  padding: 12px 10px;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.case-picker-empty {
+  border: 1px dashed var(--line-strong);
+  border-radius: 8px;
+}
+
+.case-picker-loading {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.case-picker-loading span {
+  height: 48px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #f1f3f6 0%, #f8f9fb 50%, #f1f3f6 100%) 0 0 / 200% 100%;
+  animation: case-picker-skeleton 1.2s ease-in-out infinite;
+}
+
+@keyframes case-picker-skeleton {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-picker-loading span {
+    animation: none;
+  }
+}
+
 .case-thumb {
   display: block;
   width: 56px;
