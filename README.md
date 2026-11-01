@@ -161,6 +161,33 @@ Mídia pública: `public/storage` aponta para `storage/app/public`. Se o servido
 
 Não rode `config:cache`: o seed e o fallback de SMTP chamam `env()` fora de `config/`. `view:cache` pode.
 
+## Troca de domínio
+
+Ao publicar em um domínio novo, ou ao subir um banco vindo de outro ambiente, migre os links absolutos gravados no CMS. Rode antes com `--dry-run`, que só lista campo, registros e links que mudariam:
+
+```bash
+php artisan site:migrate-domain https://www.quatroventos.com.br --dry-run
+php artisan site:migrate-domain https://www.quatroventos.com.br
+```
+
+Sem `--from`, o comando troca os hosts de desenvolvimento (`localhost`, `127.0.0.1`, `0.0.0.0`, `host.docker.internal` e túneis ngrok, com qualquer porta). Para trocar um domínio anterior, informe-o (pode repetir a opção):
+
+```bash
+php artisan site:migrate-domain https://novo.dominio.com.br --from=www.quatroventos.com.br --revisions
+```
+
+Opções:
+
+- `--from=dominio`: domínio antigo. Casa o host exato, então subdomínios externos (ex.: `quatroventos.freshdesk.com`) não são alterados.
+- `--relative`: converte os links do domínio antigo em caminhos relativos (`/servicos`) em vez de trocar o domínio.
+- `--revisions`: inclui o histórico de revisões das páginas.
+- `--dry-run`: não grava nada.
+- `--skip-prerender`: não regenera o HTML pré-renderizado. Por padrão, uma execução real limpa o cache das configurações e roda `site:prerender` no fim.
+
+Campos cobertos: páginas (conteúdo, canonical, imagem OG), cases (textos, galeria, capa, entregas, resultados, depoimento), menus, certificações e configurações (logo, favicon, OG, tags de header/body/footer, sitemap extra, formulários, traduções, logos de clientes e links de planos). SMTP e a chave da Evolution ficam de fora por serem criptografados. JSON com barras escapadas (`https:\/\/...`) também é tratado.
+
+O comando não altera o `.env`: ajuste `APP_URL` e as URLs do site em `OPENSEO_*` no ambiente novo.
+
 ## Checklist
 
 - `GET /` não envia `Set-Cookie`.
