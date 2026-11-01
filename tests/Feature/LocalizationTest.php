@@ -7,6 +7,7 @@ use App\Models\MenuItem;
 use App\Models\Page;
 use App\Services\Translation\ContentStrings;
 use App\Services\Translation\PageTranslator;
+use App\Services\Translation\TextTranslator;
 use App\Support\Locales;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -239,6 +240,38 @@ class LocalizationTest extends TestCase
         $this->assertTrue($row->fresh()->isTranslationStale());
 
         Http::assertSentCount(2);
+    }
+
+    public function test_text_translator_retries_items_missing_from_the_response(): void
+    {
+        config(['services.openai.key' => 'test-key', 'services.openai.model' => 'test-model']);
+        $reply = fn (array $items) => ['output' => [['type' => 'message', 'content' => [['type' => 'output_text', 'text' => json_encode(['items' => $items])]]]]];
+
+        Http::fake([
+            'api.openai.com/*' => Http::sequence()
+                ->push($reply([['id' => 'a', 'text' => 'Agents']]))
+                ->push($reply([['id' => 'b', 'text' => 'Contact']])),
+        ]);
+
+        $result = app(TextTranslator::class)->translate(['a' => 'Agentes', 'b' => 'Contato'], 'en');
+
+        $this->assertSame(['a' => 'Agents', 'b' => 'Contact'], $result);
+        Http::assertSentCount(2);
+        $retry = (string) Http::recorded()[1][0]['input'];
+        $this->assertStringContainsString('Contato', $retry);
+        $this->assertStringNotContainsString('Agentes', $retry);
+    }
+
+    public function test_text_translator_fails_when_retry_still_misses_items(): void
+    {
+        config(['services.openai.key' => 'test-key', 'services.openai.model' => 'test-model']);
+        $reply = ['output' => [['type' => 'message', 'content' => [['type' => 'output_text', 'text' => json_encode(['items' => [['id' => 'a', 'text' => 'Agents']]])]]]]];
+
+        Http::fake(['api.openai.com/*' => Http::response($reply)]);
+
+        $this->expectExceptionMessage('Tradução incompleta: 1 trecho(s) sem retorno.');
+
+        app(TextTranslator::class)->translate(['a' => 'Agentes', 'b' => 'Contato'], 'en');
     }
 
     public function test_case_translation_uses_locale_path(): void

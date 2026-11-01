@@ -52,50 +52,71 @@ class TextTranslator
 
         $result = [];
         foreach ($this->batches($strings) as $batch) {
-            $items = [];
-            foreach ($batch as $id => $text) {
-                $items[] = ['id' => (string) $id, 'text' => $text];
-            }
+            $result += $this->request($batch, $locale, $context);
+        }
 
-            $decoded = $this->client->json(
-                $this->systemPrompt($locale),
-                ($context !== '' ? "Context: {$context}\n\n" : '')
-                    .'Translate every item. Return the same ids.'."\n\n"
-                    .json_encode(['items' => $items], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
-                'translations',
-                [
-                    'type' => 'object',
-                    'additionalProperties' => false,
-                    'required' => ['items'],
-                    'properties' => [
-                        'items' => [
-                            'type' => 'array',
-                            'items' => [
-                                'type' => 'object',
-                                'additionalProperties' => false,
-                                'required' => ['id', 'text'],
-                                'properties' => [
-                                    'id' => ['type' => 'string'],
-                                    'text' => ['type' => 'string'],
-                                ],
-                            ],
-                        ],
-                    ],
-                ]
-            );
-
-            foreach ((array) ($decoded['items'] ?? []) as $item) {
-                $id = is_array($item) ? ($item['id'] ?? null) : null;
-                $text = is_array($item) ? ($item['text'] ?? null) : null;
-                if (is_string($id) && is_string($text) && array_key_exists($id, $batch)) {
-                    $result[$id] = $text;
-                }
+        $missing = array_diff_key($strings, $result);
+        if ($missing !== []) {
+            foreach ($this->batches($missing) as $batch) {
+                $result += $this->request($batch, $locale, $context);
             }
         }
 
         $missing = array_diff(array_keys($strings), array_keys($result));
         if ($missing !== []) {
             throw new RuntimeException('Tradução incompleta: '.count($missing).' trecho(s) sem retorno.');
+        }
+
+        return $result;
+    }
+
+    /**
+     * O modelo às vezes devolve o lote sem algum item; quem chama repete só os ids que faltaram.
+     *
+     * @param  array<string, string>  $batch
+     * @return array<string, string>
+     */
+    private function request(array $batch, string $locale, string $context): array
+    {
+        $result = [];
+        $items = [];
+        foreach ($batch as $id => $text) {
+            $items[] = ['id' => (string) $id, 'text' => $text];
+        }
+
+        $decoded = $this->client->json(
+            $this->systemPrompt($locale),
+            ($context !== '' ? "Context: {$context}\n\n" : '')
+                .'Translate every item. Return the same ids.'."\n\n"
+                .json_encode(['items' => $items], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            'translations',
+            [
+                'type' => 'object',
+                'additionalProperties' => false,
+                'required' => ['items'],
+                'properties' => [
+                    'items' => [
+                        'type' => 'array',
+                        'items' => [
+                            'type' => 'object',
+                            'additionalProperties' => false,
+                            'required' => ['id', 'text'],
+                            'properties' => [
+                                'id' => ['type' => 'string'],
+                                'text' => ['type' => 'string'],
+                            ],
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        foreach ((array) ($decoded['items'] ?? []) as $item) {
+            $id = is_array($item) ? ($item['id'] ?? null) : null;
+            $text = is_array($item) ? ($item['text'] ?? null) : null;
+            if (is_string($id) && is_string($text) && array_key_exists($id, $batch)) {
+                $result[$id] = $text;
+            }
         }
 
         return $result;
