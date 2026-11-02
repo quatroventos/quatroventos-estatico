@@ -476,6 +476,40 @@ function fieldError(field, message) {
   node.textContent = message;
 }
 
+// Eventos para o GTM. Sem nome, telefone ou e-mail: só o tipo de conversão e onde aconteceu.
+function pushEvent(name, params = {}) {
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: name, page_path: window.location.pathname, ...params });
+}
+
+function whatsappLocation(link) {
+  if (link.classList.contains('wa-float')) {
+    return 'flutuante';
+  }
+  if (link.closest('.lead-back')) {
+    return 'lead_obrigado';
+  }
+  if (link.closest('.form-status')) {
+    return 'erro_formulario';
+  }
+  if (link.closest('header, .mega, .mobile-nav')) {
+    return 'cabecalho';
+  }
+  if (link.closest('footer')) {
+    return 'rodape';
+  }
+  return 'conteudo';
+}
+
+function whatsappClicks() {
+  document.addEventListener('click', (event) => {
+    const link = event.target instanceof Element ? event.target.closest('a[href*="wa.me/"], a[href*="api.whatsapp.com/"], a[href*="whatsapp.com/send"]') : null;
+    if (link) {
+      pushEvent('whatsapp_click', { link_location: whatsappLocation(link) });
+    }
+  });
+}
+
 function leadForms() {
   document.querySelectorAll('.lead-form').forEach((form) => {
     const card = form.closest('.lead-card');
@@ -566,6 +600,7 @@ function leadForms() {
           link.href = url.toString();
         }
         card.classList.add('is-sent');
+        pushEvent('generate_lead', { form_type: 'lead_rapido' });
         form.closest('.lead-front')?.setAttribute('inert', '');
         card.querySelector('.lead-back')?.removeAttribute('inert');
         showStatus('', '');
@@ -634,6 +669,7 @@ function contactForms() {
         }
         show('ok', form.dataset.sent || 'Mensagem enviada. Retornamos em breve.');
         if (payload.status === 'enviado') {
+          pushEvent('generate_lead', { form_type: 'contato', form_destination: String(data.destino || '') });
           form.reset();
         }
       } catch {
@@ -1040,6 +1076,7 @@ cases();
 lightbox();
 leadForms();
 contactForms();
+whatsappClicks();
 years();
 orbit();
 logos();
