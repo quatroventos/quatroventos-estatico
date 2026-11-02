@@ -36,6 +36,10 @@ class SiteFormController extends Controller
                 ->withInput();
         }
 
+        if (is_string($data['nome'] ?? null)) {
+            $data['nome'] = ContactSubmission::formatName($data['nome']);
+        }
+
         $submission = ContactSubmission::query()->create(
             FormDefinition::submissionAttributes('contact', $data)
         );

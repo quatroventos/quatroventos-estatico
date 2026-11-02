@@ -613,6 +613,7 @@ export function LeadForm({ whatsappHref, title, className, id }: { whatsappHref:
                 name="nome"
                 type="text"
                 autoComplete="name"
+                autoCapitalize="words"
                 required
                 value={nome}
                 aria-invalid={Boolean(errors.nome)}
@@ -731,7 +732,7 @@ function Field({
   return (
     <label>
       {label}
-      <input name={field.name} type={type} autoComplete={autoComplete} required={field.required} value={value} aria-invalid={Boolean(error)} onChange={(event) => onChange(event.target.value)} />
+      <input name={field.name} type={type} autoComplete={autoComplete} autoCapitalize={field.name === 'nome' ? 'words' : undefined} required={field.required} value={value} aria-invalid={Boolean(error)} onChange={(event) => onChange(event.target.value)} />
       {errorNode}
     </label>
   );

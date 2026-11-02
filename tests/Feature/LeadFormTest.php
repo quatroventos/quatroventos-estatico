@@ -63,6 +63,17 @@ class LeadFormTest extends TestCase
         $this->assertSame(1, ContactSubmission::query()->count());
     }
 
+    public function test_lowercase_or_uppercase_name_is_capitalized(): void
+    {
+        Queue::fake();
+
+        $this->postJson('/api/contato/lead', ['nome' => '  maria  da silva ', 'whatsapp' => '(41) 99999-0000'])->assertOk();
+        $this->postJson('/api/contato/lead', ['nome' => 'JOÃO DOS SANTOS', 'whatsapp' => '(41) 99999-0000'])->assertOk();
+        $this->postJson('/api/contato/lead', ['nome' => 'Ana McDonald', 'whatsapp' => '(41) 99999-0000'])->assertOk();
+
+        $this->assertSame(['Maria da Silva', 'João dos Santos', 'Ana McDonald'], ContactSubmission::query()->orderBy('id')->pluck('name')->all());
+    }
+
     public function test_lead_requires_name_and_whatsapp(): void
     {
         $this->postJson('/api/contato/lead', ['nome' => '', 'whatsapp' => 'abc'])
