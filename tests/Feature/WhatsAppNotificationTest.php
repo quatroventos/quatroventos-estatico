@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\SendContactMailJob;
 use App\Jobs\SendWhatsAppMessageJob;
 use App\Models\FormOption;
 use App\Models\SiteSetting;
@@ -96,15 +97,14 @@ class WhatsAppNotificationTest extends TestCase
         Queue::assertNotPushed(SendWhatsAppMessageJob::class);
     }
 
-    public function test_email_is_still_sent_when_whatsapp_is_enabled(): void
+    public function test_email_is_still_queued_when_whatsapp_is_enabled(): void
     {
-        Mail::fake();
         Queue::fake();
         $this->makeSettings();
 
         $this->postContact();
 
-        Mail::assertSentCount(1);
+        Queue::assertPushed(SendContactMailJob::class, 1);
     }
 
     public function test_job_sends_text_through_evolution_api(): void

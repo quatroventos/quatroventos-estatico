@@ -3,21 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Cms\FormDefinition;
+use App\Jobs\SendContactMailJob;
 use App\Mail\ContactMessageMail;
 use App\Models\ContactSubmission;
 use App\Models\FormOption;
 use App\Models\SiteSetting;
-use App\Services\MailSettings;
 use App\Services\WhatsApp\ContactWhatsApp;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class SiteFormController extends Controller
 {
-    public function contact(Request $request, MailSettings $mailSettings, ContactWhatsApp $whatsApp): RedirectResponse|JsonResponse
+    public function contact(Request $request, ContactWhatsApp $whatsApp): RedirectResponse|JsonResponse
     {
         $json = $request->expectsJson();
 
@@ -41,21 +40,18 @@ class SiteFormController extends Controller
             FormDefinition::submissionAttributes('contact', $data)
         );
 
-        $mailed = $this->mail($mailSettings, $this->contactRecipient((string) ($data['destino'] ?? '')), new ContactMessageMail(
+        $this->queueMail($this->contactRecipient((string) ($data['destino'] ?? '')), new ContactMessageMail(
             $submission->name,
             $submission->email,
             $submission->destination,
             $this->mailFields($data),
         ));
-
-        if (! $this->notifyWhatsApp($whatsApp, $submission, confirm: ! $mailed) && ! $mailed) {
-            return $this->contactResult('erro', $json, 503);
-        }
+        $this->notifyWhatsApp($whatsApp, $submission);
 
         return $this->contactResult('enviado', $json);
     }
 
-    public function lead(Request $request, MailSettings $mailSettings, ContactWhatsApp $whatsApp): JsonResponse
+    public function lead(Request $request, ContactWhatsApp $whatsApp): JsonResponse
     {
         if (filled($request->input('empresa_site'))) {
             return response()->json(['status' => 'enviado']);
@@ -79,7 +75,7 @@ class SiteFormController extends Controller
             'extra' => $page !== '' ? ['pagina' => ['label' => 'Página', 'value' => $page]] : null,
         ]);
 
-        $mailed = $this->mail($mailSettings, $this->contactRecipient(''), new ContactMessageMail(
+        $this->queueMail($this->contactRecipient(''), new ContactMessageMail(
             $submission->name,
             $submission->email,
             $destination,
@@ -90,52 +86,42 @@ class SiteFormController extends Controller
             ],
         ));
 
-        if (! $this->notifyWhatsApp($whatsApp, $submission, $page, ! $mailed) && ! $mailed) {
-            return response()->json(['status' => 'erro'], 503);
-        }
+        $this->notifyWhatsApp($whatsApp, $submission, $page);
 
         return response()->json(['status' => 'enviado']);
     }
 
-    private function mail(MailSettings $mailSettings, ?string $recipient, ContactMessageMail $mail): bool
+    /**
+     * Envio fora da requisição: falha de SMTP ou da fila nunca derruba o formulário.
+     */
+    private function queueMail(?string $recipient, ContactMessageMail $mail): void
     {
         if ($recipient === null) {
             report(new \RuntimeException('Formulário sem destinatário de e-mail configurado.'));
 
-            return false;
+            return;
         }
 
-        $mailSettings->apply();
-
         try {
-            Mail::to($recipient)->send($mail);
-
-            return true;
+            SendContactMailJob::dispatch($recipient, $mail);
         } catch (\Throwable $e) {
             report($e);
-
-            return false;
         }
     }
 
-    /**
-     * Com $confirm o aviso do escritório sai na hora; sem, vai para a fila.
-     */
-    private function notifyWhatsApp(ContactWhatsApp $whatsApp, ContactSubmission $submission, string $page = '', bool $confirm = false): bool
+    private function notifyWhatsApp(ContactWhatsApp $whatsApp, ContactSubmission $submission, string $page = ''): void
     {
         try {
-            return $whatsApp->notify([
+            $whatsApp->notify([
                 'nome' => $submission->name,
                 'email' => $submission->email,
                 'telefone' => $submission->phone,
                 'destino' => $submission->destination,
                 'mensagem' => $submission->message,
                 'pagina' => $page,
-            ], $confirm);
+            ]);
         } catch (\Throwable $e) {
             report($e);
-
-            return false;
         }
     }
 

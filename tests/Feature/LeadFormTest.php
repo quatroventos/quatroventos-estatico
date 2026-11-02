@@ -2,11 +2,12 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\SendContactMailJob;
+use App\Jobs\SendWhatsAppMessageJob;
 use App\Mail\ContactMessageMail;
 use App\Models\ContactSubmission;
 use App\Models\SiteSetting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -35,32 +36,29 @@ class LeadFormTest extends TestCase
         Mail::assertSent(ContactMessageMail::class, fn (ContactMessageMail $mail) => $mail->hasTo('contato@quatroventos.com.br'));
     }
 
-    public function test_mail_failure_falls_back_to_a_direct_whatsapp_notice(): void
+    public function test_mail_and_whatsapp_are_queued_instead_of_blocking_the_request(): void
     {
         $this->settingsWithWhatsApp();
         Queue::fake();
-        Http::fake(['evo.example.com/*' => Http::response(['key' => ['id' => 'msg_1']])]);
-        Mail::shouldReceive('to')->andThrow(new \RuntimeException('SMTP fora do ar'));
 
         $this->postJson('/api/contato/lead', ['nome' => 'Ana', 'whatsapp' => '(41) 99999-0000'])
             ->assertOk()
             ->assertJsonPath('status', 'enviado');
 
-        Http::assertSent(fn (Request $request) => str_contains($request->url(), '/message/sendText/site')
-            && $request['number'] === '5541988887777');
+        Queue::assertPushed(SendContactMailJob::class, fn (SendContactMailJob $job) => $job->recipient === 'contato@quatroventos.com.br');
+        Queue::assertPushed(SendWhatsAppMessageJob::class, fn (SendWhatsAppMessageJob $job) => $job->number === '5541988887777');
         $this->assertSame(1, ContactSubmission::query()->count());
     }
 
-    public function test_lead_fails_when_mail_and_whatsapp_both_fail(): void
+    public function test_delivery_failures_never_fail_the_form(): void
     {
         $this->settingsWithWhatsApp();
-        Queue::fake();
         Http::fake(['evo.example.com/*' => Http::response(['message' => 'instance offline'], 500)]);
         Mail::shouldReceive('to')->andThrow(new \RuntimeException('SMTP fora do ar'));
 
         $this->postJson('/api/contato/lead', ['nome' => 'Ana', 'whatsapp' => '(41) 99999-0000'])
-            ->assertStatus(503)
-            ->assertJsonPath('status', 'erro');
+            ->assertOk()
+            ->assertJsonPath('status', 'enviado');
 
         $this->assertSame(1, ContactSubmission::query()->count());
     }
