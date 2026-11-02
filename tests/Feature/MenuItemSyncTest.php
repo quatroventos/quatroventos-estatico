@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\PrerenderSiteJob;
 use App\Models\MenuItem;
 use App\Models\Page;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class MenuItemSyncTest extends TestCase
@@ -164,5 +166,32 @@ class MenuItemSyncTest extends TestCase
             ->assertJsonCount(0, 'data');
 
         $this->assertDatabaseMissing('menu_items', ['group' => 'footer_2']);
+    }
+
+    public function test_reorder_schedules_the_prerender(): void
+    {
+        $item = MenuItem::query()->create(['group' => 'header', 'label' => 'Home', 'href' => '/', 'sort' => 1, 'is_active' => true]);
+        config(['cms.prerender_on_save' => true]);
+        $editor = $this->makeEditor();
+        Queue::fake();
+
+        $this->actingAs($editor)
+            ->putJson('/gestao/api/menu-items/reorder', ['group' => 'header', 'items' => [['id' => $item->id, 'parent_id' => null, 'sort' => 2]]])
+            ->assertOk();
+
+        Queue::assertPushed(PrerenderSiteJob::class, 1);
+    }
+
+    public function test_emptying_a_group_schedules_the_prerender(): void
+    {
+        config(['cms.prerender_on_save' => true]);
+        $editor = $this->makeEditor();
+        Queue::fake();
+
+        $this->actingAs($editor)
+            ->putJson('/gestao/api/menu-items/sync', ['group' => 'footer_1', 'items' => []])
+            ->assertOk();
+
+        Queue::assertPushed(PrerenderSiteJob::class, 1);
     }
 }

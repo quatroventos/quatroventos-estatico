@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\PrerenderSiteJob;
 use App\Models\MenuItem;
 use App\Models\Page;
 use App\Support\Locales;
@@ -154,6 +155,8 @@ class MenuItemController extends Controller
             }
         });
 
+        PrerenderSiteJob::schedule();
+
         return response()->json(['ok' => true]);
     }
 
@@ -248,6 +251,8 @@ class MenuItemController extends Controller
                 ->orderBy('sort')
                 ->get();
         });
+
+        PrerenderSiteJob::schedule();
 
         return response()->json(['data' => $synced]);
     }
