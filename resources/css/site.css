@@ -6871,6 +6871,50 @@ a.card:hover .go {
   max-width: 44ch;
 }
 
+.cta-block.is-card .wrap {
+  display: block;
+}
+
+.cta-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 32px 64px;
+  align-items: end;
+  padding: clamp(32px, 5vw, 80px);
+  border-radius: calc(var(--radius) * 1.4);
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line-light);
+}
+
+.cta-card h2 {
+  font-size: clamp(36px, 4.6vw, 76px);
+  text-wrap: balance;
+}
+
+.cta-card .mark {
+  color: var(--ink);
+  padding: 0 0.1em;
+  margin: 0 -0.04em;
+  background-image: linear-gradient(var(--lime), var(--lime));
+  background-repeat: no-repeat;
+  background-size: 100% 0.9em;
+  background-position: 0 72%;
+}
+
+.cta-card .cta-side .rich {
+  color: var(--on-light-soft);
+}
+
+.cta-card .pill.solid {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.cta-card .pill.solid:hover {
+  background: #2a2a31;
+}
+
 /* Contato */
 
 .contact-grid {
@@ -8145,6 +8189,7 @@ a.card:hover .go {
   .prose-grid,
   .faq-grid,
   .cta-block .wrap,
+  .cta-card,
   .contact-grid,
   .quote-solo,
   .footer-top,

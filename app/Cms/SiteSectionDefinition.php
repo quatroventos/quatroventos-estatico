@@ -396,6 +396,9 @@ class SiteSectionDefinition
                     ['type' => 'text', 'name' => 'href', 'label' => 'Link do botão'],
                     ['type' => 'text', 'name' => 'secondary_label', 'label' => 'Link secundário'],
                     ['type' => 'text', 'name' => 'secondary_href', 'label' => 'Endereço do link secundário'],
+                    ['type' => 'select', 'name' => 'card', 'label' => 'Formato', 'options' => [
+                        ['value' => 'white', 'label' => 'Card branco'],
+                    ], 'hint' => 'Padrão: texto direto no fundo da seção.'],
                 ]),
             ],
             [

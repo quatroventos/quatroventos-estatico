@@ -261,9 +261,9 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
         </Shell>
       );
 
-    case 'cta':
-      return (
-        <Shell {...shell} className="cta-block">
+    case 'cta': {
+      const content = (
+        <>
           <h2><Marked value={text(data, 'title')} /></h2>
           <div className="cta-side">
             <Rich value={text(data, 'body')} />
@@ -272,8 +272,17 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
               <Cta href={text(data, 'secondary_href')} label={text(data, 'secondary_label')} variant="line" />
             </div>
           </div>
-        </Shell>
+        </>
       );
+
+      return text(data, 'card') === 'white' ? (
+        <Shell {...shell} className="cta-block is-card">
+          <div className="cta-card">{content}</div>
+        </Shell>
+      ) : (
+        <Shell {...shell} className="cta-block">{content}</Shell>
+      );
+    }
 
     case 'contact':
       if (text(data, 'variant') === 'split') {
