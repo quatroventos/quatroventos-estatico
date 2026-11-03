@@ -18,9 +18,17 @@ class SectionCopyController extends Controller
     {
         $data = $request->validate([
             'kind' => ['required', Rule::in(['page', 'case'])],
-            'target' => ['nullable', Rule::in(['section', 'seo'])],
+            'target' => ['nullable', Rule::in(['section', 'seo', 'case'])],
             'page_id' => ['required_if:kind,page', 'nullable', 'integer'],
-            'index' => ['required_unless:target,seo', 'nullable', 'integer', 'min:0'],
+            'index' => ['required_unless:target,seo,case', 'nullable', 'integer', 'min:0'],
+            'case' => ['nullable', 'array'],
+            'case.client' => ['nullable', 'string', 'max:255'],
+            'case.title' => ['nullable', 'string', 'max:255'],
+            'case.summary' => ['nullable', 'string', 'max:500'],
+            'case.sector' => ['nullable', 'string', 'max:120'],
+            'case.cover_alt' => ['nullable', 'string', 'max:255'],
+            'case.tags' => ['nullable', 'array', 'max:12'],
+            'case.tags.*' => ['nullable', 'string', 'max:120'],
             'seo_title' => ['nullable', 'string', 'max:255'],
             'seo_description' => ['nullable', 'string', 'max:500'],
             'seo_keyword' => ['nullable', 'string', 'max:120'],
@@ -53,6 +61,20 @@ class SectionCopyController extends Controller
             'path' => $data['path'] ?? null,
         ];
         $instruction = trim((string) ($data['instruction'] ?? ''));
+
+        if (($data['target'] ?? 'section') === 'case') {
+            if ($data['kind'] !== 'case') {
+                return response()->json(['message' => 'Este campo não aceita texto gerado.'], 422);
+            }
+
+            try {
+                $value = $writer->caseField($sections, $context, $data['case'] ?? [], (string) ($data['field'] ?? ''), $data['mode'], $instruction);
+            } catch (RuntimeException $exception) {
+                return response()->json(['message' => $exception->getMessage()], 422);
+            }
+
+            return response()->json(['data' => null, 'value' => $value]);
+        }
 
         if (($data['target'] ?? 'section') === 'seo') {
             try {

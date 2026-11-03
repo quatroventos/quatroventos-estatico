@@ -273,6 +273,16 @@ class SiteSectionDefinition
                 ]),
             ],
             [
+                'label' => 'Foto com texto à direita',
+                'preview' => 'photo-text',
+                'fields' => self::withCommon(self::photoTextFields()),
+            ],
+            [
+                'label' => 'Foto com texto à esquerda',
+                'preview' => 'text-photo',
+                'fields' => self::withCommon(self::photoTextFields()),
+            ],
+            [
                 'label' => 'Resultados',
                 'preview' => 'results',
                 'fields' => self::withCommon([
@@ -575,6 +585,24 @@ class SiteSectionDefinition
             ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
             ['type' => 'rich', 'name' => 'intro', 'label' => 'Introdução'],
             ['type' => 'repeater', 'name' => 'items', 'label' => 'Itens', 'simple' => false, 'fields' => $item],
+        ];
+    }
+
+    /**
+     * Campos das seções de foto ao lado do texto; o lado da foto vem do tipo da seção.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private static function photoTextFields(): array
+    {
+        return [
+            ['type' => 'media', 'name' => 'image', 'label' => 'Foto', 'kind' => 'image'],
+            ['type' => 'text', 'name' => 'alt', 'label' => 'Alt da foto'],
+            ['type' => 'text', 'name' => 'caption', 'label' => 'Legenda da foto'],
+            ['type' => 'text', 'name' => 'title', 'label' => 'Título', 'hint' => 'Trechos entre *asteriscos* ficam em destaque.'],
+            ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
+            ['type' => 'text', 'name' => 'label', 'label' => 'Botão'],
+            ['type' => 'text', 'name' => 'href', 'label' => 'Link do botão'],
         ];
     }
 

@@ -6,11 +6,13 @@ type Mode = 'melhorar' | 'resumir' | 'sintetizar';
 
 export type SectionCopyRequest = {
   kind: 'page' | 'case';
-  target?: 'section' | 'seo';
+  target?: 'section' | 'seo' | 'case';
   page_id?: number;
   index?: number;
   seo_title?: string;
   seo_description?: string;
+  seo_keyword?: string;
+  case?: { client?: string; title?: string; summary?: string; sector?: string; tags?: string[]; cover_alt?: string };
   title?: string;
   description?: string;
   path?: string;
@@ -28,7 +30,7 @@ const MODES: { value: Mode; label: string }[] = [
   { value: 'sintetizar', label: 'Sintetizar' },
 ];
 
-const SKIP_NAMES = /(^|_)(href|url|whatsapp|anchor|id|alt|author|company|name|value|prefix|price|year|icon|glyph|log)$/;
+const SKIP_NAMES = /(^|_)(href|url|whatsapp|anchor|id|author|company|name|value|prefix|price|year|icon|glyph|log)$/;
 
 export function acceptsAi(type: string, name: string): boolean {
   return ['text', 'textarea', 'rich'].includes(type) && !SKIP_NAMES.test(name);

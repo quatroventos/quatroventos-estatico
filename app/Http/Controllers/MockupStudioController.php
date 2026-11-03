@@ -176,7 +176,10 @@ class MockupStudioController extends Controller
     }
 
     /**
-     * @return array{saveUrl: string, alt: string}|null
+     * Destino da foto gravada: a capa do case ou um print de seção (target=print), que pode vir
+     * pré-carregado pelo caminho local da imagem atual (print=/storage/...).
+     *
+     * @return array{saveUrl: string, alt: string, target: string, print: string|null}|null
      */
     private function coverDestination(Request $request): ?array
     {
@@ -191,10 +194,14 @@ class MockupStudioController extends Controller
         }
 
         $alt = trim(strip_tags((string) $request->query('alt', '')));
+        $print = (string) $request->query('print', '');
+        $isLocalPath = preg_match('#^/(?!/)[A-Za-z0-9._~/%-]+\.(png|jpe?g|webp)$#i', $print) === 1 && ! str_contains($print, '..');
 
         return [
             'saveUrl' => url('/'.cms_admin_path().'/api/cases/mockup'),
             'alt' => mb_substr($alt, 0, 255),
+            'target' => $request->query('target') === 'print' ? 'print' : 'cover',
+            'print' => $isLocalPath ? $print : null,
         ];
     }
 

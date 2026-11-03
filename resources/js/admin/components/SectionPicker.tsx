@@ -93,6 +93,8 @@ const META: Record<string, PreviewMeta> = {
   'cases-list': { ...CARDS, description: 'Todos os cases, com filtro por serviço' },
   contact: { family: 'cta', icon: ClipboardList, description: 'Formulário de contato' },
   gallery: { family: 'media', icon: LayoutGrid, description: 'Prints com legenda e ampliação ao clicar' },
+  'photo-text': { ...SPLIT, description: 'Foto à esquerda, título e texto à direita' },
+  'text-photo': { ...SPLIT, description: 'Título e texto à esquerda, foto à direita' },
   results: { ...LIST, description: 'Resultados com valor e descrição' },
 };
 

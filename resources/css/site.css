@@ -3146,6 +3146,78 @@ h3 {
   color: var(--white);
 }
 
+/* Foto com texto: a foto abre a linha; .is-reverse leva a foto para a direita */
+.photo-text {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 32px clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+
+.photo-text.is-reverse {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+}
+
+.photo-text.is-reverse .photo-text-media {
+  order: 2;
+}
+
+.photo-text-media {
+  margin: 0;
+}
+
+.photo-text-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+}
+
+.photo-text-media figcaption {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--on-light-mute);
+}
+
+.photo-text-copy .h2 {
+  max-width: 15ch;
+}
+
+.photo-text-copy .rich {
+  margin-top: clamp(16px, 1.6vw, 24px);
+  font-size: clamp(17px, 1.25vw, 19px);
+  line-height: 1.6;
+  color: var(--on-light-soft);
+  max-width: 54ch;
+}
+
+.photo-text-copy .rich:first-child {
+  margin-top: 0;
+}
+
+.photo-text-cta {
+  margin-top: clamp(24px, 2.4vw, 32px);
+}
+
+.on-dark .photo-text-copy .rich {
+  color: var(--on-dark-soft);
+}
+
+.on-dark .photo-text-media figcaption {
+  color: var(--on-dark-mute);
+}
+
+@media (max-width: 900px) {
+  .photo-text,
+  .photo-text.is-reverse {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .photo-text.is-reverse .photo-text-media {
+    order: 0;
+  }
+}
+
 .prose-panel {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);

@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react';
+import { type ReactNode, useId, useRef, useState } from 'react';
 import { Upload } from 'lucide-react';
 import { api, firstError } from '../api';
 
@@ -13,12 +13,14 @@ export function MediaField({
   value,
   kind = 'image',
   hint,
+  actions,
   onChange,
 }: {
   label: string;
   value?: string | null;
   kind?: 'image' | 'video' | 'pdf';
   hint?: string;
+  actions?: ReactNode;
   onChange: (path: string | null) => void;
 }) {
   const id = useId();
@@ -45,6 +47,12 @@ export function MediaField({
     }
   }
 
+  const pick = (
+    <button id={id} className="btn btn-secondary media-pick" type="button" disabled={uploading} onClick={() => input.current?.click()}>
+      <Upload size={13} /> {uploading ? 'Enviando...' : PICK_LABELS[kind]}
+    </button>
+  );
+
   return (
     <div className="field">
       {label ? <label htmlFor={id}>{label}</label> : null}
@@ -60,9 +68,7 @@ export function MediaField({
           }
         }}
       />
-      <button id={id} className="btn btn-secondary media-pick" type="button" disabled={uploading} onClick={() => input.current?.click()}>
-        <Upload size={13} /> {uploading ? 'Enviando...' : PICK_LABELS[kind]}
-      </button>
+      {actions ? <div className="media-actions">{pick}{actions}</div> : pick}
       {error ? <p className="field-ai-error">{error}</p> : null}
       {value ? (
         <div className="media-preview-wrap">

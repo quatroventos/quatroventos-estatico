@@ -52,6 +52,9 @@ function isEmpty(section: Section): boolean {
   if (LISTS.includes(kind)) {
     return rows(data).length === 0 && strings(data, 'items').length === 0;
   }
+  if (kind === 'photo-text' || kind === 'text-photo') {
+    return !text(data, 'image') && !text(data, 'title') && !text(data, 'body');
+  }
 
   return false;
 }
@@ -300,6 +303,34 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
         <Shell {...shell}>
           <Head title={text(data, 'title')} intro={text(data, 'intro')} />
           <Gallery images={images} />
+        </Shell>
+      );
+    }
+
+    case 'photo-text':
+    case 'text-photo': {
+      const image = text(data, 'image');
+      const caption = text(data, 'caption');
+
+      return (
+        <Shell {...shell}>
+          <div className={kind === 'photo-text' ? 'photo-text' : 'photo-text is-reverse'}>
+            {image ? (
+              <figure className="photo-text-media">
+                <img src={image} alt={text(data, 'alt') || caption} loading="lazy" />
+                {caption ? <figcaption>{caption}</figcaption> : null}
+              </figure>
+            ) : null}
+            <div className="photo-text-copy">
+              {text(data, 'title') ? <h2 className="h2"><Marked value={text(data, 'title')} /></h2> : null}
+              <Rich value={text(data, 'body')} />
+              {text(data, 'label') && text(data, 'href') ? (
+                <div className="photo-text-cta">
+                  <Cta href={text(data, 'href')} label={text(data, 'label')} variant="primary" />
+                </div>
+              ) : null}
+            </div>
+          </div>
         </Shell>
       );
     }

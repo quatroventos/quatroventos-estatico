@@ -58,6 +58,8 @@ const LAYOUTS: Record<string, Layout> = {
   'cases-list': 'cards',
   contact: 'form',
   gallery: 'cards',
+  'photo-text': 'split',
+  'text-photo': 'split',
   results: 'list',
 };
 

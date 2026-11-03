@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ExternalLink, Pencil, Plus, RotateCcw, Sparkles, Star, Trash2, X } from 'lucide-react';
 import { api, firstError } from '../api';
+import { getPath, setPath } from '../lib';
 import { AppShell } from '../components/AppShell';
 import { LangDots } from '../components/LangDots';
 import { TranslationTabs, useTranslationConfig, useTranslationJob, type TranslationState } from '../components/TranslationBar';
@@ -344,17 +345,17 @@ function Box({ title, hint, children }: { title: string; hint?: string; children
   );
 }
 
-function StringList({ label, value, placeholder, onChange }: { label: string; value: string[]; placeholder?: string; onChange: (value: string[]) => void }) {
+function StringList({ label, value, placeholder, ai, aiPath, onChange }: { label: string; value: string[]; placeholder?: string; ai?: FieldAiContext; aiPath?: string; onChange: (value: string[]) => void }) {
+  const replace = (index: number, next: string) => onChange(value.map((current, i) => (i === index ? next : current)));
+
   return (
     <div className="field">
       <label>{label}</label>
       {value.map((item, index) => (
         <div className="case-list-row" key={index}>
-          <input
-            value={item}
-            placeholder={placeholder}
-            onChange={(event) => onChange(value.map((current, i) => (i === index ? event.target.value : current)))}
-          />
+          <FieldAiWrap ai={aiPath ? ai : undefined} type="text" path={`${aiPath}.${index}`} value={item} onApply={(next) => replace(index, next)}>
+            <input value={item} placeholder={placeholder} onChange={(event) => replace(index, event.target.value)} />
+          </FieldAiWrap>
           <button className="icon-btn danger" type="button" onClick={() => onChange(value.filter((_, i) => i !== index))} aria-label="Remover">
             <Trash2 size={14} />
           </button>
@@ -381,7 +382,9 @@ export function CaseEditorScreen() {
   const [saved, setSaved] = useState(false);
   const [mockupOpen, setMockupOpen] = useState(false);
   const [mockupSrc, setMockupSrc] = useState('');
+  const [mockupFor, setMockupFor] = useState<'cover' | 'print'>('cover');
   const mockupDirty = useRef(false);
+  const mockupTarget = useRef<{ index: number; path: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [library, setLibrary] = useState<LibraryItem[]>([]);
@@ -420,12 +423,34 @@ export function CaseEditorScreen() {
         return;
       }
       mockupDirty.current = false;
+      const target = mockupTarget.current;
+      const alt = typeof data.alt === 'string' ? data.alt.trim() : '';
 
-      setForm((current) => (current ? {
-        ...current,
-        cover_path: data.path ?? null,
-        cover_alt: typeof data.alt === 'string' ? data.alt : current.cover_alt,
-      } : current));
+      setForm((current) => {
+        if (!current) {
+          return current;
+        }
+        if (!target) {
+          return { ...current, cover_path: data.path ?? null, cover_alt: alt || current.cover_alt };
+        }
+
+        return {
+          ...current,
+          content: {
+            sections: current.content.sections.map((section, index) => {
+              if (index !== target.index) {
+                return section;
+              }
+              let next = setPath(section.data, target.path, data.path);
+              const altPath = target.path.replace(/[^.]+$/, 'alt');
+              if (alt !== '' && altPath !== target.path) {
+                next = setPath(next, altPath, alt);
+              }
+              return { ...section, data: next };
+            }),
+          },
+        };
+      });
       setSaved(false);
       setMockupOpen(false);
     }
@@ -486,12 +511,40 @@ export function CaseEditorScreen() {
 
     const alt = form.cover_alt.trim() || [form.client, form.title].filter(Boolean).join(': ');
     mockupDirty.current = false;
+    mockupTarget.current = null;
+    setMockupFor('cover');
     setMockupSrc(`/ferramentas/mockups?case=1&alt=${encodeURIComponent(alt)}`);
     setMockupOpen(true);
   }
 
+  function openSectionMockup(path: string, value: string) {
+    if (!form) {
+      return;
+    }
+
+    const data = form.content.sections[activeSection]?.data ?? {};
+    const sibling = (name: string) => {
+      const found = getPath(data, path.replace(/[^.]+$/, name));
+      return typeof found === 'string' ? found.trim() : '';
+    };
+    const alt = sibling('alt') || sibling('caption') || [form.client, form.title].filter(Boolean).join(': ');
+    const params = new URLSearchParams({ case: '1', target: 'print', alt });
+    if (value.startsWith('/') && !value.startsWith('//')) {
+      params.set('print', value);
+    }
+
+    mockupDirty.current = false;
+    mockupTarget.current = { index: activeSection, path };
+    setMockupFor('print');
+    setMockupSrc(`/ferramentas/mockups?${params.toString()}`);
+    setMockupOpen(true);
+  }
+
   function closeMockup() {
-    if (mockupDirty.current && !window.confirm('A foto gerada ainda não virou capa. Fechar descarta a foto.')) {
+    const message = mockupFor === 'cover'
+      ? 'A foto gerada ainda não virou capa. Fechar descarta a foto.'
+      : 'A foto gerada ainda não entrou na seção. Fechar descarta a foto.';
+    if (mockupDirty.current && !window.confirm(message)) {
       return;
     }
 
@@ -697,6 +750,24 @@ export function CaseEditorScreen() {
     }),
   };
 
+  const caseAi: FieldAiContext | undefined = form.translation_of ? undefined : {
+    disabled: !translationConfig?.configured,
+    request: () => ({
+      kind: 'case',
+      target: 'case',
+      path: form.path ?? `/cases/${form.slug}`,
+      case: {
+        client: form.client,
+        title: form.title,
+        summary: form.summary,
+        sector: sectors.find((option) => option.value === form.sector)?.label ?? form.sector,
+        tags: form.tags,
+        cover_alt: form.cover_alt,
+      },
+      sections: sections.map((section) => ({ type: section.type, data: section.data })),
+    }),
+  };
+
   const seoInput: SeoInput = {
     keyword: form.seo_keyword,
     seo_title: form.seo_title,
@@ -863,11 +934,15 @@ export function CaseEditorScreen() {
             </div>
             <div className="field">
               <label>Título</label>
-              <input value={form.title} placeholder="O processo melhorado, em uma frase" onChange={(event) => patch({ title: event.target.value })} />
+              <FieldAiWrap ai={caseAi} type="text" path="title" value={form.title} onApply={(value) => patch({ title: value })}>
+                <input value={form.title} placeholder="O processo melhorado, em uma frase" onChange={(event) => patch({ title: event.target.value })} />
+              </FieldAiWrap>
             </div>
             <div className="field">
               <label>Resumo</label>
-              <textarea maxLength={300} value={form.summary} onChange={(event) => patch({ summary: event.target.value })} />
+              <FieldAiWrap ai={caseAi} type="textarea" path="summary" value={form.summary} onApply={(value) => patch({ summary: value.slice(0, 300) })}>
+                <textarea maxLength={300} value={form.summary} onChange={(event) => patch({ summary: event.target.value })} />
+              </FieldAiWrap>
               <p className="hint">{form.summary.length}/300. Aparece no card da listagem e no bloco das páginas de serviço.</p>
             </div>
             <div className="case-grid-2">
@@ -891,7 +966,7 @@ export function CaseEditorScreen() {
               <label>Link do projeto</label>
               <input value={form.url} placeholder="https://" onChange={(event) => patch({ url: event.target.value })} />
             </div>
-            <StringList label="Etiquetas do card" value={form.tags} placeholder="Produto SaaS com IA" onChange={(tags) => patch({ tags })} />
+            <StringList label="Etiquetas do card" value={form.tags} placeholder="Produto SaaS com IA" ai={caseAi} aiPath="tags" onChange={(tags) => patch({ tags })} />
             <p className="hint">Até 4. Aparecem abaixo do nome nos cards de case das páginas e da listagem.</p>
           </Box>
 
@@ -901,7 +976,9 @@ export function CaseEditorScreen() {
             <p className="hint">Abre o estúdio, grava a foto em WebP otimizado e preenche o caminho e o alt da capa.</p>
             <div className="field">
               <label>Alt da capa</label>
-              <input value={form.cover_alt} onChange={(event) => patch({ cover_alt: event.target.value })} />
+              <FieldAiWrap ai={caseAi} type="text" path="cover_alt" value={form.cover_alt} onApply={(value) => patch({ cover_alt: value })}>
+                <input value={form.cover_alt} onChange={(event) => patch({ cover_alt: event.target.value })} />
+              </FieldAiWrap>
             </div>
             <div className="field">
               <label>Proporção da capa no card em destaque</label>
@@ -934,7 +1011,7 @@ export function CaseEditorScreen() {
                       key={sections[activeSection]?.id ?? activeSection}
                       fields={current.fields}
                       content={sections[activeSection]?.data ?? {}}
-                      context={{}}
+                      context={{ onMockup: openSectionMockup }}
                       ai={form.translation_of ? undefined : {
                         disabled: !translationConfig?.configured,
                         request: () => ({
@@ -1146,14 +1223,16 @@ export function CaseEditorScreen() {
           <div className="modal studio" role="dialog" aria-modal="true" aria-labelledby="mockup-title">
             <div className="modal-head">
               <div>
-                <h2 id="mockup-title">Mockup da capa</h2>
-                <p>Gere a foto do aparelho com a tela do projeto e grave como capa deste case.</p>
+                <h2 id="mockup-title">{mockupFor === 'cover' ? 'Mockup da capa' : 'Mockup do print'}</h2>
+                <p>{mockupFor === 'cover'
+                  ? 'Gere a foto do aparelho com a tela do projeto e grave como capa deste case.'
+                  : 'Gere a foto do aparelho com o print e grave no lugar da imagem desta seção.'}</p>
               </div>
               <button className="icon-btn" type="button" onClick={closeMockup} aria-label="Fechar">
                 <X size={16} />
               </button>
             </div>
-            <iframe title="Mockup da capa" src={mockupSrc} />
+            <iframe title={mockupFor === 'cover' ? 'Mockup da capa' : 'Mockup do print'} src={mockupSrc} />
           </div>
         </div>
       ) : null}

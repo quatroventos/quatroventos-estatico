@@ -1,5 +1,5 @@
 import { type PointerEvent, type ReactNode } from 'react';
-import { GripVertical, Plus, Trash2 } from 'lucide-react';
+import { GripVertical, MonitorSmartphone, Plus, Trash2 } from 'lucide-react';
 import { getPath, setPath } from '../lib';
 import { CasesPicker } from './CasesPicker';
 import { LogosField } from './LogosField';
@@ -25,6 +25,7 @@ export type Field = {
 
 export type SchemaContext = {
   pageSlug?: string;
+  onMockup?: (path: string, value: string) => void;
 };
 
 export type Section = {
@@ -151,11 +152,19 @@ function FieldControl({
   }
 
   if (field.type === 'media') {
+    const onMockup = context?.onMockup;
+    const isImage = (field.kind ?? 'image') === 'image';
+
     return (
       <MediaField
         label={field.label}
         kind={field.kind ?? 'image'}
         value={(value as string) ?? ''}
+        actions={onMockup && isImage ? (
+          <button className="btn btn-secondary" type="button" onClick={() => onMockup(path, typeof value === 'string' ? value : '')}>
+            <MonitorSmartphone size={13} /> Montar mockup
+          </button>
+        ) : undefined}
         onChange={onChange}
       />
     );

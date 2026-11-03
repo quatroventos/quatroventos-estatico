@@ -25,8 +25,11 @@ let finishFrame = 0;
 const MAX_REFERENCES = 3;
 const FINISH_STORAGE = 'mockup-studio-finish';
 const finishing = loadFinishing();
+const isPrintTarget = config.cover?.target === 'print';
+const targetName = isPrintTarget ? 'o print' : 'a capa';
 
 bind();
+preloadPrint();
 
 function bind() {
     const fileInput = document.getElementById('prints');
@@ -72,6 +75,20 @@ function bind() {
     bindFinishing();
     syncViewportHint();
     updateActions();
+}
+
+function preloadPrint() {
+    const src = config.cover?.print;
+    if (!src) {
+        return;
+    }
+    const image = new Image();
+    image.onload = () => {
+        adoptPrint(image);
+        say(`Print atual da seção em ${image.naturalWidth}×${image.naturalHeight}. Troque se quiser outra tela.`);
+    };
+    image.onerror = () => say('Não consegui abrir o print atual. Envie a imagem.', 'error');
+    image.src = src;
 }
 
 function loadFinishing() {
@@ -368,18 +385,18 @@ async function exportPng() {
 async function saveCover() {
     const image = composed || base;
     if (!image || !config.cover) {
-        say('Gere o mockup antes de gravar a capa.', 'error');
+        say(`Gere o mockup antes de gravar ${targetName}.`, 'error');
         return;
     }
 
     const alt = document.getElementById('cover-alt').value.trim();
     if (alt === '') {
-        say('Escreva o texto alternativo da capa.', 'error');
+        say(isPrintTarget ? 'Escreva o texto alternativo do print.' : 'Escreva o texto alternativo da capa.', 'error');
         document.getElementById('cover-alt').focus();
         return;
     }
 
-    await run('Gravando a capa em WebP…', async () => {
+    await run(`Gravando ${targetName} em WebP…`, async () => {
         const body = new FormData();
         body.append('image', await toPngBlob(image), 'mockup.png');
         body.append('alt', alt);
@@ -393,7 +410,7 @@ async function saveCover() {
         }
         saved = true;
         notifyParent();
-        say('Capa gravada em WebP.', 'ok');
+        say(isPrintTarget ? 'Print gravado em WebP.' : 'Capa gravada em WebP.', 'ok');
     });
 }
 
@@ -591,7 +608,7 @@ function updateActions() {
     if (!result) {
         saveGate = 'Disponível depois de gerar a foto.';
     } else if (coverButton && coverButton.disabled) {
-        saveGate = 'Escreva o texto alternativo para gravar a capa.';
+        saveGate = `Escreva o texto alternativo para gravar ${targetName}.`;
     }
     document.getElementById('save-gate').textContent = saveGate;
 

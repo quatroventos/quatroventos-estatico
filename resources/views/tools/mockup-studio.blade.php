@@ -160,7 +160,7 @@
                     <li>1. Envie ou capture a tela do projeto.</li>
                     <li>2. Escolha o aparelho e gere a foto.</li>
                     <li>3. Ajuste brilho e reflexo da tela.</li>
-                    <li>4. Grave como capa.</li>
+                    <li>4. {{ ($studio['cover']['target'] ?? 'cover') === 'print' ? 'Grave no print da seção.' : 'Grave como capa.' }}</li>
                 </ol>
             </div>
             <div class="busy" id="busy" hidden role="status" aria-live="polite">
@@ -337,17 +337,17 @@
             <section class="step" id="step-save">
                 <div class="step-head">
                     <span class="step-num">4</span>
-                    <h2>{{ $studio['cover'] ? 'Capa do case' : 'Exportar' }}</h2>
+                    <h2>{{ $studio['cover'] ? ($studio['cover']['target'] === 'print' ? 'Print da seção' : 'Capa do case') : 'Exportar' }}</h2>
                 </div>
                 @if ($studio['cover'])
                     <label class="field">
-                        <span>Texto alternativo da capa</span>
+                        <span>{{ $studio['cover']['target'] === 'print' ? 'Texto alternativo do print' : 'Texto alternativo da capa' }}</span>
                         <input id="cover-alt" type="text" maxlength="255" autocomplete="off">
                     </label>
                 @endif
                 <div class="actions">
                     @if ($studio['cover'])
-                        <button class="btn btn-primary btn-block" id="use-cover" type="button">Usar como capa</button>
+                        <button class="btn btn-primary btn-block" id="use-cover" type="button">{{ $studio['cover']['target'] === 'print' ? 'Usar no print' : 'Usar como capa' }}</button>
                     @endif
                     <button class="btn btn-secondary btn-block" id="export" type="button">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>
@@ -400,6 +400,6 @@
     </aside>
 </main>
 <script id="mockup-studio" type="application/json">@json($studio)</script>
-<script type="module" src="/tools/mockup-studio.js?v=20"></script>
+<script type="module" src="/tools/mockup-studio.js?v=21"></script>
 </body>
 </html>

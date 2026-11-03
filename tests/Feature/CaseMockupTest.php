@@ -50,6 +50,29 @@ class CaseMockupTest extends TestCase
             ->assertSee('Digio: onboarding', false);
     }
 
+    public function test_print_target_preloads_only_local_images(): void
+    {
+        $editor = $this->makeEditor();
+
+        $this->actingAs($editor)
+            ->get('/ferramentas/mockups?case=1&target=print&print=%2Fstorage%2Fmedia%2Fcases%2Ftela.webp')
+            ->assertOk()
+            ->assertSee('Usar no print')
+            ->assertDontSee('Usar como capa')
+            ->assertSee('"target":"print"', false)
+            ->assertSee('"print":"\/storage\/media\/cases\/tela.webp"', false);
+
+        $this->actingAs($editor)
+            ->get('/ferramentas/mockups?case=1&target=print&print=https%3A%2F%2Fexemplo.com%2Ftela.png')
+            ->assertOk()
+            ->assertSee('"print":null', false);
+
+        $this->actingAs($editor)
+            ->get('/ferramentas/mockups?case=1&target=print&print=%2F%2Fexemplo.com%2Ftela.png')
+            ->assertOk()
+            ->assertSee('"print":null', false);
+    }
+
     public function test_editor_stores_an_optimized_webp_cover_with_alt(): void
     {
         if (! function_exists('imagewebp')) {

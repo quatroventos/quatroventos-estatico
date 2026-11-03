@@ -29,7 +29,35 @@ class SectionCopyWriter
     /**
      * Campos de texto que não são redação: endereços, identificadores, nomes e valores.
      */
-    private const SKIP_NAMES = '/(^|_)(href|url|whatsapp|anchor|id|alt|author|company|name|value|prefix|price|year|icon|glyph|log)$/';
+    private const SKIP_NAMES = '/(^|_)(href|url|whatsapp|anchor|id|author|company|name|value|prefix|price|year|icon|glyph|log)$/';
+
+    /**
+     * Campos de identificação do case que aceitam texto gerado, com rótulo, regra e limite de caracteres.
+     *
+     * @var array<string, array{label: string, rules: string, max: int}>
+     */
+    private const CASE_FIELDS = [
+        'title' => [
+            'label' => 'Título do case',
+            'rules' => 'Uma frase curta que diga o resultado ou o processo melhorado para o cliente. Sem o nome do cliente, que já aparece acima do título. Sem ponto final.',
+            'max' => 110,
+        ],
+        'summary' => [
+            'label' => 'Resumo do case',
+            'rules' => 'Uma ou duas frases: o problema do cliente e o que foi entregue. Aparece no card da listagem e nas páginas de serviço.',
+            'max' => 300,
+        ],
+        'tags' => [
+            'label' => 'Etiqueta do card',
+            'rules' => 'De duas a quatro palavras que classifiquem o projeto (tipo de produto ou tecnologia principal). Sem ponto final e sem repetir as outras etiquetas.',
+            'max' => 40,
+        ],
+        'cover_alt' => [
+            'label' => 'Texto alternativo da capa',
+            'rules' => 'Descreva a capa para quem não enxerga: o aparelho e o que a tela do projeto mostra. Objetivo, sem "imagem de" no começo.',
+            'max' => 160,
+        ],
+    ];
 
     private const ALLOWED_TAGS = '<p><br><strong><em><b><i><a><ul><ol><li>';
 
@@ -170,6 +198,79 @@ class SectionCopyWriter
         }
 
         return Seo::fit($value, $max);
+    }
+
+    /**
+     * Escreve um campo de identificação do case (título, resumo, etiqueta ou alt da capa) a partir das seções.
+     *
+     * @param  list<array{type: string, data: array<string, mixed>}>  $sections
+     * @param  array{kind: string, title?: string|null, description?: string|null, path?: string|null}  $context
+     * @param  array{client?: string|null, title?: string|null, summary?: string|null, sector?: string|null, tags?: list<string|null>|null, cover_alt?: string|null}  $case
+     */
+    public function caseField(array $sections, array $context, array $case, string $field, string $mode, string $instruction = ''): string
+    {
+        $key = preg_match('/^tags\.\d+$/', $field) === 1 ? 'tags' : $field;
+        $definition = self::CASE_FIELDS[$key] ?? null;
+
+        if ($definition === null) {
+            throw new RuntimeException('Este campo não aceita texto gerado.');
+        }
+
+        $outline = PageDocument::make('case', $sections, [
+            'title' => $case['title'] ?? null,
+            'summary' => $case['summary'] ?? null,
+        ])->outline(self::CONTEXT_CHARS);
+
+        if ($outline === '' && blank($case['title'] ?? null) && blank($case['summary'] ?? null)) {
+            throw new RuntimeException('O case ainda não tem texto para a IA trabalhar.');
+        }
+
+        $current = trim((string) data_get($case, $field, ''));
+        $tags = array_values(array_filter(
+            array_map(fn ($tag) => trim((string) $tag), is_array($case['tags'] ?? null) ? $case['tags'] : []),
+            fn (string $tag, int $index) => $tag !== '' && 'tags.'.$index !== $field,
+            ARRAY_FILTER_USE_BOTH,
+        ));
+
+        $known = array_filter([
+            'Cliente' => trim((string) ($case['client'] ?? '')),
+            'Setor' => trim((string) ($case['sector'] ?? '')),
+            'Título' => $field === 'title' ? '' : trim((string) ($case['title'] ?? '')),
+            'Resumo' => $field === 'summary' ? '' : trim((string) ($case['summary'] ?? '')),
+            $key === 'tags' ? 'Outras etiquetas' : 'Etiquetas' => implode(', ', $tags),
+            'Alt da capa' => $field === 'cover_alt' ? '' : trim((string) ($case['cover_alt'] ?? '')),
+        ], fn (string $value) => $value !== '');
+
+        $tasks = [
+            'melhorar' => 'Melhore o texto atual seguindo as regras.',
+            'resumir' => 'Encurte o texto atual, mantendo o essencial.',
+            'sintetizar' => 'Condense o texto atual ao núcleo da mensagem.',
+        ];
+
+        $prompt = 'Página de case (projeto entregue pela Quatro Ventos)'
+            .implode('', array_map(fn (string $label, string $value) => "\n".$label.': '.$value, array_keys($known), $known))
+            .(filled($context['path'] ?? null) ? "\nEndereço: ".$context['path'] : '')
+            ."\n\nPágina completa, na ordem de leitura (leia tudo antes de escrever):\n".($outline !== '' ? $outline : '(sem seções)')
+            ."\n\nCampo: ".$definition['label']
+            ."\nRegras do campo: ".$definition['rules'].' No máximo '.$definition['max'].' caracteres contando espaços.'
+            ."\n\nTarefa: ".($current === '' ? 'Escreva o campo do zero a partir do texto da página.' : $tasks[$mode]."\nTexto atual: ".$current)
+            .($instruction !== '' ? "\nInstrução de quem edita: ".$instruction : '')
+            ."\n\nDevolva texto puro, sem HTML, sem asteriscos e sem aspas.";
+
+        $result = $this->client->json($this->systemPrompt(), $prompt, 'case_field', [
+            'type' => 'object',
+            'additionalProperties' => false,
+            'required' => ['value'],
+            'properties' => ['value' => ['type' => 'string']],
+        ]);
+
+        $value = trim(str_replace(['*', '"', '“', '”'], '', strip_tags((string) ($result['value'] ?? ''))));
+
+        if ($value === '') {
+            throw new RuntimeException('A IA não devolveu texto. Tente de novo.');
+        }
+
+        return Seo::fit($value, $definition['max']);
     }
 
     /**

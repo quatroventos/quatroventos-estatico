@@ -226,6 +226,70 @@ class SectionCopyTest extends TestCase
         Http::assertNothingSent();
     }
 
+    public function test_case_tag_is_written_from_the_case_and_its_sections(): void
+    {
+        Http::fake([
+            'openai.test/*' => Http::response(['output' => [['type' => 'message', 'content' => [['type' => 'output_text', 'text' => json_encode(['value' => '"*Portal B2B* com ERP"'])]]]]]),
+        ]);
+
+        $this->actingAs($this->makeEditor())
+            ->postJson('/gestao/api/sections/copy', [
+                'kind' => 'case',
+                'target' => 'case',
+                'mode' => 'melhorar',
+                'field' => 'tags.1',
+                'case' => [
+                    'client' => 'Digio',
+                    'title' => 'Pedidos sem planilha',
+                    'tags' => ['Produto SaaS', 'portal velho'],
+                ],
+                'sections' => [['type' => 'site.prose', 'data' => ['title' => 'Desafio', 'body' => '<p>Os pedidos chegavam por e-mail.</p>']]],
+            ])
+            ->assertOk()
+            ->assertJsonPath('value', 'Portal B2B com ERP');
+
+        Http::assertSent(function (Request $request): bool {
+            $body = (string) json_encode($request->data(), JSON_UNESCAPED_UNICODE);
+
+            return str_contains($body, 'Etiqueta do card')
+                && str_contains($body, 'Cliente: Digio')
+                && str_contains($body, 'Outras etiquetas: Produto SaaS')
+                && str_contains($body, 'Texto atual: portal velho')
+                && str_contains($body, 'Os pedidos chegavam por e-mail');
+        });
+    }
+
+    public function test_case_target_rejects_unknown_fields_and_pages(): void
+    {
+        Http::fake();
+        $editor = $this->makeEditor();
+
+        $this->actingAs($editor)
+            ->postJson('/gestao/api/sections/copy', [
+                'kind' => 'case',
+                'target' => 'case',
+                'mode' => 'melhorar',
+                'field' => 'url',
+                'case' => ['title' => 'Pedidos sem planilha'],
+                'sections' => [],
+            ])
+            ->assertStatus(422)
+            ->assertJsonPath('message', 'Este campo não aceita texto gerado.');
+
+        $this->actingAs($editor)
+            ->postJson('/gestao/api/sections/copy', [
+                'kind' => 'page',
+                'target' => 'case',
+                'page_id' => $this->page()->id,
+                'mode' => 'melhorar',
+                'field' => 'title',
+                'sections' => [],
+            ])
+            ->assertStatus(422);
+
+        Http::assertNothingSent();
+    }
+
     public function test_guest_cannot_rewrite(): void
     {
         $this->postJson('/gestao/api/sections/copy', [
