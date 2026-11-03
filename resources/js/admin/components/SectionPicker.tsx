@@ -84,6 +84,7 @@ const META: Record<string, PreviewMeta> = {
   form: { family: 'cta', icon: ClipboardList, description: 'Formulário de contato' },
   conclusion: { family: 'text', icon: AlignLeft, description: 'Bloco de texto de encerramento' },
   prose: { family: 'text', icon: AlignLeft, description: 'Título e texto em duas colunas' },
+  brief: { family: 'split', icon: SquareSplitHorizontal, description: 'Problema e solução lado a lado, em frases curtas' },
   list: { ...LIST, description: 'Itens com título, texto e link (cards, linhas ou etiquetas)' },
   steps: { ...CARDS, description: 'Etapas numeradas' },
   plans: { ...CARDS, description: 'Planos com preço e botão' },

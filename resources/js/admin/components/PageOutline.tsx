@@ -48,6 +48,7 @@ const LAYOUTS: Record<string, Layout> = {
   units: 'list',
   conclusion: 'text',
   prose: 'text',
+  brief: 'pair',
   list: 'list',
   steps: 'cards',
   plans: 'cards',

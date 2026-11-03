@@ -58,6 +58,8 @@
   "stack.integracoes_tech": "External integrations",
   "stack.outros": "Other technologies",
   "stack.outros_tech": "Add-ons",
+  "brief.problem": "Problem",
+  "brief.solution": "Solution",
   "cases.all": "All",
   "cases.empty": "Cases are being published. Meanwhile, talk to the team on WhatsApp.",
   "cases.breadcrumb": "Breadcrumb",

@@ -3481,6 +3481,175 @@ h3 {
   }
 }
 
+/* Problema e solução: dois cards meio a meio, ligados por uma seta; empilha no mobile */
+.brief {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(12px, 1.4vw, 20px);
+}
+
+.brief-card {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 1.6vw, 24px);
+  min-height: clamp(280px, 26vw, 400px);
+  padding: clamp(28px, 3.4vw, 56px);
+  border-radius: var(--radius);
+}
+
+.brief-card.is-problem {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line-light);
+}
+
+.brief-card.is-solution {
+  background: var(--bg);
+  color: var(--white);
+}
+
+.on-dark .brief-card.is-problem {
+  background: var(--panel);
+  color: var(--white);
+  box-shadow: inset 0 0 0 1px var(--line-dark);
+}
+
+.on-dark .brief-card.is-solution {
+  box-shadow: inset 0 0 0 1px var(--line-dark);
+}
+
+.brief-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-light-mute);
+}
+
+.brief-label span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 30px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px currentColor;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.brief-card.is-solution .brief-label,
+.on-dark .brief-label {
+  color: var(--on-dark-mute);
+}
+
+.brief-card.is-solution .brief-label span {
+  background: var(--lime);
+  box-shadow: none;
+  color: var(--ink);
+}
+
+.brief-title {
+  max-width: 18ch;
+  margin-top: auto;
+  font-size: clamp(28px, 2.9vw, 46px);
+  font-weight: 500;
+  line-height: 1.06;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.brief-card .rich {
+  max-width: 44ch;
+  font-size: clamp(16px, 1.15vw, 18px);
+  line-height: 1.6;
+  color: var(--on-light-soft);
+}
+
+.brief-card.is-solution .rich,
+.on-dark .brief-card .rich {
+  color: var(--on-dark-soft);
+}
+
+.brief-card.is-problem .mark {
+  padding: 0;
+  margin: 0;
+  background: none;
+  color: inherit;
+  text-decoration: line-through;
+  text-decoration-color: rgb(11 11 15 / 0.35);
+  text-decoration-thickness: 0.07em;
+}
+
+.on-dark .brief-card.is-problem .mark {
+  text-decoration-color: rgb(255 255 255 / 0.4);
+}
+
+.brief-card.is-solution .mark {
+  padding: 0;
+  margin: 0;
+  background: none;
+  color: var(--lime);
+}
+
+.brief-turn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--lime);
+  color: var(--ink);
+  box-shadow: 0 0 0 clamp(6px, 0.7vw, 10px) var(--paper);
+  transform: translate(-50%, -50%);
+}
+
+.on-white .brief-turn {
+  box-shadow: 0 0 0 clamp(6px, 0.7vw, 10px) var(--white);
+}
+
+.on-dark .brief-turn {
+  box-shadow: 0 0 0 clamp(6px, 0.7vw, 10px) var(--bg);
+}
+
+.brief-turn svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (max-width: 900px) {
+  .brief {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .brief-card {
+    min-height: 0;
+  }
+
+  .brief-title {
+    margin-top: 8px;
+  }
+
+  .brief-turn {
+    position: relative;
+    top: auto;
+    left: auto;
+    justify-self: center;
+    width: 48px;
+    height: 48px;
+    margin: -30px 0;
+    transform: rotate(90deg);
+  }
+}
+
 .prose-panel {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);

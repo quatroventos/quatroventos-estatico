@@ -117,6 +117,16 @@ class SiteSectionDefinition
                 ]),
             ],
             [
+                'label' => 'Problema e solução',
+                'preview' => 'brief',
+                'fields' => self::withCommon([
+                    ['type' => 'text', 'name' => 'problem_title', 'label' => 'Problema: frase principal', 'hint' => 'Uma frase curta. Trechos entre *asteriscos* ficam em destaque.'],
+                    ['type' => 'rich', 'name' => 'problem_body', 'label' => 'Problema: texto', 'hint' => 'Até 3 frases curtas.'],
+                    ['type' => 'text', 'name' => 'solution_title', 'label' => 'Solução: frase principal', 'hint' => 'Uma frase curta. Trechos entre *asteriscos* ficam em destaque.'],
+                    ['type' => 'rich', 'name' => 'solution_body', 'label' => 'Solução: texto', 'hint' => 'Até 3 frases curtas.'],
+                ]),
+            ],
+            [
                 'label' => 'Cards',
                 'preview' => 'cards',
                 'fields' => self::withCommon([

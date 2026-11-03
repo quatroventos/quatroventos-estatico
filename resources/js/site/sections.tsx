@@ -55,6 +55,9 @@ function isEmpty(section: Section): boolean {
   if (kind === 'photo-text' || kind === 'text-photo') {
     return !text(data, 'image') && !text(data, 'title') && !text(data, 'body');
   }
+  if (kind === 'brief') {
+    return ['problem_title', 'problem_body', 'solution_title', 'solution_body'].every((key) => !text(data, key));
+  }
 
   return false;
 }
@@ -116,6 +119,27 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
           <div className={isCase ? 'prose-grid is-case' : stacked ? 'prose-grid is-stack' : 'prose-grid'}>
             {text(data, 'title') ? <h2 className="h2"><Marked value={text(data, 'title')} /></h2> : <span />}
             <Rich value={text(data, 'body')} />
+          </div>
+        </Shell>
+      );
+
+    case 'brief':
+      return (
+        <Shell {...shell}>
+          <div className="brief">
+            <article className="brief-card is-problem">
+              <p className="brief-label"><span>01</span>{t('brief.problem')}</p>
+              {text(data, 'problem_title') ? <h2 className="brief-title"><Marked value={text(data, 'problem_title')} /></h2> : null}
+              <Rich value={text(data, 'problem_body')} />
+            </article>
+            <span className="brief-turn" aria-hidden="true">
+              <svg viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
+            </span>
+            <article className="brief-card is-solution">
+              <p className="brief-label"><span>02</span>{t('brief.solution')}</p>
+              {text(data, 'solution_title') ? <h2 className="brief-title"><Marked value={text(data, 'solution_title')} /></h2> : null}
+              <Rich value={text(data, 'solution_body')} />
+            </article>
           </div>
         </Shell>
       );
