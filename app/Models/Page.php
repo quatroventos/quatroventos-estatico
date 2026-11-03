@@ -158,6 +158,8 @@ class Page extends Model
             'livewire',
             'sitemap.xml',
             'robots.txt',
+            'llms.txt',
+            'llm.txt',
             $admin,
         ]));
     }

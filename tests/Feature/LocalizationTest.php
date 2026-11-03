@@ -181,10 +181,15 @@ class LocalizationTest extends TestCase
 
     public function test_legacy_english_urls_redirect(): void
     {
-        $this->page(['slug' => 'desenvolvimento-de-sites', 'seo_title' => 'Sites']);
+        $page = $this->page(['slug' => 'criacao-de-sites-sob-medida', 'seo_title' => 'Sites']);
 
         $this->get('/en/webdesign.php')->assertRedirect('/en');
         $this->get('/en/webdesign')->assertRedirect('/en');
+
+        $this->translation($page, 'en', 'custom-website-development');
+
+        $this->get('/en/webdesign')->assertRedirect('/en/custom-website-development');
+        $this->get('/en/webdesign.php')->assertRedirect('/en/custom-website-development');
     }
 
     public function test_content_strings_skip_links_media_and_references(): void

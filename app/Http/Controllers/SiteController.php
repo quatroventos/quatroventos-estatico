@@ -98,18 +98,33 @@ class SiteController extends Controller
             ->header('X-Robots-Tag', 'noindex, nofollow');
     }
 
-    public function robots(): Response
+    public function robots(SitemapService $sitemap): Response
     {
-        $base = rtrim((string) config('app.url'), '/');
+        return response($sitemap->robots(), 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+    }
 
-        $allow = "Allow: /\n";
-        $body = "User-agent: *\n{$allow}\n"
-            ."User-agent: GPTBot\n{$allow}\n"
-            ."User-agent: OAI-SearchBot\n{$allow}\n"
-            ."User-agent: Google-Extended\n{$allow}\n"
-            ."Sitemap: {$base}/sitemap.xml\n";
+    public function llms(SitemapService $sitemap): Response
+    {
+        return response($sitemap->llms(), 200, [
+            'Content-Type' => 'text/plain; charset=UTF-8',
+        ]);
+    }
 
-        return response($body, 200, ['Content-Type' => 'text/plain; charset=UTF-8']);
+    public function legacyPhp(string $legacy): RedirectResponse
+    {
+        $path = '/'.trim($legacy, '/');
+        $map = config('redirects');
+        $target = is_array($map) ? ($map[$path] ?? null) : null;
+
+        if (! is_string($target)) {
+            if ($path === '/index') {
+                $target = '/';
+            } elseif (Page::query()->published()->originals()->where('slug', trim($path, '/'))->exists()) {
+                $target = $path;
+            }
+        }
+
+        return is_string($target) ? redirect($target, 301) : abort(404);
     }
 
     private function render(Page $page, bool $cmsPreview = false): View

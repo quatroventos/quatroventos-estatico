@@ -43,6 +43,11 @@ foreach ((array) config('redirects', []) as $from => $to) {
 
 Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SiteController::class, 'robots'])->name('robots');
+Route::get('/llms.txt', [SiteController::class, 'llms'])->name('llms');
+Route::get('/llm.txt', [SiteController::class, 'llms'])->name('llm');
+Route::get('/{legacy}.php', [SiteController::class, 'legacyPhp'])
+    ->where('legacy', '[a-z0-9_-]+')
+    ->name('legacy.php');
 
 if (app()->environment('local')) {
     Route::get('/revisao', [SiteController::class, 'revisao'])->name('revisao');

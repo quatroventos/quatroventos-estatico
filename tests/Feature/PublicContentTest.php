@@ -103,8 +103,69 @@ class PublicContentTest extends TestCase
             ->assertSee('User-agent: GPTBot', false)
             ->assertSee('User-agent: OAI-SearchBot', false)
             ->assertSee('User-agent: Google-Extended', false)
+            ->assertSee('User-agent: ClaudeBot', false)
+            ->assertSee('User-agent: PerplexityBot', false)
             ->assertDontSee('Disallow', false)
-            ->assertSee('Sitemap:', false);
+            ->assertSee('Sitemap: '.url('/sitemap.xml'), false)
+            ->assertSee(url('/llms.txt'), false)
+            ->assertSee(url('/llm.txt'), false);
+    }
+
+    public function test_llms_txt_lists_indexable_pages(): void
+    {
+        Page::query()->create([
+            'slug' => 'home',
+            'template' => 'home',
+            'status' => 'published',
+            'published_at' => now(),
+            'seo_title' => 'Início',
+            'seo_description' => 'Software e IA.',
+            'content' => ['sections' => []],
+        ]);
+        Page::query()->create([
+            'slug' => 'obrigado',
+            'template' => 'custom',
+            'status' => 'published',
+            'published_at' => now(),
+            'seo_title' => 'Mensagem recebida',
+            'robots' => 'noindex, follow',
+            'content' => ['sections' => []],
+        ]);
+
+        $home = rtrim((string) config('app.url'), '/').'/';
+
+        $this->get('/llms.txt')
+            ->assertOk()
+            ->assertHeader('Content-Type', 'text/plain; charset=UTF-8')
+            ->assertSee('# Quatro Ventos', false)
+            ->assertSee('[Início]('.$home.'): Software e IA.', false)
+            ->assertDontSee('obrigado', false);
+
+        $this->get('/llm.txt')
+            ->assertOk()
+            ->assertSee('[Início]('.$home.'): Software e IA.', false);
+    }
+
+    public function test_old_urls_redirect_once_to_the_current_page(): void
+    {
+        Page::query()->create([
+            'slug' => 'hospedagem-de-sites',
+            'template' => 'custom',
+            'status' => 'published',
+            'published_at' => now(),
+            'seo_title' => 'Hospedagem',
+            'content' => ['sections' => []],
+        ]);
+
+        $this->get('/criacao-de-sites')
+            ->assertStatus(301)
+            ->assertRedirect('/criacao-de-sites-sob-medida');
+        $this->get('/criacao-de-sites.php')
+            ->assertStatus(301)
+            ->assertRedirect('/criacao-de-sites-sob-medida');
+        $this->get('/index.php')->assertRedirect('/');
+        $this->get('/hospedagem-de-sites.php')->assertRedirect('/hospedagem-de-sites');
+        $this->get('/arquivo-inexistente.php')->assertNotFound();
     }
 
     public function test_page_api_returns_sections(): void

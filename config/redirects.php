@@ -1,22 +1,37 @@
 <?php
 
 // Redirects 301 do site antigo e de slugs renomeados para a estrutura atual.
+// Um salto só: a origem vai direto ao destino publicado.
 // Nenhuma origem pode ser o caminho de uma página publicada: a rota de redirect é registrada antes da catch-all.
+// Pedidos *.php na raiz resolvem este mapa depois de tirar a extensão (app/Http/Controllers/SiteController.php).
 
 return [
+    '/index' => '/',
+
     '/criacao-de-sites' => '/criacao-de-sites-sob-medida',
     '/desenvolvimento-de-sites' => '/criacao-de-sites-sob-medida',
+
     '/desenvolvimento-de-landing-page' => '/criacao-de-landing-pages',
     '/criar-landing-page' => '/criacao-de-landing-pages',
     '/criar-landing-pages' => '/criacao-de-landing-pages',
     '/landing-pages' => '/criacao-de-landing-pages',
+    '/portfolio-landing-page' => '/criacao-de-landing-pages',
+
     '/desenvolvimento-de-ecommerce' => '/criacao-de-loja-virtual',
+    '/ecommerce' => '/criacao-de-loja-virtual',
+
     '/desenvolvimento-de-sites-wordpress' => '/criacao-de-site-wordpress',
     '/sites-wordpress' => '/criacao-de-site-wordpress',
+
     '/recuperacao-de-site-wordpress' => '/site-wordpress-hackeado',
+
     '/manutencao-de-sites-wordpress' => '/manutencao-de-sites',
+    '/contratar-manutencao' => '/manutencao-de-sites',
+
     '/vps-e-infraestrutura' => '/vps-gerenciado',
+
     '/desenvolvimento-full-stack' => '/software-sob-medida',
+
     '/automacao-com-ia' => '/automacao-de-processos-com-ia-e-n8n',
     '/inteligencia-artificial' => '/inteligencia-artificial-para-empresas',
     '/ia-com-dados-da-empresa' => '/rag',
@@ -27,4 +42,14 @@ return [
     '/seo-e-llms' => '/geo-seo',
     '/sobre' => '/sobre-a-quatro-ventos',
     '/porque-meu-site-nao-vende' => '/diagnostico-de-site',
+
+    '/signup' => '/contato',
+    '/contrato' => '/contato',
+
+    '/portfolio' => '/cases',
+    '/novo-portfolio' => '/cases',
+    '/portfolio-new' => '/cases',
+
+    '/obrigado-analise' => '/obrigado',
+    '/obrigado_host' => '/obrigado',
 ];

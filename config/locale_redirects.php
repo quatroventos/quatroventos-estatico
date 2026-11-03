@@ -7,13 +7,13 @@
 return [
     'en' => [
         'index' => 'home',
-        'webdesign' => 'desenvolvimento-de-sites',
+        'webdesign' => 'criacao-de-sites-sob-medida',
         'website-maintenance' => 'manutencao-de-sites',
         'contratar-manutencao' => 'manutencao-de-sites',
         'hosting' => 'hospedagem-de-sites',
         'full-stack-development' => 'software-sob-medida',
         'desenv-full-stack' => 'software-sob-medida',
-        'ecommerce' => 'desenvolvimento-de-ecommerce',
+        'ecommerce' => 'criacao-de-loja-virtual',
         'portfolio' => 'cases',
         'signup' => 'contato',
         'contrato' => 'contato',

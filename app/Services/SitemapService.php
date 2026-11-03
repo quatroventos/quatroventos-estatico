@@ -24,6 +24,85 @@ class SitemapService
         return $this->baseUrl().'/robots.txt';
     }
 
+    public function llmsUrl(): string
+    {
+        return $this->baseUrl().'/llms.txt';
+    }
+
+    public function robots(): string
+    {
+        $allow = "Allow: /\n";
+        $agents = [
+            '*',
+            'GPTBot',
+            'OAI-SearchBot',
+            'ChatGPT-User',
+            'ClaudeBot',
+            'PerplexityBot',
+            'Google-Extended',
+            'Applebot-Extended',
+        ];
+
+        $body = '';
+        foreach ($agents as $agent) {
+            $body .= "User-agent: {$agent}\n{$allow}\n";
+        }
+
+        return $body
+            ."# {$this->llmsUrl()}\n"
+            ."# {$this->baseUrl()}/llm.txt\n"
+            ."Sitemap: {$this->sitemapUrl()}\n";
+    }
+
+    public function llms(): string
+    {
+        $site = app(SystemOptions::class)->site();
+        $name = filled($site?->name) ? (string) $site->name : 'Quatro Ventos';
+        $summary = $this->plainLine((string) ($site?->seo_description ?? ''));
+
+        $lines = ["# {$name}", ''];
+        if ($summary !== '') {
+            $lines[] = '> '.$summary;
+            $lines[] = '';
+        }
+
+        $pages = Page::query()->published()->get()
+            ->reject(fn (Page $page) => str_contains(strtolower((string) $page->robots), 'noindex'))
+            ->groupBy(fn (Page $page) => Locales::normalize($page->localeCode()));
+
+        foreach (Locales::all() as $locale) {
+            $group = $pages->get($locale, collect());
+            if ($group->isEmpty()) {
+                continue;
+            }
+
+            $heading = (string) (Locales::meta($locale)['name'] ?? $locale);
+            $lines[] = '## '.$heading;
+            $lines[] = '';
+
+            foreach ($group->sortBy(fn (Page $page) => [$page->isHome() ? 0 : 1, $page->slug])->values() as $page) {
+                $title = $this->plainLine((string) ($page->seo_title ?: $page->slug));
+                $title = str_replace(['[', ']'], '', $title);
+                $description = $this->plainLine((string) $page->seo_description);
+                $url = $this->absolute($page->publicPath());
+                $lines[] = $description === ''
+                    ? "- [{$title}]({$url})"
+                    : "- [{$title}]({$url}): {$description}";
+            }
+
+            $lines[] = '';
+        }
+
+        return rtrim(implode("\n", $lines))."\n";
+    }
+
+    private function plainLine(string $value): string
+    {
+        $value = trim(preg_replace('/\s+/u', ' ', $value) ?? '');
+
+        return $value;
+    }
+
     /** @return list<array{source: string, slug: ?string, locale: ?string, path: string, loc: string, lastmod: ?string, alternates: array<string, string>}> */
     public function entries(): array
     {
