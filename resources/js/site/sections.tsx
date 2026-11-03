@@ -307,15 +307,59 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
       );
     }
 
-    case 'photo-text':
     case 'text-photo': {
+      const image = text(data, 'image');
+      const caption = text(data, 'caption');
+      const isBand = text(data, 'layout') === 'band';
+      const band = ['dark', 'white', 'lime'].includes(text(data, 'band')) ? text(data, 'band') : tone === 'dark' ? 'white' : 'dark';
+      const title = text(data, 'title') ? <h2 className="h2"><Marked value={text(data, 'title')} /></h2> : null;
+      const body = (
+        <>
+          <Rich value={text(data, 'body')} />
+          {text(data, 'label') && text(data, 'href') ? (
+            <div className="photo-text-cta">
+              <Cta href={text(data, 'href')} label={text(data, 'label')} variant="primary" />
+            </div>
+          ) : null}
+        </>
+      );
+      const media = image ? (
+        <figure className="text-photo-media">
+          <img src={image} alt={text(data, 'alt') || caption} loading="lazy" />
+          {caption && !isBand ? <figcaption>{caption}</figcaption> : null}
+        </figure>
+      ) : null;
+
+      return (
+        <Shell {...shell}>
+          {isBand ? (
+            <div className={`text-photo is-band is-${band}`}>
+              <div className="text-photo-copy">
+                {title}
+                {body}
+                {caption ? <p className="text-photo-caption">{caption}</p> : null}
+              </div>
+              {media}
+            </div>
+          ) : (
+            <div className="text-photo is-stack">
+              {title}
+              <div className="text-photo-copy">{body}</div>
+              {media}
+            </div>
+          )}
+        </Shell>
+      );
+    }
+
+    case 'photo-text': {
       const image = text(data, 'image');
       const caption = text(data, 'caption');
       const card = text(data, 'card') === 'white' || text(data, 'card') === 'dark' ? text(data, 'card') : tone === 'dark' ? 'white' : 'dark';
 
       return (
         <Shell {...shell}>
-          <div className={kind === 'photo-text' ? 'photo-text' : 'photo-text is-reverse'}>
+          <div className="photo-text">
             {image ? (
               <figure className="photo-text-media">
                 <img src={image} alt={text(data, 'alt') || caption} loading="lazy" />

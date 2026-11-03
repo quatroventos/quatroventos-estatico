@@ -280,7 +280,7 @@ class SiteSectionDefinition
             [
                 'label' => 'Foto com texto à esquerda',
                 'preview' => 'text-photo',
-                'fields' => self::withCommon(self::photoTextFields()),
+                'fields' => self::withCommon(self::photoTextFields(true)),
             ],
             [
                 'label' => 'Resultados',
@@ -590,12 +590,13 @@ class SiteSectionDefinition
 
     /**
      * Campos das seções de foto ao lado do texto; o lado da foto vem do tipo da seção.
+     * Com a foto à esquerda o texto vai num card sobreposto; com a foto à direita há os layouts título em destaque e faixa.
      *
      * @return list<array<string, mixed>>
      */
-    private static function photoTextFields(): array
+    private static function photoTextFields(bool $photoOnRight = false): array
     {
-        return [
+        $fields = [
             ['type' => 'media', 'name' => 'image', 'label' => 'Foto', 'kind' => 'image'],
             ['type' => 'text', 'name' => 'alt', 'label' => 'Alt da foto'],
             ['type' => 'text', 'name' => 'caption', 'label' => 'Legenda da foto'],
@@ -603,6 +604,24 @@ class SiteSectionDefinition
             ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
             ['type' => 'text', 'name' => 'label', 'label' => 'Botão'],
             ['type' => 'text', 'name' => 'href', 'label' => 'Link do botão'],
+        ];
+
+        if ($photoOnRight) {
+            return [
+                ...$fields,
+                ['type' => 'select', 'name' => 'layout', 'label' => 'Layout', 'options' => [
+                    ['value' => 'band', 'label' => 'Faixa com a foto cortada na borda'],
+                ], 'hint' => 'Padrão: título em destaque, com texto e foto abaixo.'],
+                ['type' => 'select', 'name' => 'band', 'label' => 'Cor da faixa', 'options' => [
+                    ['value' => 'dark', 'label' => 'Preta'],
+                    ['value' => 'white', 'label' => 'Branca'],
+                    ['value' => 'lime', 'label' => 'Lime'],
+                ], 'hint' => 'Só no layout Faixa. Padrão: preta em seção clara ou branca, branca em seção escura.'],
+            ];
+        }
+
+        return [
+            ...$fields,
             ['type' => 'select', 'name' => 'card', 'label' => 'Cor do card do texto', 'options' => [
                 ['value' => 'dark', 'label' => 'Preto'],
                 ['value' => 'white', 'label' => 'Branco'],
