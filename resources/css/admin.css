@@ -4354,6 +4354,17 @@ td.person span {
   flex: 1;
 }
 
+.seo-file {
+  width: 100%;
+  min-height: 220px;
+  max-height: 420px;
+  margin-top: 8px;
+  resize: vertical;
+  font-family: "Martian Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .seo-entries {
   max-height: 260px;
   margin-top: 8px;

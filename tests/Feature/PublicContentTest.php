@@ -105,7 +105,8 @@ class PublicContentTest extends TestCase
             ->assertSee('User-agent: Google-Extended', false)
             ->assertSee('User-agent: ClaudeBot', false)
             ->assertSee('User-agent: PerplexityBot', false)
-            ->assertDontSee('Disallow', false)
+            ->assertSee("User-agent: *\nAllow: /\nDisallow: /gestao\nDisallow: /admin\nDisallow: /login\nDisallow: /filament\nDisallow: /livewire\n", false)
+            ->assertSee("User-agent: GPTBot\nAllow: /\nDisallow: /gestao\n", false)
             ->assertSee('Sitemap: '.url('/sitemap.xml'), false)
             ->assertSee(url('/llms.txt'), false)
             ->assertSee(url('/llm.txt'), false);

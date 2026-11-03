@@ -23,6 +23,9 @@ type SeoPayload = SeoDefaults & {
   sitemap_extra: string[];
   sitemap_url: string;
   robots_url: string;
+  robots_txt: string;
+  llms_url: string;
+  llms_txt: string;
   search_console_url: string;
   pages: SeoPagePreview[];
   entries: SitemapEntry[];
@@ -54,12 +57,16 @@ export function SeoScreen() {
   const [form, setForm] = useState<SeoDefaults>(emptyForm);
   const [extra, setExtra] = useState('');
   const [sitemapUrl, setSitemapUrl] = useState('');
+  const [robotsUrl, setRobotsUrl] = useState('');
+  const [robotsTxt, setRobotsTxt] = useState('');
+  const [llmsUrl, setLlmsUrl] = useState('');
+  const [llmsTxt, setLlmsTxt] = useState('');
   const [searchConsoleUrl, setSearchConsoleUrl] = useState('https://search.google.com/search-console');
   const [pages, setPages] = useState<SeoPagePreview[]>([]);
   const [entries, setEntries] = useState<SitemapEntry[]>([]);
   const [previewSlug, setPreviewSlug] = useState('home');
   const [fillEmpty, setFillEmpty] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState<'sitemap' | 'robots' | 'llms' | null>(null);
   const [error, setError] = useState('');
   const [ok, setOk] = useState('');
   const [loading, setLoading] = useState(true);
@@ -86,6 +93,10 @@ export function SeoScreen() {
     });
     setExtra((data.sitemap_extra ?? []).join('\n'));
     setSitemapUrl(data.sitemap_url);
+    setRobotsUrl(data.robots_url);
+    setRobotsTxt(data.robots_txt);
+    setLlmsUrl(data.llms_url);
+    setLlmsTxt(data.llms_txt);
     setSearchConsoleUrl(data.search_console_url);
     setPages(data.pages ?? []);
     setEntries(data.entries ?? []);
@@ -142,17 +153,17 @@ export function SeoScreen() {
     };
   }, [form, previewPage, sitemapUrl]);
 
-  async function copySitemap() {
+  async function copyText(key: 'sitemap' | 'robots' | 'llms', value: string) {
     try {
       if (navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(sitemapUrl);
+        await navigator.clipboard.writeText(value);
       } else {
         throw new Error('clipboard');
       }
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      setCopied(key);
+      window.setTimeout(() => setCopied((current) => (current === key ? null : current)), 2000);
     } catch {
-      setError('Não foi possível copiar o link. Selecione o campo e copie manualmente.');
+      setError('Não foi possível copiar. Selecione o campo e copie manualmente.');
     }
   }
 
@@ -236,8 +247,8 @@ export function SeoScreen() {
                   <label>Link do sitemap</label>
                   <div className="seo-copy" data-tour="seo-copy">
                     <input value={sitemapUrl} readOnly />
-                    <button className="btn btn-secondary" type="button" onClick={() => void copySitemap()}>
-                      {copied ? 'Copiado' : 'Copiar link'}
+                    <button className="btn btn-secondary" type="button" onClick={() => void copyText('sitemap', sitemapUrl)}>
+                      {copied === 'sitemap' ? 'Copiado' : 'Copiar link'}
                     </button>
                   </div>
                 </div>
@@ -269,6 +280,52 @@ export function SeoScreen() {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            </div>
+
+            <div className="panel">
+              <div className="panel-head">
+                <h3>robots.txt</h3>
+                <p>O site inteiro fica liberado. O painel e as rotas de admin ficam bloqueados para todos os robôs, inclusive os de IA.</p>
+              </div>
+              <div className="panel-body">
+                <div className="field">
+                  <label>Link</label>
+                  <div className="seo-copy">
+                    <input value={robotsUrl} readOnly />
+                    <button className="btn btn-secondary" type="button" onClick={() => void copyText('robots', robotsTxt)}>
+                      {copied === 'robots' ? 'Copiado' : 'Copiar texto'}
+                    </button>
+                  </div>
+                </div>
+                <div className="toolbar">
+                  <a className="btn btn-secondary" href={robotsUrl} target="_blank" rel="noreferrer">Abrir robots.txt</a>
+                  <button className="btn btn-primary" type="button" onClick={() => void load()}>Atualizar</button>
+                </div>
+                <textarea className="seo-file" readOnly rows={14} value={robotsTxt} spellCheck={false} />
+              </div>
+            </div>
+
+            <div className="panel">
+              <div className="panel-head">
+                <h3>llms.txt</h3>
+                <p>Lista as páginas publicadas e indexáveis. Muda na hora em que uma página é criada, publicada ou tem o SEO alterado. /llm.txt entrega o mesmo texto.</p>
+              </div>
+              <div className="panel-body">
+                <div className="field">
+                  <label>Link</label>
+                  <div className="seo-copy">
+                    <input value={llmsUrl} readOnly />
+                    <button className="btn btn-secondary" type="button" onClick={() => void copyText('llms', llmsTxt)}>
+                      {copied === 'llms' ? 'Copiado' : 'Copiar texto'}
+                    </button>
+                  </div>
+                </div>
+                <div className="toolbar">
+                  <a className="btn btn-secondary" href={llmsUrl} target="_blank" rel="noreferrer">Abrir llms.txt</a>
+                  <button className="btn btn-primary" type="button" onClick={() => void load()}>Atualizar</button>
+                </div>
+                <textarea className="seo-file" readOnly rows={16} value={llmsTxt} spellCheck={false} />
               </div>
             </div>
 

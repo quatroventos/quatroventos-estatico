@@ -129,7 +129,7 @@ class PublicContent
         $site = $this->options->site();
         $locale = $page->localeCode();
         $alternates = $page->alternates();
-        $seo = Seo::resolve($page, $site, url($page->publicPath()), $locale, $alternates);
+        $seo = Seo::resolve($page, $site, Seo::absoluteUrl($page->publicPath()), $locale, $alternates);
 
         if (filled($seo['og_image'])) {
             $seo['og_image'] = media($seo['og_image']);

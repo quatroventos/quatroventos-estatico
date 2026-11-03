@@ -29,9 +29,31 @@ class SitemapService
         return $this->baseUrl().'/llms.txt';
     }
 
+    /**
+     * Caminhos do painel e de rotas administrativas. Vale para cada user-agent:
+     * um grupo específico não herda o Disallow do `*`.
+     *
+     * @return list<string>
+     */
+    public function adminDisallowPaths(): array
+    {
+        return array_values(array_unique([
+            '/'.cms_admin_path(),
+            '/gestao',
+            '/admin',
+            '/login',
+            '/filament',
+            '/livewire',
+        ]));
+    }
+
     public function robots(): string
     {
-        $allow = "Allow: /\n";
+        $rules = "Allow: /\n";
+        foreach ($this->adminDisallowPaths() as $path) {
+            $rules .= 'Disallow: '.$path."\n";
+        }
+
         $agents = [
             '*',
             'GPTBot',
@@ -45,7 +67,7 @@ class SitemapService
 
         $body = '';
         foreach ($agents as $agent) {
-            $body .= "User-agent: {$agent}\n{$allow}\n";
+            $body .= "User-agent: {$agent}\n{$rules}\n";
         }
 
         return $body

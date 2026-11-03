@@ -26,11 +26,16 @@ class CmsSeoTest extends TestCase
         $this->makeSettings();
         $this->makePage('home', 'Home');
 
-        $this->actingAs($this->makeAdmin())
+        $payload = $this->actingAs($this->makeAdmin())
             ->getJson('/gestao/api/seo')
             ->assertOk()
             ->assertJsonPath('data.seo_title_template', '%page% %sep% %site%')
-            ->assertJsonPath('data.sitemap_url', url('/sitemap.xml'));
+            ->assertJsonPath('data.sitemap_url', url('/sitemap.xml'))
+            ->assertJsonPath('data.llms_url', url('/llms.txt'))
+            ->json('data');
+
+        $this->assertStringContainsString("Disallow: /gestao\nDisallow: /admin\nDisallow: /login\n", $payload['robots_txt']);
+        $this->assertStringContainsString('[Home]('.rtrim((string) config('app.url'), '/').'/)', $payload['llms_txt']);
 
         $this->actingAs($this->makeAdmin())
             ->putJson('/gestao/api/seo', [

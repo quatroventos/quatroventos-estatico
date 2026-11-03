@@ -160,6 +160,16 @@ class Seo
     }
 
     /**
+     * URL absoluta igual à do sitemap: a raiz termina em "/".
+     */
+    public static function absoluteUrl(string $path): string
+    {
+        $absolute = url($path);
+
+        return $path === '/' ? rtrim($absolute, '/').'/' : $absolute;
+    }
+
+    /**
      * @param  array<string, string>  $alternates
      * @return list<array{hreflang: string, href: string}>
      */
@@ -171,12 +181,12 @@ class Seo
 
         $links = [];
         foreach ($alternates as $code => $path) {
-            $links[] = ['hreflang' => Locales::hreflang($code), 'href' => url($path)];
+            $links[] = ['hreflang' => Locales::hreflang($code), 'href' => self::absoluteUrl($path)];
         }
 
         $default = $alternates[Locales::default()] ?? null;
         if ($default !== null) {
-            $links[] = ['hreflang' => 'x-default', 'href' => url($default)];
+            $links[] = ['hreflang' => 'x-default', 'href' => self::absoluteUrl($default)];
         }
 
         return $links;
