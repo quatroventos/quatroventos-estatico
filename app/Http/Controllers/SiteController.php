@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\PrerenderSiteJob;
 use App\Models\CaseStudy;
 use App\Models\Page;
 use App\Services\PublicContent;
 use App\Services\SitemapService;
+use App\Services\SitePrerenderer;
 use App\Services\SystemOptions;
 use App\Support\Locales;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class SiteController extends Controller
 {
@@ -72,12 +76,13 @@ class SiteController extends Controller
         $case = CaseStudy::query()->published()->forLocale(Locales::current())->where('slug', $slug)->firstOrFail();
 
         $payload = $content->caseStudy($case);
+        $sitePayload = $content->site($case->localeCode());
 
         return view('site.app', [
             'site' => app(SystemOptions::class)->site(),
             'payload' => $payload,
-            'sitePayload' => $content->site($case->localeCode()),
-            'fragment' => $this->fragmentFor($payload),
+            'sitePayload' => $sitePayload,
+            'fragment' => $this->fragmentFor($payload, $sitePayload),
             'cmsPreview' => false,
         ]);
     }
@@ -132,37 +137,48 @@ class SiteController extends Controller
         $content = app(PublicContent::class);
 
         $payload = $content->page($page);
+        $sitePayload = $content->site($page->localeCode());
 
         return view('site.app', [
             'page' => $page,
             'site' => app(SystemOptions::class)->site(),
             'payload' => $payload,
-            'sitePayload' => $content->site($page->localeCode()),
-            'fragment' => $cmsPreview ? '' : $this->fragmentFor($payload),
+            'sitePayload' => $sitePayload,
+            'fragment' => $cmsPreview ? '' : $this->fragmentFor($payload, $sitePayload),
             'cmsPreview' => $cmsPreview,
         ]);
     }
 
     /**
+     * HTML pré-gerado da URL. Se ainda não existir (página recém-publicada antes da fila rodar,
+     * ou geração que falhou), gera só esta URL na hora e agenda a geração completa.
+     *
      * @param  array<string, mixed>  $payload
      */
-    private function fragmentFor(array $payload): string
+    private function fragmentFor(array $payload, mixed $sitePayload): string
     {
-        $locale = is_string($payload['locale'] ?? null) ? $payload['locale'] : 'pt-BR';
-        $path = is_string($payload['path'] ?? null) ? $payload['path'] : '/';
-        $relative = trim($path, '/');
-        $name = $relative === '' ? 'index.html' : $relative.'.html';
-        $file = storage_path('app/prerender/'.$locale.'/'.$name);
+        $file = SitePrerenderer::fileFor($payload);
 
         if (is_file($file)) {
             return File::get($file);
         }
 
-        if (app()->environment('production')) {
-            Log::error('HTML público ausente.', ['file' => $file]);
-            abort(500);
+        try {
+            Cache::lock('prerender:'.md5($file), 60)->block(45, function () use ($file, $payload, $sitePayload): void {
+                if (! is_file($file)) {
+                    app(SitePrerenderer::class)->render([['page' => $payload, 'site' => $sitePayload]], 45);
+                }
+            });
+        } catch (Throwable $exception) {
+            Log::error('Falha ao gerar o HTML público sob demanda.', ['file' => $file, 'error' => $exception->getMessage()]);
         }
 
-        return '<main id="conteudo"><p class="wrap" role="status">O HTML desta URL ainda não foi gerado. Rode php artisan site:prerender.</p></main>';
+        PrerenderSiteJob::schedule();
+
+        if (is_file($file)) {
+            return File::get($file);
+        }
+
+        abort(503, '', ['Retry-After' => '10']);
     }
 }

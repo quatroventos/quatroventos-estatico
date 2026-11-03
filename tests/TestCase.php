@@ -3,8 +3,10 @@
 namespace Tests;
 
 use App\Models\User;
+use App\Services\SitePrerenderer;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Spatie\Permission\Models\Role;
+use Tests\Support\FakeSitePrerenderer;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -43,10 +45,21 @@ abstract class TestCase extends BaseTestCase
         return $app;
     }
 
+    protected FakeSitePrerenderer $prerenderer;
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->withoutVite();
+        $this->prerenderer = new FakeSitePrerenderer;
+        $this->instance(SitePrerenderer::class, $this->prerenderer);
+    }
+
+    protected function tearDown(): void
+    {
+        $this->prerenderer->cleanup();
+
+        parent::tearDown();
     }
 
     protected function seedRoles(): void

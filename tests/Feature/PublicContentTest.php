@@ -4,8 +4,11 @@ namespace Tests\Feature;
 
 use App\Models\Page;
 use App\Services\PublicContent;
+use App\Services\SitePrerenderer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\File;
+use Mockery\MockInterface;
+use RuntimeException;
 use Tests\TestCase;
 
 class PublicContentTest extends TestCase
@@ -45,7 +48,45 @@ class PublicContentTest extends TestCase
         }
     }
 
-    public function test_missing_fragment_is_a_notice_outside_production(): void
+    public function test_missing_fragment_is_rendered_on_demand(): void
+    {
+        $this->publishedHome();
+
+        $this->withoutFragment(function (string $file): void {
+            $this->mock(SitePrerenderer::class, function (MockInterface $mock) use ($file): void {
+                $mock->shouldReceive('render')
+                    ->once()
+                    ->withArgs(fn (array $payloads): bool => count($payloads) === 1 && ($payloads[0]['page']['path'] ?? null) === '/')
+                    ->andReturnUsing(function () use ($file): void {
+                        File::ensureDirectoryExists(dirname($file));
+                        File::put($file, '<main id="conteudo"><h1>Gerado na hora</h1></main>');
+                    });
+            });
+
+            $this->get('/')
+                ->assertOk()
+                ->assertSee('<main id="conteudo"><h1>Gerado na hora</h1></main>', false)
+                ->assertDontSee('site:prerender', false);
+        });
+    }
+
+    public function test_failed_on_demand_render_never_shows_the_build_notice(): void
+    {
+        $this->publishedHome();
+
+        $this->withoutFragment(function (): void {
+            $this->mock(SitePrerenderer::class, function (MockInterface $mock): void {
+                $mock->shouldReceive('render')->once()->andThrow(new RuntimeException('node indisponível'));
+            });
+
+            $this->get('/')
+                ->assertStatus(503)
+                ->assertHeader('Retry-After', '10')
+                ->assertDontSee('site:prerender', false);
+        });
+    }
+
+    private function publishedHome(): void
     {
         Page::query()->create([
             'slug' => 'home',
@@ -55,17 +96,24 @@ class PublicContentTest extends TestCase
             'seo_title' => 'Início',
             'content' => ['sections' => []],
         ]);
+    }
 
+    /**
+     * Roda o teste sem o HTML da home e devolve o arquivo original no fim.
+     *
+     * @param  callable(string): void  $test
+     */
+    private function withoutFragment(callable $test): void
+    {
         $file = storage_path('app/prerender/pt-BR/index.html');
         $backup = is_file($file) ? File::get($file) : null;
         File::delete($file);
 
         try {
-            $this->get('/')
-                ->assertOk()
-                ->assertSee('php artisan site:prerender', false)
-                ->assertDontSee('id="site-root"', false);
+            $test($file);
         } finally {
+            File::delete($file);
+
             if ($backup !== null) {
                 File::ensureDirectoryExists(dirname($file));
                 File::put($file, $backup);
