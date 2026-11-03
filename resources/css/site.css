@@ -3146,23 +3146,18 @@ h3 {
   color: var(--white);
 }
 
-/* Foto com texto: a foto abre a linha; .is-reverse leva a foto para a direita */
+/* Foto com texto: o painel do texto avança sobre o canto da foto; .is-reverse espelha (foto à direita) */
 .photo-text {
+  --photo-text-overlap: 60px;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
-  gap: 32px clamp(32px, 5vw, 80px);
-  align-items: center;
-}
-
-.photo-text.is-reverse {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
-}
-
-.photo-text.is-reverse .photo-text-media {
-  order: 2;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: end;
+  padding-bottom: var(--photo-text-overlap);
 }
 
 .photo-text-media {
+  grid-column: 1 / 10;
+  grid-row: 1;
   margin: 0;
 }
 
@@ -3174,21 +3169,50 @@ h3 {
 }
 
 .photo-text-media figcaption {
+  max-width: min(48ch, 62%);
   margin-top: 12px;
   font-size: 14px;
   color: var(--on-light-mute);
 }
 
+.photo-text-copy {
+  position: relative;
+  z-index: 1;
+  grid-column: 7 / 13;
+  grid-row: 1;
+  margin-bottom: calc(-1 * var(--photo-text-overlap));
+  padding: clamp(28px, 3.2vw, 52px);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--on-dark);
+  box-shadow: 0 2px 4px rgb(7 7 10 / 0.08), 0 32px 64px -32px rgb(7 7 10 / 0.5);
+}
+
+.photo-text.is-reverse .photo-text-media {
+  grid-column: 4 / 13;
+}
+
+.photo-text.is-reverse .photo-text-media figcaption {
+  margin-left: auto;
+  text-align: right;
+}
+
+.photo-text.is-reverse .photo-text-copy {
+  grid-column: 1 / 7;
+}
+
 .photo-text-copy .h2 {
-  max-width: 15ch;
+  max-width: 12ch;
+  color: var(--white);
+  text-wrap: balance;
 }
 
 .photo-text-copy .rich {
   margin-top: clamp(16px, 1.6vw, 24px);
+  max-width: 46ch;
   font-size: clamp(17px, 1.25vw, 19px);
   line-height: 1.6;
-  color: var(--on-light-soft);
-  max-width: 54ch;
+  color: var(--on-dark-soft);
 }
 
 .photo-text-copy .rich:first-child {
@@ -3199,22 +3223,69 @@ h3 {
   margin-top: clamp(24px, 2.4vw, 32px);
 }
 
-.on-dark .photo-text-copy .rich {
-  color: var(--on-dark-soft);
+:is(.on-light, .on-white) .photo-text-copy .pill.solid {
+  background: var(--white);
+  color: var(--ink);
+}
+
+:is(.on-light, .on-white) .photo-text-copy .pill.solid:hover {
+  background: #e4e4df;
+}
+
+.on-dark .photo-text-copy .pill.solid {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.on-dark .photo-text-copy .pill.solid:hover {
+  background: #2a2a31;
 }
 
 .on-dark .photo-text-media figcaption {
   color: var(--on-dark-mute);
 }
 
+.on-dark .photo-text-copy {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.12), 0 32px 64px -32px rgb(0 0 0 / 0.6);
+}
+
+.on-dark .photo-text-copy .h2 {
+  color: var(--ink);
+}
+
+.on-dark .photo-text-copy .mark {
+  color: var(--ink);
+  background-image: linear-gradient(var(--lime), var(--lime));
+  background-repeat: no-repeat;
+  background-size: 100% 0.9em;
+  background-position: 0 72%;
+}
+
+.on-dark .photo-text-copy .rich {
+  color: var(--on-light-soft);
+}
+
 @media (max-width: 900px) {
-  .photo-text,
-  .photo-text.is-reverse {
-    grid-template-columns: minmax(0, 1fr);
+  .photo-text {
+    display: block;
+    padding-bottom: 0;
   }
 
-  .photo-text.is-reverse .photo-text-media {
-    order: 0;
+  .photo-text-media figcaption,
+  .photo-text.is-reverse .photo-text-media figcaption {
+    max-width: none;
+    margin-left: 0;
+    text-align: left;
+  }
+
+  .photo-text-copy {
+    margin: -40px 12px 0;
+  }
+
+  .photo-text-media:has(figcaption) + .photo-text-copy {
+    margin-top: 20px;
   }
 }
 
