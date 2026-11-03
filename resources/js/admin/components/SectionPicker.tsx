@@ -24,6 +24,7 @@ export type LibraryItem = {
   preview: string;
   origin: string;
   fields: Field[];
+  thumbnail?: string | null;
 };
 
 type Family = 'hero' | 'cards' | 'split' | 'list' | 'media' | 'cta' | 'text';
@@ -110,6 +111,8 @@ function normalize(value: string): string {
 
 const WIDTH = 340;
 const GUTTER = 12;
+const PREVIEW_WIDTH = 440;
+const PREVIEW_GAP = 10;
 
 export function SectionPicker({
   items,
@@ -126,6 +129,7 @@ export function SectionPicker({
   const searchRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
+  const [previewing, setPreviewing] = useState<LibraryItem | null>(null);
 
   const groups = useMemo(() => {
     const needle = normalize(query.trim());
@@ -166,6 +170,14 @@ export function SectionPicker({
     const top = Math.max(GUTTER, Math.min(rect.bottom - height, viewportHeight - height - GUTTER));
     setPosition({ top, left });
   }, [anchorRef, groups.length]);
+
+  useEffect(() => {
+    for (const item of items) {
+      if (item.thumbnail) {
+        new Image().src = item.thumbnail;
+      }
+    }
+  }, [items]);
 
   useEffect(() => {
     searchRef.current?.focus();
@@ -221,67 +233,92 @@ export function SectionPicker({
   }
 
   const total = groups.reduce((sum, group) => sum + group.items.length, 0);
+  const previewLeft = position ? previewPlacement(position.left) : null;
 
   return createPortal(
-    <div
-      ref={panelRef}
-      className="section-picker"
-      role="dialog"
-      aria-label="Adicionar seção"
-      data-tour="editor-library"
-      style={position ? { top: position.top, left: position.left, width: WIDTH } : { top: -9999, left: -9999, width: WIDTH }}
-      onKeyDown={moveFocus}
-    >
-      <div className="section-picker-search">
-        <Search size={14} />
-        <input
-          ref={searchRef}
-          type="search"
-          placeholder="Buscar seção"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          aria-label="Buscar seção"
-        />
-      </div>
-      <div className="section-picker-body">
-        {total === 0 ? (
-          <p className="section-picker-empty">Nenhuma seção encontrada.</p>
-        ) : (
-          groups.map((group) => (
-            <div key={group.family} className="section-picker-group">
-              <span className="section-picker-group-label">{group.label}</span>
-              {group.items.map((item) => {
-                const meta = metaOf(item.preview);
-                const Icon = meta.icon;
+    <>
+      <div
+        ref={panelRef}
+        className="section-picker"
+        role="dialog"
+        aria-label="Adicionar seção"
+        data-tour="editor-library"
+        style={position ? { top: position.top, left: position.left, width: WIDTH } : { top: -9999, left: -9999, width: WIDTH }}
+        onKeyDown={moveFocus}
+        onMouseLeave={() => setPreviewing(null)}
+      >
+        <div className="section-picker-search">
+          <Search size={14} />
+          <input
+            ref={searchRef}
+            type="search"
+            placeholder="Buscar seção"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            aria-label="Buscar seção"
+          />
+        </div>
+        <div className="section-picker-body">
+          {total === 0 ? (
+            <p className="section-picker-empty">Nenhuma seção encontrada.</p>
+          ) : (
+            groups.map((group) => (
+              <div key={group.family} className="section-picker-group">
+                <span className="section-picker-group-label">{group.label}</span>
+                {group.items.map((item) => {
+                  const meta = metaOf(item.preview);
+                  const Icon = meta.icon;
 
-                return (
-                  <button
-                    key={item.type}
-                    type="button"
-                    className="section-picker-item"
-                    onClick={() => onPick(item)}
-                  >
-                    <span className="section-picker-icon" aria-hidden="true">
-                      <Icon size={16} strokeWidth={1.75} />
-                    </span>
-                    <span className="section-picker-copy">
-                      <strong>
-                        {item.label}
-                        <small>{item.origin}</small>
-                      </strong>
-                      <em>{meta.description}</em>
-                    </span>
-                    <span className="section-picker-plus" aria-hidden="true">
-                      <Plus size={14} />
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          ))
-        )}
+                  return (
+                    <button
+                      key={item.type}
+                      type="button"
+                      className="section-picker-item"
+                      onClick={() => onPick(item)}
+                      onMouseEnter={() => setPreviewing(item)}
+                      onFocus={() => setPreviewing(item)}
+                    >
+                      <span className="section-picker-icon" aria-hidden="true">
+                        <Icon size={16} strokeWidth={1.75} />
+                      </span>
+                      <span className="section-picker-copy">
+                        <strong>
+                          {item.label}
+                          <small>{item.origin}</small>
+                        </strong>
+                        <em>{meta.description}</em>
+                      </span>
+                      <span className="section-picker-plus" aria-hidden="true">
+                        <Plus size={14} />
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))
+          )}
+        </div>
       </div>
-    </div>,
+      {previewing?.thumbnail && position && previewLeft !== null ? (
+        <figure className="section-picker-preview" style={{ top: position.top, left: previewLeft, width: PREVIEW_WIDTH }} aria-hidden="true">
+          <img src={previewing.thumbnail} alt="" />
+          <figcaption>
+            <strong>{previewing.label}</strong>
+            <span>{metaOf(previewing.preview).description}</span>
+          </figcaption>
+        </figure>
+      ) : null}
+    </>,
     document.body,
   );
+}
+
+function previewPlacement(panelLeft: number): number | null {
+  const right = panelLeft + WIDTH + PREVIEW_GAP;
+  if (right + PREVIEW_WIDTH + GUTTER <= window.innerWidth) {
+    return right;
+  }
+  const left = panelLeft - PREVIEW_GAP - PREVIEW_WIDTH;
+
+  return left >= GUTTER ? left : null;
 }

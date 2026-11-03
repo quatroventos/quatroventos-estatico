@@ -2606,6 +2606,46 @@ td.person span {
   opacity: 1;
 }
 
+.section-picker-preview {
+  position: fixed;
+  z-index: 60;
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  pointer-events: none;
+  animation: section-picker-in 140ms ease-out;
+}
+
+.section-picker-preview img {
+  display: block;
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  object-position: top;
+  background: var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.section-picker-preview figcaption {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+}
+
+.section-picker-preview strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.section-picker-preview span {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
 .section-picker-empty {
   margin: 0;
   padding: 18px 10px;

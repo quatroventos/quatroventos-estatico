@@ -231,6 +231,31 @@ abstract class HeadlessChrome
         return $messages;
     }
 
+    /**
+     * Com o Vite em dev, as fontes do CSS apontam para o endereço do Vite no host, fora do alcance do Chrome do container.
+     * Nesse caso as @font-face do site entram embutidas na página de captura.
+     */
+    protected function devFontsCss(): string
+    {
+        if (! is_file(public_path('hot'))) {
+            return '';
+        }
+
+        preg_match_all('/@font-face\s*\{[^}]*font-family:\s*"([^"]+)"[^}]*url\("\.\.\/fonts\/([^"]+)"\)[^}]*font-weight:\s*([^;]+);/', (string) @file_get_contents(resource_path('css/site.css')), $faces, PREG_SET_ORDER);
+
+        $css = '';
+
+        foreach ($faces as [, $family, $file, $weight]) {
+            $path = resource_path('fonts/'.basename($file));
+
+            if (is_file($path)) {
+                $css .= '@font-face{font-family:"'.$family.'";src:url(data:font/woff2;base64,'.base64_encode((string) file_get_contents($path)).') format("woff2");font-weight:'.trim($weight).';font-display:block}';
+            }
+        }
+
+        return $css;
+    }
+
     protected function missingChromeMessage(): string
     {
         return 'Não achei o Chrome no servidor.';

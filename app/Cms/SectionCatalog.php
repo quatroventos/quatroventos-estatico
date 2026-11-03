@@ -2,6 +2,8 @@
 
 namespace App\Cms;
 
+use App\Services\SectionThumbnailCapture;
+
 class SectionCatalog
 {
     /**
@@ -76,7 +78,7 @@ class SectionCatalog
     }
 
     /**
-     * @return list<array{group: string, group_label: string, items: list<array{type: string, label: string, preview: string, origin: string, fields: list<array<string, mixed>>}>}>
+     * @return list<array{group: string, group_label: string, items: list<array{type: string, label: string, preview: string, origin: string, fields: list<array<string, mixed>>, thumbnail: string|null}>}>
      */
     public static function library(): array
     {
@@ -100,6 +102,9 @@ class SectionCatalog
                 'preview' => $preview,
                 'origin' => $item['group_label'],
                 'fields' => $item['fields'],
+                'thumbnail' => is_file($thumbnail = SectionThumbnailCapture::filePath($preview))
+                    ? SectionThumbnailCapture::publicPath($preview).'?v='.filemtime($thumbnail)
+                    : null,
             ];
         }
 

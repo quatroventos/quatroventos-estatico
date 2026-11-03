@@ -86,20 +86,20 @@ export function Sections({ sections, form, variant }: { sections: Section[]; for
   );
 }
 
-type ShellProps = { tone: Tone; flush: boolean; mark: boolean; id?: string; className?: string; wrapClass?: string; children: ReactNode };
+type ShellProps = { kind: string; tone: Tone; flush: boolean; mark: boolean; id?: string; className?: string; wrapClass?: string; children: ReactNode };
 
-function Shell({ tone, flush, mark, id, className, wrapClass, children }: ShellProps) {
+function Shell({ kind, tone, flush, mark, id, className, wrapClass, children }: ShellProps) {
   const classes = ['section', `on-${tone}`, flush ? 'is-flush' : '', mark ? 'is-mark-draw' : '', className ?? ''].filter(Boolean).join(' ');
 
   return (
-    <section className={classes} id={id || undefined}>
+    <section className={classes} id={id || undefined} data-section={kind}>
       <div className={wrapClass ? `wrap ${wrapClass}` : 'wrap'}>{children}</div>
     </section>
   );
 }
 
 function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind: string; data: Data; tone: Tone; flush: boolean; stacked: boolean; form: SiteForm | null; isCase: boolean }) {
-  const shell = { tone, flush, mark: Boolean(data.mark_draw), id: text(data, 'anchor') };
+  const shell = { kind, tone, flush, mark: Boolean(data.mark_draw), id: text(data, 'anchor') };
 
   switch (kind) {
     case 'hero': {
