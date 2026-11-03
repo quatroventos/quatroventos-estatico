@@ -73,6 +73,26 @@ class CaseMockupTest extends TestCase
             ->assertSee('"print":null', false);
     }
 
+    public function test_gallery_target_keeps_only_local_prints(): void
+    {
+        $this->actingAs($this->makeEditor())
+            ->get('/ferramentas/mockups?case=1&target=gallery&prints[]=%2Fstorage%2Fmedia%2Fa.webp&prints[]=https%3A%2F%2Fexemplo.com%2Fb.png&prints[]=%2Fstorage%2F..%2Fc.png&prints[]=%2Fstorage%2Fmedia%2Fd.png')
+            ->assertOk()
+            ->assertSee('Aplicar em todos os 2 prints')
+            ->assertDontSee('Usar no print')
+            ->assertSee('"target":"gallery"', false)
+            ->assertSee('"prints":["\/storage\/media\/a.webp","\/storage\/media\/d.png"]', false);
+    }
+
+    public function test_gallery_target_without_valid_prints_falls_back_to_a_single_print(): void
+    {
+        $this->actingAs($this->makeEditor())
+            ->get('/ferramentas/mockups?case=1&target=gallery&prints[]=https%3A%2F%2Fexemplo.com%2Fb.png')
+            ->assertOk()
+            ->assertSee('"target":"print"', false)
+            ->assertSee('Usar no print');
+    }
+
     public function test_editor_stores_an_optimized_webp_cover_with_alt(): void
     {
         if (! function_exists('imagewebp')) {

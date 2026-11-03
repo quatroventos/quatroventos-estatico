@@ -57,7 +57,7 @@ export function setPath(obj: Record<string, unknown>, path: string, value: unkno
   for (let i = 0; i < keys.length - 1; i += 1) {
     const key = keys[i];
     const next = current[key];
-    if (next == null || typeof next !== 'object' || Array.isArray(next)) {
+    if (next == null || typeof next !== 'object') {
       current[key] = {};
     }
     current = current[key] as Record<string, unknown>;

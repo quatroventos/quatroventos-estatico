@@ -264,10 +264,12 @@ class SiteSectionDefinition
                         'name' => 'items',
                         'label' => 'Prints',
                         'simple' => false,
+                        'bulk' => 'image',
                         'fields' => [
                             ['type' => 'media', 'name' => 'image', 'label' => 'Imagem', 'kind' => 'image'],
                             ['type' => 'text', 'name' => 'caption', 'label' => 'Legenda'],
                             ['type' => 'text', 'name' => 'alt', 'label' => 'Alt'],
+                            ['type' => 'hidden', 'name' => 'source', 'label' => 'Print original, antes do mockup'],
                         ],
                     ],
                 ]),

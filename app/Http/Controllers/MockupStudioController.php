@@ -15,6 +15,8 @@ use RuntimeException;
 
 class MockupStudioController extends Controller
 {
+    private const MAX_GALLERY_PRINTS = 40;
+
     public function show(Request $request): Response
     {
         $this->ensureStudio();
@@ -176,10 +178,11 @@ class MockupStudioController extends Controller
     }
 
     /**
-     * Destino da foto gravada: a capa do case ou um print de seção (target=print), que pode vir
-     * pré-carregado pelo caminho local da imagem atual (print=/storage/...).
+     * Destino da foto gravada: a capa do case, um print de seção (target=print), que pode vir
+     * pré-carregado pelo caminho local da imagem atual (print=/storage/...), ou os prints de uma galeria
+     * (target=gallery, prints[]=/storage/...), que recebem a mesma foto e o mesmo acabamento.
      *
-     * @return array{saveUrl: string, alt: string, target: string, print: string|null}|null
+     * @return array{saveUrl: string, alt: string, target: string, print: string|null, prints: list<string>}|null
      */
     private function coverDestination(Request $request): ?array
     {
@@ -194,15 +197,24 @@ class MockupStudioController extends Controller
         }
 
         $alt = trim(strip_tags((string) $request->query('alt', '')));
+        $target = in_array($request->query('target'), ['print', 'gallery'], true) ? (string) $request->query('target') : 'cover';
         $print = (string) $request->query('print', '');
-        $isLocalPath = preg_match('#^/(?!/)[A-Za-z0-9._~/%-]+\.(png|jpe?g|webp)$#i', $print) === 1 && ! str_contains($print, '..');
+        $prints = $target === 'gallery'
+            ? array_values(array_slice(array_filter((array) $request->query('prints', []), fn (mixed $path): bool => is_string($path) && $this->isLocalImage($path)), 0, self::MAX_GALLERY_PRINTS))
+            : [];
 
         return [
             'saveUrl' => url('/'.cms_admin_path().'/api/cases/mockup'),
             'alt' => mb_substr($alt, 0, 255),
-            'target' => $request->query('target') === 'print' ? 'print' : 'cover',
-            'print' => $isLocalPath ? $print : null,
+            'target' => $target === 'gallery' && $prints === [] ? 'print' : $target,
+            'print' => $prints[0] ?? ($this->isLocalImage($print) ? $print : null),
+            'prints' => $prints,
         ];
+    }
+
+    private function isLocalImage(string $path): bool
+    {
+        return preg_match('#^/(?!/)[A-Za-z0-9._~/%-]+\.(png|jpe?g|webp)$#i', $path) === 1 && ! str_contains($path, '..');
     }
 
     private function ensureStudio(): void

@@ -26,7 +26,9 @@ const MAX_REFERENCES = 3;
 const FINISH_STORAGE = 'mockup-studio-finish';
 const finishing = loadFinishing();
 const isPrintTarget = config.cover?.target === 'print';
-const targetName = isPrintTarget ? 'o print' : 'a capa';
+const isGalleryTarget = config.cover?.target === 'gallery';
+const targetName = isGalleryTarget ? 'os prints' : (isPrintTarget ? 'o print' : 'a capa');
+const galleryImages = [];
 
 bind();
 preloadPrint();
@@ -66,6 +68,7 @@ function bind() {
         coverAlt.addEventListener('input', updateActions);
         document.getElementById('use-cover').addEventListener('click', saveCover);
     }
+    document.getElementById('use-gallery')?.addEventListener('click', saveGallery);
     document.getElementById('animate')?.addEventListener('click', animate);
     document.getElementById('record')?.addEventListener('click', record);
     document.getElementById('device').addEventListener('change', () => {
@@ -93,6 +96,10 @@ function bind() {
 }
 
 function preloadPrint() {
+    if (isGalleryTarget) {
+        preloadGallery();
+        return;
+    }
     const src = config.cover?.print;
     if (!src) {
         return;
@@ -104,6 +111,108 @@ function preloadPrint() {
     };
     image.onerror = () => say('Não consegui abrir o print atual. Envie a imagem.', 'error');
     image.src = src;
+}
+
+function preloadGallery() {
+    const list = document.getElementById('gallery-prints');
+    const sources = config.cover?.prints || [];
+    let pending = sources.length;
+    sources.forEach((src, index) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.setAttribute('role', 'listitem');
+        button.setAttribute('aria-label', `Ver o print ${index + 1} na prévia`);
+        const thumb = document.createElement('img');
+        thumb.alt = '';
+        thumb.src = src;
+        const tag = document.createElement('span');
+        tag.textContent = String(index + 1);
+        button.append(thumb, tag);
+        list?.append(button);
+
+        const image = new Image();
+        image.onload = () => {
+            galleryImages[index] = image;
+            button.addEventListener('click', () => selectGalleryPrint(index));
+            if (!print) {
+                selectGalleryPrint(index);
+            }
+            pending -= 1;
+            if (pending === 0) {
+                announceGallery();
+            }
+        };
+        image.onerror = () => {
+            galleryImages[index] = null;
+            button.disabled = true;
+            pending -= 1;
+            if (pending === 0) {
+                announceGallery();
+            }
+        };
+        image.src = src;
+    });
+}
+
+function announceGallery() {
+    const loaded = galleryImages.filter(Boolean).length;
+    const total = (config.cover?.prints || []).length;
+    say(loaded === total
+        ? `${total} prints carregados. Gere a foto com um deles e aplique em todos.`
+        : `${loaded} de ${total} prints carregados. Os que falharam ficam de fora.`, loaded === total ? '' : 'error');
+}
+
+function selectGalleryPrint(index) {
+    const image = galleryImages[index];
+    if (!image) {
+        return;
+    }
+    document.querySelectorAll('#gallery-prints button').forEach((button, position) => {
+        button.classList.toggle('is-active', position === index);
+    });
+    adoptPrint(image, Boolean(print));
+}
+
+function cropFor(image) {
+    const start = Number(document.getElementById('crop-start').value);
+    const end = Number(document.getElementById('crop-end').value);
+    const y = Math.round(image.naturalHeight * (start / 100));
+    const bottom = Math.round(image.naturalHeight * (end / 100));
+    return { x: 0, y, width: image.naturalWidth, height: Math.max(1, bottom - y) };
+}
+
+async function saveGallery() {
+    if (!base || !screenFit || !screenLayer) {
+        say('Gere a foto com a tela encaixada antes de aplicar nos prints.', 'error');
+        return;
+    }
+
+    const sources = config.cover?.prints || [];
+    const baseAlt = (config.cover?.alt || 'Mockup').trim();
+    const results = [];
+
+    await run('Aplicando nos prints…', async () => {
+        for (let index = 0; index < sources.length; index += 1) {
+            const image = galleryImages[index];
+            if (!image) {
+                continue;
+            }
+            setBusyLabel(`Print ${index + 1} de ${sources.length}…`);
+            const layer = Compose.buildScreenLayer(base, Compose.toCanvas(image, cropFor(image)), screenFit.quad);
+            const output = Compose.finish(base, layer, finishing);
+            const body = new FormData();
+            body.append('image', await toPngBlob(output), 'mockup.png');
+            body.append('alt', `${baseAlt}, tela ${index + 1}`.slice(0, 255));
+            const payload = await postForm(config.cover.saveUrl, body);
+            results.push({ position: index, path: payload.path, alt: payload.alt });
+        }
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'case-mockups', results }, location.origin);
+        }
+        saved = true;
+        notifyParent();
+        say(`${results.length} mockups gravados em WebP.`, 'ok');
+    });
 }
 
 function loadFinishing() {
@@ -205,11 +314,13 @@ function loadPrint(file) {
     image.src = URL.createObjectURL(file);
 }
 
-function adoptPrint(image) {
+function adoptPrint(image, keepCrop = false) {
     print = image;
     document.getElementById('crop-wrap').hidden = false;
-    document.getElementById('crop-start').value = '0';
-    document.getElementById('crop-end').value = '100';
+    if (!keepCrop) {
+        document.getElementById('crop-start').value = '0';
+        document.getElementById('crop-end').value = '100';
+    }
     applyVerticalCrop();
     render();
     updateActions();
@@ -619,9 +730,15 @@ function updateActions() {
     if (coverButton) {
         coverButton.disabled = !result || document.getElementById('cover-alt').value.trim() === '';
     }
+    const galleryButton = document.getElementById('use-gallery');
+    if (galleryButton) {
+        galleryButton.disabled = !screenLayer;
+    }
     let saveGate = '';
     if (!result) {
         saveGate = 'Disponível depois de gerar a foto.';
+    } else if (galleryButton && galleryButton.disabled) {
+        saveGate = 'A foto precisa da tela encaixada para receber os prints.';
     } else if (coverButton && coverButton.disabled) {
         saveGate = `Escreva o texto alternativo para gravar ${targetName}.`;
     }

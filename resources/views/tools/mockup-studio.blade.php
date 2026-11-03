@@ -147,6 +147,12 @@
         .status.is-error { background: var(--error-soft); color: var(--error); font-weight: 700; }
 
         @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 2.4s; } * { transition: none !important; } }
+        .gallery-prints { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+        .gallery-prints button { position: relative; padding: 0; border: 2px solid transparent; border-radius: 8px; background: none; cursor: pointer; overflow: hidden; outline: 1px solid var(--line); }
+        .gallery-prints button.is-active { border-color: var(--brand); }
+        .gallery-prints img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: top; }
+        .gallery-prints span { position: absolute; left: 4px; top: 4px; padding: 1px 5px; border-radius: 5px; background: rgba(0, 0, 0, 0.62); color: #fff; font-size: 10px; font-weight: 700; }
+
         @media (max-width: 900px) {
             main { grid-template-columns: 1fr; height: auto; }
             .stage { min-height: 60vh; }
@@ -155,6 +161,7 @@
     </style>
 </head>
 <body>
+@php($studioTarget = $studio['cover']['target'] ?? null)
 <main>
     <section class="stage" aria-label="Prévia">
         <div class="stage-view">
@@ -166,7 +173,7 @@
                     <li>1. Envie ou capture a tela do projeto.</li>
                     <li>2. Escolha o aparelho e gere a foto.</li>
                     <li>3. Ajuste brilho e reflexo da tela.</li>
-                    <li>4. {{ ($studio['cover']['target'] ?? 'cover') === 'print' ? 'Grave no print da seção.' : 'Grave como capa.' }}</li>
+                    <li>4. {{ match ($studioTarget) { 'print' => 'Grave no print da seção.', 'gallery' => 'Aplique em todos os prints da galeria.', default => 'Grave como capa.' } }}</li>
                 </ol>
             </div>
             <div class="busy" id="busy" hidden role="status" aria-live="polite">
@@ -195,6 +202,11 @@
                     <span class="step-num">1</span>
                     <h2>Tela do projeto</h2>
                 </div>
+                @if ($studioTarget === 'gallery')
+                    <div class="gallery-prints" id="gallery-prints" role="list" aria-label="Prints da galeria"></div>
+                    <p class="hint">{{ count($studio['cover']['prints']) }} prints da galeria. Clique num print para ver na prévia; o corte vale para todos.</p>
+                @endif
+                <div id="screen-source" @if ($studioTarget === 'gallery') hidden @endif>
                 <label class="drop" id="drop">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>
                     <strong>Enviar print</strong>
@@ -222,6 +234,7 @@
                     <span>Fechar avisos de cookies, popups e anúncios fixos</span>
                 </label>
                 <p class="hint" id="viewport-hint"></p>
+                </div>
 
                 <div class="crop" id="crop-wrap" hidden>
                     <div class="crop-view"><canvas id="crop"></canvas></div>
@@ -236,7 +249,7 @@
                         <output id="crop-end-label" for="crop-end">100%</output>
                     </div>
                     <p class="hint">A largura entra inteira. Os sliders cortam só na vertical.</p>
-                    <button class="link" id="replace-print" type="button">Trocar a print</button>
+                    <button class="link" id="replace-print" type="button" @if ($studioTarget === 'gallery') hidden @endif>Trocar a print</button>
                 </div>
             </section>
 
@@ -351,16 +364,18 @@
             <section class="step" id="step-save">
                 <div class="step-head">
                     <span class="step-num">4</span>
-                    <h2>{{ $studio['cover'] ? ($studio['cover']['target'] === 'print' ? 'Print da seção' : 'Capa do case') : 'Exportar' }}</h2>
+                    <h2>{{ match ($studioTarget) { 'print' => 'Print da seção', 'gallery' => 'Prints da galeria', 'cover' => 'Capa do case', default => 'Exportar' } }}</h2>
                 </div>
-                @if ($studio['cover'])
+                @if ($studio['cover'] && $studioTarget !== 'gallery')
                     <label class="field">
                         <span>{{ $studio['cover']['target'] === 'print' ? 'Texto alternativo do print' : 'Texto alternativo da capa' }}</span>
                         <input id="cover-alt" type="text" maxlength="255" autocomplete="off">
                     </label>
                 @endif
                 <div class="actions">
-                    @if ($studio['cover'])
+                    @if ($studioTarget === 'gallery')
+                        <button class="btn btn-primary btn-block" id="use-gallery" type="button">Aplicar em todos os {{ count($studio['cover']['prints']) }} prints</button>
+                    @elseif ($studio['cover'])
                         <button class="btn btn-primary btn-block" id="use-cover" type="button">{{ $studio['cover']['target'] === 'print' ? 'Usar no print' : 'Usar como capa' }}</button>
                     @endif
                     <button class="btn btn-secondary btn-block" id="export" type="button">
@@ -414,6 +429,6 @@
     </aside>
 </main>
 <script id="mockup-studio" type="application/json">@json($studio)</script>
-<script type="module" src="/tools/mockup-studio.js?v=22"></script>
+<script type="module" src="/tools/mockup-studio.js?v=23"></script>
 </body>
 </html>

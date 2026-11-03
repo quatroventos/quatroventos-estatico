@@ -23,6 +23,12 @@ type Option = { value: string; label: string };
 
 type CaseSection = { id: string; type: string; data: Record<string, unknown> };
 
+const MOCKUP_COPY = {
+  cover: { title: 'Mockup da capa', text: 'Gere a foto do aparelho com a tela do projeto e grave como capa deste case.' },
+  print: { title: 'Mockup do print', text: 'Gere a foto do aparelho com o print e grave no lugar da imagem desta seção.' },
+  gallery: { title: 'Mockups da galeria', text: 'Gere uma foto e aplique o mesmo aparelho, corte e acabamento em todos os prints da galeria.' },
+};
+
 type LibraryGroup = { group: string; group_label: string; items: LibraryItem[] };
 
 type CaseDraft = {
@@ -382,9 +388,9 @@ export function CaseEditorScreen() {
   const [saved, setSaved] = useState(false);
   const [mockupOpen, setMockupOpen] = useState(false);
   const [mockupSrc, setMockupSrc] = useState('');
-  const [mockupFor, setMockupFor] = useState<'cover' | 'print'>('cover');
+  const [mockupFor, setMockupFor] = useState<'cover' | 'print' | 'gallery'>('cover');
   const mockupDirty = useRef(false);
-  const mockupTarget = useRef<{ index: number; path: string } | null>(null);
+  const mockupTarget = useRef<{ index: number; path: string; items?: number[] } | null>(null);
   const [saving, setSaving] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
   const [library, setLibrary] = useState<LibraryItem[]>([]);
@@ -414,9 +420,56 @@ export function CaseEditorScreen() {
         return;
       }
 
-      const data = event.data as { type?: string; path?: string; alt?: string; dirty?: boolean } | null;
+      const data = event.data as { type?: string; path?: string; alt?: string; dirty?: boolean; results?: { position?: number; path?: string; alt?: string }[] } | null;
       if (data?.type === 'case-mockup-state') {
         mockupDirty.current = data.dirty === true;
+        return;
+      }
+      if (data?.type === 'case-mockups' && Array.isArray(data.results)) {
+        const target = mockupTarget.current;
+        if (!target?.items) {
+          return;
+        }
+        const results = data.results;
+        mockupDirty.current = false;
+        setForm((current) => {
+          if (!current) {
+            return current;
+          }
+
+          return {
+            ...current,
+            content: {
+              sections: current.content.sections.map((section, index) => {
+                if (index !== target.index) {
+                  return section;
+                }
+                const list = getPath(section.data, target.path);
+                if (!Array.isArray(list)) {
+                  return section;
+                }
+                const nextList = [...list] as Record<string, unknown>[];
+                for (const result of results) {
+                  const itemIndex = target.items?.[result.position ?? -1];
+                  if (itemIndex === undefined || typeof result.path !== 'string' || result.path === '' || !nextList[itemIndex]) {
+                    continue;
+                  }
+                  const item = nextList[itemIndex];
+                  const currentAlt = typeof item.alt === 'string' ? item.alt.trim() : '';
+                  nextList[itemIndex] = {
+                    ...item,
+                    image: result.path,
+                    source: typeof item.source === 'string' && item.source !== '' ? item.source : item.image,
+                    alt: currentAlt || (typeof result.alt === 'string' ? result.alt : ''),
+                  };
+                }
+                return { ...section, data: setPath(section.data, target.path, nextList) };
+              }),
+            },
+          };
+        });
+        setSaved(false);
+        setMockupOpen(false);
         return;
       }
       if (!data || data.type !== 'case-mockup' || typeof data.path !== 'string' || data.path === '') {
@@ -442,6 +495,11 @@ export function CaseEditorScreen() {
                 return section;
               }
               let next = setPath(section.data, target.path, data.path);
+              const previous = getPath(section.data, target.path);
+              const sourcePath = target.path.replace(/[^.]+$/, 'source');
+              if (section.type === 'site.gallery' && /\.\d+\.image$/.test(target.path) && !getPath(section.data, sourcePath) && typeof previous === 'string' && previous !== '') {
+                next = setPath(next, sourcePath, previous);
+              }
               const altPath = target.path.replace(/[^.]+$/, 'alt');
               if (alt !== '' && altPath !== target.path) {
                 next = setPath(next, altPath, alt);
@@ -529,8 +587,9 @@ export function CaseEditorScreen() {
     };
     const alt = sibling('alt') || sibling('caption') || [form.client, form.title].filter(Boolean).join(': ');
     const params = new URLSearchParams({ case: '1', target: 'print', alt });
-    if (value.startsWith('/') && !value.startsWith('//')) {
-      params.set('print', value);
+    const print = sibling('source') || value;
+    if (print.startsWith('/') && !print.startsWith('//')) {
+      params.set('print', print);
     }
 
     mockupDirty.current = false;
@@ -540,10 +599,40 @@ export function CaseEditorScreen() {
     setMockupOpen(true);
   }
 
+  function openGalleryMockups(path: string) {
+    if (!form) {
+      return;
+    }
+
+    const list = getPath(form.content.sections[activeSection]?.data ?? {}, path);
+    const prints: { index: number; src: string }[] = [];
+    (Array.isArray(list) ? list : []).forEach((item, index) => {
+      const row = (item ?? {}) as Record<string, unknown>;
+      const src = typeof row.source === 'string' && row.source !== '' ? row.source : typeof row.image === 'string' ? row.image : '';
+      if (src.startsWith('/') && !src.startsWith('//')) {
+        prints.push({ index, src });
+      }
+    });
+    if (prints.length === 0) {
+      return;
+    }
+
+    const params = new URLSearchParams({ case: '1', target: 'gallery', alt: [form.client, form.title].filter(Boolean).join(': ') });
+    prints.forEach((print) => params.append('prints[]', print.src));
+
+    mockupDirty.current = false;
+    mockupTarget.current = { index: activeSection, path, items: prints.map((print) => print.index) };
+    setMockupFor('gallery');
+    setMockupSrc(`/ferramentas/mockups?${params.toString()}`);
+    setMockupOpen(true);
+  }
+
   function closeMockup() {
     const message = mockupFor === 'cover'
       ? 'A foto gerada ainda não virou capa. Fechar descarta a foto.'
-      : 'A foto gerada ainda não entrou na seção. Fechar descarta a foto.';
+      : mockupFor === 'gallery'
+        ? 'Os mockups ainda não entraram na galeria. Fechar descarta a foto.'
+        : 'A foto gerada ainda não entrou na seção. Fechar descarta a foto.';
     if (mockupDirty.current && !window.confirm(message)) {
       return;
     }
@@ -1011,7 +1100,7 @@ export function CaseEditorScreen() {
                       key={sections[activeSection]?.id ?? activeSection}
                       fields={current.fields}
                       content={sections[activeSection]?.data ?? {}}
-                      context={{ onMockup: openSectionMockup }}
+                      context={{ onMockup: openSectionMockup, onMockupBatch: openGalleryMockups }}
                       ai={form.translation_of ? undefined : {
                         disabled: !translationConfig?.configured,
                         request: () => ({
@@ -1223,16 +1312,14 @@ export function CaseEditorScreen() {
           <div className="modal studio" role="dialog" aria-modal="true" aria-labelledby="mockup-title">
             <div className="modal-head">
               <div>
-                <h2 id="mockup-title">{mockupFor === 'cover' ? 'Mockup da capa' : 'Mockup do print'}</h2>
-                <p>{mockupFor === 'cover'
-                  ? 'Gere a foto do aparelho com a tela do projeto e grave como capa deste case.'
-                  : 'Gere a foto do aparelho com o print e grave no lugar da imagem desta seção.'}</p>
+                <h2 id="mockup-title">{MOCKUP_COPY[mockupFor].title}</h2>
+                <p>{MOCKUP_COPY[mockupFor].text}</p>
               </div>
               <button className="icon-btn" type="button" onClick={closeMockup} aria-label="Fechar">
                 <X size={16} />
               </button>
             </div>
-            <iframe title={mockupFor === 'cover' ? 'Mockup da capa' : 'Mockup do print'} src={mockupSrc} />
+            <iframe title={MOCKUP_COPY[mockupFor].title} src={mockupSrc} />
           </div>
         </div>
       ) : null}

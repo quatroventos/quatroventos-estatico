@@ -1,6 +1,7 @@
-import { type PointerEvent, type ReactNode } from 'react';
-import { GripVertical, MonitorSmartphone, Plus, Trash2 } from 'lucide-react';
+import { type PointerEvent, type ReactNode, useRef } from 'react';
+import { GripVertical, Images, MonitorSmartphone, Plus, Trash2 } from 'lucide-react';
 import { getPath, setPath } from '../lib';
+import { BulkImageUpload } from './BulkImageUpload';
 import { CasesPicker } from './CasesPicker';
 import { LogosField } from './LogosField';
 import { MediaField } from './MediaField';
@@ -21,11 +22,13 @@ export type Field = {
   all?: boolean;
   hint?: string;
   showIf?: string;
+  bulk?: 'image';
 };
 
 export type SchemaContext = {
   pageSlug?: string;
   onMockup?: (path: string, value: string) => void;
+  onMockupBatch?: (path: string) => void;
 };
 
 export type Section = {
@@ -65,12 +68,17 @@ function AiSlot({
   );
 }
 
+type Emit = (path: string, value: unknown) => void;
+type Read = (path: string) => unknown;
+
 function FieldControl({
   field,
   value,
   context,
   path,
   ai,
+  emit,
+  read,
   onChange,
 }: {
   field: Field;
@@ -78,8 +86,14 @@ function FieldControl({
   context?: SchemaContext;
   path: string;
   ai?: FieldAiContext;
+  emit: Emit;
+  read: Read;
   onChange: (value: unknown) => void;
 }) {
+  if (field.type === 'hidden') {
+    return null;
+  }
+
   if (field.type === 'cases') {
     return (
       <CasesPicker
@@ -232,29 +246,17 @@ function FieldControl({
                 path={`${path}.${index}`}
                 value={item}
                 ai={ai}
-                onChange={(next) => {
-                  const copy = [...items];
-                  copy[index] = next;
-                  onChange(copy);
-                }}
+                onChange={(next) => emit(`${path}.${index}`, next)}
               >
                 {field.itemType === 'rich' ? (
                   <RichText
                     value={typeof item === 'string' ? item : ''}
-                    onChange={(next) => {
-                      const copy = [...items];
-                      copy[index] = next;
-                      onChange(copy);
-                    }}
+                    onChange={(next) => emit(`${path}.${index}`, next)}
                   />
                 ) : (
                   <input
                     value={typeof item === 'string' ? item : ''}
-                    onChange={(event) => {
-                      const copy = [...items];
-                      copy[index] = event.target.value;
-                      onChange(copy);
-                    }}
+                    onChange={(event) => emit(`${path}.${index}`, event.target.value)}
                   />
                 )}
               </AiSlot>
@@ -266,12 +268,10 @@ function FieldControl({
                   context={context}
                   path={`${path}.${index}.${child.name}`}
                   ai={ai}
+                  emit={emit}
+                  read={read}
                   value={(item as Record<string, unknown>)?.[child.name]}
-                  onChange={(next) => {
-                    const copy = [...items] as Record<string, unknown>[];
-                    copy[index] = { ...(copy[index] ?? {}), [child.name]: next };
-                    onChange(copy);
-                  }}
+                  onChange={(next) => emit(`${path}.${index}.${child.name}`, next)}
                 />
               ))
             )}
@@ -284,13 +284,28 @@ function FieldControl({
           </div>
           )}
         />
-        <button
-          className="btn btn-secondary"
-          type="button"
-          onClick={() => onChange([...items, simple ? '' : {}])}
-        >
-          <Plus size={14} /> Adicionar
-        </button>
+        <div className="repeater-add">
+          <button
+            className="btn btn-secondary"
+            type="button"
+            onClick={() => onChange([...items, simple ? '' : {}])}
+          >
+            <Plus size={14} /> Adicionar
+          </button>
+          {field.bulk === 'image' && !simple ? (
+            <BulkImageUpload
+              onUploaded={(uploaded) => {
+                const latest = read(path);
+                emit(path, [...(Array.isArray(latest) ? latest : []), { image: uploaded }]);
+              }}
+            />
+          ) : null}
+          {field.bulk === 'image' && !simple && context?.onMockupBatch && items.some((item) => typeof (item as Record<string, unknown>)?.image === 'string' && (item as Record<string, string>).image !== '') ? (
+            <button className="btn btn-secondary" type="button" onClick={() => context.onMockupBatch?.(path)}>
+              <Images size={14} /> Montar mockups de todos
+            </button>
+          ) : null}
+        </div>
       </div>
     );
   }
@@ -319,6 +334,17 @@ export function SchemaForm({
   ai?: FieldAiContext;
   onChange: (content: Record<string, unknown>) => void;
 }) {
+  const latest = useRef(content);
+  const onChangeRef = useRef(onChange);
+  latest.current = content;
+  onChangeRef.current = onChange;
+
+  const emit: Emit = (path, next) => {
+    latest.current = setPath(latest.current, path, next);
+    onChangeRef.current(latest.current);
+  };
+  const read: Read = (path) => getPath(latest.current, path);
+
   return (
     <>
       {fields.filter((field) => !field.showIf || Boolean(getPath(content, field.showIf))).map((field) => (
@@ -328,8 +354,10 @@ export function SchemaForm({
           context={context}
           path={field.name}
           ai={ai}
+          emit={emit}
+          read={read}
           value={getPath(content, field.name)}
-          onChange={(next) => onChange(setPath(content, field.name, next))}
+          onChange={(next) => emit(field.name, next)}
         />
       ))}
     </>

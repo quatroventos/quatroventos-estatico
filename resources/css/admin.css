@@ -4933,8 +4933,26 @@ td.person span {
   min-height: 0;
 }
 
-.field > .media-input {
+.field > .media-input,
+.repeater-add > .media-input {
   display: none;
+}
+
+.repeater-add {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.repeater-add .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.repeater-add-errors {
+  flex-basis: 100%;
 }
 
 .media-pick {

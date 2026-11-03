@@ -92,7 +92,7 @@ Route::prefix($admin)->group(function () {
             Route::get('preview/cases/{caseStudy}/draft', [LivePreviewController::class, 'caseDraft'])->whereNumber('caseStudy')->middleware('throttle:600,1');
             Route::post('sections/copy', [SectionCopyController::class, 'store'])->middleware('throttle:30,1');
             Route::post('sections/proofread', [SectionCopyController::class, 'proofread'])->middleware('throttle:60,1');
-            Route::post('cases/mockup', [CaseMockupController::class, 'store'])->middleware('throttle:20,1');
+            Route::post('cases/mockup', [CaseMockupController::class, 'store'])->middleware('throttle:60,1');
             Route::post('cases/draft', [CaseDraftController::class, 'store'])->middleware('throttle:10,1');
             Route::get('cases/draft/{token}', [CaseDraftController::class, 'show'])->whereUuid('token');
             Route::apiResource('cases', CaseStudyController::class)->parameters(['cases' => 'caseStudy'])->whereNumber('caseStudy');
