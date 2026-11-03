@@ -59,5 +59,8 @@
       <script type="text/plain" data-consent="analytics" data-src="{{ asset('js/t.js') }}"></script>
     @endif
     {!! consent_tags($site?->tag_footer) !!}
-  </body>
+  <!-- impeccable-live-start -->
+<script src="http://localhost:8400/live.js?token=541f4ee3-23a1-43e3-89c9-0f7f0d748b5a"></script>
+<!-- impeccable-live-end -->
+</body>
 </html>
