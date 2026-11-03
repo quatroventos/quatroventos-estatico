@@ -603,6 +603,10 @@ class SiteSectionDefinition
             ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
             ['type' => 'text', 'name' => 'label', 'label' => 'Botão'],
             ['type' => 'text', 'name' => 'href', 'label' => 'Link do botão'],
+            ['type' => 'select', 'name' => 'card', 'label' => 'Cor do card do texto', 'options' => [
+                ['value' => 'dark', 'label' => 'Preto'],
+                ['value' => 'white', 'label' => 'Branco'],
+            ], 'hint' => 'Padrão: preto em seção clara ou branca, branco em seção escura.'],
         ];
     }
 

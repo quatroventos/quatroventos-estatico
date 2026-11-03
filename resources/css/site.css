@@ -3223,48 +3223,54 @@ h3 {
   margin-top: clamp(24px, 2.4vw, 32px);
 }
 
-:is(.on-light, .on-white) .photo-text-copy .pill.solid {
-  background: var(--white);
-  color: var(--ink);
-}
-
-:is(.on-light, .on-white) .photo-text-copy .pill.solid:hover {
-  background: #e4e4df;
-}
-
-.on-dark .photo-text-copy .pill.solid {
-  background: var(--ink);
-  color: var(--white);
-}
-
-.on-dark .photo-text-copy .pill.solid:hover {
-  background: #2a2a31;
-}
-
 .on-dark .photo-text-media figcaption {
   color: var(--on-dark-mute);
 }
 
-.on-dark .photo-text-copy {
+.photo-text-copy.is-dark .pill.solid {
   background: var(--white);
   color: var(--ink);
+}
+
+.photo-text-copy.is-dark .pill.solid:hover {
+  background: #e4e4df;
+}
+
+.photo-text-copy.is-white {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: 0 0 0 1px var(--line-light), 0 32px 64px -32px rgb(7 7 10 / 0.35);
+}
+
+.on-dark .photo-text-copy.is-white {
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.12), 0 32px 64px -32px rgb(0 0 0 / 0.6);
 }
 
-.on-dark .photo-text-copy .h2 {
+.photo-text-copy.is-white .h2 {
   color: var(--ink);
 }
 
-.on-dark .photo-text-copy .mark {
+.photo-text-copy.is-white .mark {
   color: var(--ink);
+  padding: 0 0.1em;
+  margin: 0 -0.04em;
   background-image: linear-gradient(var(--lime), var(--lime));
   background-repeat: no-repeat;
   background-size: 100% 0.9em;
   background-position: 0 72%;
 }
 
-.on-dark .photo-text-copy .rich {
+.photo-text-copy.is-white .rich {
   color: var(--on-light-soft);
+}
+
+.photo-text-copy.is-white .pill.solid {
+  background: var(--ink);
+  color: var(--white);
+}
+
+.photo-text-copy.is-white .pill.solid:hover {
+  background: #2a2a31;
 }
 
 @media (max-width: 900px) {

@@ -311,6 +311,7 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
     case 'text-photo': {
       const image = text(data, 'image');
       const caption = text(data, 'caption');
+      const card = text(data, 'card') === 'white' || text(data, 'card') === 'dark' ? text(data, 'card') : tone === 'dark' ? 'white' : 'dark';
 
       return (
         <Shell {...shell}>
@@ -321,7 +322,7 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
                 {caption ? <figcaption>{caption}</figcaption> : null}
               </figure>
             ) : null}
-            <div className="photo-text-copy">
+            <div className={`photo-text-copy is-${card}`}>
               {text(data, 'title') ? <h2 className="h2"><Marked value={text(data, 'title')} /></h2> : null}
               <Rich value={text(data, 'body')} />
               {text(data, 'label') && text(data, 'href') ? (
