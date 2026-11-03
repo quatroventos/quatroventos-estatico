@@ -30,7 +30,11 @@ function kindOf(section: Section): string {
 
 function toneOf(kind: string, data: Data, byType = false): Tone {
   const tone = byType ? '' : text(data, 'tone');
-  return tone === 'dark' || tone === 'light' || tone === 'white' ? tone : TONES[kind] ?? 'light';
+  if (tone === 'dark' || tone === 'light' || tone === 'white') {
+    return tone;
+  }
+
+  return kind === 'cta' && text(data, 'card') === 'white' ? 'light' : TONES[kind] ?? 'light';
 }
 
 function isEmpty(section: Section): boolean {
