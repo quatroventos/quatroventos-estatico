@@ -68,7 +68,22 @@ function bind() {
     }
     document.getElementById('animate')?.addEventListener('click', animate);
     document.getElementById('record')?.addEventListener('click', record);
-    document.getElementById('device').addEventListener('change', syncDevice);
+    document.getElementById('device').addEventListener('change', () => {
+        setCaptureType(captureTypeFor(value('device')));
+        syncDevice();
+    });
+    document.querySelectorAll('input[name="capture-type"]').forEach((input) => {
+        input.addEventListener('change', () => {
+            const device = deviceForCaptureType(captureType());
+            if (device !== value('device')) {
+                document.getElementById('device').value = device;
+                syncDevice();
+            } else {
+                syncViewportHint();
+            }
+        });
+    });
+    setCaptureType(captureTypeFor(value('device')));
     document.querySelectorAll('input[name="reference"]').forEach((input) => {
         input.addEventListener('change', updateActions);
     });
@@ -211,7 +226,7 @@ async function capturePage() {
     await run('Abrindo a página e limpando a tela…', async () => {
         const payload = await postJson(config.captureUrl, {
             url,
-            device: value('device'),
+            device: captureViewport(),
             clean: document.getElementById('clean-capture').checked,
         });
         await new Promise((resolve, reject) => {
@@ -644,8 +659,44 @@ function syncDevice() {
     updateActions();
 }
 
+function captureType() {
+    return document.querySelector('input[name="capture-type"]:checked')?.value || 'desktop';
+}
+
+function setCaptureType(type) {
+    const input = document.querySelector(`input[name="capture-type"][value="${type}"]`);
+    if (input) {
+        input.checked = true;
+    }
+}
+
+function captureTypeFor(device) {
+    if (device === 'iphone') {
+        return 'mobile';
+    }
+    return device === 'ipad' ? 'tablet' : 'desktop';
+}
+
+function deviceForCaptureType(type) {
+    if (type === 'mobile') {
+        return 'iphone';
+    }
+    if (type === 'tablet') {
+        return 'ipad';
+    }
+    return value('device') === 'studio-display' ? 'studio-display' : 'macbook';
+}
+
+function captureViewport() {
+    const type = captureType();
+    if (type === 'desktop') {
+        return value('device') === 'studio-display' ? 'studio-display' : 'macbook';
+    }
+    return type === 'mobile' ? 'iphone' : 'ipad';
+}
+
 function syncViewportHint() {
-    const viewport = config.viewports?.[value('device')];
+    const viewport = config.viewports?.[captureViewport()];
     document.getElementById('viewport-hint').textContent = viewport ? `A captura usa ${viewport.label}.` : '';
 }
 

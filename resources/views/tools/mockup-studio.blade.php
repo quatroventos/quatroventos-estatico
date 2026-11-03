@@ -98,6 +98,12 @@
         .drop small { font-size: 11px; }
         .or { display: flex; align-items: center; gap: 10px; margin: 12px 0; color: var(--faint); font-size: 11px; }
         .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+        .segmented { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 3px; border: 1px solid var(--line-strong); border-radius: 9px; background: var(--soft); }
+        .segmented label { position: relative; cursor: pointer; }
+        .segmented input { position: absolute; opacity: 0; pointer-events: none; }
+        .segmented span { display: block; padding: 7px 8px; border-radius: 7px; color: var(--muted); font-size: 12px; font-weight: 700; text-align: center; transition: background 0.15s ease, color 0.15s ease; }
+        .segmented input:checked + span { background: #fff; color: var(--ink); box-shadow: 0 1px 2px rgb(16 24 40 / 0.08); }
+        .segmented input:focus-visible + span { outline: 2px solid var(--brand); outline-offset: 1px; }
         .inline { display: flex; gap: 8px; }
         .inline input { flex: 1; min-width: 0; }
         .check { display: flex; align-items: center; gap: 8px; margin-top: -2px; color: var(--muted); font-size: 12px; cursor: pointer; }
@@ -196,6 +202,14 @@
                     <input id="prints" type="file" accept="image/*" hidden>
                 </label>
                 <div class="or">ou</div>
+                <div class="field">
+                    <span>Tipo de print</span>
+                    <div class="segmented" role="radiogroup" aria-label="Tipo de print">
+                        <label><input type="radio" name="capture-type" value="mobile"><span>Celular</span></label>
+                        <label><input type="radio" name="capture-type" value="tablet"><span>Tablet</span></label>
+                        <label><input type="radio" name="capture-type" value="desktop" checked><span>Desktop</span></label>
+                    </div>
+                </div>
                 <label class="field" for="page-url">
                     <span>Capturar pela URL</span>
                     <div class="inline">
@@ -400,6 +414,6 @@
     </aside>
 </main>
 <script id="mockup-studio" type="application/json">@json($studio)</script>
-<script type="module" src="/tools/mockup-studio.js?v=21"></script>
+<script type="module" src="/tools/mockup-studio.js?v=22"></script>
 </body>
 </html>
