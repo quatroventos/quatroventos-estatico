@@ -1,7 +1,8 @@
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const LOCALE_COOKIE = 'qv_locale';
 
 function reveal() {
-  const nodes = document.querySelectorAll('.prose-panel.is-reveal, .plan-tier, .plan-base, .is-word-reveal, .loop');
+  const nodes = document.querySelectorAll('.prose-panel.is-reveal, .plan-tier, .plan-base, .is-word-reveal, .loop, .adhoc, .ex-grid.is-glyphs');
   if (!nodes.length || !('IntersectionObserver' in window)) {
     nodes.forEach((node) => node.classList.add('is-in'));
     return;
@@ -15,7 +16,7 @@ function reveal() {
       entry.target.classList.add('is-in');
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.4 });
+  }, { threshold: 0, rootMargin: '0px 0px -25% 0px' });
 
   nodes.forEach((node) => observer.observe(node));
 }
@@ -96,6 +97,14 @@ function header() {
   });
 
   const langMenu = document.querySelector('.lang-float .lang-menu');
+
+  // O servidor redireciona pelo cookie de idioma; sem gravar a escolha aqui, o Accept-Language venceria de novo.
+  document.querySelectorAll('.lang-menu a[hreflang], .lang-switch a[hreflang]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const secure = location.protocol === 'https:' ? '; secure' : '';
+      document.cookie = `${LOCALE_COOKIE}=${encodeURIComponent(link.getAttribute('hreflang'))}; path=/; max-age=${60 * 60 * 24 * 365}; samesite=lax${secure}`;
+    });
+  });
 
   document.addEventListener('click', (event) => {
     if (langMenu?.open && !langMenu.contains(event.target)) {
