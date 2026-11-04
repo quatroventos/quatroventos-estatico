@@ -125,6 +125,7 @@ export function Arrow() {
   );
 }
 
+// Dispara pela posição do topo, não pela fração visível: bloco mais alto que a tela nunca atinge 40% visível.
 export function revealOnView(el: HTMLElement | null) {
   if (!el) {
     return;
@@ -137,7 +138,7 @@ export function revealOnView(el: HTMLElement | null) {
         observer.disconnect();
       }
     },
-    { threshold: 0.4 },
+    { threshold: 0, rootMargin: '0px 0px -25% 0px' },
   );
 
   observer.observe(el);
