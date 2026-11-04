@@ -38,10 +38,18 @@ class SeoController extends Controller
             'sitemap_extra' => ['nullable', 'array'],
             'sitemap_extra.*' => ['string', 'max:500'],
             'fill_empty_pages' => ['sometimes', 'boolean'],
+            'robots_txt' => ['sometimes', 'nullable', 'string', 'max:20000'],
+            'llms_txt' => ['sometimes', 'nullable', 'string', 'max:100000'],
         ]);
 
         $fillEmpty = (bool) ($data['fill_empty_pages'] ?? false);
         unset($data['fill_empty_pages']);
+
+        foreach (['robots_txt' => $sitemap->robotsAuto(), 'llms_txt' => $sitemap->llmsAuto()] as $field => $auto) {
+            if (array_key_exists($field, $data)) {
+                $data[$field] = $this->customText($data[$field], $auto);
+            }
+        }
 
         $settings->update($data);
         $settings = $settings->fresh();
@@ -51,6 +59,16 @@ class SeoController extends Controller
         }
 
         return response()->json(['data' => $this->payload($settings, $sitemap)]);
+    }
+
+    /**
+     * Texto igual ao gerado, ou vazio, volta a ser automático (nulo) e segue as mudanças do site.
+     */
+    private function customText(?string $value, string $auto): ?string
+    {
+        $value = str_replace("\r\n", "\n", trim((string) $value));
+
+        return $value === '' || $value === trim($auto) ? null : $value;
     }
 
     /**
@@ -82,8 +100,12 @@ class SeoController extends Controller
             'sitemap_url' => $sitemap->sitemapUrl(),
             'robots_url' => $sitemap->robotsUrl(),
             'robots_txt' => $sitemap->robots(),
+            'robots_auto' => $sitemap->robotsAuto(),
+            'robots_custom' => filled($settings->robots_txt),
             'llms_url' => $sitemap->llmsUrl(),
             'llms_txt' => $sitemap->llms(),
+            'llms_auto' => $sitemap->llmsAuto(),
+            'llms_custom' => filled($settings->llms_txt),
             'search_console_url' => 'https://search.google.com/search-console',
             'pages' => $pages,
             'entries' => $sitemap->entries(),

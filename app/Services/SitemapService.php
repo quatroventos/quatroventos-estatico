@@ -47,7 +47,27 @@ class SitemapService
         ]));
     }
 
+    /**
+     * Texto servido em /robots.txt: o editado no painel ou, sem edição, o gerado.
+     */
     public function robots(): string
+    {
+        $custom = app(SystemOptions::class)->site()?->robots_txt;
+
+        return filled($custom) ? rtrim((string) $custom)."\n" : $this->robotsAuto();
+    }
+
+    /**
+     * Texto servido em /llms.txt e /llm.txt: o editado no painel ou, sem edição, o gerado.
+     */
+    public function llms(): string
+    {
+        $custom = app(SystemOptions::class)->site()?->llms_txt;
+
+        return filled($custom) ? rtrim((string) $custom)."\n" : $this->llmsAuto();
+    }
+
+    public function robotsAuto(): string
     {
         $rules = "Allow: /\n";
         foreach ($this->adminDisallowPaths() as $path) {
@@ -76,7 +96,7 @@ class SitemapService
             ."Sitemap: {$this->sitemapUrl()}\n";
     }
 
-    public function llms(): string
+    public function llmsAuto(): string
     {
         $site = app(SystemOptions::class)->site();
         $name = filled($site?->name) ? (string) $site->name : 'Quatro Ventos';

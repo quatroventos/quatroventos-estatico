@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\MenuItem;
 use App\Models\Page;
+use App\Models\Redirect;
 use App\Services\SystemOptions;
 use App\Support\Locales;
 use App\Support\SiteCopy\CopyImporter;
@@ -49,7 +50,7 @@ class ImportSiteCopy extends Command
 
         $retired = array_values(array_filter(array_map(
             fn (string $from) => trim($from, '/'),
-            array_keys((array) config('redirects', []))
+            array_keys(Redirect::map())
         ), fn (string $slug) => ! isset($pages['/'.$slug])));
 
         if ($this->option('dry-run')) {

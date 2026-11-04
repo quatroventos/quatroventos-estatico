@@ -11,6 +11,7 @@ use App\Models\Page;
 use App\Models\SiteSetting;
 use App\Observers\OgImageObserver;
 use App\Observers\SitePrerenderObserver;
+use App\Observers\SlugRedirectObserver;
 use App\Observers\SystemOptionsObserver;
 use App\Policies\AdminOnlyPolicy;
 use App\Policies\FormOptionPolicy;
@@ -50,6 +51,8 @@ class AppServiceProvider extends ServiceProvider
 
         Page::observe(OgImageObserver::class);
         CaseStudy::observe(OgImageObserver::class);
+        Page::observe(SlugRedirectObserver::class);
+        CaseStudy::observe(SlugRedirectObserver::class);
 
         $appUrl = (string) config('app.url');
         if (str_starts_with($appUrl, 'https://')) {

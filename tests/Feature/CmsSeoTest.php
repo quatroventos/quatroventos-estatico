@@ -56,6 +56,40 @@ class CmsSeoTest extends TestCase
             ->assertJsonPath('data.sitemap_extra.0', '/extra');
     }
 
+    public function test_robots_and_llms_can_be_edited_and_reset_to_automatic(): void
+    {
+        $this->makeSettings();
+        $this->makePage('home', 'Home');
+        $defaults = [
+            'seo_separator' => '|',
+            'seo_title_template' => '%page% %sep% %site%',
+            'seo_robots' => 'index, follow',
+            'og_site_name' => 'Quatro Ventos',
+            'og_locale' => 'pt_BR',
+            'twitter_card' => 'summary_large_image',
+        ];
+
+        $this->actingAs($this->makeAdmin())
+            ->putJson('/gestao/api/seo', [...$defaults, 'robots_txt' => "User-agent: *\nDisallow: /privado", 'llms_txt' => "# Texto próprio\r\n"])
+            ->assertOk()
+            ->assertJsonPath('data.robots_custom', true)
+            ->assertJsonPath('data.llms_custom', true);
+
+        $this->get('/robots.txt')->assertOk()->assertContent("User-agent: *\nDisallow: /privado\n");
+        $this->get('/llms.txt')->assertOk()->assertContent("# Texto próprio\n");
+
+        $auto = $this->getJson('/gestao/api/seo')->json('data.robots_auto');
+
+        $this->putJson('/gestao/api/seo', [...$defaults, 'robots_txt' => $auto, 'llms_txt' => ''])
+            ->assertOk()
+            ->assertJsonPath('data.robots_custom', false)
+            ->assertJsonPath('data.llms_custom', false);
+
+        $this->assertNull(SiteSetting::query()->value('robots_txt'));
+        $this->get('/robots.txt')->assertSee('User-agent: GPTBot', false);
+        $this->get('/llms.txt')->assertSee('[Home]', false);
+    }
+
     public function test_empty_page_fields_inherit_site_defaults(): void
     {
         $this->makeSettings([

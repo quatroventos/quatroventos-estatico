@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\ApplyRedirects;
 use App\Http\Middleware\EnsureCmsUser;
 use App\Http\Middleware\RedirectToCanonicalHost;
 use App\Http\Middleware\RestrictHttpMethods;
@@ -25,6 +26,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->trustProxies(at: '*');
         $middleware->prepend(RedirectToCanonicalHost::class);
+        $middleware->append(ApplyRedirects::class);
         $middleware->append(SecurityHeaders::class);
         $middleware->append(RestrictHttpMethods::class);
         $middleware->alias(['cms' => EnsureCmsUser::class]);

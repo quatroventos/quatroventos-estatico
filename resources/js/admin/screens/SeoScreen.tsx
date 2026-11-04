@@ -6,6 +6,7 @@ import { MediaField } from '../components/MediaField';
 import { SeoLength } from '../components/SeoLength';
 import { SeoIntegrations } from '../components/SeoIntegrations';
 import { SeoPerformance } from '../components/SeoPerformance';
+import { SeoRedirects } from '../components/SeoRedirects';
 import { api, firstError } from '../api';
 import { useAuth } from '../auth';
 import { useTour } from '../tour/TourProvider';
@@ -24,8 +25,12 @@ type SeoPayload = SeoDefaults & {
   sitemap_url: string;
   robots_url: string;
   robots_txt: string;
+  robots_auto: string;
+  robots_custom: boolean;
   llms_url: string;
   llms_txt: string;
+  llms_auto: string;
+  llms_custom: boolean;
   search_console_url: string;
   pages: SeoPagePreview[];
   entries: SitemapEntry[];
@@ -43,9 +48,9 @@ const emptyForm: SeoDefaults = {
   twitter_card: 'summary_large_image',
 };
 
-type SeoTab = 'performance' | 'settings' | 'integrations';
+type SeoTab = 'performance' | 'settings' | 'redirects' | 'integrations';
 
-const TAB_PARAM: Record<SeoTab, string> = { performance: 'desempenho', settings: 'configuracao', integrations: 'integracoes' };
+const TAB_PARAM: Record<SeoTab, string> = { performance: 'desempenho', settings: 'configuracao', redirects: 'redirects', integrations: 'integracoes' };
 
 export function SeoScreen() {
   const { user } = useAuth();
@@ -59,8 +64,12 @@ export function SeoScreen() {
   const [sitemapUrl, setSitemapUrl] = useState('');
   const [robotsUrl, setRobotsUrl] = useState('');
   const [robotsTxt, setRobotsTxt] = useState('');
+  const [robotsAuto, setRobotsAuto] = useState('');
+  const [robotsCustom, setRobotsCustom] = useState(false);
   const [llmsUrl, setLlmsUrl] = useState('');
   const [llmsTxt, setLlmsTxt] = useState('');
+  const [llmsAuto, setLlmsAuto] = useState('');
+  const [llmsCustom, setLlmsCustom] = useState(false);
   const [searchConsoleUrl, setSearchConsoleUrl] = useState('https://search.google.com/search-console');
   const [pages, setPages] = useState<SeoPagePreview[]>([]);
   const [entries, setEntries] = useState<SitemapEntry[]>([]);
@@ -95,8 +104,12 @@ export function SeoScreen() {
     setSitemapUrl(data.sitemap_url);
     setRobotsUrl(data.robots_url);
     setRobotsTxt(data.robots_txt);
+    setRobotsAuto(data.robots_auto);
+    setRobotsCustom(data.robots_custom);
     setLlmsUrl(data.llms_url);
     setLlmsTxt(data.llms_txt);
+    setLlmsAuto(data.llms_auto);
+    setLlmsCustom(data.llms_custom);
     setSearchConsoleUrl(data.search_console_url);
     setPages(data.pages ?? []);
     setEntries(data.entries ?? []);
@@ -126,6 +139,7 @@ export function SeoScreen() {
   useEffect(() => registerActions({
     'seo.showPerformance': () => changeTab('performance'),
     'seo.showSettings': () => changeTab('settings'),
+    'seo.showRedirects': () => changeTab('redirects'),
     'seo.showIntegrations': () => changeTab('integrations'),
   }), [registerActions]);
 
@@ -190,6 +204,8 @@ export function SeoScreen() {
           seo_og_image: form.seo_og_image || null,
           seo_og_image_alt: form.seo_og_image_alt || null,
           sitemap_extra: extra.split('\n').map((item) => item.trim()).filter(Boolean),
+          robots_txt: robotsTxt.trim() === robotsAuto.trim() ? null : robotsTxt,
+          llms_txt: llmsTxt.trim() === llmsAuto.trim() ? null : llmsTxt,
           fill_empty_pages: fillEmpty,
         }),
       });
@@ -222,15 +238,18 @@ export function SeoScreen() {
       subtitle={{
         performance: 'Como o site vai no Google e nas IAs, com dados do OpenSEO.',
         settings: 'Campos vazios nas páginas herdam este padrão. O título segue o template, salvo se a página já incluir o nome do site.',
+        redirects: 'Endereços antigos que respondem 301 para o endereço atual.',
         integrations: 'Chaves, endereços e prompts do OpenSEO e da IA. Campo vazio usa o valor do .env.',
       }[tab]}
     >
       <div className="resource-tabs seo-tabs" data-tour="seo-tabs" role="tablist" aria-label="Seções de SEO">
         <button type="button" role="tab" aria-selected={tab === 'performance'} className={tab === 'performance' ? 'is-on' : ''} onClick={() => changeTab('performance')}>Desempenho</button>
         <button type="button" role="tab" aria-selected={tab === 'settings'} className={tab === 'settings' ? 'is-on' : ''} onClick={() => changeTab('settings')}>Configuração</button>
+        <button type="button" role="tab" aria-selected={tab === 'redirects'} className={tab === 'redirects' ? 'is-on' : ''} onClick={() => changeTab('redirects')}>Redirects</button>
         <button type="button" role="tab" aria-selected={tab === 'integrations'} className={tab === 'integrations' ? 'is-on' : ''} onClick={() => changeTab('integrations')}>Integrações</button>
       </div>
       {tab === 'performance' ? <SeoPerformance sitemapPaths={sitemapPaths} canEdit={Boolean(user?.abilities.seo)} onOpenIntegrations={() => changeTab('integrations')} /> : null}
+      {tab === 'redirects' ? <SeoRedirects canEdit={Boolean(user?.abilities.seo)} /> : null}
       {tab === 'integrations' ? <SeoIntegrations canEdit={Boolean(user?.abilities.seo)} /> : null}
       {tab === 'settings' && error ? <div className="form-error">{error}</div> : null}
       {tab === 'settings' && ok ? <div className="form-success">{ok}</div> : null}
@@ -286,7 +305,7 @@ export function SeoScreen() {
             <div className="panel">
               <div className="panel-head">
                 <h3>robots.txt</h3>
-                <p>O site inteiro fica liberado. O painel e as rotas de admin ficam bloqueados para todos os robôs, inclusive os de IA.</p>
+                <p>Gerado automaticamente: o site inteiro fica liberado e o painel e as rotas de admin ficam bloqueados para todos os robôs, inclusive os de IA. Edite o texto abaixo e salve para substituir.</p>
               </div>
               <div className="panel-body">
                 <div className="field">
@@ -302,14 +321,15 @@ export function SeoScreen() {
                   <a className="btn btn-secondary" href={robotsUrl} target="_blank" rel="noreferrer">Abrir robots.txt</a>
                   <button className="btn btn-primary" type="button" onClick={() => void load()}>Atualizar</button>
                 </div>
-                <textarea className="seo-file" readOnly rows={14} value={robotsTxt} spellCheck={false} />
+                <FileStatus custom={robotsCustom} changed={robotsTxt.trim() !== robotsAuto.trim()} onReset={() => setRobotsTxt(robotsAuto)} />
+                <textarea className="seo-file" rows={14} value={robotsTxt} onChange={(event) => setRobotsTxt(event.target.value)} spellCheck={false} />
               </div>
             </div>
 
             <div className="panel">
               <div className="panel-head">
                 <h3>llms.txt</h3>
-                <p>Lista as páginas publicadas e indexáveis. Muda na hora em que uma página é criada, publicada ou tem o SEO alterado. /llm.txt entrega o mesmo texto.</p>
+                <p>Lista as páginas publicadas e indexáveis e muda na hora em que uma página é criada, publicada ou tem o SEO alterado. Editado, deixa de acompanhar essas mudanças até voltar ao automático. /llm.txt entrega o mesmo texto.</p>
               </div>
               <div className="panel-body">
                 <div className="field">
@@ -325,7 +345,8 @@ export function SeoScreen() {
                   <a className="btn btn-secondary" href={llmsUrl} target="_blank" rel="noreferrer">Abrir llms.txt</a>
                   <button className="btn btn-primary" type="button" onClick={() => void load()}>Atualizar</button>
                 </div>
-                <textarea className="seo-file" readOnly rows={16} value={llmsTxt} spellCheck={false} />
+                <FileStatus custom={llmsCustom} changed={llmsTxt.trim() !== llmsAuto.trim()} onReset={() => setLlmsTxt(llmsAuto)} />
+                <textarea className="seo-file" rows={16} value={llmsTxt} onChange={(event) => setLlmsTxt(event.target.value)} spellCheck={false} />
               </div>
             </div>
 
@@ -408,5 +429,19 @@ export function SeoScreen() {
         </div>
       ) : null}
     </AppShell>
+  );
+}
+
+function FileStatus({ custom, changed, onReset }: { custom: boolean; changed: boolean; onReset: () => void }) {
+  const hint = changed
+    ? (custom ? 'Texto editado: não acompanha mais as mudanças do site.' : 'Salve para aplicar a edição.')
+    : (custom ? 'Salve para voltar ao automático.' : 'Acompanha as mudanças do site.');
+
+  return (
+    <div className="seo-file-status">
+      <span className={`badge ${changed ? 'badge-neutral' : 'badge-green'}`}>{changed ? 'Editado' : 'Automático'}</span>
+      <span className="hint">{hint}</span>
+      {changed ? <button className="btn btn-secondary btn-sm" type="button" onClick={onReset}>Voltar ao automático</button> : null}
+    </div>
   );
 }

@@ -4414,6 +4414,34 @@ td.person span {
   min-width: 0;
 }
 
+.seo-file-status {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.redirect-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.redirect-form .field {
+  margin: 0;
+}
+
+.redirect-form + .field {
+  margin-top: 16px;
+}
+
+@media (max-width: 760px) {
+  .redirect-form {
+    grid-template-columns: 1fr;
+  }
+}
+
 .check {
   display: flex;
   gap: 8px;

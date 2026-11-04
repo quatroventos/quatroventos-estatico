@@ -37,10 +37,6 @@ Route::post('/api/contato/lead', [SiteFormController::class, 'lead'])
     ->middleware('throttle:8,1')
     ->name('api.contato.lead');
 
-foreach ((array) config('redirects', []) as $from => $to) {
-    Route::redirect($from, $to, 301);
-}
-
 Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SiteController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SiteController::class, 'llms'])->name('llms');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\PrerenderSiteJob;
 use App\Models\CaseStudy;
 use App\Models\Page;
+use App\Models\Redirect;
 use App\Services\PublicContent;
 use App\Services\SitemapService;
 use App\Services\SitePrerenderer;
@@ -118,8 +119,7 @@ class SiteController extends Controller
     public function legacyPhp(string $legacy): RedirectResponse
     {
         $path = '/'.trim($legacy, '/');
-        $map = config('redirects');
-        $target = is_array($map) ? ($map[$path] ?? null) : null;
+        $target = Redirect::targetFor($path);
 
         if (! is_string($target)) {
             if ($path === '/index') {

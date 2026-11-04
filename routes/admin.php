@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\OgImageController;
 use App\Http\Controllers\Admin\OpenSeoController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\PagePreviewController;
+use App\Http\Controllers\Admin\RedirectController;
 use App\Http\Controllers\Admin\SectionCopyController;
 use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\Admin\SeoInsightsController;
@@ -148,6 +149,7 @@ Route::prefix($admin)->group(function () {
             Route::get('seo/integrations', [SeoIntegrationController::class, 'show']);
             Route::put('seo/integrations', [SeoIntegrationController::class, 'update'])->middleware('throttle:20,1');
             Route::post('seo/integrations/test/{service}', [SeoIntegrationController::class, 'test'])->whereIn('service', ['openseo', 'openai'])->middleware('throttle:20,1');
+            Route::apiResource('redirects', RedirectController::class)->except(['show'])->whereNumber('redirect');
             Route::get('sitemap', [SiteSettingController::class, 'sitemap']);
             Route::put('sitemap', [SiteSettingController::class, 'updateSitemap']);
 

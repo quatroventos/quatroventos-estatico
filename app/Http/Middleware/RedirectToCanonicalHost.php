@@ -2,13 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Redirect;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Pedidos no host com ou sem "www" que não é o do APP_URL vão em 301 para o host oficial.
- * Já aplica config/redirects.php, para o slug antigo chegar ao destino em um salto só.
+ * Já aplica os redirects do painel, para o slug antigo chegar ao destino em um salto só.
  */
 class RedirectToCanonicalHost
 {
@@ -34,10 +35,10 @@ class RedirectToCanonicalHost
     {
         $path = '/'.trim($pathInfo, '/');
         $lookup = preg_replace('/\.php$/', '', $path) ?? $path;
-        $redirects = config('redirects');
+        $target = Redirect::targetFor($lookup);
 
-        if (is_array($redirects) && is_string($redirects[$lookup] ?? null)) {
-            return $redirects[$lookup];
+        if ($target !== null) {
+            return $target;
         }
 
         return $lookup === '/index' ? '/' : $path;
