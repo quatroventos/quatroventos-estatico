@@ -47,6 +47,21 @@ class StructuredDataTest extends TestCase
         $this->assertNull($graph->firstWhere('@type', 'BreadcrumbList'));
     }
 
+    public function test_home_lists_menu_categories_as_services(): void
+    {
+        $home = $this->page('home', 'Quatro Ventos', [], ['template' => 'home']);
+        $hub = MenuItem::query()->create(['locale' => 'pt-BR', 'group' => 'header', 'label' => 'Web', 'href' => '/desenvolvimento-web', 'sort' => 1]);
+        MenuItem::query()->create(['locale' => 'pt-BR', 'group' => 'header', 'label' => 'Sites', 'href' => '/criacao-de-sites', 'parent_id' => $hub->id, 'sort' => 1]);
+        MenuItem::query()->create(['locale' => 'pt-BR', 'group' => 'header', 'label' => 'Contato', 'href' => '/contato', 'sort' => 2]);
+
+        $services = $this->graph($home)->where('@type', 'Service')->values();
+
+        $this->assertCount(1, $services);
+        $this->assertSame('Web', $services[0]['name']);
+        $this->assertSame('Sites', $services[0]['hasOfferCatalog']['itemListElement'][0]['itemOffered']['name']);
+        $this->assertSame(url('/criacao-de-sites'), $services[0]['hasOfferCatalog']['itemListElement'][0]['itemOffered']['url']);
+    }
+
     public function test_html_has_one_json_ld_block_per_entity_and_update_metadata(): void
     {
         $home = $this->page('home', 'Quatro Ventos', [], ['template' => 'home']);

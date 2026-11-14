@@ -75,6 +75,10 @@ class StructuredData
             ];
         }
 
+        if ($page->isHome()) {
+            array_push($graph, ...$this->serviceCategories($home, $locale));
+        }
+
         if (! $page->isHome() && $this->isServicePage($page, $locale)) {
             $graph[] = array_filter([
                 '@type' => 'Service',
@@ -200,6 +204,44 @@ class StructuredData
 
         return $this->servicePaths($this->options->menu('header', $locale), $locale, false)
             ->contains(fn (array $item) => $item['page_id'] === $page->id || $item['path'] === $path);
+    }
+
+    /**
+     * Na home, cada categoria do menu principal (item com subitens) vira um Service com os subitens no catálogo.
+     *
+     * @return list<array<string, mixed>>
+     */
+    private function serviceCategories(string $home, string $locale): array
+    {
+        return $this->options->menu('header', $locale)
+            ->filter(fn (MenuItem $item) => $item->relationLoaded('children') && $item->children->isNotEmpty())
+            ->map(function (MenuItem $item) use ($home, $locale) {
+                $url = url($this->path((string) $item->href, $locale));
+
+                return array_filter([
+                    '@type' => 'Service',
+                    '@id' => $url.'#service',
+                    'name' => trim((string) $item->label),
+                    'serviceType' => trim((string) $item->label),
+                    'url' => $url,
+                    'provider' => ['@id' => $home.'#organization'],
+                    'areaServed' => ['@type' => 'Country', 'name' => 'Brasil'],
+                    'hasOfferCatalog' => [
+                        '@type' => 'OfferCatalog',
+                        'name' => trim((string) $item->label),
+                        'itemListElement' => $item->children->map(fn (MenuItem $child) => [
+                            '@type' => 'Offer',
+                            'itemOffered' => [
+                                '@type' => 'Service',
+                                'name' => trim((string) $child->label),
+                                'url' => url($this->path((string) $child->href, $locale)),
+                            ],
+                        ])->values()->all(),
+                    ],
+                ]);
+            })
+            ->values()
+            ->all();
     }
 
     /**
