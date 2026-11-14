@@ -15,7 +15,7 @@ function Shell({ page, site, body }: { page: PagePayload; site: SitePayload; bod
     null,
     createElement(Header, { site, pathname: page.path || '/', locale, alternates: page.alternates }),
     createElement('main', { id: 'conteudo', tabIndex: -1 }, body),
-    createElement(Footer, { site, locale, alternates: page.alternates }),
+    createElement(Footer, { site, locale, alternates: page.alternates, updatedAt: page.updated_at }),
     createElement(WhatsAppFloat, { href: site.whatsapp_url }),
     createElement(LangFloat, { site, locale, alternates: page.alternates }),
     createElement(CookieNotice, { site }),
