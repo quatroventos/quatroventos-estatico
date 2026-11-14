@@ -47,6 +47,19 @@ class StructuredDataTest extends TestCase
         $this->assertNull($graph->firstWhere('@type', 'BreadcrumbList'));
     }
 
+    public function test_html_has_one_json_ld_block_per_entity_and_update_metadata(): void
+    {
+        $home = $this->page('home', 'Quatro Ventos', [], ['template' => 'home']);
+
+        $html = $this->get('/')->assertOk()->getContent();
+
+        preg_match_all('#<script type="application/ld\+json">(.*?)</script>#s', $html, $matches);
+        $types = array_map(fn (string $json) => json_decode($json, true)['@type'] ?? null, $matches[1]);
+        $this->assertSame(['ProfessionalService', 'WebSite', 'WebPage'], $types);
+        $this->assertStringContainsString('<meta name="author" content="Quatro Ventos" />', $html);
+        $this->assertStringContainsString('<meta property="article:modified_time" content="'.$home->updated_at->toIso8601String().'" />', $html);
+    }
+
     public function test_service_page_in_header_menu_gets_service_offers_and_faq(): void
     {
         $page = $this->page('hospedagem', 'Hospedagem de sites | Quatro Ventos', [

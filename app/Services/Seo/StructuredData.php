@@ -102,6 +102,28 @@ class StructuredData
     }
 
     /**
+     * Um bloco ld+json por entidade: validadores simples leem só o @type do topo e ignoram @graph.
+     * As referências por @id continuam valendo entre blocos.
+     *
+     * @param  array<string, mixed>|null  $jsonld
+     * @return list<array<string, mixed>>
+     */
+    public static function scripts(?array $jsonld): array
+    {
+        if ($jsonld === null || $jsonld === []) {
+            return [];
+        }
+
+        if (! isset($jsonld['@graph']) || ! is_array($jsonld['@graph'])) {
+            return [$jsonld];
+        }
+
+        $context = $jsonld['@context'] ?? 'https://schema.org';
+
+        return array_values(array_map(fn (array $node) => ['@context' => $context, ...$node], $jsonld['@graph']));
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function organization(?SiteSetting $site, string $home, string $locale): array

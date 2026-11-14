@@ -64,6 +64,7 @@ export type PagePayload = {
   sections: Section[];
   seo: SeoPayload;
   case?: CaseDetail;
+  updated_at?: string | null;
 };
 
 export type FormField = {

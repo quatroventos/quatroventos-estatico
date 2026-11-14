@@ -33,9 +33,14 @@
       @endif
     @endif
     <meta name="twitter:card" content="{{ $seo['twitter_card'] }}" />
-    @if(!empty($payload['jsonld']))
-      <script type="application/ld+json">{!! json_encode($payload['jsonld'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+    <meta name="author" content="{{ $seo['og_site_name'] }}" />
+    @if(!empty($payload['updated_at']))
+      <meta property="og:updated_time" content="{{ $payload['updated_at'] }}" />
+      <meta property="article:modified_time" content="{{ $payload['updated_at'] }}" />
     @endif
+    @foreach(\App\Services\Seo\StructuredData::scripts($payload['jsonld'] ?? null) as $jsonld)
+      <script type="application/ld+json">{!! json_encode($jsonld, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
+    @endforeach
     @if(!empty($cmsPreview))
       @viteReactRefresh
       @vite(['resources/css/site.css', 'resources/js/site/main.tsx'])

@@ -143,6 +143,7 @@ class PublicContent
             'alternates' => $alternates,
             'template' => $page->template,
             'sections' => $this->sections($page),
+            'updated_at' => $page->updated_at?->toIso8601String(),
             'seo' => $seo,
             'jsonld' => $this->structuredData->page($page, $seo, $locale),
         ];
@@ -172,6 +173,7 @@ class PublicContent
             'alternates' => $alternates,
             'template' => 'case',
             'sections' => $this->resolveSections($case->sections(), $locale, null),
+            'updated_at' => $case->updated_at?->toIso8601String(),
             'case' => [
                 ...$this->caseCard($case, 0, $locale),
                 'year' => $case->year,

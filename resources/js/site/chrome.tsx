@@ -266,8 +266,12 @@ function MobileItem({ item, expanded, onToggle, tabbable }: { item: MenuNode; ex
   );
 }
 
-export function Footer({ site, locale, alternates }: { site: SitePayload | null; locale: string; alternates: Alternates }) {
+export function Footer({ site, locale, alternates, updatedAt }: { site: SitePayload | null; locale: string; alternates: Alternates; updatedAt?: string | null }) {
   const year = new Date().getFullYear();
+  const updated = updatedAt ? new Date(updatedAt) : null;
+  const updatedLabel = updated && !Number.isNaN(updated.getTime())
+    ? updated.toLocaleDateString(locale, { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric' })
+    : null;
   const columns = (site?.menus.footer ?? []).filter((item) => item.children.length > 0);
   const loose = (site?.menus.footer ?? []).filter((item) => item.children.length === 0);
   const social = [
@@ -309,7 +313,10 @@ export function Footer({ site, locale, alternates }: { site: SitePayload | null;
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© {year} {site?.name || 'Quatro Ventos'}. {t('footer.since')}</span>
+          <span>
+            © {year} {site?.name || 'Quatro Ventos'}. {t('footer.since')}
+            {updatedLabel ? <> {t('footer.updated')} <time dateTime={updatedAt ?? undefined}>{updatedLabel}</time>.</> : null}
+          </span>
           <span className="footer-motto">Design, Code, Test, Repeat.</span>
           {site?.legal?.privacy || site?.legal?.cookies ? (
             <nav aria-label={t('footer.legal')}>

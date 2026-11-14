@@ -191,7 +191,7 @@ export function App() {
         ) : null}
         {!missing && synced && page && !page.case ? <Sections sections={page.sections} form={site?.form ?? null} /> : null}
       </main>
-      <Footer site={site} locale={locale} alternates={synced ? page?.alternates : undefined} />
+      <Footer site={site} locale={locale} alternates={synced ? page?.alternates : undefined} updatedAt={synced && !missing ? page?.updated_at : undefined} />
       <WhatsAppFloat href={site?.whatsapp_url} />
       <LangFloat site={site} locale={locale} alternates={synced ? page?.alternates : undefined} />
     </div>
