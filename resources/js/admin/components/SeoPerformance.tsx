@@ -2,6 +2,7 @@ import { type FormEvent, type ReactNode, useCallback, useEffect, useMemo, useSta
 import { ChevronDown, ChevronRight, ExternalLink, RefreshCw, Trash2 } from 'lucide-react';
 import { api, firstError } from '../api';
 import { Modal } from './Modal';
+import { type AiReadiness, SeoAiChecks } from './SeoAiChecks';
 
 type Failure = { state: 'unavailable' | 'unconfigured'; message: string; action_url?: string | null };
 
@@ -89,7 +90,7 @@ const PANELS: { key: PanelKey; label: string; hint: string }[] = [
   { key: 'keywords', label: 'Palavras-chave', hint: 'Termos salvos e pesquisa de novas ideias.' },
   { key: 'index', label: 'Indexação', hint: 'Se o Google indexou as páginas do sitemap.' },
   { key: 'domain', label: 'Domínio', hint: 'Tráfego orgânico estimado e backlinks.' },
-  { key: 'ai', label: 'IA', hint: 'Menções da marca em respostas do ChatGPT e outras IAs.' },
+  { key: 'ai', label: 'IA', hint: 'Prontidão do site e menções da marca em respostas do ChatGPT e outras IAs.' },
 ];
 
 const RANGES = [
@@ -850,6 +851,40 @@ function RateStat({ label, rate }: { label: string; rate: Rate }) {
   );
 }
 
+function AiReadinessPanel() {
+  const [data, setData] = useState<AiReadiness | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const response = await api<{ data: AiReadiness }>('/seo/ai-readiness');
+      setData(response.data);
+    } catch (failure) {
+      setError(firstError(failure));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void load();
+  }, [load]);
+
+  return (
+    <section className="panel oseo-panel">
+      <PanelHead title="Prontidão do site para IA" hint="Se os buscadores de IA conseguem ler o site, entender quem é a empresa e encontrar preço, contato e respostas. Calculado com os dados do CMS, sem consultar o OpenSEO." loading={loading} onRefresh={() => void load()} />
+      <div className="panel-body">
+        {error ? <div className="form-error">{error}</div> : null}
+        {!data && loading ? <Loading /> : null}
+        {data ? <SeoAiChecks data={data} title="Site inteiro" hint="Para a nota de cada página, abra a página no editor e veja o bloco Buscadores de IA no painel de SEO." /> : null}
+      </div>
+    </section>
+  );
+}
+
 function AiPanel() {
   const [days, setDays] = useState(28);
   const { data, loading, error, reload } = useOpenSeo<AiVisibility>(`/ai?days=${days}`);
@@ -987,7 +1022,12 @@ export function SeoPerformance({ sitemapPaths, canEdit, onOpenIntegrations }: { 
             {current.key === 'keywords' ? <KeywordsPanel canEdit={canEdit} paid={info.paid} /> : null}
             {current.key === 'index' ? <IndexPanel key={siteUrl} urls={sitemapUrls} /> : null}
             {current.key === 'domain' ? <DomainPanel canEdit={canEdit} /> : null}
-            {current.key === 'ai' ? <AiPanel /> : null}
+            {current.key === 'ai' ? (
+              <>
+                <AiReadinessPanel />
+                <AiPanel />
+              </>
+            ) : null}
           </>
         )}
       </div>

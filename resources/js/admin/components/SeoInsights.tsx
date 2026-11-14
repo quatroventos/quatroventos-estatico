@@ -4,6 +4,7 @@ import { api, firstError } from '../api';
 import { getPath } from '../lib';
 import { formatMs, ScoreRing, scoreTone } from './SiteHealth';
 import { AI_UNAVAILABLE } from './SectionCopy';
+import { type AiReadiness, SeoAiChecks } from './SeoAiChecks';
 
 export type SeoTarget = { type: 'seo_title' | 'seo_description' | 'section' | 'field'; index?: number; path?: string; name?: string };
 
@@ -30,7 +31,7 @@ type Check = {
   fix: SeoTarget | null;
 };
 
-type Analysis = { score: number | null; keyword: string; words: number; rendered?: boolean; rendered_at?: string; checks: Check[] };
+type Analysis = { score: number | null; keyword: string; words: number; rendered?: boolean; rendered_at?: string; checks: Check[]; ai?: AiReadiness };
 
 type Audit = { id: string; title: string; display: string | null; score: number; category: string };
 
@@ -397,6 +398,14 @@ export function SeoInsights({
             </ul>
           ) : null}
         </>
+      ) : null}
+
+      {current?.ai ? (
+        <SeoAiChecks
+          data={current.ai}
+          title="Buscadores de IA"
+          hint="O que ChatGPT, Perplexity e AI Overviews conseguem extrair e citar desta página. Não depende da palavra-chave."
+        />
       ) : null}
 
       {market ? (

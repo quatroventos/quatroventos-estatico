@@ -31,11 +31,15 @@ class SeoAnalyzer
 
     public const DIFFICULTY_OK = 70;
 
-    public function __construct(private MarketInsights $market) {}
+    public const PRICE_PATTERN = '/R\$\s?\d/u';
+
+    public const BUDGET_PATTERN = '/\b(orçamento|orçamentos|preço|preços|valor(es)? do|investimento|quanto custa|a partir de|budget|pricing|quote|presupuesto|precio)/iu';
+
+    public function __construct(private MarketInsights $market, private StructuredData $structuredData) {}
 
     /**
      * @param  array{kind: string, id?: int|null, keyword?: string|null, seo_title?: string|null, seo_description?: string|null, slug?: string|null, home?: bool, title?: string|null, summary?: string|null, client?: string|null, cover_alt?: string|null, og_image_alt?: string|null, sections: list<array{type: string, data: array<string, mixed>}>}  $input
-     * @return array{score: int|null, keyword: string, words: int, rendered: bool, checks: list<Check>}
+     * @return array{score: int|null, keyword: string, words: int, rendered: bool, checks: list<Check>, ai: array{score: int, checks: list<Check>}}
      */
     public function analyze(array $input, ?PageDocument $document = null): array
     {
@@ -43,6 +47,8 @@ class SeoAnalyzer
         $document ??= PageDocument::make($input['kind'], $input['sections'], $input);
         $words = $document->wordCount();
         $rendered = $document->structure !== null;
+        $aiChecks = $this->aiChecks($input, $document, $words);
+        $ai = ['score' => $this->score($aiChecks), 'checks' => $aiChecks];
 
         if ($keyword === '') {
             return [
@@ -51,6 +57,7 @@ class SeoAnalyzer
                 'words' => $words,
                 'rendered' => $rendered,
                 'checks' => [$this->check('keyword', 'Palavra-chave', 'bad', 'Defina a palavra-chave principal para calcular a nota.', 0)],
+                'ai' => $ai,
             ];
         }
 
@@ -160,7 +167,143 @@ class SeoAnalyzer
             'words' => $words,
             'rendered' => $rendered,
             'checks' => $checks,
+            'ai' => $ai,
         ];
+    }
+
+    /**
+     * Prontidão para buscadores de IA (ChatGPT, Perplexity, AI Overviews): o que eles conseguem extrair
+     * e citar da página, independente da palavra-chave.
+     *
+     * @param  array<string, mixed>  $input
+     * @return list<Check>
+     */
+    private function aiChecks(array $input, PageDocument $document, int $words): array
+    {
+        $sections = is_array($input['sections'] ?? null) ? $input['sections'] : [];
+        $text = $document->fullText();
+        $checks = [];
+
+        $types = $this->schemaTypes($input, $sections);
+        $specific = array_diff($types, ['ProfessionalService', 'WebSite', 'WebPage', 'BreadcrumbList']);
+        $checks[] = $specific !== [] || ! empty($input['home'])
+            ? $this->check('ai_schema', 'Dados estruturados', 'good', 'JSON-LD gerado: '.implode(', ', $types).'.', 3)
+            : $this->check('ai_schema', 'Dados estruturados', 'ok', 'JSON-LD só com '.implode(', ', $types).'. Página de serviço ganha Service quando está no menu principal; perguntas frequentes viram FAQPage.', 3);
+
+        $hasPrices = self::hasPrices($sections) || preg_match(self::PRICE_PATTERN, $text) === 1;
+        $mentionsBudget = preg_match(self::BUDGET_PATTERN, $text) === 1;
+        $checks[] = match (true) {
+            $hasPrices => $this->check('ai_price', 'Preço ou orçamento', 'good', 'A página mostra preços. IAs citam páginas que respondem "quanto custa".', 3),
+            $mentionsBudget => $this->check('ai_price', 'Preço ou orçamento', 'ok', 'Fala de orçamento, mas sem faixa de valor. Explicar do que o preço depende já ajuda; uma faixa "a partir de" ajuda mais.', 3),
+            default => $this->check('ai_price', 'Preço ou orçamento', 'bad', 'Nenhuma menção a preço ou orçamento. Quem pergunta "quanto custa" para a IA não encontra resposta aqui.', 3),
+        };
+
+        $introWords = $document->intro !== null ? count(Keyword::words($document->intro['text'])) : 0;
+        $hasH1 = $document->h1 !== null && $document->h1['text'] !== '';
+        $checks[] = match (true) {
+            $hasH1 && $introWords >= 15 => $this->check('ai_answer_first', 'Resposta direta no começo', 'good', 'Título principal e introdução dizem o que é antes do resto.', 2),
+            $hasH1 => $this->check('ai_answer_first', 'Resposta direta no começo', 'ok', 'Falta uma introdução de 1 ou 2 frases logo abaixo do título dizendo o que é, para quem e o resultado.', 2, $document->intro['target'] ?? null),
+            default => $this->check('ai_answer_first', 'Resposta direta no começo', 'bad', 'Sem título principal. A IA não identifica do que a página trata.', 2),
+        };
+
+        $checks[] = match (true) {
+            $words >= 500 => $this->check('ai_depth', 'Conteúdo citável', 'good', $words.' palavras de texto no HTML.', 2),
+            $words >= self::WORDS_GOOD => $this->check('ai_depth', 'Conteúdo citável', 'ok', $words.' palavras. Acima de 500 a página tem mais trechos que a IA pode citar.', 2),
+            default => $this->check('ai_depth', 'Conteúdo citável', 'bad', $words.' palavras. Pouco texto para a IA extrair resposta.', 2),
+        };
+
+        $faq = $this->faqCount($sections);
+        $checks[] = match (true) {
+            $faq >= 3 => $this->check('ai_faq', 'Perguntas e respostas', 'good', $faq.' perguntas frequentes, publicadas também como FAQPage.', 2),
+            $faq > 0 => $this->check('ai_faq', 'Perguntas e respostas', 'ok', 'Só '.$faq.($faq === 1 ? ' pergunta' : ' perguntas').'. Três ou mais cobrem as dúvidas que as pessoas fazem para a IA.', 2),
+            default => $this->check('ai_faq', 'Perguntas e respostas', 'ok', 'Sem seção de perguntas frequentes. Perguntas reais com respostas curtas são o formato que a IA mais cita.', 2),
+        };
+
+        $facts = preg_match_all('/\b\d+([.,]\d+)?\s?(%|x|mil|anos|dias|horas|h|ms|clientes|projetos|sites)?\b/iu', $text);
+        $checks[] = $facts >= 3
+            ? $this->check('ai_facts', 'Números e fatos', 'good', 'O texto traz dados concretos (prazos, números, resultados).', 1)
+            : $this->check('ai_facts', 'Números e fatos', 'ok', 'Poucos números no texto. Prazos, resultados e quantidades deixam a resposta citável.', 1);
+
+        $headings = count($document->headings);
+        $checks[] = $headings >= 3
+            ? $this->check('ai_headings', 'Blocos com subtítulo', 'good', $headings.' subtítulos dividem o conteúdo em respostas.', 1)
+            : $this->check('ai_headings', 'Blocos com subtítulo', $headings > 0 ? 'ok' : 'bad', $headings.' subtítulos. Blocos curtos com H2 facilitam a extração de trechos.', 1);
+
+        return $checks;
+    }
+
+    /**
+     * @param  array<string, mixed>  $input
+     * @param  list<array<string, mixed>>  $sections
+     * @return list<string>
+     */
+    private function schemaTypes(array $input, array $sections): array
+    {
+        if ($input['kind'] === 'case') {
+            return ['ProfessionalService', 'CreativeWork', 'BreadcrumbList'];
+        }
+
+        if (! empty($input['home'])) {
+            return ['ProfessionalService', 'WebSite', 'WebPage'];
+        }
+
+        $types = ['ProfessionalService', 'WebSite', 'WebPage', 'BreadcrumbList'];
+        $page = ! empty($input['id']) ? Page::query()->find((int) $input['id']) : null;
+        if ($page !== null && $this->structuredData->isServicePage($page, $page->localeCode())) {
+            $types[] = 'Service';
+        }
+
+        if ($this->faqCount($sections) > 0) {
+            $types[] = 'FAQPage';
+        }
+
+        return $types;
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $sections
+     */
+    private function faqCount(array $sections): int
+    {
+        $count = 0;
+        foreach ($sections as $section) {
+            if (($section['type'] ?? null) === 'site.faq') {
+                $items = is_array($section['data']['items'] ?? null) ? $section['data']['items'] : [];
+                $count += count(array_filter($items, fn ($item) => is_array($item) && trim(strip_tags((string) ($item['question'] ?? ''))) !== ''));
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $sections
+     */
+    public static function hasPrices(array $sections): bool
+    {
+        foreach ($sections as $section) {
+            $data = is_array($section['data'] ?? null) ? $section['data'] : [];
+
+            if (($section['type'] ?? null) === 'site.plans') {
+                foreach (is_array($data['items'] ?? null) ? $data['items'] : [] as $item) {
+                    if (StructuredData::parsePrice((string) ($item['price'] ?? '')) !== null) {
+                        return true;
+                    }
+                }
+            }
+
+            if (($section['type'] ?? null) === 'site.pricing') {
+                foreach (is_array($data['categories'] ?? null) ? $data['categories'] : [] as $category) {
+                    foreach (is_array($category['plans'] ?? null) ? $category['plans'] : [] as $plan) {
+                        if (StructuredData::parsePrice((string) ($plan['monthly'] ?? '')) !== null) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

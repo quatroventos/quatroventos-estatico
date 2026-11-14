@@ -8,6 +8,12 @@
         "value": "montserrat",
         "createdAt": "2026-10-28T22:33:47.217Z",
         "reason": "Fonte publicada do site da Quatro Ventos; o porte do CMS mantém Montserrat de propósito."
+      },
+      {
+        "rule": "design-system-font",
+        "value": "sfmono-regular",
+        "createdAt": "2026-11-14T01:53:12.064Z",
+        "reason": "Pilha monoespaçada do sistema em código/URLs no admin, preexistente"
       }
     ]
   }

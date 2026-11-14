@@ -7,6 +7,7 @@ use App\Models\CaseStudy;
 use App\Models\MenuItem;
 use App\Models\Page;
 use App\Models\SiteSetting;
+use App\Services\Seo\StructuredData;
 use App\Services\Translation\LinkLocalizer;
 use App\Services\Translation\SiteTranslator;
 use App\Support\Locales;
@@ -30,7 +31,7 @@ class PublicContent
     /** @var array<string, array<string, array{label: string, path: string}>> */
     private array $serviceTitles = [];
 
-    public function __construct(private SystemOptions $options, private LinkLocalizer $links) {}
+    public function __construct(private SystemOptions $options, private LinkLocalizer $links, private StructuredData $structuredData) {}
 
     /**
      * @return array<string, mixed>
@@ -143,15 +144,7 @@ class PublicContent
             'template' => $page->template,
             'sections' => $this->sections($page),
             'seo' => $seo,
-            'jsonld' => [
-                '@context' => 'https://schema.org',
-                '@type' => 'WebPage',
-                'name' => $seo['title'],
-                'description' => $seo['description'],
-                'url' => $seo['canonical'],
-                'inLanguage' => Locales::hreflang($locale),
-                'isPartOf' => ['@type' => 'WebSite', 'name' => $seo['og_site_name'], 'url' => url(Locales::path($locale, '/'))],
-            ],
+            'jsonld' => $this->structuredData->page($page, $seo, $locale),
         ];
     }
 
@@ -201,6 +194,7 @@ class PublicContent
             'jsonld' => [
                 '@context' => 'https://schema.org',
                 '@graph' => [
+                    $this->structuredData->organization($site, url(Locales::path($locale, '/')), $locale),
                     array_filter([
                         '@type' => 'CreativeWork',
                         'name' => $case->title,
@@ -209,7 +203,9 @@ class PublicContent
                         'url' => url($case->publicPath()),
                         'inLanguage' => Locales::hreflang($locale),
                         'dateCreated' => $case->year ? (string) $case->year : null,
-                        'creator' => ['@type' => 'Organization', 'name' => $defaults['og_site_name'], 'url' => url(Locales::path($locale, '/'))],
+                        'datePublished' => $case->published_at?->toIso8601String(),
+                        'dateModified' => $case->updated_at?->toIso8601String(),
+                        'creator' => ['@id' => url(Locales::path($locale, '/')).'#organization'],
                         'about' => ['@type' => 'Organization', 'name' => $case->client],
                     ]),
                     [

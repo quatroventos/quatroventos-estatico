@@ -1125,6 +1125,20 @@ td.person span {
   border-top: 1px solid var(--line-strong);
 }
 
+.seo-ai {
+  display: grid;
+  gap: 10px;
+}
+
+.seo-insights > .seo-ai {
+  padding-top: 12px;
+  border-top: 1px solid var(--line-strong);
+}
+
+.oseo-panel + .oseo-panel {
+  margin-top: 14px;
+}
+
 .seo-market .hint {
   margin: 0;
 }

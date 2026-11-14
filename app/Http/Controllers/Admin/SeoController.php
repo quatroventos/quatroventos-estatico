@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Page;
 use App\Models\SiteSetting;
+use App\Services\Seo\AiReadiness;
 use App\Services\SitemapService;
 use App\Support\Seo;
 use Illuminate\Http\JsonResponse;
@@ -18,6 +19,13 @@ class SeoController extends Controller
         $this->authorize('view', $settings);
 
         return response()->json(['data' => $this->payload($settings, $sitemap)]);
+    }
+
+    public function aiReadiness(AiReadiness $readiness): JsonResponse
+    {
+        $this->authorize('view', SiteSetting::current());
+
+        return response()->json(['data' => $readiness->site()]);
     }
 
     public function update(Request $request, SitemapService $sitemap): JsonResponse

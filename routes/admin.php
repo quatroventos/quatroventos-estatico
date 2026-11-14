@@ -132,6 +132,7 @@ Route::prefix($admin)->group(function () {
             Route::get('tags', [SiteSettingController::class, 'tags']);
             Route::put('tags', [SiteSettingController::class, 'updateTags']);
             Route::get('seo', [SeoController::class, 'show']);
+            Route::get('seo/ai-readiness', [SeoController::class, 'aiReadiness']);
             Route::put('seo', [SeoController::class, 'update']);
             Route::get('seo/openseo', [OpenSeoController::class, 'show']);
             Route::get('seo/openseo/search-console', [OpenSeoController::class, 'searchConsole']);
