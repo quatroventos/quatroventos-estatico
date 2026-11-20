@@ -51,6 +51,6 @@ class RestrictHttpMethods
             return true;
         }
 
-        return $request->is('api/contato', 'api/contato/lead') && $request->isMethod('POST');
+        return $request->is('api/contato', 'api/contato/lead', 'api/meu-site-aparece-na-ia') && $request->isMethod('POST');
     }
 }

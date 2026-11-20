@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\AiVisibilityReport;
 use App\Models\CaseStudy;
 use App\Models\Page;
 use App\Support\Locales;
@@ -108,6 +109,11 @@ class SitemapService
             $lines[] = '';
         }
 
+        $lines[] = '## Ferramentas';
+        $lines[] = '';
+        $lines[] = '- [Seu site aparece na IA]('.$this->absolute('/'.AiVisibilityReport::PATH).'): Nota gratuita de prontidão para ChatGPT, Claude e Perplexity.';
+        $lines[] = '';
+
         $pages = Page::query()->published()->get()
             ->reject(fn (Page $page) => str_contains(strtolower((string) $page->robots), 'noindex'))
             ->groupBy(fn (Page $page) => Locales::normalize($page->localeCode()));
@@ -171,7 +177,17 @@ class SitemapService
                 'alternates' => [],
             ]);
 
-        return $pages->concat($cases)->concat($extra)->values()->all();
+        $tools = collect([[
+            'source' => 'tool',
+            'slug' => AiVisibilityReport::PATH,
+            'locale' => Locales::default(),
+            'path' => '/'.AiVisibilityReport::PATH,
+            'loc' => $this->absolute('/'.AiVisibilityReport::PATH),
+            'lastmod' => now()->toAtomString(),
+            'alternates' => [],
+        ]]);
+
+        return $tools->concat($pages)->concat($cases)->concat($extra)->values()->all();
     }
 
     /**

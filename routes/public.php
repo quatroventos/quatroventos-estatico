@@ -1,11 +1,13 @@
 <?php
 
+use App\Http\Controllers\AiVisibilityController;
 use App\Http\Controllers\PublicContentController;
 use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\SiteAnalyticsController;
 use App\Http\Controllers\SiteController;
 use App\Http\Controllers\SiteFormController;
 use App\Http\Middleware\DetectLocale;
+use App\Models\AiVisibilityReport;
 use App\Models\Page;
 use App\Support\Locales;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +43,15 @@ Route::get('/sitemap.xml', [SiteController::class, 'sitemap'])->name('sitemap');
 Route::get('/robots.txt', [SiteController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SiteController::class, 'llms'])->name('llms');
 Route::get('/llm.txt', [SiteController::class, 'llms'])->name('llm');
+
+Route::get('/'.AiVisibilityReport::PATH, [AiVisibilityController::class, 'show'])->name('ai-visibility');
+Route::get('/'.AiVisibilityReport::PATH.'/{report}', [AiVisibilityController::class, 'report'])
+    ->where('report', '[A-Za-z0-9_-]{10,32}')
+    ->name('ai-visibility.report');
+Route::post('/api/'.AiVisibilityReport::PATH, [AiVisibilityController::class, 'analyze'])
+    ->middleware('throttle:8,1')
+    ->name('ai-visibility.analyze');
+
 Route::get('/{legacy}.php', [SiteController::class, 'legacyPhp'])
     ->where('legacy', '[a-z0-9_-]+')
     ->name('legacy.php');

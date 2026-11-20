@@ -160,6 +160,7 @@ class Page extends Model
             'robots.txt',
             'llms.txt',
             'llm.txt',
+            AiVisibilityReport::PATH,
             $admin,
         ]));
     }
