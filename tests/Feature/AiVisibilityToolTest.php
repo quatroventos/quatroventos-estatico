@@ -18,14 +18,19 @@ class AiVisibilityToolTest extends TestCase
         $html = $this->get('/'.AiVisibilityReport::PATH)
             ->assertOk()
             ->assertSee('Seu negócio aparece quando perguntam para a', false)
+            ->assertSee('Três eixos, uma nota de 0 a 100', false)
             ->assertSee('application/ld+json', false)
             ->assertSee('WebApplication', false)
             ->assertSee('FAQPage', false)
             ->assertSee('name="author"', false)
+            ->assertDontSee('Aplicar no meu site', false)
             ->getContent();
 
         $this->assertStringContainsString('É gratuito?', $html);
         $this->assertStringContainsString('orçamento', $html);
+        $this->assertStringContainsString('aria-live="polite"', $html);
+        $this->assertStringContainsString('a Quatro Ventos envia proposta', $html);
+        $this->assertStringNotContainsString('a gente', $html);
     }
 
     public function test_analyze_stores_shareable_report(): void
@@ -88,6 +93,6 @@ HTML, 200);
 
         $this->get('/llms.txt')
             ->assertOk()
-            ->assertSee('Seu site aparece na IA', false);
+            ->assertSee('Seu negócio aparece na IA', false);
     }
 }

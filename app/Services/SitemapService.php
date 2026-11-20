@@ -111,7 +111,7 @@ class SitemapService
 
         $lines[] = '## Ferramentas';
         $lines[] = '';
-        $lines[] = '- [Seu site aparece na IA]('.$this->absolute('/'.AiVisibilityReport::PATH).'): Nota gratuita de prontidão para ChatGPT, Claude e Perplexity.';
+        $lines[] = '- [Seu negócio aparece na IA]('.$this->absolute('/'.AiVisibilityReport::PATH).'): Nota gratuita de prontidão para ChatGPT, Claude e Perplexity.';
         $lines[] = '';
 
         $pages = Page::query()->published()->get()

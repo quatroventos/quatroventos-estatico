@@ -4,6 +4,7 @@
   $whatsapp = $sitePayload['whatsapp_url'] ?? null;
   $home = $sitePayload['home_path'] ?? '/';
   $bandLabel = ['alto' => 'Pronto para ser citado: alto', 'medio' => 'Quase lá: médio', 'baixo' => 'Ainda frágil: baixo'];
+  $statusChip = ['good' => 'OK', 'ok' => 'Parcial', 'bad' => 'Falha'];
 @endphp
 <!doctype html>
 <html lang="pt-BR">
@@ -40,12 +41,14 @@
         <a class="brand" href="{{ $home }}" aria-label="{{ $brand }}, início">
           <img src="{{ $logo }}" alt="" width="436" height="69" />
         </a>
-        <nav aria-label="Ferramenta">
-          <a href="{{ $toolPath }}">Nova análise</a>
-          @if($whatsapp)
-            <a class="pill solid small" href="{{ $whatsapp }}" target="_blank" rel="noreferrer">Aplicar no meu site</a>
-          @endif
-        </nav>
+        @if($report)
+          <nav aria-label="Ferramenta">
+            <a href="{{ $toolPath }}">Nova análise</a>
+            @if($whatsapp)
+              <a class="pill solid small" href="{{ $whatsapp }}" target="_blank" rel="noreferrer">Aplicar no meu site</a>
+            @endif
+          </nav>
+        @endif
       </div>
     </header>
 
@@ -53,8 +56,8 @@
       @if($report)
         <section class="section ai-vis-hero is-report">
           <div class="wrap">
-            <p class="eyebrow">Analisado em {{ $report->created_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}</p>
             <h1>Nota de <em class="mark">{{ $report->host }}</em> na IA</h1>
+            <p class="ai-vis-meta">Analisado em {{ $report->created_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}</p>
             <div class="ai-vis-score" data-score="{{ $report->score }}">
               <strong>{{ $report->score }}</strong>
               <span>de 100</span>
@@ -67,6 +70,9 @@
             <div class="ai-vis-actions">
               <button type="button" class="pill line" data-copy="{{ url($report->publicPath()) }}">Copiar link do relatório</button>
               <a class="pill solid" href="{{ $toolPath }}">Analisar outro site</a>
+              @if($whatsapp)
+                <a class="pill solid" href="{{ $whatsapp }}" target="_blank" rel="noreferrer">Aplicar no meu site</a>
+              @endif
             </div>
           </div>
         </section>
@@ -78,7 +84,10 @@
               @foreach($report->checks as $check)
                 <li class="is-{{ $check['status'] }}">
                   <div>
-                    <strong>{{ $check['label'] }}</strong>
+                    <strong>
+                      <span class="ai-vis-chip is-{{ $check['status'] }}">{{ $statusChip[$check['status']] ?? $check['status'] }}</span>
+                      {{ $check['label'] }}
+                    </strong>
                     <p>{{ $check['message'] }}</p>
                   </div>
                   <span>{{ $check['points'] }} de {{ $check['max'] }} pontos</span>
@@ -113,10 +122,25 @@
         @endif
       @else
         <section class="section ai-vis-hero">
+          <div class="ai-vis-atmosphere" aria-hidden="true">
+            <div class="agent-log">
+              <div>
+                <span><span class="k">scan</span> home → <span class="s">ok</span>{!! "\n" !!}</span>
+                <span><span class="k">robots</span> gptbot · claude · perplexity{!! "\n" !!}</span>
+                <span><span class="k">html</span> body text <span class="s">readable</span>{!! "\n" !!}</span>
+                <span><span class="k">schema</span> <span class="p">json-ld</span> · faq · service{!! "\n" !!}</span>
+                <span><span class="k">score</span> <span class="s">0–100</span> · band{!! "\n" !!}</span>
+                <span><span class="k">scan</span> home → <span class="s">ok</span>{!! "\n" !!}</span>
+                <span><span class="k">robots</span> gptbot · claude · perplexity{!! "\n" !!}</span>
+                <span><span class="k">html</span> body text <span class="s">readable</span>{!! "\n" !!}</span>
+                <span><span class="k">schema</span> <span class="p">json-ld</span> · faq · service{!! "\n" !!}</span>
+                <span><span class="k">score</span> <span class="s">0–100</span> · band{!! "\n" !!}</span>
+              </div>
+            </div>
+          </div>
           <div class="wrap">
-            <p class="eyebrow">Ferramenta gratuita · sem cadastro</p>
             <h1>Seu negócio aparece quando perguntam para a <em class="mark">IA</em>?</h1>
-            <p class="lead">Cada vez mais gente pergunta ao ChatGPT, ao Claude e ao Gemini onde comprar, contratar ou aprender. Digite o endereço do seu site e veja, em menos de um minuto, se esses assistentes conseguem ler e citar o seu negócio.</p>
+            <p class="lead">Ferramenta gratuita, sem cadastro. Digite o endereço do site e veja, em menos de um minuto, se ChatGPT, Claude e Gemini conseguem ler e citar o seu negócio.</p>
             <form class="ai-vis-form" id="ai-vis-form" action="{{ $analyzeUrl }}" method="post" novalidate>
               @csrf
               <label class="sr-only" for="ai-vis-url">URL do site</label>
@@ -124,25 +148,52 @@
               <input type="text" name="empresa_site" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
               <button class="pill solid" type="submit">Ver minha nota</button>
             </form>
-            <p class="hint" id="ai-vis-status" hidden></p>
-            <p class="ai-vis-price">A nota técnica é gratuita. Nada é instalado no seu site. Se quiser implementação das correções, o orçamento depende do que faltar — a gente envia proposta fechada depois do diagnóstico.</p>
+            <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
+            <p class="ai-vis-price">A nota é gratuita. Nada é instalado no site. Implementar as correções é orçamento à parte — a Quatro Ventos envia proposta fechada depois do diagnóstico.</p>
           </div>
         </section>
 
         <section class="section on-dark" aria-labelledby="criterios">
           <div class="wrap">
-            <h2 id="criterios" class="h2">Nove verificações, uma nota de 0 a 100</h2>
-            <p class="intro">Lemos a página inicial do seu site do mesmo jeito que um robô de IA lê. Para cada ponto fraco, você recebe o passo a passo para corrigir, em português simples.</p>
-            <ul class="ai-vis-criteria">
-              <li><strong>Robôs das IAs liberados</strong><span>20 pts</span><p>O robots.txt não pede para ChatGPT, Claude, Perplexity e Google (IA) ficarem de fora.</p></li>
-              <li><strong>Conteúdo legível sem JavaScript</strong><span>20 pts</span><p>O texto da página inicial chega pronto, sem depender de JavaScript para aparecer.</p></li>
-              <li><strong>Responde o que é, para quem e quanto custa</strong><span>15 pts</span><p>A home diz o que você oferece, para quem é e quanto custa — ou como o orçamento funciona.</p></li>
-              <li><strong>Dados estruturados</strong><span>10 pts</span><p>JSON-LD descrevendo o negócio (serviço, produto, FAQ ou empresa local).</p></li>
-              <li><strong>Tempo de resposta e HTTPS</strong><span>10 pts</span><p>Cadeado e resposta rápida.</p></li>
-              <li><strong>Título e descrição</strong><span>10 pts</span><p>Title e meta description com tamanho útil.</p></li>
-              <li><strong>Arquivo llms.txt</strong><span>5 pts</span><p>Resumo do negócio escrito para assistentes de IA.</p></li>
-              <li><strong>Autor, data e página Sobre</strong><span>5 pts</span><p>Quem está por trás e quando o conteúdo foi atualizado.</p></li>
-              <li><strong>Sitemap</strong><span>5 pts</span><p>Lista das páginas do site.</p></li>
+            <h2 id="criterios" class="h2">Três eixos, uma nota de 0 a 100</h2>
+            <p class="intro">Lemos a home do mesmo jeito que um robô de IA. Cada eixo agrupa as verificações; para cada ponto fraco, o relatório traz o passo a passo em português.</p>
+            <ul class="ai-vis-groups">
+              <li>
+                <div class="ai-vis-group-head">
+                  <strong>Acesso</strong>
+                  <span>40 pts</span>
+                </div>
+                <p>Os robôs das IAs entram e o texto chega legível sem depender de JavaScript.</p>
+                <ul>
+                  <li>Robôs das IAs liberados · 20 pts</li>
+                  <li>Conteúdo legível sem JavaScript · 20 pts</li>
+                </ul>
+              </li>
+              <li>
+                <div class="ai-vis-group-head">
+                  <strong>Clareza</strong>
+                  <span>45 pts</span>
+                </div>
+                <p>A home diz o que é, para quem é e quanto custa — com dados estruturados, meta e HTTPS rápidos.</p>
+                <ul>
+                  <li>O que é, para quem e quanto custa · 15 pts</li>
+                  <li>Dados estruturados · 10 pts</li>
+                  <li>Tempo de resposta e HTTPS · 10 pts</li>
+                  <li>Título e descrição · 10 pts</li>
+                </ul>
+              </li>
+              <li>
+                <div class="ai-vis-group-head">
+                  <strong>Confiança</strong>
+                  <span>15 pts</span>
+                </div>
+                <p>Sinais de quem está por trás e como o site se organiza para assistentes.</p>
+                <ul>
+                  <li>Arquivo llms.txt · 5 pts</li>
+                  <li>Autor, data e página Sobre · 5 pts</li>
+                  <li>Sitemap · 5 pts</li>
+                </ul>
+              </li>
             </ul>
           </div>
         </section>
@@ -152,7 +203,7 @@
             <h2 id="para-quem" class="h2">Para quem é</h2>
             <p>Para donos de site, marketing e agências que querem saber se o negócio é citável por assistentes de IA — antes de investir em conteúdo ou em mídia. Feito para empresas brasileiras que já têm um site no ar.</p>
             <h2 class="h2">Como calculamos</h2>
-            <p>São nove verificações que somam 100 pontos. Cada uma vale tudo, metade ou zero. Nota de 0 a 39: baixo; de 40 a 69: médio; de 70 a 100: alto. A análise foca a home e os arquivos da raiz (robots, llms, sitemap).</p>
+            <p>Nove verificações em três eixos somam 100 pontos. Cada uma vale tudo, metade ou zero. Nota de 0 a 39: baixo; de 40 a 69: médio; de 70 a 100: alto. A análise foca a home e os arquivos da raiz (robots, llms, sitemap).</p>
           </div>
         </section>
 
@@ -163,11 +214,11 @@
               <div class="faq">
                 <details>
                   <summary>O que essa ferramenta mede?<span class="plus" aria-hidden="true"></span></summary>
-                  <div class="rich"><p>Nove verificações técnicas: acesso dos robôs de IA, texto no HTML, clareza de oferta e preço, JSON-LD, HTTPS, meta tags, llms.txt, confiança (Sobre/autor/data) e sitemap.</p></div>
+                  <div class="rich"><p>Três eixos (acesso, clareza, confiança) com nove verificações: robôs de IA, texto no HTML, oferta e preço, JSON-LD, HTTPS, meta tags, llms.txt, Sobre/autor/data e sitemap.</p></div>
                 </details>
                 <details>
                   <summary>É gratuito?<span class="plus" aria-hidden="true"></span></summary>
-                  <div class="rich"><p>Sim. A nota é gratuita e sem cadastro. Implementar as correções no seu site é um projeto à parte, com orçamento sob medida.</p></div>
+                  <div class="rich"><p>Sim. A nota é gratuita e sem cadastro. Implementar as correções no site é um projeto à parte, com orçamento sob medida.</p></div>
                 </details>
                 <details>
                   <summary>A análise olha o site inteiro?<span class="plus" aria-hidden="true"></span></summary>
@@ -175,7 +226,7 @@
                 </details>
                 <details>
                   <summary>Quem faz a ferramenta?<span class="plus" aria-hidden="true"></span></summary>
-                  <div class="rich"><p>A Quatro Ventos, de Curitiba: software, IA e sites. Usamos os mesmos critérios no SEO do nosso CMS.</p></div>
+                  <div class="rich"><p>A Quatro Ventos, de Curitiba: software, IA e sites. Usamos os mesmos critérios no SEO do nosso CMS. Se quiser que a Quatro Ventos aplique as correções no seu site, fale pelo WhatsApp.</p></div>
                 </details>
               </div>
             </div>

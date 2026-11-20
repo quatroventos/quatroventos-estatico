@@ -8404,6 +8404,11 @@ a.card:hover .go {
   font-family: var(--sans);
 }
 
+.ai-vis ::selection {
+  background: var(--lime);
+  color: var(--ink);
+}
+
 .ai-vis .wrap {
   width: min(100% - (var(--gutter) * 2), var(--max));
   margin-inline: auto;
@@ -8440,18 +8445,36 @@ a.card:hover .go {
   font-weight: 600;
 }
 
+.ai-vis-top nav a:not(.pill):focus-visible,
+.ai-vis-foot a:focus-visible,
+.ai-vis-actions .pill:focus-visible,
+.ai-vis-form .pill:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+}
+
 .ai-vis-hero {
+  position: relative;
+  overflow: clip;
   padding-block: clamp(64px, 10vw, 120px);
 }
 
-.ai-vis-hero .eyebrow,
-.ai-vis .eyebrow {
-  margin: 0 0 12px;
-  color: var(--lime);
-  font-family: var(--mono);
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+.ai-vis-atmosphere {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ai-vis-atmosphere .agent-log {
+  inset: -20px -10% auto;
+  opacity: 0.42;
+}
+
+.ai-vis-hero > .wrap {
+  position: relative;
+  z-index: 1;
 }
 
 .ai-vis-hero h1 {
@@ -8460,6 +8483,17 @@ a.card:hover .go {
   font-size: clamp(36px, 6vw, 72px);
   line-height: 0.98;
   letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+.ai-vis .mark {
+  color: var(--ink);
+  padding: 0 0.1em;
+  margin: 0 -0.04em;
+  background-image: linear-gradient(var(--lime), var(--lime));
+  background-repeat: no-repeat;
+  background-size: 100% 0.9em;
+  background-position: 0 0.55em;
 }
 
 .ai-vis-hero .lead,
@@ -8469,6 +8503,13 @@ a.card:hover .go {
   color: var(--on-dark-soft);
   font-size: clamp(17px, 2vw, 20px);
   line-height: 1.45;
+}
+
+.ai-vis-meta {
+  margin: 12px 0 0;
+  color: var(--on-dark-mute);
+  font-family: var(--mono);
+  font-size: 13px;
 }
 
 .ai-vis-form {
@@ -8486,6 +8527,12 @@ a.card:hover .go {
   border-radius: 999px;
   background: var(--panel);
   color: var(--on-dark);
+  caret-color: var(--lime);
+}
+
+.ai-vis-form input[type="url"]::placeholder {
+  color: #9aa3b5;
+  opacity: 1;
 }
 
 .ai-vis-form input[type="url"]:focus {
@@ -8517,6 +8564,7 @@ a.card:hover .go {
   font-size: clamp(64px, 12vw, 112px);
   line-height: 0.9;
   letter-spacing: -0.05em;
+  font-variant-numeric: tabular-nums;
 }
 
 .ai-vis-score span {
@@ -8548,7 +8596,7 @@ a.card:hover .go {
 }
 
 .ai-vis-checks,
-.ai-vis-criteria,
+.ai-vis-groups,
 .ai-vis-fixes {
   list-style: none;
   margin: 28px 0 0;
@@ -8557,8 +8605,12 @@ a.card:hover .go {
   gap: 12px;
 }
 
+.ai-vis-groups {
+  gap: 16px;
+}
+
 .ai-vis-checks li,
-.ai-vis-criteria li {
+.ai-vis-groups > li {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 12px 20px;
@@ -8568,27 +8620,79 @@ a.card:hover .go {
   background: rgb(255 255 255 / 0.03);
 }
 
+.ai-vis-groups > li {
+  grid-template-columns: 1fr;
+}
+
+.ai-vis-group-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .ai-vis-checks li strong,
-.ai-vis-criteria li strong {
+.ai-vis-groups > li strong {
   display: block;
   font-size: 17px;
   letter-spacing: -0.02em;
 }
 
 .ai-vis-checks li p,
-.ai-vis-criteria li p {
+.ai-vis-groups > li > p {
   margin: 6px 0 0;
   color: var(--on-dark-soft);
   font-size: 14px;
   line-height: 1.45;
 }
 
-.ai-vis-checks li span,
-.ai-vis-criteria li span {
+.ai-vis-groups > li > ul {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  color: var(--on-dark-mute);
+  font-family: var(--mono);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ai-vis-checks li > span,
+.ai-vis-group-head > span {
   font-family: var(--mono);
   font-size: 12px;
   color: var(--on-dark-mute);
   white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ai-vis-chip {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  vertical-align: 0.1em;
+}
+
+.ai-vis-chip.is-good {
+  color: var(--lime);
+  background: rgb(200 242 90 / 0.12);
+}
+
+.ai-vis-chip.is-ok {
+  color: #f0c86a;
+  background: rgb(240 200 106 / 0.12);
+}
+
+.ai-vis-chip.is-bad {
+  color: #ff8f8f;
+  background: rgb(255 143 143 / 0.12);
 }
 
 .ai-vis-checks li.is-good { border-color: rgb(200 242 90 / 0.35); }
@@ -8660,6 +8764,11 @@ a.card:hover .go {
   color: var(--on-dark-soft);
   text-decoration: none;
   margin-right: 14px;
+  text-underline-offset: 0.2em;
+}
+
+.ai-vis-foot a:hover {
+  text-decoration: underline;
 }
 
 @media (max-width: 720px) {
@@ -8667,8 +8776,17 @@ a.card:hover .go {
     grid-template-columns: 1fr;
   }
 
-  .ai-vis-checks li,
-  .ai-vis-criteria li {
+  .ai-vis-checks li {
     grid-template-columns: 1fr;
+  }
+
+  .ai-vis-atmosphere .agent-log {
+    opacity: 0.28;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ai-vis-atmosphere .agent-log > div {
+    animation: none;
   }
 }

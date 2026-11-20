@@ -72,10 +72,10 @@ class AiVisibilityController extends Controller
         $url = url('/'.AiVisibilityReport::PATH);
         $title = $report
             ? 'Nota de '.$report->host.' na IA | Quatro Ventos'
-            : 'Seu site aparece quando perguntam para a IA? | Quatro Ventos';
+            : 'Seu negócio aparece quando perguntam para a IA? | Quatro Ventos';
         $description = $report
             ? $report->host.' tirou '.$report->score.' de 100 na prontidão para ChatGPT, Claude e Perplexity. Veja o que falta para ser citado.'
-            : 'Digite a URL e veja, em menos de um minuto, se ChatGPT, Claude e Perplexity conseguem ler e citar o seu negócio. Ferramenta gratuita da Quatro Ventos.';
+            : 'Ferramenta gratuita, sem cadastro. Digite a URL e veja, em menos de um minuto, se ChatGPT, Claude e Perplexity conseguem ler e citar o seu negócio.';
 
         $jsonld = $this->jsonLd($url, $title, $description, $site, $report);
 
@@ -152,12 +152,12 @@ class AiVisibilityController extends Controller
                 [
                     '@type' => 'Question',
                     'name' => 'O que essa ferramenta mede?',
-                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Nove verificações que somam 100 pontos: robôs de IA no robots.txt, texto legível sem JavaScript, se a home diz o que é, para quem é e quanto custa, JSON-LD, HTTPS e tempo de resposta, título e description, llms.txt, autor/data/Sobre e sitemap.'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Três eixos (acesso, clareza, confiança) com nove verificações que somam 100 pontos: robôs de IA no robots.txt, texto legível sem JavaScript, se a home diz o que é, para quem é e quanto custa, JSON-LD, HTTPS e tempo de resposta, título e description, llms.txt, autor/data/Sobre e sitemap.'],
                 ],
                 [
                     '@type' => 'Question',
                     'name' => 'É gratuito?',
-                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Sim. A nota técnica é gratuita, sem cadastro. Nada é instalado no seu site.'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'Sim. A nota é gratuita, sem cadastro. Nada é instalado no site. Implementar as correções é orçamento à parte.'],
                 ],
                 [
                     '@type' => 'Question',
@@ -167,7 +167,7 @@ class AiVisibilityController extends Controller
                 [
                     '@type' => 'Question',
                     'name' => 'Quem faz a ferramenta?',
-                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'A Quatro Ventos, escritório de software, IA e sites em Curitiba. Se quiser que a gente aplique as correções no seu site, fale pelo WhatsApp.'],
+                    'acceptedAnswer' => ['@type' => 'Answer', 'text' => 'A Quatro Ventos, escritório de software, IA e sites em Curitiba. Se quiser que a Quatro Ventos aplique as correções no seu site, fale pelo WhatsApp.'],
                 ],
             ],
         ];
