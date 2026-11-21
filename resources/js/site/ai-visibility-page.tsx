@@ -37,26 +37,28 @@ export function AiVisHero({ data }: { data: Data }) {
   return (
     <section className="section ai-vis-hero is-mark-draw" data-section="ai-vis-hero">
       <AiVisAtmosphere />
-      <div className="wrap ai-vis-hero-grid">
-        <div className="ai-vis-hero-copy">
-          <h1><Marked value={title} /></h1>
-          {lead ? <Rich className="lead" value={lead.startsWith('<') ? lead : `<p>${lead}</p>`} /> : null}
-          {badges.length > 0 ? (
-            <ul className="ai-vis-trust">
-              {badges.map((label) => (
-                <li key={label}>{label}</li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-        <div className="ai-vis-hero-tool">
-          <form className="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post" noValidate>
-            <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hp" />
-            <label className="sr-only" htmlFor="ai-vis-url">Endereço do site</label>
-            <input id="ai-vis-url" name="url" type="text" inputMode="url" autoComplete="url" placeholder={placeholder} required maxLength={500} />
-            <button className="pill solid" type="submit">{buttonLabel}</button>
-          </form>
-          <p className="hint" id="ai-vis-status" role="status" aria-live="polite" hidden />
+      <div className="wrap">
+        <div className="ai-vis-hero-grid">
+          <div className="ai-vis-hero-copy">
+            <h1><Marked value={title} /></h1>
+            {lead ? <Rich className="lead" value={lead.startsWith('<') ? lead : `<p>${lead}</p>`} /> : null}
+            {badges.length > 0 ? (
+              <ul className="ai-vis-trust">
+                {badges.map((label) => (
+                  <li key={label}>{label}</li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+          <div className="ai-vis-hero-tool">
+            <form className="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post" noValidate>
+              <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hp" />
+              <label className="sr-only" htmlFor="ai-vis-url">Endereço do site</label>
+              <input id="ai-vis-url" name="url" type="text" inputMode="url" autoComplete="url" placeholder={placeholder} required maxLength={500} />
+              <button className="pill solid" type="submit">{buttonLabel}</button>
+            </form>
+            <p className="hint" id="ai-vis-status" role="status" aria-live="polite" hidden />
+          </div>
         </div>
       </div>
     </section>

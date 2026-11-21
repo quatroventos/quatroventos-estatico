@@ -86,23 +86,25 @@
               </div>
             </div>
           </div>
-          <div class="wrap ai-vis-hero-grid is-report">
-            <div class="ai-vis-hero-copy">
-              <h1>Nota de <em class="mark">{{ $report->host }}</em></h1>
-              <p class="ai-vis-meta">Teste feito em {{ $report->created_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}</p>
-              <p class="ai-vis-band is-{{ $report->band }}">{{ $bandLabel[$report->band] ?? $report->band }}</p>
-              <div class="ai-vis-actions">
-                <button type="button" class="pill line" data-copy="{{ url($report->publicPath()) }}" data-copy-idle="Copiar link do resultado">Copiar link do resultado</button>
-                <a class="pill line" href="{{ $toolPath }}">Testar outro site</a>
-              </div>
-            </div>
-            <div class="ai-vis-score-panel" aria-label="Nota do site">
-              <div class="ai-vis-flip" data-ai-vis-flip data-score="{{ $report->score }}">
-                <p class="sr-only">{{ $report->score }} de 100</p>
-                <div class="ai-vis-flip-board" aria-hidden="true">
-                  <strong class="ai-vis-flip-fallback">{{ $report->score }}</strong>
+          <div class="wrap">
+            <div class="ai-vis-hero-grid is-report">
+              <div class="ai-vis-hero-copy">
+                <h1>Nota de <em class="mark">{{ $report->host }}</em></h1>
+                <p class="ai-vis-meta">Teste feito em {{ $report->created_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}</p>
+                <p class="ai-vis-band is-{{ $report->band }}">{{ $bandLabel[$report->band] ?? $report->band }}</p>
+                <div class="ai-vis-actions">
+                  <button type="button" class="pill line" data-copy="{{ url($report->publicPath()) }}" data-copy-idle="Copiar link do resultado">Copiar link do resultado</button>
+                  <a class="pill line" href="{{ $toolPath }}">Testar outro site</a>
                 </div>
-                <span class="ai-vis-flip-unit">de 100</span>
+              </div>
+              <div class="ai-vis-score-panel" aria-label="Nota do site">
+                <div class="ai-vis-flip" data-ai-vis-flip data-score="{{ $report->score }}">
+                  <p class="sr-only">{{ $report->score }} de 100</p>
+                  <div class="ai-vis-flip-board" aria-hidden="true">
+                    <strong class="ai-vis-flip-fallback">{{ $report->score }}</strong>
+                  </div>
+                  <span class="ai-vis-flip-unit">de 100</span>
+                </div>
               </div>
             </div>
           </div>
@@ -179,25 +181,27 @@
               </div>
             </div>
           </div>
-          <div class="wrap ai-vis-hero-grid">
-            <div class="ai-vis-hero-copy">
-              <h1>Como aparecer no <em class="mark">ChatGPT</em>?</h1>
-              <p class="lead">Hoje muitas pessoas perguntam à IA onde comprar ou contratar. Digite o endereço do seu site abaixo e descubra se o ChatGPT consegue entender e indicar sua empresa.</p>
-              <ul class="ai-vis-trust">
-                <li>Grátis</li>
-                <li>Sem cadastro</li>
-                <li>Não mexe no seu site</li>
-              </ul>
-            </div>
-            <div class="ai-vis-hero-tool">
-              <form class="ai-vis-form" id="ai-vis-form" action="{{ $analyzeUrl }}" method="post" novalidate>
-                {!! csrf_field() !!}
-                <label class="sr-only" for="ai-vis-url">Endereço do site</label>
-                <input id="ai-vis-url" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://seusite.com.br" required maxlength="500" />
-                <input type="text" name="empresa_site" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
-                <button class="pill solid" type="submit">Ver minha nota</button>
-              </form>
-              <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
+          <div class="wrap">
+            <div class="ai-vis-hero-grid">
+              <div class="ai-vis-hero-copy">
+                <h1>Como aparecer no <em class="mark">ChatGPT</em>?</h1>
+                <p class="lead">Hoje muitas pessoas perguntam à IA onde comprar ou contratar. Digite o endereço do seu site abaixo e descubra se o ChatGPT consegue entender e indicar sua empresa.</p>
+                <ul class="ai-vis-trust">
+                  <li>Grátis</li>
+                  <li>Sem cadastro</li>
+                  <li>Não mexe no seu site</li>
+                </ul>
+              </div>
+              <div class="ai-vis-hero-tool">
+                <form class="ai-vis-form" id="ai-vis-form" action="{{ $analyzeUrl }}" method="post" novalidate>
+                  {!! csrf_field() !!}
+                  <label class="sr-only" for="ai-vis-url">Endereço do site</label>
+                  <input id="ai-vis-url" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://seusite.com.br" required maxlength="500" />
+                  <input type="text" name="empresa_site" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
+                  <button class="pill solid" type="submit">Ver minha nota</button>
+                </form>
+                <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
+              </div>
             </div>
           </div>
         </section>

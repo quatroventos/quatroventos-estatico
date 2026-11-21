@@ -48,13 +48,15 @@ class AiVisibilityToolTest extends TestCase
 <main id="conteudo">
   <section class="section ai-vis-hero is-mark-draw">
     <div class="ai-vis-atmosphere" aria-hidden="true"><div class="agent-log"></div></div>
-    <div class="wrap ai-vis-hero-grid">
-      <h1>Como aparecer no <em class="mark">ChatGPT</em>?</h1>
-      <form class="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post">
-        <input id="ai-vis-url" name="url" type="text" />
-        <button type="submit">Ver minha nota</button>
-      </form>
-      <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
+    <div class="wrap">
+      <div class="ai-vis-hero-grid">
+        <h1>Como aparecer no <em class="mark">ChatGPT</em>?</h1>
+        <form class="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post">
+          <input id="ai-vis-url" name="url" type="text" />
+          <button type="submit">Ver minha nota</button>
+        </form>
+        <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
+      </div>
     </div>
   </section>
   <section class="ai-vis-pillars"><h2>Três passos simples</h2></section>
