@@ -40,28 +40,39 @@ class AiVisibilityToolTest extends TestCase
             'path' => '/'.AiVisibilityReport::PATH,
         ]);
         File::ensureDirectoryExists(dirname($file));
+        $this->assertSame('site.ai-vis-hero', $page->content['sections'][0]['type'] ?? null);
+        $this->assertTrue(collect($page->content['sections'] ?? [])->contains(fn (array $section): bool => ($section['type'] ?? '') === 'site.ai-vis-measure'));
+
         File::put($file, <<<'HTML'
+<div class="ai-vis">
 <main id="conteudo">
-  <h1>Como aparecer no ChatGPT?</h1>
-  <form class="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post">
-    <input id="ai-vis-url" name="url" type="text" />
-    <button type="submit">Ver a nota</button>
-  </form>
-  <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
-  <h2>O que olhamos</h2>
-  <h2>Três passos</h2>
+  <section class="section ai-vis-hero is-mark-draw">
+    <div class="ai-vis-atmosphere" aria-hidden="true"><div class="agent-log"></div></div>
+    <div class="wrap ai-vis-hero-grid">
+      <h1>Como aparecer no <em class="mark">ChatGPT</em>?</h1>
+      <form class="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post">
+        <input id="ai-vis-url" name="url" type="text" />
+        <button type="submit">Ver minha nota</button>
+      </form>
+      <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
+    </div>
+  </section>
+  <section class="ai-vis-pillars"><h2>Três passos simples</h2></section>
+  <section class="ai-vis-measure-section"><h2>O que olhamos no teste</h2></section>
+  <article class="ai-vis-article"><h2>Como aparecer no ChatGPT, na prática</h2></article>
   <p>Isso é a mesma coisa que aparecer no Google?</p>
 </main>
+</div>
 HTML);
 
         try {
             $html = $this->get('/'.AiVisibilityReport::PATH)
                 ->assertOk()
                 ->assertSee('Como aparecer no ChatGPT? Teste gratuito do seu site | Quatro Ventos', false)
-                ->assertSee('Como aparecer no ChatGPT?', false)
-                ->assertSee('O que olhamos', false)
-                ->assertSee('Três passos', false)
+                ->assertSee('ai-vis-hero', false)
                 ->assertSee('ai-vis-form', false)
+                ->assertSee('ai-vis-measure-section', false)
+                ->assertSee('ai-vis-article', false)
                 ->assertSee('name="author"', false)
                 ->assertDontSee('id="site-root"', false)
                 ->getContent();

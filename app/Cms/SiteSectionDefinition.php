@@ -402,23 +402,109 @@ class SiteSectionDefinition
                 ]),
             ],
             [
-                'label' => 'Teste de visibilidade na IA',
-                'preview' => 'ai-tool',
-                'fields' => self::withCommon([
-                    ['type' => 'text', 'name' => 'placeholder', 'label' => 'Placeholder do campo URL', 'hint' => 'Ex.: exemplo.com.br'],
+                'label' => 'IA: hero com formulário',
+                'preview' => 'ai-vis-hero',
+                'fields' => [
+                    ['type' => 'text', 'name' => 'title', 'label' => 'Título', 'hint' => 'Trechos entre *asteriscos* ficam em destaque.'],
+                    ['type' => 'rich', 'name' => 'lead', 'label' => 'Abertura'],
+                    ['type' => 'repeater', 'name' => 'badges', 'label' => 'Selos de confiança', 'simple' => true, 'itemType' => 'text'],
+                    ['type' => 'text', 'name' => 'placeholder', 'label' => 'Placeholder do campo URL'],
                     ['type' => 'text', 'name' => 'button_label', 'label' => 'Texto do botão'],
-                    ['type' => 'text', 'name' => 'hint', 'label' => 'Texto de ajuda abaixo do formulário'],
+                ],
+            ],
+            [
+                'label' => 'IA: plataformas',
+                'preview' => 'ai-vis-platforms',
+                'fields' => [
+                    ['type' => 'text', 'name' => 'label', 'label' => 'Rótulo acima dos logos'],
                     [
                         'type' => 'repeater',
                         'name' => 'platforms',
-                        'label' => 'Plataformas exibidas',
+                        'label' => 'Plataformas',
                         'simple' => false,
                         'fields' => [
                             ['type' => 'text', 'name' => 'name', 'label' => 'Nome'],
-                            ['type' => 'text', 'name' => 'logo', 'label' => 'Caminho do logo (ex.: /assets/llms/chatgpt.svg)'],
+                            ['type' => 'text', 'name' => 'logo', 'label' => 'Caminho do logo'],
                         ],
                     ],
-                ]),
+                ],
+            ],
+            [
+                'label' => 'IA: três passos',
+                'preview' => 'ai-vis-pillars',
+                'fields' => [
+                    ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
+                    ['type' => 'rich', 'name' => 'intro', 'label' => 'Introdução'],
+                    [
+                        'type' => 'repeater',
+                        'name' => 'items',
+                        'label' => 'Passos',
+                        'simple' => false,
+                        'fields' => [
+                            ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
+                            ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'label' => 'IA: critérios do teste',
+                'preview' => 'ai-vis-measure',
+                'fields' => [
+                    ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
+                    ['type' => 'rich', 'name' => 'intro', 'label' => 'Introdução'],
+                    ['type' => 'text', 'name' => 'anchor', 'label' => 'Âncora (id)'],
+                    [
+                        'type' => 'repeater',
+                        'name' => 'items',
+                        'label' => 'Critérios',
+                        'simple' => false,
+                        'fields' => [
+                            ['type' => 'text', 'name' => 'pts', 'label' => 'Pontos'],
+                            ['type' => 'text', 'name' => 'label', 'label' => 'Critério'],
+                            ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'label' => 'IA: artigo guia',
+                'preview' => 'ai-vis-article',
+                'fields' => [
+                    ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
+                    ['type' => 'rich', 'name' => 'intro', 'label' => 'Abertura'],
+                    ['type' => 'text', 'name' => 'anchor', 'label' => 'Âncora (id)'],
+                    [
+                        'type' => 'repeater',
+                        'name' => 'blocks',
+                        'label' => 'Blocos',
+                        'simple' => false,
+                        'fields' => [
+                            ['type' => 'text', 'name' => 'heading', 'label' => 'Subtítulo'],
+                            ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
+                            [
+                                'type' => 'repeater',
+                                'name' => 'steps',
+                                'label' => 'Passos (opcional)',
+                                'simple' => false,
+                                'fields' => [
+                                    ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
+                                    ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'label' => 'IA: CTA aplicar',
+                'preview' => 'ai-vis-apply',
+                'fields' => [
+                    ['type' => 'text', 'name' => 'title', 'label' => 'Título', 'hint' => 'Trechos entre *asteriscos* ficam em destaque.'],
+                    ['type' => 'rich', 'name' => 'body', 'label' => 'Texto'],
+                    ['type' => 'text', 'name' => 'cta_label', 'label' => 'Botão'],
+                    ['type' => 'text', 'name' => 'cta_href', 'label' => 'Link do botão'],
+                ],
             ],
             [
                 'label' => 'Painel',

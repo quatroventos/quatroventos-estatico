@@ -9,10 +9,15 @@ import type { PagePayload, SitePayload } from './types';
 
 function Shell({ page, site, body }: { page: PagePayload; site: SitePayload; body: ReactNode }) {
   const locale = page.locale ?? DEFAULT_LOCALE;
+  const aiVis = page.sections.some((section) => {
+    const kind = section.type.split('.').pop() ?? section.type;
+
+    return kind.startsWith('ai-vis-') || kind === 'ai-tool';
+  });
 
   return createElement(
     'div',
-    null,
+    aiVis ? { className: 'ai-vis' } : null,
     createElement(Header, { site, pathname: page.path || '/', locale, alternates: page.alternates }),
     createElement('main', { id: 'conteudo', tabIndex: -1 }, body),
     createElement(Footer, { site, locale, alternates: page.alternates, updatedAt: page.updated_at }),

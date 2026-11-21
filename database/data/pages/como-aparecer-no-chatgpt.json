@@ -10,27 +10,21 @@
   "og_image_alt": "Como aparecer no ChatGPT. Quatro Ventos.",
   "sections": [
     {
-      "id": "hero-1",
-      "type": "site.hero",
+      "id": "ai-vis-hero-1",
+      "type": "site.ai-vis-hero",
       "data": {
-        "title": "Como aparecer no *ChatGPT?*",
-        "subtitle": "<p>Hoje muitas pessoas perguntam à IA onde comprar ou contratar. Digite o endereço do seu site e descubra se o ChatGPT consegue entender e indicar sua empresa.</p>",
-        "badges": [
-          "Grátis",
-          "Sem cadastro",
-          "Não mexe no seu site"
-        ],
-        "mark_draw": true
+        "title": "Como aparecer no *ChatGPT*?",
+        "lead": "<p>Hoje muitas pessoas perguntam à IA onde comprar ou contratar. Digite o endereço do seu site abaixo e descubra se o ChatGPT consegue entender e indicar sua empresa.</p>",
+        "badges": ["Grátis", "Sem cadastro", "Não mexe no seu site"],
+        "placeholder": "https://seusite.com.br",
+        "button_label": "Ver minha nota"
       }
     },
     {
-      "id": "ai-tool-1",
-      "type": "site.ai-tool",
+      "id": "ai-vis-platforms-1",
+      "type": "site.ai-vis-platforms",
       "data": {
-        "tone": "dark",
-        "placeholder": "exemplo.com.br",
-        "button_label": "Ver a nota",
-        "hint": "Sem cadastro. Não alteramos nada no seu site.",
+        "label": "Este teste verifica as ferramentas:",
         "platforms": [
           { "name": "ChatGPT", "logo": "/assets/llms/chatgpt.svg" },
           { "name": "Claude", "logo": "/assets/llms/claude.svg" },
@@ -40,10 +34,10 @@
       }
     },
     {
-      "id": "steps-1",
-      "type": "site.steps",
+      "id": "ai-vis-pillars-1",
+      "type": "site.ai-vis-pillars",
       "data": {
-        "title": "Três passos *simples.*",
+        "title": "Três passos simples",
         "intro": "<p>Primeiro você mede. Depois corrige o que trava. Por fim, o site fica mais fácil de ser citado.</p>",
         "items": [
           {
@@ -58,70 +52,138 @@
             "title": "Facilitar a citação do seu nome",
             "body": "<p>Quando a IA consegue entrar e a página inicial explica o negócio com clareza, sobe a chance de o ChatGPT indicar você em vez de falar genérico.</p>"
           }
-        ],
-        "mark_draw": true
+        ]
       }
     },
     {
-      "id": "list-1",
-      "type": "site.list",
+      "id": "ai-vis-measure-1",
+      "type": "site.ai-vis-measure",
       "data": {
-        "title": "O que olhamos *no teste.*",
+        "title": "O que olhamos no teste",
         "intro": "<p>Nove itens, cem pontos no total. Só o que qualquer pessoa consegue ver no site público. Se não confirmar na hora, não conta ponto.</p>",
+        "anchor": "medir",
         "items": [
           {
-            "title": "20 PTS — A IA pode entrar no site",
+            "pts": "20",
+            "label": "A IA pode entrar no site",
             "body": "<p>O arquivo de regras do site (robots.txt) não manda o ChatGPT e outras IAs ficarem de fora.</p>"
           },
           {
-            "title": "20 PTS — O texto da página inicial aparece sem truque",
-            "body": "<p>O que você vende precisa estar escrito de verdade na página, não só aparecer depois que o site “liga”.</p>"
+            "pts": "20",
+            "label": "O texto da página inicial aparece sem truque",
+            "body": "<p>O que você vende precisa estar escrito de verdade na página, não só aparecer depois que o site “liga” no celular ou no computador.</p>"
           },
           {
-            "title": "15 PTS — Fica claro o que você faz, para quem e o preço",
+            "pts": "15",
+            "label": "Fica claro o que você faz, para quem e o preço",
             "body": "<p>Na primeira página: o que oferece, para quem é e quanto custa — ou como o orçamento funciona.</p>"
           },
           {
-            "title": "10 PTS — Dados do negócio em formato que a máquina lê",
+            "pts": "10",
+            "label": "Dados do negócio em formato que a máquina lê",
             "body": "<p>Um bloco técnico (JSON-LD) descrevendo serviço, produto, perguntas frequentes ou empresa local.</p>"
           },
           {
-            "title": "10 PTS — Site com cadeado e resposta rápida",
+            "pts": "10",
+            "label": "Site com cadeado e resposta rápida",
             "body": "<p>Endereço com https e página que abre sem demora demais.</p>"
           },
           {
-            "title": "10 PTS — Título e resumo da página",
+            "pts": "10",
+            "label": "Título e resumo da página",
             "body": "<p>O título da aba e o texto curto que aparece no Google (e ajuda a IA a entender o assunto).</p>"
           },
           {
-            "title": "5 PTS — Resumo para IA (llms.txt)",
+            "pts": "5",
+            "label": "Resumo para IA (llms.txt)",
             "body": "<p>Um arquivo simples na raiz do site contando, em poucas linhas, o que a empresa faz.</p>"
           },
           {
-            "title": "5 PTS — Quem está por trás e quando atualizou",
+            "pts": "5",
+            "label": "Quem está por trás e quando atualizou",
             "body": "<p>Página Sobre, nome de quem publica ou data de atualização visível.</p>"
           },
           {
-            "title": "5 PTS — Lista das páginas (sitemap)",
+            "pts": "5",
+            "label": "Lista das páginas (sitemap)",
             "body": "<p>Um arquivo que lista as páginas do site para facilitar a descoberta.</p>"
           }
-        ],
-        "mark_draw": true
+        ]
       }
     },
     {
-      "id": "prose-1",
-      "type": "site.prose",
+      "id": "ai-vis-article-1",
+      "type": "site.ai-vis-article",
       "data": {
-        "title": "Como aparecer no *ChatGPT,* na prática",
-        "body": "<p>Cliente pergunta à IA “quem faz X na minha cidade” ou “qual empresa de Y”. Se o seu site estiver ilegível para a máquina, a resposta sai sem o seu nome.</p><p>O ChatGPT não funciona igual ao Google. Ele não monta uma lista de dez links azuis. Ele escreve uma resposta. Para colocar o seu nome nela, precisa conseguir ler o site, entender o que você faz e achar o conteúdo confiável.</p><p>Então <strong>como aparecer no ChatGPT</strong> não é só anunciar. É deixar o site legível: a IA entra, lê a oferta e consegue citar o negócio.</p>",
-        "mark_draw": true
+        "title": "Como aparecer no *ChatGPT*, na prática",
+        "intro": "<p>Cliente pergunta à IA “quem faz X na minha cidade” ou “qual empresa de Y”. Se o seu site estiver ilegível para a máquina, a resposta sai sem o seu nome.</p>",
+        "anchor": "guia",
+        "blocks": [
+          {
+            "heading": "Por que uns negócios aparecem e outros não",
+            "body": "<p>O ChatGPT não funciona igual ao Google. Ele não monta uma lista de dez links azuis. Ele escreve uma resposta. Para colocar o seu nome nela, precisa conseguir ler o site, entender o que você faz e achar o conteúdo confiável.</p><p>Se a página inicial estiver “trancada” para a IA, se o texto só existir em animações ou se ninguém entender o que você vende e quanto custa, a ferramenta pula o seu site — ou responde sem citar ninguém.</p><p>Então <strong>como aparecer no ChatGPT</strong> não é só anunciar. É deixar o site legível: a IA entra, lê a oferta e consegue citar o negócio.</p>",
+            "steps": []
+          },
+          {
+            "heading": "O que a IA precisa achar no site",
+            "body": "<p>Começa pela página inicial e pelos arquivos básicos da raiz. A IA precisa de permissão para entrar. Precisa de texto escrito de verdade (não só imagens ou botões). Precisa saber o que você oferece, para quem e quanto custa — ou como pede orçamento. Ajuda ter um bloco de dados do negócio, uma página Sobre, uma data de atualização e uma lista das páginas.</p><p>Isso não garante que toda pergunta cite a sua marca. Mas remove obstáculos que, sozinhos, já tiram o site da conversa.</p>",
+            "steps": []
+          },
+          {
+            "heading": "Passo a passo",
+            "body": "",
+            "steps": [
+              {
+                "title": "Deixe a IA entrar",
+                "body": "<p>Peça ao responsável pelo site para checar o arquivo robots.txt. Ele não pode bloquear o ChatGPT e ferramentas parecidas.</p>"
+              },
+              {
+                "title": "Escreva a oferta na página inicial",
+                "body": "<p>O texto principal precisa estar na página mesmo, não só aparecer depois que o site carrega com efeitos. Se um visitante com a tela “simples” não lê a oferta, a IA também não lê.</p>"
+              },
+              {
+                "title": "Diga o que é, para quem é e quanto custa",
+                "body": "<p>Na home: o serviço ou produto, o público e o preço — ou como o orçamento funciona (o que muda o valor e o prazo da proposta).</p>"
+              },
+              {
+                "title": "Coloque os dados do negócio em formato de máquina",
+                "body": "<p>Quem cuida do site pode adicionar o bloco JSON-LD (serviço, produto, FAQ ou empresa local). Você não precisa editar código: basta pedir esse item no orçamento.</p>"
+              },
+              {
+                "title": "Mostre quem está por trás",
+                "body": "<p>Página Sobre, data de atualização, um resumo llms.txt e a lista de páginas (sitemap). São detalhes pequenos que, juntos, reforçam confiança.</p>"
+              }
+            ]
+          },
+          {
+            "heading": "Estar bem no Google não resolve sozinho",
+            "body": "<p>Aparecer no Google e aparecer no ChatGPT são coisas relacionadas, mas diferentes. No Google, a disputa é posição nos resultados. No ChatGPT, a pergunta é: a IA consegue ler e confiar o bastante para citar o seu nome? Um site bem colocado no Google ainda pode falhar no ChatGPT se a IA estiver bloqueada ou se a oferta estiver escondida.</p>",
+            "steps": []
+          },
+          {
+            "heading": "O que este teste não mede",
+            "body": "<p>Ele não diz se a sua marca já aparece nas respostas da IA hoje. Isso depende também de reputação, de quanto se fala de você na internet e do assunto da pergunta. O teste mede se o site está legível — a parte que dá para corrigir no próprio site.</p><p>Use o formulário no topo. A nota é gratuita e sem cadastro. Se quiser que a Quatro Ventos faça as correções, o orçamento sai depois do diagnóstico.</p>",
+            "steps": []
+          }
+        ]
+      }
+    },
+    {
+      "id": "ai-vis-apply-1",
+      "type": "site.ai-vis-apply",
+      "data": {
+        "title": "Quer que a Quatro Ventos *arrume isso* no site?",
+        "body": "<p>Depois da nota, dá para fechar o que falta — regras de entrada da IA, texto, dados do negócio e arquivos básicos — com proposta de valor fechado.</p>",
+        "cta_label": "Chamar no WhatsApp",
+        "cta_href": "https://wa.me/554130399593?text=Quero%20ajuda%20para%20aparecer%20no%20ChatGPT."
       }
     },
     {
       "id": "faq-1",
       "type": "site.faq",
       "data": {
+        "tone": "dark",
+        "anchor": "faq",
         "title": "Dúvidas frequentes",
         "items": [
           {
@@ -153,17 +215,6 @@
             "answer": "<p>A Quatro Ventos, de Curitiba: software, IA e sites. Os mesmos critérios entram no SEO do nosso CMS. Se quiser ajuda para aplicar as correções, chame no WhatsApp.</p>"
           }
         ]
-      }
-    },
-    {
-      "id": "panel-1",
-      "type": "site.panel",
-      "data": {
-        "title": "Quer que a Quatro Ventos *arrume isso* no site?",
-        "body": "<p>Depois da nota, dá para fechar o que falta — regras de entrada da IA, texto, dados do negócio e arquivos básicos — com proposta de valor fechado.</p>",
-        "cta_label": "Chamar no WhatsApp",
-        "cta_href": "https://wa.me/554130399593?text=Quero%20ajuda%20para%20aparecer%20no%20ChatGPT.",
-        "mark_draw": true
       }
     }
   ]

@@ -7,6 +7,7 @@ import { AdhocBlock, CaseGridBlock, CasesBrowserBlock, ChecklistBlock, ExamplesB
 import { Arrow, Cta, LinkTo, Marked, Rich, pad, plain, rows, strings, text, type Data } from './ui';
 import { t } from './i18n';
 import { PhoneInput, isPhoneComplete, phoneToString, type PhoneValue } from './phone';
+import { AiVisApply, AiVisArticle, AiVisHero, AiVisMeasure, AiVisPillars, AiVisPlatforms } from './ai-visibility-page';
 
 type Tone = 'dark' | 'light' | 'white';
 
@@ -20,6 +21,12 @@ const TONES: Record<string, Tone> = {
   'case-grid': 'dark',
   adhoc: 'dark',
   method: 'dark',
+  'ai-vis-hero': 'dark',
+  'ai-vis-platforms': 'dark',
+  'ai-vis-pillars': 'light',
+  'ai-vis-measure': 'dark',
+  'ai-vis-article': 'white',
+  'ai-vis-apply': 'white',
   'ai-tool': 'dark',
 };
 
@@ -62,6 +69,21 @@ function isEmpty(section: Section): boolean {
   }
   if (kind === 'brief') {
     return ['problem_title', 'problem_body', 'solution_title', 'solution_body'].every((key) => !text(data, key));
+  }
+  if (kind === 'ai-vis-hero' || kind === 'ai-tool') {
+    return false;
+  }
+  if (kind === 'ai-vis-platforms') {
+    return rows(data, 'platforms').length === 0;
+  }
+  if (kind === 'ai-vis-pillars' || kind === 'ai-vis-measure') {
+    return rows(data).length === 0;
+  }
+  if (kind === 'ai-vis-article') {
+    return !text(data, 'title') && rows(data, 'blocks').length === 0;
+  }
+  if (kind === 'ai-vis-apply') {
+    return !text(data, 'title') && !text(data, 'body');
   }
 
   return false;
@@ -248,7 +270,7 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
 
     case 'faq':
       return (
-        <Shell {...shell}>
+        <Shell {...shell} className="is-reveal" id={text(data, 'anchor') || shell.id || 'faq'}>
           <div className="faq-grid">
             <h2 className="h2"><Marked value={text(data, 'title') || t('faq.title')} /></h2>
             <div className="faq">
@@ -461,12 +483,31 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
     case 'method':
       return <Shell {...shell} className="is-timeline-head"><MethodBlock data={data} /></Shell>;
 
+    case 'ai-vis-hero':
+      return <AiVisHero data={data} />;
+
+    case 'ai-vis-platforms':
+      return <AiVisPlatforms data={data} />;
+
+    case 'ai-vis-pillars':
+      return <AiVisPillars data={data} />;
+
+    case 'ai-vis-measure':
+      return <AiVisMeasure data={data} />;
+
+    case 'ai-vis-article':
+      return <AiVisArticle data={data} />;
+
+    case 'ai-vis-apply':
+      return <AiVisApply data={data} />;
+
     case 'ai-tool':
-      return (
-        <Shell {...shell} className="ai-vis-tool-section">
-          <AiVisibilityTool data={data} />
-        </Shell>
-      );
+      return <AiVisHero data={{
+        ...data,
+        title: text(data, 'title') || 'Como aparecer no *ChatGPT*?',
+        lead: text(data, 'hint'),
+        badges: ['Grátis', 'Sem cadastro', 'Não mexe no seu site'],
+      }} />;
 
     default:
       return null;
@@ -649,42 +690,6 @@ export function ContactForm({ form }: { form: SiteForm | null }) {
       </div>
       <button className="pill solid" type="submit" disabled={busy}>{busy ? t('form.sending') : form?.submit_label || t('form.submit')}</button>
     </form>
-  );
-}
-
-function AiVisibilityTool({ data }: { data: Data }) {
-  const platforms = rows(data, 'platforms');
-  const placeholder = text(data, 'placeholder') || 'exemplo.com.br';
-  const buttonLabel = text(data, 'button_label') || 'Ver a nota';
-  const hint = text(data, 'hint') || 'Sem cadastro. Não alteramos nada no seu site.';
-
-  return (
-    <div className="ai-vis-tool">
-      <form className="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post" noValidate>
-        <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hp" />
-        <label className="sr-only" htmlFor="ai-vis-url">Endereço do site</label>
-        <input id="ai-vis-url" name="url" type="text" inputMode="url" autoComplete="url" placeholder={placeholder} required />
-        <button className="pill lime" type="submit">
-          {buttonLabel}
-          <span className="arrow" aria-hidden="true"><Arrow /></span>
-        </button>
-      </form>
-      <p className="hint">{hint}</p>
-      <p className="hint" id="ai-vis-status" role="status" aria-live="polite" hidden />
-      {platforms.length > 0 ? (
-        <div className="ai-vis-platforms" aria-label="Assistentes cobertos">
-          <p className="ai-vis-platforms-label">Este teste verifica as ferramentas:</p>
-          <ul>
-            {platforms.map((item, index) => (
-              <li key={`${text(item, 'name')}-${index}`}>
-                {text(item, 'logo') ? <img src={text(item, 'logo')} alt="" width={28} height={28} /> : null}
-                <span>{text(item, 'name')}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-    </div>
   );
 }
 
