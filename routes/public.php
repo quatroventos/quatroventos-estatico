@@ -44,6 +44,13 @@ Route::get('/robots.txt', [SiteController::class, 'robots'])->name('robots');
 Route::get('/llms.txt', [SiteController::class, 'llms'])->name('llms');
 Route::get('/llm.txt', [SiteController::class, 'llms'])->name('llm');
 
+Route::redirect('/'.AiVisibilityReport::LEGACY_PATH, '/'.AiVisibilityReport::PATH, 301);
+Route::get('/'.AiVisibilityReport::LEGACY_PATH.'/{report}', function (string $report) {
+    return redirect('/'.AiVisibilityReport::PATH.'/'.$report, 301);
+})->where('report', '[A-Za-z0-9_-]{10,32}');
+Route::post('/api/'.AiVisibilityReport::LEGACY_PATH, [AiVisibilityController::class, 'analyze'])
+    ->middleware('throttle:8,1');
+
 Route::get('/'.AiVisibilityReport::PATH, [AiVisibilityController::class, 'show'])->name('ai-visibility');
 Route::get('/'.AiVisibilityReport::PATH.'/{report}', [AiVisibilityController::class, 'report'])
     ->where('report', '[A-Za-z0-9_-]{10,32}')

@@ -1,0 +1,154 @@
+{
+  "slug": "como-aparecer-no-chatgpt",
+  "template": "custom",
+  "status": "published",
+  "seo_title": "Como aparecer no ChatGPT? Teste gratuito do seu site | Quatro Ventos",
+  "seo_description": "Como aparecer no ChatGPT: teste grátis se a IA consegue ler o seu site, entender o que você vende e citar o negócio. Sem cadastro.",
+  "robots": "index, follow, max-image-preview:large",
+  "twitter_card": "summary_large_image",
+  "og_image": null,
+  "og_image_alt": "Como aparecer no ChatGPT. Quatro Ventos.",
+  "sections": [
+    {
+      "id": "hero-1",
+      "type": "site.hero",
+      "data": {
+        "title": "Como aparecer no *ChatGPT?*",
+        "subtitle": "<p>Hoje muitas pessoas perguntam à IA onde comprar ou contratar. Digite o endereço do seu site e descubra se o ChatGPT consegue entender e indicar sua empresa.</p>",
+        "badges": [
+          "Grátis",
+          "Sem cadastro",
+          "Não mexe no seu site"
+        ],
+        "mark_draw": true
+      }
+    },
+    {
+      "id": "steps-1",
+      "type": "site.steps",
+      "data": {
+        "title": "Três passos *simples.*",
+        "intro": "<p>Primeiro você mede. Depois corrige o que trava. Por fim, o site fica mais fácil de ser citado.</p>",
+        "items": [
+          {
+            "title": "Ver a nota do site",
+            "body": "<p>De 0 a 100. Mesma regra para todo mundo: nove itens com peso fixo. Não é opinião de uma IA — é checklist técnico.</p>"
+          },
+          {
+            "title": "Saber o que arrumar primeiro",
+            "body": "<p>O resultado lista o que falta, do mais importante ao menos: entrada da IA, texto claro, preço, dados do negócio e confiança.</p>"
+          },
+          {
+            "title": "Facilitar a citação do seu nome",
+            "body": "<p>Quando a IA consegue entrar e a página inicial explica o negócio com clareza, sobe a chance de o ChatGPT indicar você em vez de falar genérico.</p>"
+          }
+        ],
+        "mark_draw": true
+      }
+    },
+    {
+      "id": "list-1",
+      "type": "site.list",
+      "data": {
+        "title": "O que olhamos *no teste.*",
+        "intro": "<p>Nove itens, cem pontos no total. Só o que qualquer pessoa consegue ver no site público. Se não confirmar na hora, não conta ponto.</p>",
+        "items": [
+          {
+            "title": "20 PTS — A IA pode entrar no site",
+            "body": "<p>O arquivo de regras do site (robots.txt) não manda o ChatGPT e outras IAs ficarem de fora.</p>"
+          },
+          {
+            "title": "20 PTS — O texto da página inicial aparece sem truque",
+            "body": "<p>O que você vende precisa estar escrito de verdade na página, não só aparecer depois que o site “liga”.</p>"
+          },
+          {
+            "title": "15 PTS — Fica claro o que você faz, para quem e o preço",
+            "body": "<p>Na primeira página: o que oferece, para quem é e quanto custa — ou como o orçamento funciona.</p>"
+          },
+          {
+            "title": "10 PTS — Dados do negócio em formato que a máquina lê",
+            "body": "<p>Um bloco técnico (JSON-LD) descrevendo serviço, produto, perguntas frequentes ou empresa local.</p>"
+          },
+          {
+            "title": "10 PTS — Site com cadeado e resposta rápida",
+            "body": "<p>Endereço com https e página que abre sem demora demais.</p>"
+          },
+          {
+            "title": "10 PTS — Título e resumo da página",
+            "body": "<p>O título da aba e o texto curto que aparece no Google (e ajuda a IA a entender o assunto).</p>"
+          },
+          {
+            "title": "5 PTS — Resumo para IA (llms.txt)",
+            "body": "<p>Um arquivo simples na raiz do site contando, em poucas linhas, o que a empresa faz.</p>"
+          },
+          {
+            "title": "5 PTS — Quem está por trás e quando atualizou",
+            "body": "<p>Página Sobre, nome de quem publica ou data de atualização visível.</p>"
+          },
+          {
+            "title": "5 PTS — Lista das páginas (sitemap)",
+            "body": "<p>Um arquivo que lista as páginas do site para facilitar a descoberta.</p>"
+          }
+        ],
+        "mark_draw": true
+      }
+    },
+    {
+      "id": "prose-1",
+      "type": "site.prose",
+      "data": {
+        "title": "Como aparecer no *ChatGPT,* na prática",
+        "body": "<p>Cliente pergunta à IA “quem faz X na minha cidade” ou “qual empresa de Y”. Se o seu site estiver ilegível para a máquina, a resposta sai sem o seu nome.</p><p>O ChatGPT não funciona igual ao Google. Ele não monta uma lista de dez links azuis. Ele escreve uma resposta. Para colocar o seu nome nela, precisa conseguir ler o site, entender o que você faz e achar o conteúdo confiável.</p><p>Então <strong>como aparecer no ChatGPT</strong> não é só anunciar. É deixar o site legível: a IA entra, lê a oferta e consegue citar o negócio.</p>",
+        "mark_draw": true
+      }
+    },
+    {
+      "id": "faq-1",
+      "type": "site.faq",
+      "data": {
+        "title": "Dúvidas frequentes",
+        "items": [
+          {
+            "question": "Como aparecer no ChatGPT?",
+            "answer": "<p>Deixe a IA entrar no site, escreva na página inicial o que você faz e quanto custa, use texto de verdade (não só imagem), e complete Sobre, resumo para IA e lista de páginas. Esta página testa exatamente isso.</p>"
+          },
+          {
+            "question": "Isso é a mesma coisa que aparecer no Google?",
+            "answer": "<p>Não. No Google você disputa posição numa lista de links. No ChatGPT, a IA escreve uma resposta. O site só entra nessa resposta se a máquina conseguiu ler e entender o que está publicado. Este teste mede essa parte.</p>"
+          },
+          {
+            "question": "O ChatGPT usa o meu site de verdade?",
+            "answer": "<p>Quando está liberado, ele pode citar páginas públicas. Se as regras do site bloqueiam a IA ou a página inicial quase não tem texto, a chance de citação cai.</p>"
+          },
+          {
+            "question": "É de graça mesmo?",
+            "answer": "<p>Sim. Sem cadastro. Você cola o endereço, recebe a nota e a lista do que corrigir. Nada é alterado no seu site. Fazer as correções é um serviço à parte, com orçamento.</p>"
+          },
+          {
+            "question": "Vocês olham o site inteiro?",
+            "answer": "<p>Não. O foco é a página inicial e os arquivos básicos da raiz. É o mesmo ponto de partida da maioria das IAs. Páginas internas entram na lista de páginas e no resumo, mas a nota é da home.</p>"
+          },
+          {
+            "question": "Rodar o teste mexe no meu site?",
+            "answer": "<p>Não. Só lemos o que já está público, como um visitante qualquer. Não instalamos nada e não acessamos área privada.</p>"
+          },
+          {
+            "question": "Quem faz essa ferramenta?",
+            "answer": "<p>A Quatro Ventos, de Curitiba: software, IA e sites. Os mesmos critérios entram no SEO do nosso CMS. Se quiser ajuda para aplicar as correções, chame no WhatsApp.</p>"
+          }
+        ]
+      }
+    },
+    {
+      "id": "panel-1",
+      "type": "site.panel",
+      "data": {
+        "title": "Quer que a Quatro Ventos *arrume isso* no site?",
+        "body": "<p>Depois da nota, dá para fechar o que falta — regras de entrada da IA, texto, dados do negócio e arquivos básicos — com proposta de valor fechado.</p>",
+        "cta_label": "Chamar no WhatsApp",
+        "cta_href": "https://wa.me/554130399593?text=Quero%20ajuda%20para%20aparecer%20no%20ChatGPT.",
+        "mark_draw": true
+      }
+    }
+  ]
+}

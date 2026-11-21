@@ -1,3 +1,5 @@
+import './behaviors.js';
+
 const form = document.getElementById('ai-vis-form');
 const status = document.getElementById('ai-vis-status');
 
@@ -16,7 +18,7 @@ form?.addEventListener('submit', async (event) => {
   const url = new FormData(form).get('url');
   const token = form.querySelector('input[name="_token"]')?.value;
   button.disabled = true;
-  setStatus('Analisando a home…');
+  setStatus('Lendo a página inicial…');
 
   try {
     const response = await fetch(form.action, {

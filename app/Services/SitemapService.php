@@ -111,7 +111,7 @@ class SitemapService
 
         $lines[] = '## Ferramentas';
         $lines[] = '';
-        $lines[] = '- [Seu negócio aparece na IA]('.$this->absolute('/'.AiVisibilityReport::PATH).'): Nota gratuita de prontidão para ChatGPT, Claude e Perplexity.';
+        $lines[] = '- [Como aparecer no ChatGPT?]('.$this->absolute('/'.AiVisibilityReport::PATH).'): Checklist e nota gratuita de prontidão para ChatGPT, Claude e Perplexity.';
         $lines[] = '';
 
         $pages = Page::query()->published()->get()
@@ -156,7 +156,8 @@ class SitemapService
     {
         $pages = $this->localized(
             Page::query()->published()->get()
-                ->reject(fn (Page $page) => str_contains(strtolower((string) $page->robots), 'noindex')),
+                ->reject(fn (Page $page) => str_contains(strtolower((string) $page->robots), 'noindex'))
+                ->reject(fn (Page $page) => $page->slug === AiVisibilityReport::PATH),
             'page'
         );
 

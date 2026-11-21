@@ -222,16 +222,16 @@ class AiVisibilityAnalyzer
     {
         $max = 20;
         if ($robots === null || trim($robots) === '') {
-            return $this->check('robots', 'Robôs das IAs liberados', 'ok', (int) ($max / 2), $max, 'Não encontramos robots.txt. Sem ele, a maioria dos robôs entra, mas o ideal é declarar Allow para ChatGPT, Claude, Perplexity e Google.');
+            return $this->check('robots', 'A IA pode entrar no site', 'ok', (int) ($max / 2), $max, 'Não achamos o arquivo de regras (robots.txt). Sem ele, muita IA entra mesmo assim — o ideal é deixar claro que ChatGPT e outras podem ler.');
         }
 
         $blocked = array_values(array_filter(self::AI_BOTS, fn (string $bot) => AiReadiness::blocksRoot($robots, $bot)));
         $count = count($blocked);
 
         return match (true) {
-            $count === 0 => $this->check('robots', 'Robôs das IAs liberados', 'good', $max, $max, 'O robots.txt não pede para ChatGPT, Claude, Perplexity e Google (IA) ficarem de fora.'),
-            $count <= 3 => $this->check('robots', 'Robôs das IAs liberados', 'ok', (int) ($max / 2), $max, 'robots.txt bloqueia '.implode(', ', $blocked).'. Até 3 bloqueios = metade dos pontos.'),
-            default => $this->check('robots', 'Robôs das IAs liberados', 'bad', 0, $max, 'robots.txt bloqueia '.implode(', ', $blocked).'. Essas IAs não leem o site.'),
+            $count === 0 => $this->check('robots', 'A IA pode entrar no site', 'good', $max, $max, 'As regras do site não mandam ChatGPT, Claude, Perplexity e Google (IA) ficarem de fora.'),
+            $count <= 3 => $this->check('robots', 'A IA pode entrar no site', 'ok', (int) ($max / 2), $max, 'As regras bloqueiam '.implode(', ', $blocked).'. Até 3 bloqueios = metade dos pontos.'),
+            default => $this->check('robots', 'A IA pode entrar no site', 'bad', 0, $max, 'As regras bloqueiam '.implode(', ', $blocked).'. Essas IAs não leem o site.'),
         };
     }
 
@@ -246,9 +246,9 @@ class AiVisibilityAnalyzer
         $hasTitle = $this->h1($html) !== '' || $this->title($html) !== '';
 
         return match (true) {
-            $hasTitle && $words >= 200 => $this->check('readable', 'Conteúdo legível sem JavaScript', 'good', $max, $max, $words.' palavras chegam prontas no HTML, com título.'),
-            $hasTitle && $words >= 30 => $this->check('readable', 'Conteúdo legível sem JavaScript', 'ok', (int) ($max / 2), $max, $words.' palavras no HTML. Acima de 200 a IA tem mais trechos para citar.'),
-            default => $this->check('readable', 'Conteúdo legível sem JavaScript', 'bad', 0, $max, $hasTitle ? $words.' palavras no HTML — pouco para a IA extrair resposta.' : 'Sem título e pouco texto no HTML.'),
+            $hasTitle && $words >= 200 => $this->check('readable', 'Texto da página inicial aparece sem truque', 'good', $max, $max, $words.' palavras já vêm escritas na página, com título.'),
+            $hasTitle && $words >= 30 => $this->check('readable', 'Texto da página inicial aparece sem truque', 'ok', (int) ($max / 2), $max, $words.' palavras na página. Acima de 200 a IA tem mais trecho para citar.'),
+            default => $this->check('readable', 'Texto da página inicial aparece sem truque', 'bad', 0, $max, $hasTitle ? $words.' palavras na página — pouco para a IA montar uma resposta.' : 'Falta título e quase não há texto na página.'),
         };
     }
 
@@ -265,9 +265,9 @@ class AiVisibilityAnalyzer
         $hits = (int) $what + (int) $whom + (int) $price;
 
         return match ($hits) {
-            3 => $this->check('answers', 'Responde o que é, para quem e quanto custa', 'good', $max, $max, 'A página inicial diz o que você oferece, para quem é e quanto custa.'),
-            2 => $this->check('answers', 'Responde o que é, para quem e quanto custa', 'ok', (int) round($max / 2), $max, 'Duas das três respostas aparecem. Falta '.(! $what ? 'o que é' : (! $whom ? 'para quem é' : 'quanto custa')).'.'),
-            default => $this->check('answers', 'Responde o que é, para quem e quanto custa', 'bad', 0, $max, 'A home não deixa claro o que é, para quem é e quanto custa.'),
+            3 => $this->check('answers', 'Fica claro o que você faz, para quem e o preço', 'good', $max, $max, 'A página inicial diz o que você oferece, para quem é e quanto custa.'),
+            2 => $this->check('answers', 'Fica claro o que você faz, para quem e o preço', 'ok', (int) round($max / 2), $max, 'Duas das três respostas aparecem. Falta '.(! $what ? 'o que é' : (! $whom ? 'para quem é' : 'quanto custa')).'.'),
+            default => $this->check('answers', 'Fica claro o que você faz, para quem e o preço', 'bad', 0, $max, 'A página inicial não deixa claro o que é, para quem é e quanto custa.'),
         };
     }
 
@@ -282,9 +282,9 @@ class AiVisibilityAnalyzer
         $half = array_values(array_intersect($types, self::HALF_TYPES));
 
         return match (true) {
-            $complete !== [] => $this->check('schema', 'Dados estruturados', 'good', $max, $max, 'JSON-LD com tipo completo: '.implode(', ', array_unique($complete)).'.'),
-            $half !== [] => $this->check('schema', 'Dados estruturados', 'ok', (int) ($max / 2), $max, 'Só '.implode(', ', array_unique($half)).'. Inclua LocalBusiness, ProfessionalService, Service, Product ou FAQPage.'),
-            default => $this->check('schema', 'Dados estruturados', 'bad', 0, $max, 'Sem JSON-LD descrevendo o negócio.'),
+            $complete !== [] => $this->check('schema', 'Dados do negócio em formato de máquina', 'good', $max, $max, 'Há um bloco de dados do negócio (JSON-LD) completo: '.implode(', ', array_unique($complete)).'.'),
+            $half !== [] => $this->check('schema', 'Dados do negócio em formato de máquina', 'ok', (int) ($max / 2), $max, 'Só '.implode(', ', array_unique($half)).'. Peça para incluir tipo de empresa, serviço, produto ou FAQ.'),
+            default => $this->check('schema', 'Dados do negócio em formato de máquina', 'bad', 0, $max, 'Não há bloco de dados do negócio (JSON-LD) na página.'),
         };
     }
 
@@ -295,13 +295,13 @@ class AiVisibilityAnalyzer
     {
         $max = 10;
         if (! $https) {
-            return $this->check('speed', 'Tempo de resposta e HTTPS', 'bad', 0, $max, 'Sem HTTPS. Canonical e confiança caem.');
+            return $this->check('speed', 'Site com cadeado e resposta rápida', 'bad', 0, $max, 'Sem cadeado (https). Isso reduz confiança.');
         }
 
         return match (true) {
-            $ms <= 2000 => $this->check('speed', 'Tempo de resposta e HTTPS', 'good', $max, $max, 'HTTPS e resposta em '.number_format($ms / 1000, 1, ',', '').' s.'),
-            $ms <= 5000 => $this->check('speed', 'Tempo de resposta e HTTPS', 'ok', (int) ($max / 2), $max, 'HTTPS ok, mas a home levou '.number_format($ms / 1000, 1, ',', '').' s.'),
-            default => $this->check('speed', 'Tempo de resposta e HTTPS', 'bad', 0, $max, 'HTTPS ok, porém a home demorou '.number_format($ms / 1000, 1, ',', '').' s.'),
+            $ms <= 2000 => $this->check('speed', 'Site com cadeado e resposta rápida', 'good', $max, $max, 'Com cadeado e resposta em '.number_format($ms / 1000, 1, ',', '').' s.'),
+            $ms <= 5000 => $this->check('speed', 'Site com cadeado e resposta rápida', 'ok', (int) ($max / 2), $max, 'Cadeado ok, mas a página inicial levou '.number_format($ms / 1000, 1, ',', '').' s.'),
+            default => $this->check('speed', 'Site com cadeado e resposta rápida', 'bad', 0, $max, 'Cadeado ok, porém a página inicial demorou '.number_format($ms / 1000, 1, ',', '').' s.'),
         };
     }
 
@@ -317,9 +317,9 @@ class AiVisibilityAnalyzer
         $descOk = mb_strlen($description) >= 50;
 
         return match (true) {
-            $titleOk && $descOk => $this->check('meta', 'Título e descrição', 'good', $max, $max, 'Título e description com tamanho útil.'),
-            $titleOk || $descOk => $this->check('meta', 'Título e descrição', 'ok', (int) ($max / 2), $max, $titleOk ? 'Título ok; description curta ou ausente.' : 'Description ok; título curto ou ausente.'),
-            default => $this->check('meta', 'Título e descrição', 'bad', 0, $max, 'Faltam título e description.'),
+            $titleOk && $descOk => $this->check('meta', 'Título e resumo da página', 'good', $max, $max, 'Título e resumo com tamanho útil.'),
+            $titleOk || $descOk => $this->check('meta', 'Título e resumo da página', 'ok', (int) ($max / 2), $max, $titleOk ? 'Título ok; resumo curto ou ausente.' : 'Resumo ok; título curto ou ausente.'),
+            default => $this->check('meta', 'Título e resumo da página', 'bad', 0, $max, 'Faltam título e resumo da página.'),
         };
     }
 
@@ -332,8 +332,8 @@ class AiVisibilityAnalyzer
         $ok = is_string($llms) && trim($llms) !== '' && mb_strlen(trim($llms)) >= 40;
 
         return $ok
-            ? $this->check('llms', 'Arquivo llms.txt', 'good', $max, $max, 'Existe um llms.txt com resumo do negócio.')
-            : $this->check('llms', 'Arquivo llms.txt', 'bad', 0, $max, 'Sem llms.txt. É o resumo do site escrito para assistentes de IA.');
+            ? $this->check('llms', 'Resumo para IA (llms.txt)', 'good', $max, $max, 'Existe um resumo llms.txt contando o que o negócio faz.')
+            : $this->check('llms', 'Resumo para IA (llms.txt)', 'bad', 0, $max, 'Sem llms.txt. É um arquivo curto que explica o negócio para a IA.');
     }
 
     /**
@@ -349,9 +349,9 @@ class AiVisibilityAnalyzer
         $trust = $author || $date;
 
         return match (true) {
-            $about && $trust => $this->check('trust', 'Autor, data e página Sobre', 'good', $max, $max, 'Há página Sobre e sinal de autor ou data de atualização.'),
-            $about || $trust => $this->check('trust', 'Autor, data e página Sobre', 'ok', (int) ($max / 2), $max, $about ? 'Página Sobre ok; falta autor ou data visível.' : 'Há autor/data; falta página Sobre ligada na home.'),
-            default => $this->check('trust', 'Autor, data e página Sobre', 'bad', 0, $max, 'Sem página Sobre nem autor/data.'),
+            $about && $trust => $this->check('trust', 'Quem está por trás e quando atualizou', 'good', $max, $max, 'Há página Sobre e sinal de autor ou data de atualização.'),
+            $about || $trust => $this->check('trust', 'Quem está por trás e quando atualizou', 'ok', (int) ($max / 2), $max, $about ? 'Página Sobre ok; falta autor ou data visível.' : 'Há autor/data; falta página Sobre ligada na home.'),
+            default => $this->check('trust', 'Quem está por trás e quando atualizou', 'bad', 0, $max, 'Sem página Sobre nem autor/data.'),
         };
     }
 
@@ -363,8 +363,8 @@ class AiVisibilityAnalyzer
         $max = 5;
 
         return $found
-            ? $this->check('sitemap', 'Sitemap', 'good', $max, $max, 'Existe um sitemap.xml listando as páginas.')
-            : $this->check('sitemap', 'Sitemap', 'bad', 0, $max, 'Sitemap não encontrado.');
+            ? $this->check('sitemap', 'Lista das páginas (sitemap)', 'good', $max, $max, 'Existe uma lista das páginas do site (sitemap.xml).')
+            : $this->check('sitemap', 'Lista das páginas (sitemap)', 'bad', 0, $max, 'Não encontramos a lista de páginas (sitemap.xml).');
     }
 
     /**
@@ -378,20 +378,20 @@ class AiVisibilityAnalyzer
 
         if (($byId['answers']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Responda na página inicial: o que é, para quem é e quanto custa',
+                'title' => 'Na página inicial: diga o que faz, para quem e o preço',
                 'impact' => 'alto',
                 'minutes' => 60,
-                'body' => 'Escreva em texto simples as três respostas. Se não puder divulgar valores, explique como o orçamento funciona (do que depende o preço e o prazo da proposta).',
+                'body' => 'Escreva em texto simples as três respostas. Se não puder mostrar valores, explique como o orçamento funciona (o que muda o preço e o prazo da proposta).',
                 'code' => null,
             ];
         }
 
         if (($byId['schema']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Adicione dados estruturados (JSON-LD) ao site',
+                'title' => 'Peça para colocar os dados do negócio no site (JSON-LD)',
                 'impact' => 'medio',
                 'minutes' => 60,
-                'body' => 'Cole no <head> da home um bloco descrevendo o negócio. Ajuste nome, descrição e preço.',
+                'body' => 'Quem cuida do site cola no cabeçalho da página inicial um bloco descrevendo o negócio. Ajuste nome, descrição e preço.',
                 'code' => '<script type="application/ld+json">'."\n".json_encode([
                     '@context' => 'https://schema.org',
                     '@type' => 'ProfessionalService',
@@ -406,70 +406,70 @@ class AiVisibilityAnalyzer
 
         if (($byId['robots']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Libere os robôs de IA no robots.txt',
+                'title' => 'Deixe a IA entrar (arquivo robots.txt)',
                 'impact' => 'alto',
                 'minutes' => 20,
-                'body' => 'Garanta Allow: / para GPTBot, ClaudeBot, PerplexityBot, Google-Extended e afins. Não use Disallow: / nesses agentes.',
+                'body' => 'Peça para liberar ChatGPT e outras IAs no robots.txt. Não deixe essas ferramentas bloqueadas.',
                 'code' => null,
             ];
         }
 
         if (($byId['readable']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Publique texto da home no HTML, sem depender de JavaScript',
+                'title' => 'Deixe o texto da página inicial aparecer sem depender de efeito',
                 'impact' => 'alto',
                 'minutes' => 90,
-                'body' => 'A home precisa chegar com título e pelo menos 200 palavras já no HTML. Pré-renderize ou sirva HTML no servidor.',
+                'body' => 'A página inicial precisa chegar com título e pelo menos 200 palavras já escritas. Peça ao responsável pelo site para servir o texto no servidor, não só depois que a tela “liga”.',
                 'code' => null,
             ];
         }
 
         if (($byId['llms']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Publique um llms.txt',
+                'title' => 'Publique um resumo curto para IA (llms.txt)',
                 'impact' => 'baixo',
                 'minutes' => 30,
-                'body' => 'Crie /llms.txt com o nome do negócio, um resumo e links das páginas principais.',
+                'body' => 'Crie o arquivo /llms.txt com o nome do negócio, um resumo e links das páginas principais.',
                 'code' => null,
             ];
         }
 
         if (($byId['trust']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Mostre quem está por trás do site e quando ele foi atualizado',
+                'title' => 'Mostre quem está por trás e quando atualizou',
                 'impact' => 'baixo',
                 'minutes' => 45,
-                'body' => 'Crie uma página Sobre ligada no menu e indique a data de atualização dos textos principais.',
+                'body' => 'Crie uma página Sobre no menu e indique a data de atualização dos textos principais.',
                 'code' => null,
             ];
         }
 
         if (($byId['sitemap']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Publique um sitemap.xml',
+                'title' => 'Publique a lista das páginas (sitemap.xml)',
                 'impact' => 'baixo',
                 'minutes' => 20,
-                'body' => 'Liste as URLs publicadas em /sitemap.xml e referencie no robots.txt.',
+                'body' => 'Liste as páginas do site em /sitemap.xml e aponte esse arquivo nas regras do site (robots.txt).',
                 'code' => null,
             ];
         }
 
         if (($byId['meta']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Ajuste título e meta description',
+                'title' => 'Ajuste o título e o resumo da página',
                 'impact' => 'medio',
                 'minutes' => 20,
-                'body' => 'O title deve explicar o negócio; a description precisa ter pelo menos 50 caracteres.',
+                'body' => 'O título da aba deve explicar o negócio; o resumo (meta description) precisa ter pelo menos 50 caracteres.',
                 'code' => null,
             ];
         }
 
         if (($byId['speed']['status'] ?? 'good') !== 'good') {
             $fixes[] = [
-                'title' => 'Acelere a home e force HTTPS',
+                'title' => 'Acelere a página inicial e use cadeado (https)',
                 'impact' => 'medio',
                 'minutes' => 120,
-                'body' => 'Resposta até 2 s com cadeado. Cache, imagens leves e redirecionamento http→https.',
+                'body' => 'Meta: resposta em até 2 segundos com https. Cache, imagens leves e redirecionamento de http para https.',
                 'code' => null,
             ];
         }

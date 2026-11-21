@@ -2,7 +2,7 @@ const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const LOCALE_COOKIE = 'qv_locale';
 
 function reveal() {
-  const nodes = document.querySelectorAll('.prose-panel.is-reveal, .plan-tier, .plan-base, .is-word-reveal, .loop, .adhoc, .ex-grid.is-glyphs');
+  const nodes = document.querySelectorAll('.prose-panel.is-reveal, .plan-tier, .plan-base, .is-word-reveal, .loop, .adhoc, .ex-grid.is-glyphs, .ai-vis .is-reveal');
   if (!nodes.length || !('IntersectionObserver' in window)) {
     nodes.forEach((node) => node.classList.add('is-in'));
     return;

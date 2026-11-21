@@ -161,6 +161,7 @@ class Page extends Model
             'llms.txt',
             'llm.txt',
             AiVisibilityReport::PATH,
+            AiVisibilityReport::LEGACY_PATH,
             $admin,
         ]));
     }

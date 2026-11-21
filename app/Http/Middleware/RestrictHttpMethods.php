@@ -51,6 +51,11 @@ class RestrictHttpMethods
             return true;
         }
 
-        return $request->is('api/contato', 'api/contato/lead', 'api/meu-site-aparece-na-ia') && $request->isMethod('POST');
+        return $request->is(
+            'api/contato',
+            'api/contato/lead',
+            'api/como-aparecer-no-chatgpt',
+            'api/meu-site-aparece-na-ia',
+        ) && $request->isMethod('POST');
     }
 }

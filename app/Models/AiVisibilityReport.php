@@ -7,7 +7,9 @@ use Illuminate\Support\Str;
 
 class AiVisibilityReport extends Model
 {
-    public const PATH = 'meu-site-aparece-na-ia';
+    public const PATH = 'como-aparecer-no-chatgpt';
+
+    public const LEGACY_PATH = 'meu-site-aparece-na-ia';
 
     protected $fillable = [
         'public_id',
