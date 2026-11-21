@@ -9,7 +9,6 @@ import {
   LayoutDashboard,
   ListTree,
   ClipboardList,
-  Bot,
   Database,
   HardDrive,
   ScrollText,
@@ -35,8 +34,7 @@ const groups = [
     tour: 'shell-nav-operacao',
     items: [
       { to: '/', label: 'Dashboard', icon: LayoutDashboard, ability: 'pages' },
-      { to: '/mensagens', label: 'Mensagens recebidas', icon: Inbox, ability: 'messages' },
-      { to: '/testes-chatgpt', label: 'Testes ChatGPT', icon: Bot, ability: 'ai_visibility' },
+      { to: '/mensagens', label: 'Mensagens recebidas', icon: Inbox, ability: 'messages', also: 'ai_visibility' },
     ],
   },
   {
@@ -173,7 +171,12 @@ export function AppShell({
         <aside className={`sidebar${open ? ' open' : ''}`} data-tour="shell-sidebar">
           <BrandMark />
           {groups.map((group) => {
-            const items = group.items.filter((item) => abilities?.[item.ability as keyof typeof abilities]);
+            const items = group.items.filter((item) => {
+              const key = item.ability as keyof NonNullable<typeof abilities>;
+              const also = 'also' in item ? (item.also as keyof NonNullable<typeof abilities> | undefined) : undefined;
+
+              return Boolean(abilities?.[key] || (also && abilities?.[also]));
+            });
             if (items.length === 0) {
               return null;
             }

@@ -4,7 +4,6 @@ import { useAuth } from './auth';
 import { LoginScreen } from './screens/LoginScreen';
 import { DashboardScreen } from './screens/DashboardScreen';
 import { InboxScreen } from './screens/InboxScreen';
-import { AiVisibilityReportsScreen } from './screens/AiVisibilityReportsScreen';
 import { AuditScreen } from './screens/AuditScreen';
 import { PagesScreen } from './screens/PagesScreen';
 import { PageEditorScreen } from './screens/PageEditorScreen';
@@ -22,7 +21,15 @@ import { ProfileScreen } from './screens/ProfileScreen';
 import { FormsScreen } from './screens/FormsScreen';
 import { FormEditorScreen } from './screens/FormEditorScreen';
 
-function Guard({ children, ability }: { children: ReactNode; ability?: keyof NonNullable<ReturnType<typeof useAuth>['user']>['abilities'] }) {
+function Guard({
+  children,
+  ability,
+  anyOf,
+}: {
+  children: ReactNode;
+  ability?: keyof NonNullable<ReturnType<typeof useAuth>['user']>['abilities'];
+  anyOf?: Array<keyof NonNullable<ReturnType<typeof useAuth>['user']>['abilities']>;
+}) {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -33,7 +40,11 @@ function Guard({ children, ability }: { children: ReactNode; ability?: keyof Non
     return <Navigate to="/login" replace />;
   }
 
-  if (ability && !user.abilities[ability]) {
+  if (anyOf && !anyOf.some((key) => user.abilities[key])) {
+    return <Navigate to="/" replace />;
+  }
+
+  if (!anyOf && ability && !user.abilities[ability]) {
     return <Navigate to="/" replace />;
   }
 
@@ -50,8 +61,8 @@ export function App() {
         element={loading ? <div className="auth-loading"><div className="spinner" /></div> : user ? <Navigate to="/" replace /> : <LoginScreen />}
       />
       <Route path="/" element={<Guard><DashboardScreen /></Guard>} />
-      <Route path="/mensagens" element={<Guard ability="messages"><InboxScreen /></Guard>} />
-      <Route path="/testes-chatgpt" element={<Guard ability="ai_visibility"><AiVisibilityReportsScreen /></Guard>} />
+      <Route path="/mensagens" element={<Guard anyOf={['messages', 'ai_visibility']}><InboxScreen /></Guard>} />
+      <Route path="/testes-chatgpt" element={<Navigate to="/mensagens?tipo=chatgpt" replace />} />
       <Route path="/curriculos" element={<Navigate to="/mensagens?tipo=curriculos" replace />} />
       <Route path="/paginas" element={<Guard ability="pages"><PagesScreen /></Guard>} />
       <Route path="/paginas/:slug" element={<Guard ability="pages"><PageEditorScreen /></Guard>} />

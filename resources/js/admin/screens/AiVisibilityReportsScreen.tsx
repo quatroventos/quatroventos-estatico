@@ -30,7 +30,7 @@ const bandLabel: Record<string, string> = {
   baixo: 'Atenção',
 };
 
-export function AiVisibilityReportsScreen() {
+export function AiVisibilityReportsPanel() {
   const { user } = useAuth();
   const [items, setItems] = useState<ReportRow[]>([]);
   const [current, setCurrent] = useState<Report | null>(null);
@@ -76,25 +76,23 @@ export function AiVisibilityReportsScreen() {
   }
 
   return (
-    <AppShell title="Testes ChatGPT" subtitle="URL e resultados gravados para estudo">
-      <div className="inbox-head">
-        <form
-          className="toolbar"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void load();
-          }}
-        >
-          <input
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Buscar por host, URL ou ID"
-            aria-label="Buscar testes"
-          />
-          <button className="btn btn-secondary" type="submit">Buscar</button>
-        </form>
-      </div>
+    <>
+      <form
+        className="toolbar"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void load();
+        }}
+      >
+        <input
+          type="search"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Buscar por host, URL ou ID"
+          aria-label="Buscar testes"
+        />
+        <button className="btn btn-secondary" type="submit">Buscar</button>
+      </form>
 
       <div className="inbox-layout">
         <div className="inbox-list" role="list">
@@ -171,6 +169,14 @@ export function AiVisibilityReportsScreen() {
           onConfirm={() => void confirmDelete()}
         />
       ) : null}
+    </>
+  );
+}
+
+export function AiVisibilityReportsScreen() {
+  return (
+    <AppShell title="Testes ChatGPT" subtitle="URL e resultados gravados para estudo" inbox>
+      <AiVisibilityReportsPanel />
     </AppShell>
   );
 }
