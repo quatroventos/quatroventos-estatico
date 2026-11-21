@@ -1,5 +1,31 @@
-import { AgentLog } from './hero';
 import { Arrow, Marked, Rich, rows, strings, text, type Data } from './ui';
+
+const SCAN_LINES: Array<Array<[string, string | null]>> = [
+  [['scan', 'k'], [' home → ', null], ['ok', 's']],
+  [['robots', 'k'], [' gptbot · claude · perplexity', null]],
+  [['html', 'k'], [' body text ', null], ['readable', 's']],
+  [['schema', 'k'], [' ', null], ['json-ld', 'p'], [' · faq · service', null]],
+  [['score', 'k'], [' ', null], ['0–100', 's'], [' · band', null]],
+];
+
+function AiVisAtmosphere() {
+  const lines = [...SCAN_LINES, ...SCAN_LINES];
+
+  return (
+    <div className="ai-vis-atmosphere" aria-hidden="true">
+      <div className="agent-log" aria-hidden="true">
+        <div>
+          {lines.map((line, row) => (
+            <span key={row}>
+              {line.map(([value, tone], index) => (tone ? <span key={index} className={tone}>{value}</span> : value))}
+              {'\n'}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export function AiVisHero({ data }: { data: Data }) {
   const badges = strings(data, 'badges');
@@ -10,9 +36,7 @@ export function AiVisHero({ data }: { data: Data }) {
 
   return (
     <section className="section ai-vis-hero is-mark-draw" data-section="ai-vis-hero">
-      <div className="ai-vis-atmosphere" aria-hidden="true">
-        <AgentLog />
-      </div>
+      <AiVisAtmosphere />
       <div className="wrap ai-vis-hero-grid">
         <div className="ai-vis-hero-copy">
           <h1><Marked value={title} /></h1>
