@@ -8,6 +8,7 @@ use App\Services\Seo\AiVisibilityAnalyzer;
 use App\Services\SystemOptions;
 use App\Support\Locales;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -46,10 +47,10 @@ class AiVisibilityController extends Controller
         ]);
     }
 
-    public function analyze(Request $request, AiVisibilityAnalyzer $analyzer): JsonResponse
+    public function analyze(Request $request, AiVisibilityAnalyzer $analyzer): JsonResponse|RedirectResponse
     {
         if (filled($request->input('empresa_site'))) {
-            return response()->json(['status' => 'ok']);
+            return $this->analyzeReply($request, ['status' => 'ok']);
         }
 
         $data = $request->validate([
@@ -59,11 +60,11 @@ class AiVisibilityController extends Controller
         try {
             $result = $analyzer->analyze($data['url']);
         } catch (RuntimeException $exception) {
-            return response()->json(['message' => $exception->getMessage()], 422);
+            return $this->analyzeFailure($request, $exception->getMessage(), 422);
         } catch (Throwable $exception) {
             report($exception);
 
-            return response()->json(['message' => 'Não foi possível analisar agora. Tente de novo em instantes.'], 422);
+            return $this->analyzeFailure($request, 'Não foi possível analisar agora. Tente de novo em instantes.', 422);
         }
 
         $report = AiVisibilityReport::query()->create([
@@ -90,12 +91,46 @@ class AiVisibilityController extends Controller
             'ip' => $report->ip,
         ]);
 
-        return response()->json([
+        return $this->analyzeReply($request, [
             'id' => $report->public_id,
             'path' => $report->publicPath(),
             'score' => $report->score,
             'band' => $report->band,
-        ]);
+        ], $report);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    private function analyzeReply(Request $request, array $payload, ?AiVisibilityReport $report = null): JsonResponse|RedirectResponse
+    {
+        if ($this->wantsJsonAnalyze($request)) {
+            return response()->json($payload);
+        }
+
+        if ($report !== null) {
+            return redirect($report->publicPath());
+        }
+
+        return redirect('/'.AiVisibilityReport::PATH);
+    }
+
+    private function analyzeFailure(Request $request, string $message, int $status): JsonResponse|RedirectResponse
+    {
+        if ($this->wantsJsonAnalyze($request)) {
+            return response()->json(['message' => $message], $status);
+        }
+
+        return redirect('/'.AiVisibilityReport::PATH)
+            ->withInput($request->only('url'))
+            ->withErrors(['url' => $message]);
+    }
+
+    private function wantsJsonAnalyze(Request $request): bool
+    {
+        return $request->expectsJson()
+            || $request->ajax()
+            || $request->header('X-Requested-With') === 'XMLHttpRequest';
     }
 
     /**

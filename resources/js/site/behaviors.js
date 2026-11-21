@@ -645,7 +645,13 @@ function formStatus(form, kind, text, withWhatsApp) {
 }
 
 function aiVisForms() {
-  document.querySelectorAll('form.ai-vis-form').forEach((form) => {
+  document.addEventListener('submit', async (event) => {
+    const form = event.target;
+    if (!(form instanceof HTMLFormElement) || !form.classList.contains('ai-vis-form')) {
+      return;
+    }
+
+    event.preventDefault();
     const status = form.parentElement?.querySelector('#ai-vis-status') || document.getElementById('ai-vis-status');
     const setStatus = (text, isError = false) => {
       if (!status) {
@@ -655,41 +661,37 @@ function aiVisForms() {
       status.textContent = text;
       status.classList.toggle('is-error', isError);
     };
+    const button = form.querySelector('button[type="submit"]');
+    const payload = new FormData(form);
+    if (button) {
+      button.disabled = true;
+    }
+    setStatus('Lendo a página inicial…');
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const button = form.querySelector('button[type="submit"]');
-      const payload = new FormData(form);
+    try {
+      const response = await fetch(form.getAttribute('action') || '/api/como-aparecer-no-chatgpt', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({
+          url: payload.get('url'),
+          empresa_site: payload.get('empresa_site') || '',
+        }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.message || 'Não foi possível analisar agora.');
+      }
+      window.location.assign(data.path || '/');
+    } catch (error) {
+      setStatus(error instanceof Error ? error.message : 'Falha na análise.', true);
       if (button) {
-        button.disabled = true;
+        button.disabled = false;
       }
-      setStatus('Lendo a página inicial…');
-
-      try {
-        const response = await fetch(form.getAttribute('action') || '/api/como-aparecer-no-chatgpt', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-          body: JSON.stringify({
-            url: payload.get('url'),
-            empresa_site: payload.get('empresa_site') || '',
-          }),
-        });
-        const data = await response.json().catch(() => ({}));
-        if (!response.ok) {
-          throw new Error(data.message || 'Não foi possível analisar agora.');
-        }
-        window.location.assign(data.path || '/');
-      } catch (error) {
-        setStatus(error instanceof Error ? error.message : 'Falha na análise.', true);
-        if (button) {
-          button.disabled = false;
-        }
-      }
-    });
+    }
   });
 }
 

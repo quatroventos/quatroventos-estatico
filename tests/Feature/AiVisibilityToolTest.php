@@ -150,6 +150,31 @@ HTML;
             ->assertSee('O que encontramos', false);
     }
 
+    public function test_analyze_form_post_redirects_to_report(): void
+    {
+        Http::fake(function (Request $request) {
+            $url = $request->url();
+            if (str_contains($url, 'robots.txt')) {
+                return Http::response("User-agent: *\nAllow: /\n", 200);
+            }
+            if (str_contains($url, 'sitemap')) {
+                return Http::response('<?xml version="1.0"?><urlset></urlset>', 200);
+            }
+            if (str_contains($url, 'llms.txt')) {
+                return Http::response('Quatro Ventos', 200);
+            }
+
+            return Http::response('<!doctype html><html><head><title>Agenda</title><meta name="description" content="Para clínicas"></head><body><main><h1>Agenda online para clínicas</h1><p>Feito para clínicas. Planos a partir de R$ 49 por mês.</p><a href="/sobre">Sobre</a></main></body></html>', 200);
+        });
+
+        $response = $this->post('/api/'.AiVisibilityReport::PATH, ['url' => 'exemplo.com.br'])
+            ->assertRedirect();
+
+        $report = AiVisibilityReport::query()->latest('id')->first();
+        $this->assertNotNull($report);
+        $response->assertRedirect($report->publicPath());
+    }
+
     public function test_private_hosts_are_rejected(): void
     {
         $this->expectException(\RuntimeException::class);
