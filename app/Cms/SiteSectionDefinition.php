@@ -402,6 +402,25 @@ class SiteSectionDefinition
                 ]),
             ],
             [
+                'label' => 'Teste de visibilidade na IA',
+                'preview' => 'ai-tool',
+                'fields' => self::withCommon([
+                    ['type' => 'text', 'name' => 'placeholder', 'label' => 'Placeholder do campo URL', 'hint' => 'Ex.: exemplo.com.br'],
+                    ['type' => 'text', 'name' => 'button_label', 'label' => 'Texto do botão'],
+                    ['type' => 'text', 'name' => 'hint', 'label' => 'Texto de ajuda abaixo do formulário'],
+                    [
+                        'type' => 'repeater',
+                        'name' => 'platforms',
+                        'label' => 'Plataformas exibidas',
+                        'simple' => false,
+                        'fields' => [
+                            ['type' => 'text', 'name' => 'name', 'label' => 'Nome'],
+                            ['type' => 'text', 'name' => 'logo', 'label' => 'Caminho do logo (ex.: /assets/llms/chatgpt.svg)'],
+                        ],
+                    ],
+                ]),
+            ],
+            [
                 'label' => 'Painel',
                 'preview' => 'panel',
                 'fields' => self::withCommon([

@@ -156,8 +156,7 @@ class SitemapService
     {
         $pages = $this->localized(
             Page::query()->published()->get()
-                ->reject(fn (Page $page) => str_contains(strtolower((string) $page->robots), 'noindex'))
-                ->reject(fn (Page $page) => $page->slug === AiVisibilityReport::PATH),
+                ->reject(fn (Page $page) => str_contains(strtolower((string) $page->robots), 'noindex')),
             'page'
         );
 
@@ -178,17 +177,7 @@ class SitemapService
                 'alternates' => [],
             ]);
 
-        $tools = collect([[
-            'source' => 'tool',
-            'slug' => AiVisibilityReport::PATH,
-            'locale' => Locales::default(),
-            'path' => '/'.AiVisibilityReport::PATH,
-            'loc' => $this->absolute('/'.AiVisibilityReport::PATH),
-            'lastmod' => now()->toAtomString(),
-            'alternates' => [],
-        ]]);
-
-        return $tools->concat($pages)->concat($cases)->concat($extra)->values()->all();
+        return $pages->concat($cases)->concat($extra)->values()->all();
     }
 
     /**

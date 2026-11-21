@@ -2,10 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Cms\EnsureAiVisibilityCmsPage;
 use App\Models\AiVisibilityReport;
+use App\Models\Page;
 use App\Services\Seo\AiVisibilityAnalyzer;
+use App\Services\SitePrerenderer;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -13,29 +17,77 @@ class AiVisibilityToolTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_landing_page_is_indexable_with_structured_data_and_faq(): void
+    protected function setUp(): void
     {
-        $html = $this->get('/'.AiVisibilityReport::PATH)
-            ->assertOk()
-            ->assertSee('Como aparecer no', false)
-            ->assertSee('ChatGPT', false)
-            ->assertSee('O que olhamos no teste', false)
-            ->assertSee('Três passos simples', false)
-            ->assertSee('Como aparecer no', false)
-            ->assertSee('na prática', false)
-            ->assertSee('application/ld+json', false)
-            ->assertSee('WebApplication', false)
-            ->assertSee('Article', false)
-            ->assertSee('HowTo', false)
-            ->assertSee('FAQPage', false)
-            ->assertSee('name="author"', false)
-            ->assertDontSee('Aplicar no meu site', false)
-            ->getContent();
+        parent::setUp();
+        config(['cms.og_on_save' => false]);
+        EnsureAiVisibilityCmsPage::apply(force: true);
+    }
 
-        $this->assertStringContainsString('Como aparecer no ChatGPT?', $html);
-        $this->assertStringContainsString('Isso é a mesma coisa que aparecer no Google?', $html);
-        $this->assertStringContainsString('aria-live="polite"', $html);
-        $this->assertStringNotContainsString('a gente', $html);
+    public function test_landing_page_is_served_from_cms_with_editable_seo(): void
+    {
+        $page = Page::query()
+            ->where('slug', AiVisibilityReport::PATH)
+            ->firstOrFail();
+
+        $this->assertSame(
+            'Como aparecer no ChatGPT? Teste gratuito do seu site | Quatro Ventos',
+            $page->seo_title
+        );
+
+        $file = SitePrerenderer::fileFor([
+            'locale' => 'pt-BR',
+            'path' => '/'.AiVisibilityReport::PATH,
+        ]);
+        File::ensureDirectoryExists(dirname($file));
+        File::put($file, <<<'HTML'
+<main id="conteudo">
+  <h1>Como aparecer no ChatGPT?</h1>
+  <form class="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post">
+    <input id="ai-vis-url" name="url" type="text" />
+    <button type="submit">Ver a nota</button>
+  </form>
+  <p class="hint" id="ai-vis-status" role="status" aria-live="polite" hidden></p>
+  <h2>O que olhamos</h2>
+  <h2>Três passos</h2>
+  <p>Isso é a mesma coisa que aparecer no Google?</p>
+</main>
+HTML);
+
+        try {
+            $html = $this->get('/'.AiVisibilityReport::PATH)
+                ->assertOk()
+                ->assertSee('Como aparecer no ChatGPT? Teste gratuito do seu site | Quatro Ventos', false)
+                ->assertSee('Como aparecer no ChatGPT?', false)
+                ->assertSee('O que olhamos', false)
+                ->assertSee('Três passos', false)
+                ->assertSee('ai-vis-form', false)
+                ->assertSee('name="author"', false)
+                ->assertDontSee('id="site-root"', false)
+                ->getContent();
+
+            $this->assertStringContainsString('Como aparecer no ChatGPT', $html);
+            $this->assertStringContainsString('Isso é a mesma coisa que aparecer no Google?', $html);
+            $this->assertStringContainsString('aria-live="polite"', $html);
+            $this->assertStringNotContainsString('a gente', $html);
+        } finally {
+            File::delete($file);
+        }
+
+        $page->seo_title = 'Título CMS editado | Quatro Ventos';
+        $page->seo_description = 'Description editada no CMS.';
+        $page->save();
+
+        File::put($file, '<main id="conteudo"><h1>Como aparecer no ChatGPT?</h1></main>');
+
+        try {
+            $this->get('/'.AiVisibilityReport::PATH)
+                ->assertOk()
+                ->assertSee('<title>Título CMS editado | Quatro Ventos</title>', false)
+                ->assertSee('Description editada no CMS.', false);
+        } finally {
+            File::delete($file);
+        }
     }
 
     public function test_legacy_path_redirects_to_seo_slug(): void
@@ -48,33 +100,30 @@ class AiVisibilityToolTest extends TestCase
     {
         Http::fake(function (Request $request) {
             $url = $request->url();
-
-            if (str_ends_with($url, '/robots.txt')) {
-                return Http::response("User-agent: *\nAllow: /\nSitemap: https://exemplo.com.br/sitemap.xml\n", 200);
-            }
-            if (str_contains($url, 'llms.txt') || str_contains($url, 'llm.txt')) {
-                return Http::response("# Exemplo\n\n> Software para clínicas.\n\n- [Home](https://exemplo.com.br/)\n- [Sobre](https://exemplo.com.br/sobre)\n- [Preços](https://exemplo.com.br/precos)\n", 200);
+            if (str_contains($url, 'robots.txt')) {
+                return Http::response("User-agent: *\nAllow: /\n", 200);
             }
             if (str_contains($url, 'sitemap')) {
-                return Http::response('<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://exemplo.com.br/</loc></url></urlset>', 200);
+                return Http::response('<?xml version="1.0"?><urlset></urlset>', 200);
+            }
+            if (str_contains($url, 'llms.txt')) {
+                return Http::response('Quatro Ventos', 200);
             }
 
-            $body = str_repeat('Texto de apoio para a home ficar longa o bastante para a IA citar trechos com segurança. ', 40);
-
-            return Http::response(<<<HTML
+            $body = <<<'HTML'
 <!doctype html><html><head>
-<title>Agenda online para clínicas | Exemplo</title>
-<meta name="description" content="Agenda online para clínicas e consultórios. Planos a partir de R\$ 49 por mês." />
-<meta name="author" content="Exemplo" />
-<meta property="article:modified_time" content="2026-11-01T12:00:00-03:00" />
+<title>Agenda online</title>
+<meta name="description" content="Para clínicas">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Exemplo","offers":{"@type":"Offer","price":"49.00","priceCurrency":"BRL"}}</script>
 </head><body><main>
 <h1>Agenda online para clínicas</h1>
-<p>Feito para clínicas e profissionais de saúde. Planos a partir de R\$ 49 por mês.</p>
+<p>Feito para clínicas e profissionais de saúde. Planos a partir de R$ 49 por mês.</p>
 <a href="/sobre">Sobre</a>
-<p>{$body}</p>
+<p>texto</p>
 </main></body></html>
-HTML, 200);
+HTML;
+
+            return Http::response($body, 200);
         });
 
         $response = $this->postJson('/api/'.AiVisibilityReport::PATH, ['url' => 'exemplo.com.br'])

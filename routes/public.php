@@ -51,7 +51,6 @@ Route::get('/'.AiVisibilityReport::LEGACY_PATH.'/{report}', function (string $re
 Route::post('/api/'.AiVisibilityReport::LEGACY_PATH, [AiVisibilityController::class, 'analyze'])
     ->middleware('throttle:8,1');
 
-Route::get('/'.AiVisibilityReport::PATH, [AiVisibilityController::class, 'show'])->name('ai-visibility');
 Route::get('/'.AiVisibilityReport::PATH.'/{report}', [AiVisibilityController::class, 'report'])
     ->where('report', '[A-Za-z0-9_-]{10,32}')
     ->name('ai-visibility.report');

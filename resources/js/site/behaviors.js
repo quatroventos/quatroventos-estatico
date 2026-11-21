@@ -644,6 +644,55 @@ function formStatus(form, kind, text, withWhatsApp) {
   return paragraph;
 }
 
+function aiVisForms() {
+  document.querySelectorAll('form.ai-vis-form').forEach((form) => {
+    const status = form.parentElement?.querySelector('#ai-vis-status') || document.getElementById('ai-vis-status');
+    const setStatus = (text, isError = false) => {
+      if (!status) {
+        return;
+      }
+      status.hidden = !text;
+      status.textContent = text;
+      status.classList.toggle('is-error', isError);
+    };
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const button = form.querySelector('button[type="submit"]');
+      const payload = new FormData(form);
+      if (button) {
+        button.disabled = true;
+      }
+      setStatus('Lendo a página inicial…');
+
+      try {
+        const response = await fetch(form.getAttribute('action') || '/api/como-aparecer-no-chatgpt', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+          },
+          body: JSON.stringify({
+            url: payload.get('url'),
+            empresa_site: payload.get('empresa_site') || '',
+          }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          throw new Error(data.message || 'Não foi possível analisar agora.');
+        }
+        window.location.assign(data.path || '/');
+      } catch (error) {
+        setStatus(error instanceof Error ? error.message : 'Falha na análise.', true);
+        if (button) {
+          button.disabled = false;
+        }
+      }
+    });
+  });
+}
+
 function contactForms() {
   document.querySelectorAll('form.site-form').forEach((form) => {
     form.addEventListener('submit', async (event) => {
@@ -1085,6 +1134,7 @@ cases();
 lightbox();
 leadForms();
 contactForms();
+aiVisForms();
 whatsappClicks();
 years();
 orbit();

@@ -20,6 +20,7 @@ const TONES: Record<string, Tone> = {
   'case-grid': 'dark',
   adhoc: 'dark',
   method: 'dark',
+  'ai-tool': 'dark',
 };
 
 const LISTS = ['list', 'cards', 'steps', 'portfolio', 'plans', 'faq', 'quotes', 'logos', 'uses', 'examples', 'glyphs', 'checklist', 'history', 'method', 'figures', 'gallery', 'results'];
@@ -460,6 +461,13 @@ function SectionView({ kind, data, tone, flush, stacked, form, isCase }: { kind:
     case 'method':
       return <Shell {...shell} className="is-timeline-head"><MethodBlock data={data} /></Shell>;
 
+    case 'ai-tool':
+      return (
+        <Shell {...shell} className="ai-vis-tool-section">
+          <AiVisibilityTool data={data} />
+        </Shell>
+      );
+
     default:
       return null;
   }
@@ -641,6 +649,42 @@ export function ContactForm({ form }: { form: SiteForm | null }) {
       </div>
       <button className="pill solid" type="submit" disabled={busy}>{busy ? t('form.sending') : form?.submit_label || t('form.submit')}</button>
     </form>
+  );
+}
+
+function AiVisibilityTool({ data }: { data: Data }) {
+  const platforms = rows(data, 'platforms');
+  const placeholder = text(data, 'placeholder') || 'exemplo.com.br';
+  const buttonLabel = text(data, 'button_label') || 'Ver a nota';
+  const hint = text(data, 'hint') || 'Sem cadastro. Não alteramos nada no seu site.';
+
+  return (
+    <div className="ai-vis-tool">
+      <form className="ai-vis-form" action="/api/como-aparecer-no-chatgpt" method="post" noValidate>
+        <input type="text" name="empresa_site" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hp" />
+        <label className="sr-only" htmlFor="ai-vis-url">Endereço do site</label>
+        <input id="ai-vis-url" name="url" type="text" inputMode="url" autoComplete="url" placeholder={placeholder} required />
+        <button className="pill lime" type="submit">
+          {buttonLabel}
+          <span className="arrow" aria-hidden="true"><Arrow /></span>
+        </button>
+      </form>
+      <p className="hint">{hint}</p>
+      <p className="hint" id="ai-vis-status" role="status" aria-live="polite" hidden />
+      {platforms.length > 0 ? (
+        <div className="ai-vis-platforms" aria-label="Assistentes cobertos">
+          <p className="ai-vis-platforms-label">Este teste verifica as ferramentas:</p>
+          <ul>
+            {platforms.map((item, index) => (
+              <li key={`${text(item, 'name')}-${index}`}>
+                {text(item, 'logo') ? <img src={text(item, 'logo')} alt="" width={28} height={28} /> : null}
+                <span>{text(item, 'name')}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+    </div>
   );
 }
 

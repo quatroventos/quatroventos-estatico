@@ -8922,6 +8922,21 @@ a.card:hover .go {
   font-size: 13px;
 }
 
+.ai-vis-tool {
+  display: grid;
+  gap: 14px;
+  max-width: 44rem;
+}
+
+.ai-vis-tool .ai-vis-platforms {
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.ai-vis-tool .hint.is-error {
+  color: #ffb4b4;
+}
+
 .ai-vis-form {
   display: grid;
   grid-template-columns: 1fr auto;
@@ -8930,7 +8945,8 @@ a.card:hover .go {
   margin-top: 28px;
 }
 
-.ai-vis-form input[type="url"] {
+.ai-vis-form input[type="url"],
+.ai-vis-form input[type="text"] {
   min-height: 52px;
   padding: 0 18px;
   border: 1px solid var(--line-dark);
@@ -8940,12 +8956,14 @@ a.card:hover .go {
   caret-color: var(--lime);
 }
 
-.ai-vis-form input[type="url"]::placeholder {
+.ai-vis-form input[type="url"]::placeholder,
+.ai-vis-form input[type="text"]::placeholder {
   color: var(--on-dark-mute);
   opacity: 1;
 }
 
-.ai-vis-form input[type="url"]:focus {
+.ai-vis-form input[type="url"]:focus,
+.ai-vis-form input[type="text"]:focus {
   outline: 2px solid var(--lime);
   outline-offset: 2px;
 }

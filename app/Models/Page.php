@@ -160,7 +160,6 @@ class Page extends Model
             'robots.txt',
             'llms.txt',
             'llm.txt',
-            AiVisibilityReport::PATH,
             AiVisibilityReport::LEGACY_PATH,
             $admin,
         ]));
