@@ -5,6 +5,20 @@
   $home = $sitePayload['home_path'] ?? '/';
   $bandLabel = ['alto' => 'Bom sinal: o site está preparado', 'medio' => 'Quase lá: ainda faltam ajustes', 'baixo' => 'Atenção: a IA tem dificuldade de ler o site'];
   $statusChip = ['good' => 'OK', 'ok' => 'Parcial', 'bad' => 'Falha'];
+  $reportCta = [
+    'alto' => [
+      'title' => 'Quer fechar o <em class="mark">último ajuste</em> no site?',
+      'body' => 'A nota já está alta. A Quatro Ventos fecha o que ainda falta — texto, dados do negócio ou arquivos básicos — com proposta de valor fechado.',
+    ],
+    'medio' => [
+      'title' => 'Quer que a Quatro Ventos <em class="mark">complete</em> esses ajustes?',
+      'body' => 'A Quatro Ventos aplica o que falta na página inicial — regras de entrada da IA, texto, dados do negócio e arquivos básicos — com proposta de valor fechado.',
+    ],
+    'baixo' => [
+      'title' => 'Quer que a Quatro Ventos deixe o site <em class="mark">legível</em> para a IA?',
+      'body' => 'A Quatro Ventos corrige o que impede a leitura — regras de entrada da IA, texto, dados do negócio e arquivos básicos — com proposta de valor fechado.',
+    ],
+  ];
   $measures = [
     ['pts' => 20, 'label' => 'A IA pode entrar no site', 'body' => 'O arquivo de regras do site (robots.txt) não manda o ChatGPT e outras IAs ficarem de fora.'],
     ['pts' => 20, 'label' => 'O texto da página inicial aparece sem truque', 'body' => 'O que você vende precisa estar escrito de verdade na página, não só aparecer depois que o site “liga” no celular ou no computador.'],
@@ -27,7 +41,7 @@
     <meta name="robots" content="{{ $seo['robots'] }}" />
     <meta name="author" content="{{ $seo['og_site_name'] }}" />
     <link rel="canonical" href="{{ $seo['canonical'] }}" />
-    @include('partials.favicon')
+    {!! $__env->make('partials.favicon', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render() !!}
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="{{ $seo['og_locale'] }}" />
     <meta property="og:site_name" content="{{ $seo['og_site_name'] }}" />
@@ -43,89 +57,97 @@
     @foreach($jsonld as $block)
       <script type="application/ld+json">{!! json_encode($block, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP) !!}</script>
     @endforeach
-    @vite(['resources/css/site.css', 'resources/js/site/ai-visibility.js'])
+    {!! app('Illuminate\Foundation\Vite')(['resources/css/site.css', 'resources/js/site/ai-visibility.js']) !!}
   </head>
   <body class="ai-vis">
     <a class="skip" href="#conteudo">Pular para o conteúdo</a>
-    @include('partials.site-chrome-header')
+    {!! $__env->make('partials.site-chrome-header', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render() !!}
 
     <main id="conteudo" tabindex="-1">
       @if($report)
-        <section class="section ai-vis-hero is-report">
-          <div class="wrap">
-            <h1>Nota de <em class="mark">{{ $report->host }}</em></h1>
-            <p class="ai-vis-meta">Teste feito em {{ $report->created_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}</p>
-            <div class="ai-vis-score" data-score="{{ $report->score }}">
-              <strong>{{ $report->score }}</strong>
-              <span>de 100</span>
+        @php
+          $checks = collect($report->checks ?? []);
+          $gapChecks = $checks->filter(fn (array $check): bool => ($check['status'] ?? '') !== 'good')->values();
+          $gapCount = $gapChecks->count();
+          $ctaCopy = $reportCta[$report->band] ?? $reportCta['medio'];
+        @endphp
+        <section class="section ai-vis-hero is-report" data-ai-vis-score-reveal data-score-stage="counting">
+          <div class="ai-vis-atmosphere" aria-hidden="true">
+            <div class="agent-log">
+              <div>
+                <span><span class="k">score</span> <span class="s">{{ $report->score }}</span> / 100{!! "\n" !!}</span>
+                <span><span class="k">band</span> {{ $report->band }}{!! "\n" !!}</span>
+                <span><span class="k">gaps</span> {{ $gapCount }}{!! "\n" !!}</span>
+                <span><span class="k">host</span> {{ $report->host }}{!! "\n" !!}</span>
+                <span><span class="k">score</span> <span class="s">{{ $report->score }}</span> / 100{!! "\n" !!}</span>
+                <span><span class="k">band</span> {{ $report->band }}{!! "\n" !!}</span>
+                <span><span class="k">gaps</span> {{ $gapCount }}{!! "\n" !!}</span>
+                <span><span class="k">host</span> {{ $report->host }}{!! "\n" !!}</span>
+              </div>
             </div>
-            <p class="ai-vis-band is-{{ $report->band }}">{{ $bandLabel[$report->band] ?? $report->band }}</p>
-            @if($report->niche)
-              <p class="ai-vis-niche">Área detectada: {{ $report->niche }}</p>
-            @endif
-            <p class="lead">Essa nota mostra se o ChatGPT e outras IAs conseguem ler a página inicial do site e entender o negócio.</p>
-            <div class="ai-vis-actions">
-              <button type="button" class="pill line" data-copy="{{ url($report->publicPath()) }}">Copiar link do resultado</button>
-              <a class="pill solid" href="{{ $toolPath }}">Testar outro site</a>
-              @if($whatsapp)
-                <a class="pill solid" href="{{ $whatsapp }}" target="_blank" rel="noreferrer">Quero ajuda no site</a>
-              @endif
+          </div>
+          <div class="wrap ai-vis-hero-grid is-report">
+            <div class="ai-vis-hero-copy">
+              <h1>Nota de <em class="mark">{{ $report->host }}</em></h1>
+              <p class="ai-vis-meta">Teste feito em {{ $report->created_at->timezone('America/Sao_Paulo')->format('d/m/Y') }}</p>
+              <p class="ai-vis-band is-{{ $report->band }}">{{ $bandLabel[$report->band] ?? $report->band }}</p>
+              <div class="ai-vis-actions">
+                <button type="button" class="pill line" data-copy="{{ url($report->publicPath()) }}" data-copy-idle="Copiar link do resultado">Copiar link do resultado</button>
+                <a class="pill line" href="{{ $toolPath }}">Testar outro site</a>
+              </div>
+            </div>
+            <div class="ai-vis-score-panel" aria-label="Nota do site">
+              <div class="ai-vis-flip" data-ai-vis-flip data-score="{{ $report->score }}">
+                <p class="sr-only">{{ $report->score }} de 100</p>
+                <div class="ai-vis-flip-board" aria-hidden="true">
+                  <strong class="ai-vis-flip-fallback">{{ $report->score }}</strong>
+                </div>
+                <span class="ai-vis-flip-unit">de 100</span>
+              </div>
             </div>
           </div>
         </section>
 
-        <section class="section on-dark" aria-labelledby="achados">
+        <section class="section on-white" aria-labelledby="achados">
           <div class="wrap">
             <h2 id="achados" class="h2">O que encontramos</h2>
-            <ul class="ai-vis-checks">
-              @foreach($report->checks as $check)
-                <li class="is-{{ $check['status'] }}">
-                  <div>
-                    <strong>
-                      <span class="ai-vis-chip is-{{ $check['status'] }}">{{ $statusChip[$check['status']] ?? $check['status'] }}</span>
-                      {{ $check['label'] }}
-                    </strong>
-                    <p>{{ $check['message'] }}</p>
-                  </div>
-                  <span>{{ $check['points'] }} de {{ $check['max'] }} pontos</span>
-                </li>
-              @endforeach
-            </ul>
+            @if($gapChecks->isEmpty())
+              <p class="intro ai-vis-checks-summary">Nenhum ponto de atenção nesta leitura.</p>
+            @else
+              <p class="intro ai-vis-checks-summary">
+                {{ $gapCount }} {{ $gapCount === 1 ? 'ponto de atenção' : 'pontos de atenção' }}
+
+              </p>
+              <ul class="ai-vis-checks">
+                @foreach($gapChecks as $check)
+                  <li class="is-{{ $check['status'] }}">
+                    <div>
+                      <strong>
+                        <span class="ai-vis-chip is-{{ $check['status'] }}">{{ $statusChip[$check['status']] ?? $check['status'] }}</span>
+                        {{ $check['label'] }}
+
+                      </strong>
+                      <p>{{ $check['message'] }}</p>
+                    </div>
+                    <span>{{ $check['points'] }} de {{ $check['max'] }} pontos</span>
+                  </li>
+                @endforeach
+              </ul>
+            @endif
           </div>
         </section>
 
-        @if(($report->fixes ?? []) !== [])
-          <section class="section" aria-labelledby="corrigir">
-            <div class="wrap">
-              <h2 id="corrigir" class="h2">O que fazer agora</h2>
-              <p class="intro">Comece pelo que mais sobe a nota. Depois vá nos detalhes menores.</p>
-              <ol class="ai-vis-fixes">
-                @foreach($report->fixes as $index => $fix)
-                  <li>
-                    <h3>{{ $index + 1 }}. {{ $fix['title'] }}</h3>
-                    <p class="meta">Tempo estimado: {{ $fix['minutes'] }} min · Impacto: {{ $fix['impact'] }}</p>
-                    <p>{{ $fix['body'] }}</p>
-                    @if(!empty($fix['code']))
-                      <pre><code>{{ $fix['code'] }}</code></pre>
-                    @endif
-                  </li>
-                @endforeach
-              </ol>
-            </div>
-          </section>
-        @endif
-
         @if($whatsapp)
-          <section class="section on-light cta-block is-card is-mark-draw is-reveal" aria-labelledby="aplicar-resultado">
+          <section class="section on-white ai-vis-apply" aria-labelledby="aplicar-resultado">
             <div class="wrap">
-              <div class="cta-card">
-                <h2 id="aplicar-resultado">Quer que a Quatro Ventos <em class="mark">arrume isso</em> no site?</h2>
-                <div class="cta-side">
+              <div class="prose-panel is-reveal">
+                <h2 id="aplicar-resultado" class="h2">{!! $ctaCopy['title'] !!}</h2>
+                <div class="prose-panel-side">
                   <div class="rich">
-                    <p>Depois da nota, dá para fechar o que falta — regras de entrada da IA, texto, dados do negócio e arquivos básicos — com proposta de valor fechado.</p>
+                    <p>{{ $ctaCopy['body'] }}</p>
                   </div>
                   <div class="actions">
-                    <a class="pill solid" href="{{ $whatsapp }}" target="_blank" rel="noreferrer">
+                    <a class="pill lime" href="{{ $whatsapp }}" target="_blank" rel="noreferrer">
                       Chamar no WhatsApp
                       <span class="arrow" aria-hidden="true">
                         <svg class="icon-arrow" viewBox="0 0 16 16" aria-hidden="true">
@@ -169,7 +191,7 @@
             </div>
             <div class="ai-vis-hero-tool">
               <form class="ai-vis-form" id="ai-vis-form" action="{{ $analyzeUrl }}" method="post" novalidate>
-                @csrf
+                {!! csrf_field() !!}
                 <label class="sr-only" for="ai-vis-url">Endereço do site</label>
                 <input id="ai-vis-url" name="url" type="url" inputmode="url" autocomplete="url" placeholder="https://seusite.com.br" required maxlength="500" />
                 <input type="text" name="empresa_site" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
