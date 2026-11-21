@@ -16,8 +16,10 @@ export type Abilities = {
   cases: boolean;
   messages: boolean;
   careers: boolean;
+  ai_visibility: boolean;
   messages_delete: boolean;
   careers_delete: boolean;
+  ai_visibility_delete: boolean;
   impersonate: boolean;
 };
 

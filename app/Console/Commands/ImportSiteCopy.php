@@ -142,7 +142,7 @@ class ImportSiteCopy extends Command
             ['Sobre', '/sobre'],
             ['Cases', '/cases'],
             ['Contato', '/contato'],
-            ['Diagnóstico gratuito de site', '/diagnostico-de-site'],
+            ['Teste se a IA lê o seu site', '/como-aparecer-no-chatgpt'],
             ['Suporte ao cliente', CopyImporter::FRESHDESK_URL],
         ] as $i => [$label, $href]) {
             $this->menu('footer', $label, $href, $company->id, $i);

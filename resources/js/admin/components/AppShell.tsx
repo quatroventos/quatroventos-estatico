@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   ListTree,
   ClipboardList,
+  Bot,
   Database,
   HardDrive,
   ScrollText,
@@ -35,6 +36,7 @@ const groups = [
     items: [
       { to: '/', label: 'Dashboard', icon: LayoutDashboard, ability: 'pages' },
       { to: '/mensagens', label: 'Mensagens recebidas', icon: Inbox, ability: 'messages' },
+      { to: '/testes-chatgpt', label: 'Testes ChatGPT', icon: Bot, ability: 'ai_visibility' },
     ],
   },
   {

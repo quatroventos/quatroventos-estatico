@@ -10,6 +10,7 @@ use App\Services\SystemOptions;
 use App\Support\Locales;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 use RuntimeException;
 use Throwable;
@@ -57,6 +58,17 @@ class AiVisibilityController extends Controller
             'fixes' => $result['fixes'],
             'response_ms' => $result['response_ms'],
             'ip' => $request->ip(),
+        ]);
+
+        Log::channel('ai-visibility')->info('ai_visibility.report_created', [
+            'public_id' => $report->public_id,
+            'url' => $report->url,
+            'host' => $report->host,
+            'score' => $report->score,
+            'band' => $report->band,
+            'niche' => $report->niche,
+            'response_ms' => $report->response_ms,
+            'ip' => $report->ip,
         ]);
 
         return response()->json([

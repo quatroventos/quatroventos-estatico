@@ -73,6 +73,14 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'ai-visibility' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/ai-visibility.log'),
+            'level' => env('LOG_LEVEL', 'debug'),
+            'max_files' => 90,
+            'replace_placeholders' => true,
+        ],
+
         'monthly' => [
             'driver' => 'monthly',
             'path' => storage_path('logs/laravel.log'),

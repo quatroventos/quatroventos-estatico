@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AiVisibilityReportController;
 use App\Http\Controllers\Admin\AuditController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BackupController;
@@ -158,6 +159,10 @@ Route::prefix($admin)->group(function () {
             Route::get('messages/{contactSubmission}', [ContactSubmissionController::class, 'show']);
             Route::delete('messages/{contactSubmission}', [ContactSubmissionController::class, 'destroy']);
             Route::post('messages/{contactSubmission}/restore', [ContactSubmissionController::class, 'restore'])->whereNumber('contactSubmission');
+
+            Route::get('ai-visibility-reports', [AiVisibilityReportController::class, 'index']);
+            Route::get('ai-visibility-reports/{aiVisibilityReport}', [AiVisibilityReportController::class, 'show']);
+            Route::delete('ai-visibility-reports/{aiVisibilityReport}', [AiVisibilityReportController::class, 'destroy']);
 
             Route::get('careers', [CareerSubmissionController::class, 'index']);
             Route::get('careers/{careerSubmission}', [CareerSubmissionController::class, 'show']);

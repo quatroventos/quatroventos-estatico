@@ -194,7 +194,7 @@ class SiteContentSeeder extends Seeder
                 ['Sobre', '/sobre'],
                 ['Cases', '/cases'],
                 ['Contato', '/contato'],
-                ['Diagnóstico gratuito de site', '/diagnostico-de-site'],
+                ['Teste se a IA lê o seu site', '/como-aparecer-no-chatgpt'],
                 ['Suporte ao cliente', 'https://quatroventos.freshdesk.com/support/home'],
             ]],
         ];

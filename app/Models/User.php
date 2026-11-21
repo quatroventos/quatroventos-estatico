@@ -86,8 +86,10 @@ class User extends Authenticatable
             'cases' => $member,
             'messages' => $member,
             'careers' => $member,
+            'ai_visibility' => $member,
             'messages_delete' => $member,
             'careers_delete' => $member,
+            'ai_visibility_delete' => $member,
             'impersonate' => $root,
         ];
     }

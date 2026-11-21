@@ -4,6 +4,7 @@ import { useAuth } from './auth';
 import { LoginScreen } from './screens/LoginScreen';
 import { DashboardScreen } from './screens/DashboardScreen';
 import { InboxScreen } from './screens/InboxScreen';
+import { AiVisibilityReportsScreen } from './screens/AiVisibilityReportsScreen';
 import { AuditScreen } from './screens/AuditScreen';
 import { PagesScreen } from './screens/PagesScreen';
 import { PageEditorScreen } from './screens/PageEditorScreen';
@@ -50,6 +51,7 @@ export function App() {
       />
       <Route path="/" element={<Guard><DashboardScreen /></Guard>} />
       <Route path="/mensagens" element={<Guard ability="messages"><InboxScreen /></Guard>} />
+      <Route path="/testes-chatgpt" element={<Guard ability="ai_visibility"><AiVisibilityReportsScreen /></Guard>} />
       <Route path="/curriculos" element={<Navigate to="/mensagens?tipo=curriculos" replace />} />
       <Route path="/paginas" element={<Guard ability="pages"><PagesScreen /></Guard>} />
       <Route path="/paginas/:slug" element={<Guard ability="pages"><PageEditorScreen /></Guard>} />
