@@ -20,15 +20,21 @@
     ],
   ];
   $measures = [
-    ['pts' => 20, 'label' => 'A IA pode entrar no site', 'body' => 'O arquivo de regras do site (robots.txt) não manda o ChatGPT e outras IAs ficarem de fora.'],
-    ['pts' => 20, 'label' => 'O texto da página inicial aparece sem truque', 'body' => 'O que você vende precisa estar escrito de verdade na página, não só aparecer depois que o site “liga” no celular ou no computador.'],
-    ['pts' => 15, 'label' => 'Fica claro o que você faz, para quem e o preço', 'body' => 'Na primeira página: o que oferece, para quem é e quanto custa — ou como o orçamento funciona.'],
-    ['pts' => 10, 'label' => 'Dados do negócio em formato que a máquina lê', 'body' => 'Um bloco técnico (JSON-LD) descrevendo serviço, produto, perguntas frequentes ou empresa local.'],
-    ['pts' => 10, 'label' => 'Site com cadeado e resposta rápida', 'body' => 'Endereço com https e página que abre sem demora demais.'],
-    ['pts' => 10, 'label' => 'Título e resumo da página', 'body' => 'O título da aba e o texto curto que aparece no Google (e ajuda a IA a entender o assunto).'],
-    ['pts' => 5, 'label' => 'Resumo para IA (llms.txt)', 'body' => 'Um arquivo simples na raiz do site contando, em poucas linhas, o que a empresa faz.'],
-    ['pts' => 5, 'label' => 'Quem está por trás e quando atualizou', 'body' => 'Página Sobre, nome de quem publica ou data de atualização visível.'],
-    ['pts' => 5, 'label' => 'Lista das páginas (sitemap)', 'body' => 'Um arquivo que lista as páginas do site para facilitar a descoberta.'],
+    ['pts' => 7, 'label' => 'A IA pode entrar no site', 'body' => 'O arquivo de regras do site (robots.txt) não manda o ChatGPT e outras IAs ficarem de fora.'],
+    ['pts' => 7, 'label' => 'Agente consegue buscar a home', 'body' => 'Com User-Agent de agente a home responde em https, sem desafio de WAF/bot.'],
+    ['pts' => 10, 'label' => 'Texto sem depender de JavaScript', 'body' => 'H1 e pelo menos 500 caracteres úteis já vêm no HTML — a IA não executa script para “ligar” a página.'],
+    ['pts' => 8, 'label' => 'Versão em Markdown da página', 'body' => 'Com Accept: text/markdown a home responde em Markdown e declara Vary: Accept (padrão acceptmarkdown.com).'],
+    ['pts' => 6, 'label' => 'Página 404 útil para a IA', 'body' => 'URL inexistente devolve HTTP 404 de verdade, com texto que orienta (sitemap, llms.txt ou docs) — de preferência em Markdown.'],
+    ['pts' => 5, 'label' => 'Redirecionamento limpo (sem JS)', 'body' => 'Sem stub de redirect só com meta-refresh ou JavaScript — agentes sem JS precisam de HTTP 301/302.'],
+    ['pts' => 5, 'label' => 'Conteúdo sem muro de login', 'body' => 'A oferta na home é pública; a IA não encontra só formulário de autenticação.'],
+    ['pts' => 10, 'label' => 'Fica claro o que você faz, para quem e o preço', 'body' => 'Na primeira página: o que oferece, para quem é e quanto custa — ou como o orçamento funciona.'],
+    ['pts' => 7, 'label' => 'Dados do negócio em formato que a máquina lê', 'body' => 'Um bloco técnico (JSON-LD) descrevendo serviço, produto, perguntas frequentes ou empresa local.'],
+    ['pts' => 6, 'label' => 'Metadados completos da página', 'body' => 'Título, resumo, idioma (lang), canonical no próprio domínio, og:image e og:type.'],
+    ['pts' => 5, 'label' => 'Empresa com contato e endereço no schema', 'body' => 'Organization/LocalBusiness no JSON-LD com contactPoint e address.'],
+    ['pts' => 6, 'label' => 'Instrução para IA (llms.txt)', 'body' => 'Arquivo /llms.txt com o que a empresa faz e uma seção clara de quando usar.'],
+    ['pts' => 6, 'label' => 'Sobre, contato e privacidade', 'body' => 'Links na home para as três páginas de confiança que a IA confere antes de recomendar.'],
+    ['pts' => 5, 'label' => 'Lista das páginas e home indexável', 'body' => 'sitemap.xml presente e home sem noindex.'],
+    ['pts' => 7, 'label' => 'Conteúdo no início e no tamanho certo', 'body' => 'Texto útil perto do topo (antes do main) e página que cabe no orçamento de tokens da IA.'],
   ];
 @endphp
 <!doctype html>
@@ -237,7 +243,7 @@
             <ol class="ai-vis-pillar-list">
               <li>
                 <strong>Ver a nota do site</strong>
-                <p>De 0 a 100. Mesma regra para todo mundo: nove itens com peso fixo. Não é opinião de uma IA — é checklist técnico.</p>
+                <p>De 0 a 100. Mesma regra para todo mundo: quinze itens com peso fixo. Não é opinião de uma IA — é checklist técnico.</p>
               </li>
               <li>
                 <strong>Saber o que arrumar primeiro</strong>
@@ -254,7 +260,7 @@
         <section class="section on-dark ai-vis-measure-section is-reveal" aria-labelledby="medir" id="medir">
           <div class="wrap">
             <h2 class="h2">O que olhamos no teste</h2>
-            <p class="intro">Nove itens, cem pontos no total. Só o que qualquer pessoa consegue ver no site público. Se não confirmar na hora, não conta ponto.</p>
+            <p class="intro">Quinze itens, cem pontos no total — mesmos eixos elegíveis do is-agentic para sites de marketing. Se não confirmar na hora, não conta ponto.</p>
             <div class="ai-vis-measure-track" aria-hidden="true"><span></span></div>
             <ul class="ai-vis-measure">
               @foreach($measures as $item)
@@ -284,7 +290,7 @@
               <p>Então <strong>como aparecer no ChatGPT</strong> não é só anunciar. É deixar o site legível: a IA entra, lê a oferta e consegue citar o negócio.</p>
 
               <h3>O que a IA precisa achar no site</h3>
-              <p>Começa pela página inicial e pelos arquivos básicos da raiz. A IA precisa de permissão para entrar. Precisa de texto escrito de verdade (não só imagens ou botões). Precisa saber o que você oferece, para quem e quanto custa — ou como pede orçamento. Ajuda ter um bloco de dados do negócio, uma página Sobre, uma data de atualização e uma lista das páginas.</p>
+              <p>Começa pela página inicial e pelos arquivos básicos da raiz. A IA precisa de permissão para entrar. Precisa de texto no HTML (com H1), de preferência também em Markdown. Precisa saber o que você oferece, para quem e quanto custa. Ajuda ter JSON-LD completo (empresa com contato e endereço), llms.txt com “quando usar”, Sobre/Contato/Privacidade, 404 de verdade e sitemap sem noindex na home.</p>
               <p>Isso não garante que toda pergunta cite a sua marca. Mas remove obstáculos que, sozinhos, já tiram o site da conversa.</p>
 
               <h3>Passo a passo</h3>
@@ -306,8 +312,8 @@
                   <p>Quem cuida do site pode adicionar o bloco JSON-LD (serviço, produto, FAQ ou empresa local). Você não precisa editar código: basta pedir esse item no orçamento.</p>
                 </li>
                 <li>
-                  <strong>Mostre quem está por trás</strong>
-                  <p>Página Sobre, data de atualização, um resumo llms.txt e a lista de páginas (sitemap). São detalhes pequenos que, juntos, reforçam confiança.</p>
+                  <strong>Feche os sinais de confiança e descoberta</strong>
+                  <p>Sobre, Contato e Privacidade; llms.txt com “quando usar”; metadados (idioma, canonical, Open Graph); 404 real; sitemap sem noindex. São detalhes que, juntos, reforçam confiança para a IA.</p>
                 </li>
               </ol>
 

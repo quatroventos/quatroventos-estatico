@@ -879,7 +879,7 @@ function AiReadinessPanel() {
       <div className="panel-body">
         {error ? <div className="form-error">{error}</div> : null}
         {!data && loading ? <Loading /> : null}
-        {data ? <SeoAiChecks data={data} title="Site inteiro" hint="Para a nota de cada página, abra a página no editor e veja o bloco Buscadores de IA no painel de SEO." /> : null}
+        {data ? <SeoAiChecks data={data} title="Site inteiro" hint="Mesmos 15 critérios do teste público Como aparecer no ChatGPT? (is-agentic / domínio). Para a nota editorial de cada página, abra o editor e veja Buscadores de IA no painel de SEO." /> : null}
       </div>
     </section>
   );

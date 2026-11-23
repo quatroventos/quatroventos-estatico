@@ -644,6 +644,145 @@ function formStatus(form, kind, text, withWhatsApp) {
   return paragraph;
 }
 
+const AI_VIS_SCAN_STEPS = [
+  'Regras de entrada da IA (robots.txt)',
+  'Busca com User-Agent de agente',
+  'Texto legível sem JavaScript',
+  'Negociação Markdown (Accept)',
+  'Página 404 para agentes',
+  'Redirecionamento limpo',
+  'Conteúdo sem muro de login',
+  'Oferta, público e preço',
+  'JSON-LD do negócio',
+  'Metadados (idioma, canonical, OG)',
+  'Organization com contato e endereço',
+  'llms.txt e quando usar',
+  'Sobre, contato e privacidade',
+  'Sitemap e home indexável',
+  'Estrutura e orçamento de tokens',
+];
+
+function aiVisScanMount(form, status) {
+  const host = form.parentElement || form;
+  let root = host.querySelector('.ai-vis-scan');
+  if (!(root instanceof HTMLElement)) {
+    root = document.createElement('div');
+    root.className = 'ai-vis-scan';
+    root.hidden = true;
+    root.innerHTML = `
+      <div class="ai-vis-scan-meta">
+        <span class="ai-vis-scan-label"></span>
+        <span class="ai-vis-scan-step" data-ai-vis-scan-step></span>
+      </div>
+      <div class="ai-vis-scan-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso da análise">
+        <span data-ai-vis-scan-fill></span>
+      </div>
+    `;
+    if (status?.parentElement === host) {
+      host.insertBefore(root, status);
+    } else {
+      host.appendChild(root);
+    }
+  }
+  return root;
+}
+
+function aiVisScanController(root) {
+  const label = root.querySelector('.ai-vis-scan-label');
+  const fill = root.querySelector('[data-ai-vis-scan-fill]');
+  const stepNode = root.querySelector('[data-ai-vis-scan-step]');
+  const bar = root.querySelector('.ai-vis-scan-bar');
+  const total = AI_VIS_SCAN_STEPS.length;
+  let index = 0;
+  let timer = 0;
+  let shownPct = 0;
+  let raf = 0;
+  let stopped = false;
+
+  const pctFor = (stepIndex) => Math.round(((stepIndex + 1) / total) * 100);
+
+  const paint = (stepIndex, pct) => {
+    const safeIndex = Math.min(Math.max(stepIndex, 0), total - 1);
+    const value = Math.max(0, Math.min(100, Math.round(pct)));
+    if (label) {
+      label.textContent = AI_VIS_SCAN_STEPS[safeIndex];
+    }
+    if (fill instanceof HTMLElement) {
+      fill.style.width = `${value}%`;
+    }
+    if (bar instanceof HTMLElement) {
+      bar.setAttribute('aria-valuenow', String(value));
+    }
+    if (stepNode) {
+      stepNode.textContent = `${safeIndex + 1} de ${total}`;
+    }
+    shownPct = value;
+  };
+
+  const tickPct = (target) => {
+    if (raf) {
+      window.cancelAnimationFrame(raf);
+    }
+    const from = shownPct;
+    const started = performance.now();
+    const duration = Math.min(420, 120 + Math.abs(target - from) * 8);
+    const frame = (now) => {
+      const t = Math.min(1, (now - started) / duration);
+      const eased = 1 - (1 - t) ** 3;
+      paint(index, from + (target - from) * eased);
+      if (t < 1) {
+        raf = window.requestAnimationFrame(frame);
+      }
+    };
+    raf = window.requestAnimationFrame(frame);
+  };
+
+  const advance = () => {
+    if (stopped) {
+      return;
+    }
+    if (index >= total - 1) {
+      paint(total - 1, 96);
+      return;
+    }
+    index += 1;
+    const holdAt = index >= total - 1 ? 96 : Math.min(pctFor(index), 96);
+    tickPct(holdAt);
+    const delay = 380 + Math.min(index, 6) * 55;
+    timer = window.setTimeout(advance, delay);
+  };
+
+  return {
+    start() {
+      stopped = false;
+      index = 0;
+      root.hidden = false;
+      root.classList.add('is-active');
+      paint(0, 0);
+      tickPct(Math.min(pctFor(0), 8));
+      timer = window.setTimeout(advance, 420);
+    },
+    async finish() {
+      stopped = true;
+      window.clearTimeout(timer);
+      index = total - 1;
+      tickPct(100);
+      paint(total - 1, 100);
+      root.classList.add('is-done');
+      await new Promise((resolve) => window.setTimeout(resolve, 280));
+    },
+    fail() {
+      stopped = true;
+      window.clearTimeout(timer);
+      if (raf) {
+        window.cancelAnimationFrame(raf);
+      }
+      root.hidden = true;
+      root.classList.remove('is-active', 'is-done');
+    },
+  };
+}
+
 function aiVisForms() {
   document.addEventListener('submit', async (event) => {
     const form = event.target;
@@ -663,10 +802,12 @@ function aiVisForms() {
     };
     const button = form.querySelector('button[type="submit"]');
     const payload = new FormData(form);
+    const scan = aiVisScanController(aiVisScanMount(form, status));
     if (button) {
       button.disabled = true;
     }
-    setStatus('Lendo a página inicial…');
+    setStatus('');
+    scan.start();
 
     try {
       const response = await fetch(form.getAttribute('action') || '/api/como-aparecer-no-chatgpt', {
@@ -685,8 +826,10 @@ function aiVisForms() {
       if (!response.ok) {
         throw new Error(data.message || 'Não foi possível analisar agora.');
       }
+      await scan.finish();
       window.location.assign(data.path || '/');
     } catch (error) {
+      scan.fail();
       setStatus(error instanceof Error ? error.message : 'Falha na análise.', true);
       if (button) {
         button.disabled = false;

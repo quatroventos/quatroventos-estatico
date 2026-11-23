@@ -9,7 +9,9 @@ use App\Services\PublicContent;
 use App\Services\Seo\AiReadiness;
 use App\Services\Seo\StructuredData;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class StructuredDataTest extends TestCase
@@ -135,20 +137,42 @@ class StructuredDataTest extends TestCase
         $this->assertIsInt($ai['score']);
     }
 
-    public function test_site_readiness_flags_blocked_ai_bots_and_missing_budget(): void
+    public function test_site_readiness_uses_public_ai_visibility_checks(): void
     {
-        $this->page('home', 'Quatro Ventos', [], ['template' => 'home']);
-        SiteSetting::query()->first()->update(['robots_txt' => "User-agent: GPTBot\nDisallow: /\n\nUser-agent: *\nAllow: /\n"]);
+        config(['app.url' => 'https://exemplo.com.br']);
 
-        $checks = collect($this->actingAs($this->makeEditor())
+        Http::fake(function (Request $request) {
+            $url = $request->url();
+            if (str_contains($url, 'robots.txt')) {
+                return Http::response("User-agent: GPTBot\nDisallow: /\n\nUser-agent: ClaudeBot\nDisallow: /\n\nUser-agent: PerplexityBot\nDisallow: /\n\nUser-agent: Google-Extended\nDisallow: /\n\nUser-agent: *\nAllow: /\n", 200);
+            }
+            if (str_contains($url, 'sitemap')) {
+                return Http::response('<?xml version="1.0"?><urlset></urlset>', 200);
+            }
+            if (str_contains($url, 'llms.txt') || str_contains($url, 'llm.txt')) {
+                return Http::response('', 404);
+            }
+            if (str_contains($url, '__qv-404-probe-')) {
+                return Http::response('Not found', 404);
+            }
+
+            $body = '<!doctype html><html lang="pt-BR"><head><title>Exemplo</title><meta name="description" content="Descrição curta"></head><body><main><h1>Exemplo</h1><p>Texto.</p></main></body></html>';
+
+            return Http::response($body, 200);
+        });
+
+        $payload = $this->actingAs($this->makeEditor())
             ->getJson('/gestao/api/seo/ai-readiness')
             ->assertOk()
-            ->json('data.checks'))->keyBy('id');
+            ->json('data');
 
-        $this->assertSame('bad', $checks['robots_ai']['status']);
-        $this->assertStringContainsString('GPTBot', $checks['robots_ai']['message']);
-        $this->assertSame('bad', $checks['home_price']['status']);
-        $this->assertSame('bad', $checks['about_page']['status']);
+        $checks = collect($payload['checks'])->keyBy('id');
+        $this->assertCount(15, $payload['checks']);
+        $this->assertSame('bad', $checks['robots']['status']);
+        $this->assertStringContainsString('GPTBot', $checks['robots']['message']);
+        $this->assertArrayHasKey('markdown', $checks);
+        $this->assertArrayHasKey('crawler', $checks);
+        $this->assertArrayHasKey('structure', $checks);
         $this->assertFalse(AiReadiness::blocksRoot("User-agent: *\nDisallow: /gestao\n", 'ClaudeBot'));
     }
 
