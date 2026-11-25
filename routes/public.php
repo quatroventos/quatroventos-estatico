@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AiVisibilityController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\PublicContentController;
 use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\SiteAnalyticsController;
@@ -90,6 +91,14 @@ Route::middleware(DetectLocale::class)->group(function () {
     Route::get('/cases/{slug}', [SiteController::class, 'caseStudy'])
         ->where('slug', '[a-z0-9-]+')
         ->name('case');
+
+    Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
+    Route::get('/blog/categoria/{slug}', [BlogController::class, 'category'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name('blog.category');
+    Route::get('/blog/{slug}', [BlogController::class, 'show'])
+        ->where('slug', '[a-z0-9-]+')
+        ->name('blog.show');
 
     $reserved = implode('|', array_map(
         fn (string $slug) => preg_quote($slug, '/'),

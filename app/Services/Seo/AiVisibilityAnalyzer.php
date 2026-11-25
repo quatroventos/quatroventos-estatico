@@ -424,7 +424,11 @@ class AiVisibilityAnalyzer
     private function markdownCheck(array $probe): array
     {
         $max = 8;
-        $varyOk = preg_match('/\bAccept\b/i', $probe['vary']) === 1;
+        $varyTokens = array_map(
+            fn (string $token): string => strtolower(trim($token)),
+            array_filter(explode(',', $probe['vary']))
+        );
+        $varyOk = in_array('accept', $varyTokens, true);
 
         return match (true) {
             $probe['ok'] && $varyOk => $this->check('markdown', 'Versão em Markdown da página', 'good', $max, $max, 'Com Accept: text/markdown a home responde em Markdown e declara Vary: Accept.'),

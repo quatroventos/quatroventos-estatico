@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Concerns\NegotiatesMarkdown;
 use App\Http\Middleware\ApplyRedirects;
 use App\Http\Middleware\EnsureCmsUser;
+use App\Http\Middleware\NegotiateMarkdown;
 use App\Http\Middleware\RedirectToCanonicalHost;
 use App\Http\Middleware\RestrictHttpMethods;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetSiteLocale;
+use App\Services\Seo\PageMarkdown;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -38,6 +41,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
         $middleware->web(append: [SetSiteLocale::class]);
         $middleware->group('public', [
+            NegotiateMarkdown::class,
             SetSiteLocale::class,
             SubstituteBindings::class,
         ]);
@@ -60,6 +64,19 @@ return Application::configure(basePath: dirname(__DIR__))
                 return null;
             }
 
-            return response()->view('errors.404', [], 404);
+            $negotiator = new class
+            {
+                use NegotiatesMarkdown;
+            };
+
+            if ($negotiator->prefersMarkdown($request)) {
+                $markdown = app(PageMarkdown::class)->notFound(rtrim((string) config('app.url'), '/') ?: $request->getSchemeAndHttpHost());
+
+                return $negotiator->markdownResponse($markdown, 404);
+            }
+
+            return response()
+                ->view('errors.404', [], 404)
+                ->header('Vary', 'Accept');
         });
     })->create();
