@@ -5131,7 +5131,7 @@ a.card:hover .go {
   align-self: flex-start;
 }
 
-/* Cabeçalho dos planos com seletor mensal/anual */
+/* Cabeçalho dos planos com seletor mensal / 1 ano / 3 anos */
 .plan-head {
   grid-template-columns: minmax(0, 1fr);
   justify-items: center;
@@ -5436,7 +5436,11 @@ a.card:hover .go {
   }
 
   .plan-billing:not(.is-tabs) {
-    grid-template-columns: auto 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .plan-billing:not(.is-tabs) .plan-save {
+    display: none;
   }
 
   .plan-billing button,

@@ -13,7 +13,7 @@ class ContentStrings
         'id', 'type', 'layout', 'image', 'src', 'icon', 'variant', 'theme', 'tone', 'filter',
         'href', 'url', 'path', 'slug', 'anchor', 'kind', 'value', 'cover_path', 'services', 'stack',
         'whatsapp', 'email', 'phone', 'year', 'sector', 'featured', 'sort', 'glyph', 'visual', 'logo_place',
-        'panel_id', 'monthly', 'annual',
+        'panel_id', 'monthly', 'annual', 'triennial',
     ];
 
     /**

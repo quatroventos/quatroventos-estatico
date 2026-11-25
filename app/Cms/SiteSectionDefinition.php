@@ -225,7 +225,7 @@ class SiteSectionDefinition
                 'preview' => 'pricing',
                 'fields' => self::withCommon([
                     ['type' => 'text', 'name' => 'title', 'label' => 'Título'],
-                    ['type' => 'toggle', 'name' => 'billing', 'label' => 'Seletor mensal e anual'],
+                    ['type' => 'toggle', 'name' => 'billing', 'label' => 'Seletor mensal, 1 ano e 3 anos'],
                     ['type' => 'text', 'name' => 'tabs_label', 'label' => 'Rótulo das abas (leitor de tela)', 'hint' => 'Com mais de uma categoria, as categorias viram abas.'],
                     ['type' => 'text', 'name' => 'panel_id', 'label' => 'Id do painel das abas'],
                     ['type' => 'text', 'name' => 'base_title', 'label' => 'Título da base comum'],
@@ -247,8 +247,9 @@ class SiteSectionDefinition
                                 'simple' => false,
                                 'fields' => [
                                     ['type' => 'text', 'name' => 'name', 'label' => 'Nome'],
-                                    ['type' => 'text', 'name' => 'monthly', 'label' => 'Preço mensal (R$)', 'hint' => 'Só números, ex.: 45 ou 45.90.'],
-                                    ['type' => 'text', 'name' => 'annual', 'label' => 'Preço anual (R$)'],
+                                    ['type' => 'text', 'name' => 'monthly', 'label' => 'Preço mensal (R$)', 'hint' => 'Só números, ex.: 45 ou 45.90. Exibido como valor /mês.'],
+                                    ['type' => 'text', 'name' => 'annual', 'label' => 'Preço anual total (R$)', 'hint' => 'Total do ano. Na página aparece dividido por 12.'],
+                                    ['type' => 'text', 'name' => 'triennial', 'label' => 'Preço 36 meses total (R$)', 'hint' => 'Total dos 36 meses. Na página aparece dividido por 36. Vazio = anual × 3.'],
                                     ['type' => 'toggle', 'name' => 'featured', 'label' => 'Recomendado'],
                                     ['type' => 'text', 'name' => 'from', 'label' => 'Linha de abertura (ex.: Tudo do Basic, com)'],
                                     ['type' => 'repeater', 'name' => 'adds', 'label' => 'Itens do plano', 'simple' => true, 'itemType' => 'text'],

@@ -280,7 +280,11 @@ function billing(root) {
       });
       const live = group.parentElement?.querySelector('[aria-live]') || group.nextElementSibling;
       if (live) {
-        live.textContent = mode === 'year' ? 'Preços em cobrança anual' : 'Preços em cobrança mensal';
+        live.textContent = mode === 'tri'
+          ? 'Preços em cobrança de 36 meses'
+          : mode === 'year'
+            ? 'Preços em cobrança anual'
+            : 'Preços em cobrança mensal';
       }
     });
   });

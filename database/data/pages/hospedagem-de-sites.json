@@ -38,7 +38,8 @@
               {
                 "name": "Basic",
                 "monthly": "45",
-                "annual": "550",
+                "annual": "450",
+                "triennial": "1076.40",
                 "adds": [
                   "Até 5.000 acessos mensais",
                   "Até 30 acessos simultâneos",
@@ -53,6 +54,7 @@
                 "name": "Pro",
                 "monthly": "75",
                 "annual": "750",
+                "triennial": "1616.40",
                 "featured": true,
                 "adds": [
                   "Até 15.000 acessos mensais",
@@ -69,6 +71,7 @@
                 "name": "Ultra",
                 "monthly": "95",
                 "annual": "950",
+                "triennial": "2156.40",
                 "adds": [
                   "Até 50.000 acessos mensais",
                   "Até 500 acessos simultâneos",

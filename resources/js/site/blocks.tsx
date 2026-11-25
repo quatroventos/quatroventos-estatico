@@ -347,6 +347,7 @@ function toPlan(item: Data): Plan & { href: string; altHref: string } {
     name: text(item, 'name'),
     monthly: Number(text(item, 'monthly')) || 0,
     annual: Number(text(item, 'annual')) || 0,
+    triennial: Number(text(item, 'triennial')) || 0,
     featured: Boolean(item.featured),
     from: text(item, 'from') || undefined,
     adds: strings(item, 'adds'),
