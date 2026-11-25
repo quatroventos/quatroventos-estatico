@@ -43,8 +43,5 @@
         </div>
       </div>
     </footer>
-  <!-- impeccable-live-start -->
-<script src="http://localhost:8400/live.js?token=31b5c3d6-8fd5-4fc0-aa0b-2fd7da3cb30c"></script>
-<!-- impeccable-live-end -->
-</body>
+  </body>
 </html>

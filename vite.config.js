@@ -16,6 +16,7 @@ export default defineConfig({
                 'resources/js/site/main.tsx',
                 'resources/js/site/behaviors.js',
                 'resources/js/site/ai-visibility.js',
+                'resources/js/site/blog.js',
             ],
             refresh: true,
             fonts: [
